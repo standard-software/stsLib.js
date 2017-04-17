@@ -1,0 +1,44 @@
+/*----------------------------------------
+stsLib.js
+Standard Software Library JavaScript
+--------------------------------------
+ModuleName:    Test WSH JSE Module
+FileName:      stslib_test_wsh.jse
+--------------------------------------
+License:        MIT License
+All Right Reserved:
+    Name:       Standard Software
+    URL:        https://www.facebook.com/stndardsoftware/
+--------------------------------------
+Version:       2017/04/17
+//----------------------------------------*/
+
+
+//--------------------------------------------------
+//include st.js
+//--------------------------------------------------
+var fso = new ActiveXObject("Scripting.FileSystemObject")
+//--------------------------------------------------
+var basePath = fso.GetParentFolderName(WScript.ScriptFullName);
+var includeFileName = "..\\stslib_core.js"
+//--------------------------------------------------
+eval( 
+    fso.OpenTextFile(
+        fso.BuildPath(basePath, includeFileName), 1)
+    .ReadAll() );
+//--------------------------------------------------
+
+//WSH では alert が無いので関数を作成する
+function alert(messageText) {
+    WScript.Echo(messageText);
+}
+
+test();
+
+
+/*----------------------------------------
+◇  ver 2015/08/11
+・  作成
+◇  ver 2017/04/17
+・  ファイル名変更
+//----------------------------------------*/
