@@ -1,4 +1,4 @@
-/*----------------------------------------
+ï»¿/*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 ----------------------------------------
@@ -14,7 +14,7 @@ Version:        2017/04/17
 //----------------------------------------*/
 
 //----------------------------------------
-//Ÿ“®ìŠm”F
+//â—†å‹•ä½œç¢ºèª
 //----------------------------------------
 function test() {
     test_equalOperator();
@@ -49,33 +49,39 @@ function test() {
     test_stringToArray();
 
     test_isUndefined();
+    test_isNull();
+    isNullOrUndefined();
 
-//    check(true, false);
+    test_arrayValueEqual();
+    test_arrayIndexOfArray();
+
+//    assert(false, "test");
+
     alert("finish test");
 }
 
 //----------------------------------------
-//EƒCƒR[ƒ‹‰‰Zq‚Ì‹““®
+//ãƒ»ã‚¤ã‚³ãƒ¼ãƒ«æ¼”ç®—å­ã®æŒ™å‹•
 //----------------------------------------
 function test_equalOperator() {
     var value = true;
     check(true , value==true        ,"v01-01");
-    //«booleanŒ^‚ÆstringŒ^‚Í”äŠrˆê’v•s‰Â”\
+    //â†“booleanå‹ã¨stringå‹ã¯æ¯”è¼ƒä¸€è‡´ä¸å¯èƒ½
     check(false, value=="true"      ,"v01-02");
-    //«w+""x‚ğ•t‘®‚µ‚Ä•¶š—ñ‰»‚·‚ê‚Îˆê’vŠm”FOK
+    //â†“ã€+""ã€ã‚’ä»˜å±ã—ã¦æ–‡å­—åˆ—åŒ–ã™ã‚Œã°ä¸€è‡´ç¢ºèªOK
     check(true , value+""=="true"   ,"v01-03");
-    //«•¶š—ñ‚Éw!!x‚ğ•t‘®‚·‚é‚Ætrue‚ª•Ô‚³‚ê‚é
+    //â†“æ–‡å­—åˆ—ã«ã€!!ã€ã‚’ä»˜å±ã™ã‚‹ã¨trueãŒè¿”ã•ã‚Œã‚‹
     check(true , value==!!"true"    ,"v01-04");
     check(true , !!value==!!"true"  ,"v01-05");
-    //«booleanŒ^‘¤‚Éw!!x‚ğ•t‘®‚³‚¹‚Ä‚àNG
+    //â†“booleanå‹å´ã«ã€!!ã€ã‚’ä»˜å±ã•ã›ã¦ã‚‚NG
     check(false, !!value=="true"    ,"v01-06");
     check(true , !!value==true      ,"v01-06-02");
 
     check(false, value==false       ,"v01-07");
     check(false, value=="false"     ,"v01-08");
     check(false, value+""=="false"  ,"v01-09");
-    //«•¶š—ñ‚Éw!!x‚ğ•t‘®‚·‚é‚Ætrue‚ª•Ô‚³‚ê‚é‚Ì‚Å
-    //  ”»’è‚Í‚Å‚«‚È‚¢
+    //â†“æ–‡å­—åˆ—ã«ã€!!ã€ã‚’ä»˜å±ã™ã‚‹ã¨trueãŒè¿”ã•ã‚Œã‚‹ã®ã§
+    //  åˆ¤å®šã¯ã§ããªã„
     check(true , value==!!"false"   ,"v01-10");
     check(true , !!value==!!"false" ,"v01-11");
     check(false, !!value=="false"   ,"v01-12");
@@ -91,53 +97,65 @@ function test_equalOperator() {
     check(false, !!value==true      ,"v02-06-02");
 
     check(true , value==false       ,"v02-07");
-    //«booleanŒ^‚ÆstringŒ^‚Í”äŠrˆê’v•s‰Â”\
+    //â†“booleanå‹ã¨stringå‹ã¯æ¯”è¼ƒä¸€è‡´ä¸å¯èƒ½
     check(false, value=="false"     ,"v02-08");
-    //«w+""x‚ğ•t‘®‚µ‚Ä•¶š—ñ‰»‚·‚ê‚Îˆê’vŠm”FOK
+    //â†“ã€+""ã€ã‚’ä»˜å±ã—ã¦æ–‡å­—åˆ—åŒ–ã™ã‚Œã°ä¸€è‡´ç¢ºèªOK
     check(true , value+""=="false"  ,"v02-09");
-    //«•¶š—ñ‚Éw!!x‚ğ•t‘®‚·‚é‚Ætrue‚ª•Ô‚³‚ê‚é‚Ì‚Å
-    //  ”»’è‚Í‚Å‚«‚È‚¢
+    //â†“æ–‡å­—åˆ—ã«ã€!!ã€ã‚’ä»˜å±ã™ã‚‹ã¨trueãŒè¿”ã•ã‚Œã‚‹ã®ã§
+    //  åˆ¤å®šã¯ã§ããªã„
     check(false, value==!!"false"   ,"v02-10");
     check(false, !!value==!!"false" ,"v02-11");
     check(false, !!value=="false"   ,"v02-12");
     check(true , !!value==false     ,"v02-13");
 
-    //‚Æ‚¢‚¤‚í‚¯‚Å
-    //false‚Ìê‡‚Í[!!’l]‚Å‚Í”»’è‚Å‚«‚È‚¢‚Ì‚Å
-    //!!‚ÅƒLƒƒƒXƒg‚Å‚«‚é‚Æ‚¢‚¤‰\‚Í‰R
+    //ã¨ã„ã†ã‚ã‘ã§
+    //falseã®å ´åˆã¯[!!å€¤]ã§ã¯åˆ¤å®šã§ããªã„ã®ã§
+    //!!ã§ã‚­ãƒ£ã‚¹ãƒˆã§ãã‚‹ã¨ã„ã†å™‚ã¯å˜˜
 
     var s = "true"
     check(true , s=="true"          ,"V03-01");
-    //«booleanŒ^‚ÆstringŒ^‚Í”äŠrˆê’v•s‰Â”\
+    //â†“booleanå‹ã¨stringå‹ã¯æ¯”è¼ƒä¸€è‡´ä¸å¯èƒ½
     check(false, s==true            ,"V03-01");
-    //«•¶š—ñ‚Éw!!x‚ğ•t‘®‚·‚é‚Ætrue‚ª•Ô‚³‚ê‚é‚Ì‚Å
-    //  ‡‚Á‚Ä‚¢‚é‚æ‚¤‚É‚İ‚¦‚é‚ª
+    //â†“æ–‡å­—åˆ—ã«ã€!!ã€ã‚’ä»˜å±ã™ã‚‹ã¨trueãŒè¿”ã•ã‚Œã‚‹ã®ã§
+    //  åˆã£ã¦ã„ã‚‹ã‚ˆã†ã«ã¿ãˆã‚‹ãŒ
     check(true , !!s==true          ,"V03-02");
 
     check(false, s==false           ,"V03-03");
-    //«•¶š—ñ‚Éw!!x‚ğ•t‘®‚·‚é‚Ætrue‚ª•Ô‚³‚ê‚é‚Ì‚Å
-    //  ‡‚Á‚Ä‚¢‚é‚æ‚¤‚É‚İ‚¦‚é‚ª
+    //â†“æ–‡å­—åˆ—ã«ã€!!ã€ã‚’ä»˜å±ã™ã‚‹ã¨trueãŒè¿”ã•ã‚Œã‚‹ã®ã§
+    //  åˆã£ã¦ã„ã‚‹ã‚ˆã†ã«ã¿ãˆã‚‹ãŒ
     check(false, !!s==false         ,"V03-04");
 
     var s = "false"
     check(false, s=="true"          ,"V04-01");
     check(false, s==true            ,"V04-01");
-    //«•¶š—ñ‚Éw!!x‚ğ•t‘®‚·‚é‚Ætrue‚ª•Ô‚³‚ê‚é‚Ì‚Å
-    //  false‚Ìê‡‚Å‚àtrue‚Æ”»’è‚µ‚Ä‚µ‚Ü‚¤
+    //â†“æ–‡å­—åˆ—ã«ã€!!ã€ã‚’ä»˜å±ã™ã‚‹ã¨trueãŒè¿”ã•ã‚Œã‚‹ã®ã§
+    //  falseã®å ´åˆã§ã‚‚trueã¨åˆ¤å®šã—ã¦ã—ã¾ã†
     check(true , !!s==true          ,"V04-02");
 
     check(false, s==false           ,"V04-03");
-    //«•¶š—ñ‚Éw!!x‚ğ•t‘®‚·‚é‚Ætrue‚ª•Ô‚³‚ê‚é‚Ì‚Å
-    //  false‚Ìê‡‚Å‚àˆê’v‚µ‚È‚¢
+    //â†“æ–‡å­—åˆ—ã«ã€!!ã€ã‚’ä»˜å±ã™ã‚‹ã¨trueãŒè¿”ã•ã‚Œã‚‹ã®ã§
+    //  falseã®å ´åˆã§ã‚‚ä¸€è‡´ã—ãªã„
     check(false, !!s==false         ,"V04-04");
 };
 
 //----------------------------------------
-//ŸğŒ”»’f
+//â—†æ¡ä»¶åˆ¤æ–­
 //----------------------------------------
 
 //----------------------------------------
-//ECheckŠÖ”
+//ãƒ»Asserté–¢æ•°
+//----------------------------------------
+function assert(valueTrue, message) 
+{
+    if (isUndefined(message)) message = "";
+    if (!valueTrue) 
+    {
+        throw new Error("Error:" + message);
+    }
+};
+
+//----------------------------------------
+//ãƒ»Checké–¢æ•°
 //----------------------------------------
 function check(a, b, message) {
     var undefined;
@@ -162,7 +180,7 @@ function test_check() {
 }
 
 //----------------------------------------
-//isUndefined / isNull / isNullOrUndefined
+//â—‡isUndefined / isNull / isNullOrUndefined
 //----------------------------------------
 function isUndefined(value) 
 {
@@ -184,7 +202,7 @@ function isNull(value)
     return (value === null);
 }
 
-function test_isUndefined() 
+function test_isNull() 
 {
     var a1;
     check(false, isNull(a1), "01");
@@ -198,7 +216,7 @@ function test_isUndefined()
 
 function isNullOrUndefined(value) 
 {
-    return (idNull(value) || isUndefined(value));
+    return (isNull(value) || isUndefined(value));
 }
 
 function test_isNullOrUndefined() 
@@ -214,7 +232,7 @@ function test_isNullOrUndefined()
 }
 
 //----------------------------------------
-//ŸŒ^AŒ^•ÏŠ·
+//â—†å‹ã€å‹å¤‰æ›
 //----------------------------------------
 
 function isNumber(value)
@@ -234,19 +252,81 @@ function test_isNumber() {
     check(true, isNumber("12345"), "12345");
     check(true, isNumber("0"), "0");
     check(true, isNumber("1"), "1");
-    check(false, isNumber(""), "‹ó•¶š");
+    check(false, isNumber(""), "ç©ºæ–‡å­—");
     check(false, isNumber("a1"), "a1");
     check(false, isNumber(true), "true");
     check(false, isNumber(false), "false");
 }
 
+//----------------------------------------
+//â—†é…åˆ—å‡¦ç†
+//----------------------------------------
 
 //----------------------------------------
-//Ÿ•¶š—ñˆ—
+//ãƒ»é…åˆ—ã®å€¤ã§æ¯”è¼ƒã™ã‚‹é–¢æ•°
+//----------------------------------------
+
+function arrayEqualArray(value1, value2) 
+{
+    assert(Array.isArray(value1));
+    assert(Array.isArray(value2));
+
+    return value1.toString() === value2.toString();
+};
+
+function test_arrayValueEqual() 
+{
+    var a1 = [1, 2, 3];
+    var a2 = [1, 2, 3];
+
+    check(false, a1 == a2);
+    check(false, a1 === a2);
+
+    check(true, arrayEqualArray(a1, a2));
+};
+
+//----------------------------------------
+//ãƒ»é…åˆ—ã®å€¤ã§æ¯”è¼ƒã—ã¦å‡ºåŠ›ã™ã‚‹indexOf
+//----------------------------------------
+function arrayIndexOfArray(arrayList, arrayValue) 
+{
+    assert(Array.isArray(arrayList));
+    assert(Array.isArray(arrayValue));
+
+    for (var i = 0; i <= arrayList.length - 1; i++)
+    {
+        if (arrayEqualArray(arrayList[i], arrayValue))
+        {
+            return i;
+        }
+    }
+    return -1;
+};
+
+function test_arrayIndexOfArray() 
+{
+    var arrayList = [];
+    arrayList.push([1,1,1]);
+    arrayList.push([2,2,2]);
+    arrayList.push([3,3,3]);
+
+    var a1 = [1, 2, 3];
+    check(-1, arrayIndexOfArray(arrayList, a1));
+
+    var a1 = [1, 1, 1];
+    check(0, arrayIndexOfArray(arrayList, a1));
+    var a1 = [2, 2, 2];
+    check(1, arrayIndexOfArray(arrayList, a1));
+    var a1 = [3, 3, 3];
+    check(2, arrayIndexOfArray(arrayList, a1));
+};
+
+//----------------------------------------
+//â—†æ–‡å­—åˆ—å‡¦ç†
 //----------------------------------------
 
 //----------------------------------------
-//EIsIncludeStr
+//ãƒ»IsIncludeStr
 //----------------------------------------
 function isIncludeStr(str, subStr)
 {
@@ -254,7 +334,7 @@ function isIncludeStr(str, subStr)
 }
 
 //----------------------------------------
-//E’l‚ª‹ó•¶š‚Ìê‡‚¾‚¯•Ê‚Ì’l‚ğ•Ô‚·ŠÖ”
+//ãƒ»å€¤ãŒç©ºæ–‡å­—ã®å ´åˆã ã‘åˆ¥ã®å€¤ã‚’è¿”ã™é–¢æ•°
 //----------------------------------------
 function ifEmptyStr(value , EmptyStrCaseValue) {
     var result = ""
@@ -267,7 +347,7 @@ function ifEmptyStr(value , EmptyStrCaseValue) {
 }
 
 //----------------------------------------
-//EStrCount
+//ãƒ»StrCount
 //----------------------------------------
 function strCount(str, subStr) {
     var result = 0;
@@ -292,11 +372,11 @@ function test_strCount() {
 }
 
 //----------------------------------------
-//First / Last
+//â—‡First / Last
 //----------------------------------------
 
 //----------------------------------------
-//EFirstStr
+//ãƒ»FirstStr
 //----------------------------------------
 function isFirstStr(str , subStr) {
     if (subStr === "") return false;
@@ -351,9 +431,9 @@ function test_excludeFirstStr() {
 }
 
 //----------------------------------------
-//EFirstText
+//ãƒ»FirstText
 //----------------------------------------
-//   E  ‘å¬•¶š‚ğ‹æ•Ê‚¹‚¸‚É”äŠr‚·‚é
+//   ãƒ»  å¤§å°æ–‡å­—ã‚’åŒºåˆ¥ã›ãšã«æ¯”è¼ƒã™ã‚‹
 //----------------------------------------
 function isFirstText(str , subStr) {
     return isFirstStr(str.toLowerCase(), subStr.toLowerCase())
@@ -376,7 +456,7 @@ function excludeFirstText(str, subStr) {
 }
 
 //----------------------------------------
-//ELastStr
+//ãƒ»LastStr
 //----------------------------------------
 function isLastStr(str, subStr) {
     if (subStr === "") return false;
@@ -431,9 +511,9 @@ function test_excludeLastStr() {
 }
 
 //----------------------------------------
-//ELastText
+//ãƒ»LastText
 //----------------------------------------
-//   E  ‘å¬•¶š‚ğ‹æ•Ê‚¹‚¸‚É”äŠr‚·‚é
+//   ãƒ»  å¤§å°æ–‡å­—ã‚’åŒºåˆ¥ã›ãšã«æ¯”è¼ƒã™ã‚‹
 //----------------------------------------
 function isLastText(str, subStr) {
     return isLastStr(str.toLowerCase(), subStr.toLowerCase());
@@ -456,7 +536,7 @@ function excludeLastText(str, subStr) {
 }
 
 //----------------------------------------
-//EBothStr
+//ãƒ»BothStr
 //----------------------------------------
 function includeBothEndsStr(str, subStr) {
     return includeFirstStr(includeLastStr(str, subStr), subStr);
@@ -467,9 +547,9 @@ function excludeBothEndsStr(str, subStr) {
 }
 
 //----------------------------------------
-//EBothText
+//ãƒ»BothText
 //----------------------------------------
-//   E  ‘å¬•¶š‚ğ‹æ•Ê‚¹‚¸‚É”äŠr‚·‚é
+//   ãƒ»  å¤§å°æ–‡å­—ã‚’åŒºåˆ¥ã›ãšã«æ¯”è¼ƒã™ã‚‹
 //----------------------------------------
 function includeBothEndsText(str, subStr) {
     return includeFirstText(includeLastText(str, subStr), subStr);
@@ -480,7 +560,7 @@ function ExcludeBothEndsText(str, subStr) {
 }
 
 //----------------------------------------
-//First / Last Delim
+//â—‡First / Last Delim
 //----------------------------------------
 
 //--------------------------------------
@@ -510,7 +590,7 @@ function test_firstStrFirstDelim() {
 }
 
 //----------------------------------------
-//EFirstStrLastDelim
+//ãƒ»FirstStrLastDelim
 //----------------------------------------
 function firstStrLastDelim(value, delimiter) {
     var result = "";
@@ -535,7 +615,7 @@ function test_firstStrLastDelim() {
 }
 
 //---------------------------------------s-
-//ELastStrFirstDelim
+//ãƒ»LastStrFirstDelim
 //----------------------------------------
 function lastStrFirstDelim(value, delimiter) {
     var result = "";
@@ -560,7 +640,7 @@ function test_lastStrFirstDelim() {
 }
 
 //----------------------------------------
-//ELastStrLastDelim
+//ãƒ»LastStrLastDelim
 //----------------------------------------
 function lastStrLastDelim(value, delimiter) {
     var result = "";
@@ -585,11 +665,11 @@ function test_lastStrLastDelim() {
 }
 
 //--------------------------------------
-//Tagˆ—
+//Tagå‡¦ç†
 //--------------------------------------
 
 //----------------------------------------
-//Eƒ^ƒO‚Ì“à•”•¶š—ñ
+//ãƒ»ã‚¿ã‚°ã®å†…éƒ¨æ–‡å­—åˆ—
 //----------------------------------------
 function tagInnerText(text, startTag, endTag) {
 
@@ -615,7 +695,7 @@ function test_tagInnerText() {
 }
 
 //----------------------------------------
-//Eƒ^ƒO‚ğŠÜ‚ñ‚¾“à•”•¶š—ñ
+//ãƒ»ã‚¿ã‚°ã‚’å«ã‚“ã å†…éƒ¨æ–‡å­—åˆ—
 //----------------------------------------
 function tagOuterText(text, startTag, endTag) {
 
@@ -642,7 +722,7 @@ function test_tagOuterText() {
 }
 
 //--------------------------------------
-//Trim
+//â—‡Trim
 //--------------------------------------
 function trimFirstStrs(str, trimStrArray) {
 //    Call Assert(IsArray(trimStrs), "Error:trimFirstStrs:trimStrs is not Array.")
@@ -685,9 +765,9 @@ function trimBothEndsStrs(str, trimStrArray) {
 }
 
 //----------------------------------------
-//EreplaceAll
+//ãƒ»replaceAll
 //----------------------------------------
-//  E  •¶š—ñ‚ÌŒJ‚è•Ô‚µ’uŠ·
+//  ãƒ»  æ–‡å­—åˆ—ã®ç¹°ã‚Šè¿”ã—ç½®æ›
 //----------------------------------------
 function replaceAll(strBuffer, strBefore, strAfter) {
     var result = strBuffer
@@ -703,7 +783,7 @@ function test_replaceAll() {
 	check("ABBBBBBBA", replaceAll("AAAAAAABBBBBBBAAAAAAA", "AA", "A"));
 }
 
-//•¶š—ñ‚ğŒã•û‚©‚ç•¶š”w’è‚Åæ“¾‚·‚é
+//æ–‡å­—åˆ—ã‚’å¾Œæ–¹ã‹ã‚‰æ–‡å­—æ•°æŒ‡å®šã§å–å¾—ã™ã‚‹
 function lastStringCount(value, count) {
     return value.substr(value.length - count, count)
 }
@@ -722,7 +802,7 @@ function format_hh_mm_dd(value, delimiter){
     //return "123";
 }
 
-//”N—î
+//å¹´é½¢
 function getAgeYearMonthDay(todayDate, birthDate) {
 
     var birthYear = birthDate.getFullYear();
@@ -732,9 +812,9 @@ function getAgeYearMonthDay(todayDate, birthDate) {
     var todayMonth = todayDate.getMonth() + 1;
     var todayDay = todayDate.getDate();
 
-    //”N—îŒvZ
+    //å¹´é½¢è¨ˆç®—
     var diffYear = todayYear - birthYear;
-    //‰ß‹‚Æ“¯ˆê“ú‚ğ‰ß‚¬‚Ä‚¢‚È‚¯‚ê‚Î‚Pˆø‚­
+    //éå»ã¨åŒä¸€æ—¥ã‚’éãã¦ã„ãªã‘ã‚Œã°ï¼‘å¼•ã
     if (todayMonth < birthMonth) {
         diffYear = diffYear - 1;
     } else {
@@ -742,16 +822,16 @@ function getAgeYearMonthDay(todayDate, birthDate) {
             diffYear = diffYear - 1;
         }
     }
-    //”N—î‚ÌŒŒvZ
+    //å¹´é½¢ã®æœˆè¨ˆç®—
     var diffMonth = ((todayYear * 12) + todayMonth) 
         - ((birthYear * 12) + birthMonth);
     if (todayDay < birthDay) {
         diffMonth = diffMonth - 1;
     };
-    //”N—î‚Ì“úŒvZ
+    //å¹´é½¢ã®æ—¥è¨ˆç®—
     var diffDay = todayDate.getDate() - birthDate.getDate();
     if (diffDay < 0) {
-        //‘OŒ‚Ì‰ß‹“ú‚Æ“¯ˆê“ú‚©‚ç‚ÌŒo‰ß“ú”‚ğŒvZ‚µ‚Ä‚¢‚é
+        //å‰æœˆã®éå»æ—¥ã¨åŒä¸€æ—¥ã‹ã‚‰ã®çµŒéæ—¥æ•°ã‚’è¨ˆç®—ã—ã¦ã„ã‚‹
         diffDay = 
             getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
             - birthDate.getDate() 
@@ -762,7 +842,7 @@ function getAgeYearMonthDay(todayDate, birthDate) {
             "day": diffDay};
 }
 
-//”N—î
+//å¹´é½¢
 function getAgeMonthDay(todayDate, birthDate) {
 
     var birthYear = birthDate.getFullYear();
@@ -772,16 +852,16 @@ function getAgeMonthDay(todayDate, birthDate) {
     var todayMonth = todayDate.getMonth() + 1;
     var todayDay = todayDate.getDate();
 
-    //”N—î‚ÌŒŒvZ
+    //å¹´é½¢ã®æœˆè¨ˆç®—
     var diffMonth = ((todayYear * 12) + todayMonth) 
         - ((birthYear * 12) + birthMonth);
     if (todayDay < birthDay) {
         diffMonth = diffMonth - 1;
     };
-    //”N—î‚Ì“úŒvZ
+    //å¹´é½¢ã®æ—¥è¨ˆç®—
     var diffDay = todayDate.getDate() - birthDate.getDate();
     if (diffDay < 0) {
-        //‘OŒ‚Ì‰ß‹“ú‚Æ“¯ˆê“ú‚©‚ç‚ÌŒo‰ß“ú”‚ğŒvZ‚µ‚Ä‚¢‚é
+        //å‰æœˆã®éå»æ—¥ã¨åŒä¸€æ—¥ã‹ã‚‰ã®çµŒéæ—¥æ•°ã‚’è¨ˆç®—ã—ã¦ã„ã‚‹
         diffDay = 
             getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
             - birthDate.getDate() 
@@ -800,7 +880,7 @@ function getAgeDay(todayDate, birthDate) {
     var todayMonth = todayDate.getMonth() + 1;
     var todayDay = todayDate.getDate();
 
-    //”N—î‚Ì“úŒvZ
+    //å¹´é½¢ã®æ—¥è¨ˆç®—
     var date1 = new Date(birthYear, birthMonth - 1, birthDay);
     var date2 = new Date(todayYear, todayMonth - 1, todayDay);
 
@@ -834,15 +914,15 @@ function secondsCount(todayDate, birthDate) {
 }
 
 /*  --------------
-”NŒ‚ğw’è‚µ‚ÄŒ––“ú‚ğ‹‚ß‚éŠÖ”
-ˆø”F  year ”N
-        month Œ
-”õlF  w’èŒ‚Ì—‚Œ‚Ì0“ú‚ğæ“¾‚µ‚Ä––“ú‚ğ‹‚ß‚é
-        month‚É11(Œ)‚ğw’è‚·‚é‚Æ
-        Date‚Í0`11‚ÅŒ‚ğ•\‚·‚½‚ßDate(year, 11, 0)‚Í
-        12Œ‚Ì0“ú‚ğ•\‚·‚Ì‚Å11Œ––“ú‚ğ¦‚·‚±‚Æ‚É‚È‚é
-QlF
-    JavaScript ‚É‚æ‚é“ú•tEEŠÔ‚ÌŒvZE‰‰Z‚Ì‚Ü‚Æ‚ß - hoge256ƒuƒƒO
+å¹´æœˆã‚’æŒ‡å®šã—ã¦æœˆæœ«æ—¥ã‚’æ±‚ã‚ã‚‹é–¢æ•°
+å¼•æ•°ï¼š  year å¹´
+        month æœˆ
+å‚™è€ƒï¼š  æŒ‡å®šæœˆã®ç¿Œæœˆã®0æ—¥ã‚’å–å¾—ã—ã¦æœ«æ—¥ã‚’æ±‚ã‚ã‚‹
+        monthã«11(æœˆ)ã‚’æŒ‡å®šã™ã‚‹ã¨
+        Dateã¯0ï½11ã§æœˆã‚’è¡¨ã™ãŸã‚Date(year, 11, 0)ã¯
+        12æœˆã®0æ—¥ã‚’è¡¨ã™ã®ã§11æœˆæœ«æ—¥ã‚’ç¤ºã™ã“ã¨ã«ãªã‚‹
+å‚è€ƒï¼š
+    JavaScript ã«ã‚ˆã‚‹æ—¥ä»˜ãƒ»æ™‚åˆ»ãƒ»æ™‚é–“ã®è¨ˆç®—ãƒ»æ¼”ç®—ã®ã¾ã¨ã‚ - hoge256ãƒ–ãƒ­ã‚°
     http://www.hoge256.net/2007/08/64.html
 --------------  */
 function getMonthEndDay(year, month) {
@@ -851,12 +931,12 @@ function getMonthEndDay(year, month) {
 }
 
 /*----------------------------------------
-    ”z—ñ‚Æ•¶š—ñ‚Ì‘ŠŒİ•ÏŠ·
-‹@”\F	
-”õlF	
-—š—ğF	
-2014/07/16(…)
-E	
+    é…åˆ—ã¨æ–‡å­—åˆ—ã®ç›¸äº’å¤‰æ›
+æ©Ÿèƒ½ï¼š	
+å‚™è€ƒï¼š	
+å±¥æ­´ï¼š	
+2014/07/16(æ°´)
+ãƒ»	
 */ //*-----------------------------------
 function arrayToString(arrayValue, delimiter) {
     var undefined;
@@ -892,7 +972,7 @@ function test_stringToArray(){
 //----------------------------------------*/
 
 //----------------------------------------
-//Ÿƒtƒ@ƒCƒ‹ƒtƒHƒ‹ƒ_ƒpƒXˆ—
+//â—†ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹å‡¦ç†
 //----------------------------------------
 function getFileName(fileName) {
     return fileName.substring(fileName.lastIndexOf("/")+1,fileName.length);
@@ -902,7 +982,7 @@ function test_getFileName() {
 }
 
 //----------------------------------------
-//EI’[‚ÉƒpƒX‹æØ‚è‚ğ’Ç‰Á‚·‚éŠÖ”
+//ãƒ»çµ‚ç«¯ã«ãƒ‘ã‚¹åŒºåˆ‡ã‚Šã‚’è¿½åŠ ã™ã‚‹é–¢æ•°
 //----------------------------------------
 function includeLastPathDelim(path) {
     var result = "";
@@ -913,7 +993,7 @@ function includeLastPathDelim(path) {
 }
 
 //----------------------------------------
-//EƒsƒŠƒIƒh‚ğŠÜ‚ñ‚¾Šg’£q‚ğæ“¾‚·‚é
+//ãƒ»ãƒ”ãƒªã‚ªãƒ‰ã‚’å«ã‚“ã æ‹¡å¼µå­ã‚’å–å¾—ã™ã‚‹
 //----------------------------------------
 function getExtensionIncludePeriod(path) {
     var result = "";
@@ -927,18 +1007,18 @@ function getExtensionIncludePeriod(path) {
 }
 
 //----------------------------------------
-//ŸƒVƒXƒeƒ€
+//â—†ã‚·ã‚¹ãƒ†ãƒ 
 //----------------------------------------
 
 //----------------------------------------
-//Eƒtƒ@ƒCƒ‹w’è‚µ‚½ƒVƒFƒ‹‹N“®
+//ãƒ»ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šã—ãŸã‚·ã‚§ãƒ«èµ·å‹•
 //----------------------------------------
-//Const vbHide = 0             'ƒEƒBƒ“ƒhƒE”ñ•\¦
-//Const vbNormalFocus = 1      '’Êí•\¦‹N“®
-//Const vbMinimizedFocus = 2   'Å¬‰»‹N“®
-//Const vbMaximizedFocus = 3   'Å‘å‰»‹N“®
-//Const vbNormalNoFocus = 4    '’Êí•\¦‹N“®AƒtƒH[ƒJƒX‚È‚µ
-//Const vbMinimizedNoFocus = 6 'Å¬‰»‹N“®AƒtƒH[ƒJƒX‚È‚µ
+//Const vbHide = 0             'ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦éè¡¨ç¤º
+//Const vbNormalFocus = 1      'é€šå¸¸è¡¨ç¤ºèµ·å‹•
+//Const vbMinimizedFocus = 2   'æœ€å°åŒ–èµ·å‹•
+//Const vbMaximizedFocus = 3   'æœ€å¤§åŒ–èµ·å‹•
+//Const vbNormalNoFocus = 4    'é€šå¸¸è¡¨ç¤ºèµ·å‹•ã€ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ãªã—
+//Const vbMinimizedNoFocus = 6 'æœ€å°åŒ–èµ·å‹•ã€ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ãªã—
 
 function shellFileOpen(FilePath, Focus) {
     //assert(OrValue(Focus, Array(0, 1, 2, 3, 4, 6)), "Error:ShellFileOpen")
@@ -947,13 +1027,13 @@ function shellFileOpen(FilePath, Focus) {
         "rundll32.exe url.dll" + 
         ",FileProtocolHandler " + FilePath 
         , Focus, false)
-    //ƒtƒ@ƒCƒ‹‹N“®‚Ìê‡
-    //‘æOˆø”‚ÌWait‚Ítrue‚É‚µ‚Ä‚à–³‹‚³‚ê‚é—lq
+    //ãƒ•ã‚¡ã‚¤ãƒ«èµ·å‹•ã®å ´åˆ
+    //ç¬¬ä¸‰å¼•æ•°ã®Waitã¯trueã«ã—ã¦ã‚‚ç„¡è¦–ã•ã‚Œã‚‹æ§˜å­
 }
 
 /*----------------------------------------
-  ver 2014/07/18
-E  ì¬
+â—‡  ver 2014/07/18
+ãƒ»  ä½œæˆ
     lastStringCount
     format_yyyy_mm_dd
     format_hh_mm_dd(
@@ -970,12 +1050,12 @@ function shellFileOpen(FilePath, Focus) {
     stringToArray
     decodeURIComponentStringToArray
     getFileName
-  ver 2015/07/02
+â—‡  ver 2015/07/02
     replaceAll
-  ver 2015/07/31
-E  firstStrFirstDelim/lastStrFirstDelim ’Ç‰Á
-  ver 2015/08/02
-E  ’Ç‰Á
+â—‡  ver 2015/07/31
+ãƒ»  firstStrFirstDelim/lastStrFirstDelim è¿½åŠ 
+â—‡  ver 2015/08/02
+ãƒ»  è¿½åŠ 
     isFirstStr
     includeFirstStr
     excludeFirstStr
@@ -997,29 +1077,31 @@ function shellFileOpen(FilePath, Focus) {
     trimBothEndsStrs
     strCount
     shellFileOpen
-  ver 2015/08/12
-E  ’Ç‰Á
-    WshShell‚ğ’è‹`
-  ver 2015/08/13
-E  ’Ç‰Á
+â—‡  ver 2015/08/12
+ãƒ»  è¿½åŠ 
+    WshShellã‚’å®šç¾©
+â—‡  ver 2015/08/13
+ãƒ»  è¿½åŠ 
     firstStrLastDelim/lastStrLastDelim
-  ver 2017/03/12
-E  C³
+â—‡  ver 2017/03/12
+ãƒ»  ä¿®æ­£
     firstStrFirstDelim/lastStrFirstDelim
     firstStrLastDelim/lastStrLastDelim
-E  ’Ç‰Á
+ãƒ»  è¿½åŠ 
     tagInnerText/tagOuterText
-  ver 2017/03/16
-E  isIncludeStr ’Ç‰Á
-E  st_gas_gs.js ’Ç‰Á
-  ver 2017/03/17
-E  isNumber ’Ç‰Á
-  ver 2017/04/13
-E  getExtensionIncludePeriod ’Ç‰Á
-  ver 2017/04/17
-E  isUndefined/isNull/isNullOrUndefined ’Ç‰Á
-E  st.js‚©‚çstsLib.js‚ÉƒvƒƒWƒFƒNƒg–¼•ÏX
-    ƒtƒ@ƒCƒ‹–¼‚àst.js‚©‚çstslib_core.js‚É•ÏX
-E  test_equalOperator stslib_test_web.html‚©‚ç
-    stslib_core.js‚ÉˆÚ“®
+â—‡  ver 2017/03/16
+ãƒ»  isIncludeStr è¿½åŠ 
+ãƒ»  st_gas_gs.js è¿½åŠ 
+â—‡  ver 2017/03/17
+ãƒ»  isNumber è¿½åŠ 
+â—‡  ver 2017/04/13
+ãƒ»  getExtensionIncludePeriod è¿½åŠ 
+â—‡  ver 2017/04/17
+ãƒ»  isUndefined/isNull/isNullOrUndefined è¿½åŠ 
+ãƒ»  st.jsã‹ã‚‰stsLib.jsã«ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆåå¤‰æ›´
+    ãƒ•ã‚¡ã‚¤ãƒ«åã‚‚st.jsã‹ã‚‰stslib_core.jsã«å¤‰æ›´
+ãƒ»  test_equalOperator stslib_test_web.htmlã‹ã‚‰
+    stslib_core.jsã«ç§»å‹•
+ãƒ»  assert è¿½åŠ 
+ãƒ»  arrayEqualArray/arrayIndexOfArray è¿½åŠ 
 //----------------------------------------*/
