@@ -86,6 +86,28 @@ function decodeURIComponentStringToArray(value) {
     return resultArray;
 }
 
+//----------------------------------------
+//◆URLパラメータの受取
+//----------------------------------------
+function getUrlParameter() {
+    var arg = new Object;
+    var pair=location.search.substring(1).split('&');
+    for(var i=0;pair[i];i++) {
+        var kv = pair[i].split('=');
+        arg[kv[0]]=kv[1];
+    }
+    return arg;
+}
+
+function test_getUrlParameter() {
+    //….html?a=1&b=2
+    //というアドレスで受け取ると次のように動作する
+    var arg = getUrlParameter();
+    check("1", arg.a);
+    check("2", arg.b);
+}
+
+
 /*----------------------------------------
 ◇  ver 2014/07/18
 ・  作成
@@ -101,4 +123,6 @@ function decodeURIComponentStringToArray(value) {
 ・  タイトルヘッダーがなかったので追加
 ◇  ver 2017/04/17
 ・  ファイル名変更
+◇	ver 2017/04/18
+・	getUrlParameter追加
 //----------------------------------------*/
