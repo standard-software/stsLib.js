@@ -10,7 +10,7 @@ All Right Reserved:
 	Name:       Standard Software
 	URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/04/17
+Version:        2017/04/19
 //----------------------------------------*/
 
 //----------------------------------------
@@ -54,6 +54,8 @@ function test() {
 	test_arrayIndexOfArray();
 
 	test_TagDelete();
+	test_deleteTagInnerText();
+	test_deleteTagOutterText();
 
 //    assert(false, "test");
 
@@ -837,6 +839,53 @@ function endTagDelete(value, tag) {
 
 function test_TagDelete() {
 	check("abcdefghi", startTagDelete(endTagDelete("abc<def>ghi", ">"), "<"));
+	check("abc><def><ghi", startTagDelete(endTagDelete("a<bc><def><gh>i", ">"), "<"));
+	check("abcdefghi", startTagDelete(endTagDelete("abc>def<ghi", ">"), "<"));
+	check("abc>def<ghi", startTagDelete(endTagDelete("a<bc>def<gh>i", ">"), "<"));
+}
+
+function deleteTagInnerText(text, startTag, endTag) {
+	assert((!isNullOrUndefined(text)) );
+	assert((!isNullOrUndefined(startTag)) && (startTag !=='') );
+	assert((!isNullOrUndefined(endTag)) && (endTag !=='') );
+	if (text === '') { return ''; }
+
+	var indexStartTag = text.indexOf(startTag);
+	var indexEndTag = text.indexOf(endTag);
+	if ((indexStartTag !== -1) 
+	&& (indexEndTag !== -1)
+	&& (indexStartTag < indexEndTag)) {
+		text = 
+			firstStrFirstDelim(text, startTag) + startTag + 
+			endTag + lastStrFirstDelim(text, endTag) 
+	}
+	return text;
+}
+
+function test_deleteTagInnerText() {
+	check('abc<>ghi', deleteTagInnerText('abc<def>ghi', '<', '>'));
+}
+
+function deleteTagOutterText(text, startTag, endTag) {
+	assert((!isNullOrUndefined(text)) );
+	assert((!isNullOrUndefined(startTag)) && (startTag !=='') );
+	assert((!isNullOrUndefined(endTag)) && (endTag !=='') );
+	if (text === '') { return ''; }
+
+	var indexStartTag = text.indexOf(startTag);
+	var indexEndTag = text.indexOf(endTag);
+	if ((indexStartTag !== -1) 
+	&& (indexEndTag !== -1)
+	&& (indexStartTag < indexEndTag)) {
+		text = 
+			firstStrFirstDelim(text, startTag) +  
+			lastStrFirstDelim(text, endTag) 
+	}
+	return text;
+}
+
+function test_deleteTagOutterText() {
+	check('abcghi', deleteTagOutterText('abc<def>ghi', '<', '>'));
 }
 
 //----------------------------------------
@@ -1124,4 +1173,6 @@ function shellFileOpen(FilePath, Focus) {
 ・  arrayEqualArray/arrayIndexOfArray 追加
 ◇	ver 2017/04/18
 ・	startTagDelete/endTagDelete 追加
+◇	ver 2017/04/19
+・	deleteTagInnerText/deleteTagOutterText 追加
 //----------------------------------------*/
