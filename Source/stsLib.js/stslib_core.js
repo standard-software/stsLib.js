@@ -755,7 +755,6 @@ function test_tagOuterText() {
 //◇Trim
 //--------------------------------------
 function trimFirstStrs(str, trimStrArray) {
-//    Call Assert(IsArray(trimStrs), "Error:trimFirstStrs:trimStrs is not Array.")
 	var result = str
 	do {
 		str = result;
@@ -773,7 +772,6 @@ function test_trimFirstStrs() {
 }
 
 function trimLastStrs(str, trimStrArray) {
-//    Call Assert(IsArray(trimStrs), "Error:trimLastStrs:trimStrs is not Array.")
 	var result = str
 	do {
 		str = result;
@@ -1101,61 +1099,61 @@ function shellFileOpen(FilePath, Focus) {
 /*----------------------------------------
 ◇  ver 2014/07/18
 ・  作成
-	lastStringCount
-	format_yyyy_mm_dd
-	format_hh_mm_dd(
-	getAgeYearMonthDay
-	getAgeMonthDay
-	getAgeDay
-	dayCount
-	hoursCount
-	minutesCount
-	secondsCount
-	getMonthEndDay
-	arrayToString
-	encodeURIComponentArrayToString
-	stringToArray
-	decodeURIComponentStringToArray
-	getFileName
+    lastStringCount
+    format_yyyy_mm_dd
+    format_hh_mm_dd(
+    getAgeYearMonthDay
+    getAgeMonthDay
+    getAgeDay
+    dayCount
+    hoursCount
+    minutesCount
+    secondsCount
+    getMonthEndDay
+    arrayToString
+    encodeURIComponentArrayToString
+    stringToArray
+    decodeURIComponentStringToArray
+    getFileName
 ◇  ver 2015/07/02
-	replaceAll
+    replaceAll
 ◇  ver 2015/07/31
 ・  firstStrFirstDelim/lastStrFirstDelim 追加
 ◇  ver 2015/08/02
 ・  追加
-	isFirstStr
-	includeFirstStr
-	excludeFirstStr
-	isFirstText
-	includeFirstText
-	excludeFirstText
-	isLastStr
-	includeLastStr
-	excludeLastStr
-	isLastText
-	includeLastText
-	excludeLastText
-	includeBothEndsStr
-	excludeBothEndsStr
-	includeBothEndsText
-	ExcludeBothEndsText
-	trimFirstStrs
-	trimLastStrs
-	trimBothEndsStrs
-	strCount
-	shellFileOpen
+    isFirstStr
+    includeFirstStr
+    excludeFirstStr
+    isFirstText
+    includeFirstText
+    excludeFirstText
+    isLastStr
+    includeLastStr
+    excludeLastStr
+    isLastText
+    includeLastText
+    excludeLastText
+    includeBothEndsStr
+    excludeBothEndsStr
+    includeBothEndsText
+    ExcludeBothEndsText
+    trimFirstStrs
+    trimLastStrs
+    trimBothEndsStrs
+    strCount
+    shellFileOpen
 ◇  ver 2015/08/12
 ・  追加
-	WshShellを定義
+    WshShellを定義
 ◇  ver 2015/08/13
 ・  追加
-	firstStrLastDelim/lastStrLastDelim
+    firstStrLastDelim/lastStrLastDelim
 ◇  ver 2017/03/12
 ・  修正
-	firstStrFirstDelim/lastStrFirstDelim
-	firstStrLastDelim/lastStrLastDelim
+    firstStrFirstDelim/lastStrFirstDelim
+    firstStrLastDelim/lastStrLastDelim
 ・  追加
-	tagInnerText/tagOuterText
+    tagInnerText/tagOuterText
 ◇  ver 2017/03/16
 ・  isIncludeStr 追加
 ・  st_gas_gs.js 追加
@@ -1166,13 +1164,13 @@ function shellFileOpen(FilePath, Focus) {
 ◇  ver 2017/04/17
 ・  isUndefined/isNull/isNullOrUndefined 追加
 ・  st.jsからstsLib.jsにプロジェクト名変更
-	ファイル名もst.jsからstslib_core.jsに変更
+    ファイル名もst.jsからstslib_core.jsに変更
 ・  test_equalOperator stslib_test_web.htmlから
-	stslib_core.jsに移動
+    stslib_core.jsに移動
 ・  assert 追加
 ・  arrayEqualArray/arrayIndexOfArray 追加
-◇	ver 2017/04/18
-・	startTagDelete/endTagDelete 追加
-◇	ver 2017/04/19
-・	deleteTagInnerText/deleteTagOutterText 追加
+◇  ver 2017/04/18
+・  startTagDelete/endTagDelete 追加
+◇  ver 2017/04/19
+・  deleteTagInnerText/deleteTagOutterText 追加
 //----------------------------------------*/
