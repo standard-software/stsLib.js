@@ -10,7 +10,7 @@ All Right Reserved:
 	Name:       Standard Software
 	URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/04/19
+Version:        2017/04/20
 //----------------------------------------*/
 
 //----------------------------------------
@@ -56,6 +56,9 @@ function test() {
 	test_TagDelete();
 	test_deleteTagInnerText();
 	test_deleteTagOutterText();
+
+	test_angleRelative();
+	test_degreeToRadian();
 
 //    assert(false, "test");
 
@@ -249,6 +252,67 @@ function test_isNumber() {
 	check(false, isNumber("a1"), "a1");
 	check(false, isNumber(true), "true");
 	check(false, isNumber(false), "false");
+}
+
+//----------------------------------------
+//◆数値
+//----------------------------------------
+
+//----------------------------------------
+//◆角度
+//----------------------------------------
+
+//----------------------------------------
+//・ラジアンと角度相互変換
+//----------------------------------------
+function degreeToRadian(value) {
+	return value * Math.PI / 180;
+}
+
+function radianToDegree(value) {
+	return value * 180 / Math.PI;
+}
+
+function test_degreeToRadian() {
+	check(0, degreeToRadian(0));
+	check(Math.PI / 6, degreeToRadian(30));
+	check(0, radianToDegree(0));
+	check(30, Math.round(radianToDegree(Math.PI / 6)));
+}
+
+
+//----------------------------------------
+//・絶対角度から相対角度を求める
+//----------------------------------------
+//	・	base と target は角度の絶対座標で
+//		0度から360度とする。
+//		それ以上それ以下でも0-360に丸め込まれる
+//	・	戻り値は -180～+180 になる
+//----------------------------------------
+function angleRelative(base, target) {
+	base = base % 360;
+	target = target % 360;
+	var result = target - base;
+	//result は -360～+360になる
+	if (180 < result) {
+		result = result -360;
+	} else if (result < -180) {
+		result = result + 360;
+	}
+	return result;
+}
+
+function test_angleRelative() {
+	check(10, angleRelative(5, 15));
+	check(-10, angleRelative(15, 5));
+
+	check(90, angleRelative(90, 180));
+	check(180, angleRelative(90, 270));
+	check(180, angleRelative(0, 180));
+
+	check(-179, angleRelative(0, 181));
+	check(179, angleRelative(181, 0));
+	check(-179, angleRelative(179, 0));
 }
 
 //----------------------------------------
@@ -1072,105 +1136,89 @@ function getExtensionIncludePeriod(path) {
 	return result;
 }
 
-//----------------------------------------
-//◆システム
-//----------------------------------------
 
-//----------------------------------------
-//・ファイル指定したシェル起動
-//----------------------------------------
-//Const vbHide = 0             'ウィンドウ非表示
-//Const vbNormalFocus = 1      '通常表示起動
-//Const vbMinimizedFocus = 2   '最小化起動
-//Const vbMaximizedFocus = 3   '最大化起動
-//Const vbNormalNoFocus = 4    '通常表示起動、フォーカスなし
-//Const vbMinimizedNoFocus = 6 '最小化起動、フォーカスなし
-
-function shellFileOpen(FilePath, Focus) {
-
-	WshShell.Run(
-		"rundll32.exe url.dll" +
-		",FileProtocolHandler " + FilePath
-		, Focus, false)
-	//ファイル起動の場合
-	//第三引数のWaitはtrueにしても無視される様子
-}
 
 /*----------------------------------------
-◇  ver 2014/07/18
-・  作成
-    lastStringCount
-    format_yyyy_mm_dd
-    format_hh_mm_dd(
-    getAgeYearMonthDay
-    getAgeMonthDay
-    getAgeDay
-    dayCount
-    hoursCount
-    minutesCount
-    secondsCount
-    getMonthEndDay
-    arrayToString
-    encodeURIComponentArrayToString
-    stringToArray
-    decodeURIComponentStringToArray
-    getFileName
-◇  ver 2015/07/02
-    replaceAll
-◇  ver 2015/07/31
-・  firstStrFirstDelim/lastStrFirstDelim 追加
-◇  ver 2015/08/02
-・  追加
-    isFirstStr
-    includeFirstStr
-    excludeFirstStr
-    isFirstText
-    includeFirstText
-    excludeFirstText
-    isLastStr
-    includeLastStr
-    excludeLastStr
-    isLastText
-    includeLastText
-    excludeLastText
-    includeBothEndsStr
-    excludeBothEndsStr
-    includeBothEndsText
-    ExcludeBothEndsText
-    trimFirstStrs
-    trimLastStrs
-    trimBothEndsStrs
-    strCount
-    shellFileOpen
-◇  ver 2015/08/12
-・  追加
-    WshShellを定義
-◇  ver 2015/08/13
-・  追加
-    firstStrLastDelim/lastStrLastDelim
-◇  ver 2017/03/12
-・  修正
-    firstStrFirstDelim/lastStrFirstDelim
-    firstStrLastDelim/lastStrLastDelim
-・  追加
-    tagInnerText/tagOuterText
-◇  ver 2017/03/16
-・  isIncludeStr 追加
-・  st_gas_gs.js 追加
-◇  ver 2017/03/17
-・  isNumber 追加
-◇  ver 2017/04/13
-・  getExtensionIncludePeriod 追加
-◇  ver 2017/04/17
-・  isUndefined/isNull/isNullOrUndefined 追加
-・  st.jsからstsLib.jsにプロジェクト名変更
-    ファイル名もst.jsからstslib_core.jsに変更
-・  test_equalOperator stslib_test_web.htmlから
-    stslib_core.jsに移動
-・  assert 追加
-・  arrayEqualArray/arrayIndexOfArray 追加
-◇  ver 2017/04/18
-・  startTagDelete/endTagDelete 追加
-◇  ver 2017/04/19
-・  deleteTagInnerText/deleteTagOutterText 追加
+◇	ver	2014/07/18
+・	作成
+	lastStringCount
+	format_yyyy_mm_dd
+	format_hh_mm_dd(
+	getAgeYearMonthDay
+	getAgeMonthDay
+	getAgeDay
+	dayCount
+	hoursCount
+	minutesCount
+	secondsCount
+	getMonthEndDay
+	arrayToString
+	encodeURIComponentArrayToString
+	stringToArray
+	decodeURIComponentStringToArray
+	getFileName
+◇	ver	2015/07/02
+	replaceAll
+◇	ver	2015/07/31
+・	firstStrFirstDelim/lastStrFirstDelim 追加
+◇	ver	2015/08/02
+・	追加
+	isFirstStr
+	includeFirstStr
+	excludeFirstStr
+	isFirstText
+	includeFirstText
+	excludeFirstText
+	isLastStr
+	includeLastStr
+	excludeLastStr
+	isLastText
+	includeLastText
+	excludeLastText
+	includeBothEndsStr
+	excludeBothEndsStr
+	includeBothEndsText
+	ExcludeBothEndsText
+	trimFirstStrs
+	trimLastStrs
+	trimBothEndsStrs
+	strCount
+	shellFileOpen
+◇	ver	2015/08/12
+・	追加
+	WshShellを定義
+◇	ver	2015/08/13
+・	追加
+	firstStrLastDelim/lastStrLastDelim
+◇	ver	2017/03/12
+・	修正
+	firstStrFirstDelim/lastStrFirstDelim
+	firstStrLastDelim/lastStrLastDelim
+・	追加
+	tagInnerText/tagOuterText
+◇	ver	2017/03/16
+・	isIncludeStr 追加
+・	st_gas_gs.js 追加
+◇	ver	2017/03/17
+・	isNumber 追加
+◇	ver	2017/04/13
+・	getExtensionIncludePeriod 追加
+◇	ver	2017/04/17
+・	isUndefined/isNull/isNullOrUndefined 追加
+・	st.jsからstsLib.jsにプロジェクト名変更
+	ファイル名もst.jsからstslib_core.jsに変更
+・	test_equalOperator stslib_test_web.htmlから
+	stslib_core.jsに移動
+・	assert 追加
+・	arrayEqualArray/arrayIndexOfArray 追加
+◇	ver	2017/04/18
+・	startTagDelete/endTagDelete	追加
+◇	ver	2017/04/19
+・	deleteTagInnerText/deleteTagOutterText 追加
+◇	ver	2017/04/20
+・	stslib_win_wsh.js に shellFileOpen 移動
+◇	ver	2017/04/22
+・	degreeToRadian/radianToDegree 追加
+・	angleRelative 追加
+・	stslib_web.js に intervalLoop処理を追加
 //----------------------------------------*/

@@ -1,4 +1,4 @@
-/*----------------------------------------
+ï»¿/*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 ----------------------------------------
@@ -14,15 +14,15 @@ Version:        2017/04/18
 //----------------------------------------*/
 
 /*----------------------------------------
-	Cookie‚Ì‘‚İ“Ç‚İˆ—
-‹@”\F	
-”õlF	
-—š—ğF	
-2014/07/16(…)
-E	ì¬
+	Cookieã®æ›¸è¾¼ã¿èª­è¾¼ã¿å‡¦ç†
+æ©Ÿèƒ½ï¼š	
+å‚™è€ƒï¼š	
+å±¥æ­´ï¼š	
+2014/07/16(æ°´)
+ãƒ»	ä½œæˆ
 //----------------------------------------*/
 
-//”z—ñ‚ğ“n‚·‚ÆnameValue‚Éw’è‚µ‚½’l‚Å•Û‘¶‚·‚é
+//é…åˆ—ã‚’æ¸¡ã™ã¨nameValueã«æŒ‡å®šã—ãŸå€¤ã§ä¿å­˜ã™ã‚‹
 function setCookie(nameValue, arrayValue){
     exp=new Date();
     exp.setTime(exp.getTime()+1000*60*60*24*31);
@@ -35,7 +35,7 @@ function setCookie(nameValue, arrayValue){
         "expires=" + exp.toGMTString();
 }
 
-//nameValue‚Åw’è‚µ‚½’l‚ª‚ ‚ê‚Î”z—ñ‚ğ•Ô‚·
+//nameValueã§æŒ‡å®šã—ãŸå€¤ãŒã‚ã‚Œã°é…åˆ—ã‚’è¿”ã™
 function getCookie(nameValue){
     //alert('getCookie:\n'+document.cookie);
     //alert(nameValue);
@@ -56,8 +56,8 @@ function getCookie(nameValue){
 };
 //----------------------------------------*/
 
-//”z—ñ“à•¶š—ñ‚ğencodeURIComponent‚ÅƒGƒ“ƒR[ƒh‚µ‚Ä‚©‚ç
-//Ú‘±•¶š—ñ%00‚ÅÚ‘±‚µ‚Ä•¶š—ñ‚É‚·‚éŠÖ”
+//é…åˆ—å†…æ–‡å­—åˆ—ã‚’encodeURIComponentã§ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰ã—ã¦ã‹ã‚‰
+//æ¥ç¶šæ–‡å­—åˆ—%00ã§æ¥ç¶šã—ã¦æ–‡å­—åˆ—ã«ã™ã‚‹é–¢æ•°
 function encodeURIComponentArrayToString(arrayValue) {
     var undefined;
     if (arrayValue[0] === undefined) { return ""; };
@@ -87,7 +87,7 @@ function decodeURIComponentStringToArray(value) {
 }
 
 //----------------------------------------
-//ŸURLƒpƒ‰ƒ[ƒ^‚Ìóæ
+//â—†URLãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å—å–
 //----------------------------------------
 function getUrlParameter() {
     var arg = new Object;
@@ -100,29 +100,309 @@ function getUrlParameter() {
 }
 
 function test_getUrlParameter() {
-    //c.html?a=1&b=2
-    //‚Æ‚¢‚¤ƒAƒhƒŒƒX‚Åó‚¯æ‚é‚ÆŸ‚Ì‚æ‚¤‚É“®ì‚·‚é
+    //â€¦.html?a=1&b=2
+    //ã¨ã„ã†ã‚¢ãƒ‰ãƒ¬ã‚¹ã§å—ã‘å–ã‚‹ã¨æ¬¡ã®ã‚ˆã†ã«å‹•ä½œã™ã‚‹
     var arg = getUrlParameter();
     check("1", arg.a);
     check("2", arg.b);
 }
 
+//----------------------------------------
+//â—†ãƒ«ãƒ¼ãƒ—åˆ¶å¾¡
+//----------------------------------------
+
+//----------------------------------------
+//ãƒ»é…å»¶ãƒ«ãƒ¼ãƒ—
+//----------------------------------------
+
+//åˆå›ã¯å³æ™‚å®Ÿè¡Œ
+function intervalForTo1(startIndex,endIndex, interval, func) {
+	if (!(startIndex <= endIndex)) { return; }
+	var i = startIndex;
+	var loopFunc = function () {
+		if ( func(i) === false) {
+			//æˆ»ã‚Šå€¤ãŒfalseãªã‚‰ãƒ«ãƒ¼ãƒ—ã‚’breakã™ã‚‹
+			return;
+		}
+		if (i < endIndex) {
+			setTimeout(loopFunc, interval);
+		}
+		i++;
+	}
+	loopFunc();
+}
+
+//åˆå›ã‹ã‚‰intervalå¾Œã®å®Ÿè¡Œ
+function intervalForTo2(startIndex,endIndex, interval, func) {
+	if (!(startIndex <= endIndex)) { return; }
+	var i = startIndex;
+	var timer = setInterval(function(){
+	    if (func(i) === false) {
+			clearInterval(timer);
+			return;
+		}
+		if (endIndex <= i){
+			clearInterval(timer);
+			return;
+		}
+		i++;
+	},interval);
+}
+
+//åˆå›ã¯å³æ™‚å®Ÿè¡Œ
+function intervalForTo3(startIndex,endIndex, interval, func) {
+	if (!(startIndex <= endIndex)) { return; }
+	var i = startIndex;
+    if (func(i) === false) {
+		return;
+	}
+	var timer = setInterval(function(){
+		if (endIndex <= i){
+			clearInterval(timer);
+			return;
+		}
+		i++;
+	    if (func(i) === false) {
+			clearInterval(timer);
+			return;
+		}
+	},interval);
+}
+
+function intervalForTo(startIndex,endIndex, interval, func) {
+	return intervalForTo1(startIndex, endIndex, interval, func);
+	//return intervalForTo2(startIndex, endIndex, interval, func);
+	//return intervalForTo3(startIndex, endIndex, interval, func);
+}
+
+function test_intervalForTo(intervalForToFunc) {
+
+	var test01 = '';
+	intervalForToFunc(5, 10, 500, function(index) {
+
+		test01 = test01 + index.toString();
+		//5,6,7,8,9,10 ã¨indexã«å…¥ã£ã¦ãã¦ãƒ«ãƒ¼ãƒ—ã™ã‚‹
+
+		if (index === 10) {
+			//å‹•ä½œç¢ºèª
+			check('5678910', test01);
+		}
+		if (index === 11) {
+			assert('test01');
+		}
+	});
+
+	var test02 = '';
+	intervalForToFunc(5, 10, 500, function(index) {
+
+		test02 = test02 + index.toString();
+		if (index === 7) { return true; }
+		test02 = test02 + index.toString();
+		//7ã®ã¨ãã ã‘continueã—ã¦ã„ã‚‹
+
+		if (index === 10) {
+			check('5566788991010', test02);
+		}
+		if (index === 11) {
+			assert('test02');
+		}
+	});
+
+	var test03 = '';
+	intervalForToFunc(5, 10, 500, function(index) {
+
+		test03 = test03 + index.toString();
+		if (index === 8) { 
+			check('5566778', test03);
+			return false; 
+		}
+		test03 = test03 + index.toString();
+		//8ã§breakã—ã¦ã„ã‚‹
+
+		if (index === 9) {
+			assert('test03');
+		}
+	});
+
+	var test04 = '';
+	intervalForToFunc(15, 15, 500, function(index) {
+
+		test04 = test04 + index.toString();
+
+		if (index === 15) {
+			check('15', test04);
+		}
+		if (index === 16) {
+			assert('test04');
+		}
+	});
+
+	intervalForToFunc(20, 19, 500, function(index) {
+
+		alert('test05');
+
+		//å‘¼ã³å‡ºã•ã‚Œãªã„
+	});
+}
+
+function test_intervalForToAll() {
+	test_intervalForTo(intervalForTo1);
+	test_intervalForTo(intervalForTo2);
+	test_intervalForTo(intervalForTo3);
+}
+
+
+//åˆå›ã¯å³æ™‚å®Ÿè¡Œ
+function intervalForDownTo1(startIndex,endIndex, interval, func) {
+	if (!(endIndex <= startIndex)) { return; }
+	var i = startIndex;
+	var loopFunc = function () {
+		if ( func(i) === false) {
+			//æˆ»ã‚Šå€¤ãŒfalseãªã‚‰ãƒ«ãƒ¼ãƒ—ã‚’breakã™ã‚‹
+			return;
+		}
+		if (endIndex < i) {
+			setTimeout(loopFunc, interval);
+		}
+		i--;
+	}
+	loopFunc();
+}
+
+//åˆå›ã‹ã‚‰intervalå¾Œã®å®Ÿè¡Œ
+function intervalForDownTo2(startIndex,endIndex, interval, func) {
+	if (!(endIndex <= startIndex)) { return; }
+	var i = startIndex;
+	var timer = setInterval(function(){
+	    if (func(i) === false) {
+			clearInterval(timer);
+			return;
+		}
+		if (i <= endIndex){
+			clearInterval(timer);
+			return;
+		}
+		i--;
+	},interval);
+}
+
+//åˆå›ã¯å³æ™‚å®Ÿè¡Œ
+function intervalForDownTo3(startIndex,endIndex, interval, func) {
+	if (!(endIndex <= startIndex)) { return; }
+	var i = startIndex;
+    if (func(i) === false) {
+		return;
+	}
+	var timer = setInterval(function(){
+		if (i <= endIndex){
+			clearInterval(timer);
+			return;
+		}
+		i--;
+	    if (func(i) === false) {
+			clearInterval(timer);
+			return;
+		}
+	},interval);
+}
+
+function intervalForDonwTo(startIndex,endIndex, interval, func) {
+	return intervalForDownTo1(startIndex, endIndex, interval, func);
+	//return intervalForDownTo2(startIndex, endIndex, interval, func);
+	//return intervalForDownTo3(startIndex, endIndex, interval, func);
+}
+
+function test_intervalForDownTo(intervalForDownToFunc) {
+
+	var test01 = '';
+	intervalForDownToFunc(10, 5, 500, function(index) {
+
+		test01 = test01 + index.toString();
+
+		if (index === 5) {
+			//å‹•ä½œç¢ºèª
+			check('1098765', test01);
+		}
+		if (index === 4) {
+			assert('test01');
+		}
+	});
+
+	var test02 = '';
+	intervalForDownToFunc(10, 5, 500, function(index) {
+
+		test02 = test02 + index.toString();
+		if (index === 7) { return true; }
+		test02 = test02 + index.toString();
+		//7ã®ã¨ãã ã‘continueã—ã¦ã„ã‚‹
+
+		if (index === 5) {
+			check('1010998876655', test02);
+		}
+		if (index === 4) {
+			assert('test02');
+		}
+	});
+
+	var test03 = '';
+	intervalForDownToFunc(10, 5, 500, function(index) {
+
+		test03 = test03 + index.toString();
+		if (index === 8) { 
+			check('1010998', test03);
+			return false; 
+		}
+		test03 = test03 + index.toString();
+		//8ã§breakã—ã¦ã„ã‚‹
+
+		if (index === 9) {
+			assert('test03');
+		}
+	});
+
+	var test04 = '';
+	intervalForDownToFunc(15, 15, 500, function(index) {
+
+		test04 = test04 + index.toString();
+
+		if (index === 15) {
+			check('15', test04);
+		}
+		if (index === 16) {
+			assert('test04');
+		}
+	});
+
+	intervalForDownToFunc(20, 21, 500, function(index) {
+
+		alert('test05');
+
+		//å‘¼ã³å‡ºã•ã‚Œãªã„
+	});
+}
+
+function test_intervalForDownToAll() {
+	test_intervalForDownTo(intervalForDownTo1);
+	test_intervalForDownTo(intervalForDownTo2);
+	test_intervalForDownTo(intervalForDownTo3);
+}
+
 
 /*----------------------------------------
-  ver 2014/07/18
-E  ì¬
+â—‡  ver 2014/07/18
+ãƒ»  ä½œæˆ
     setCookie
     getCookie
     encodeURIComponentArrayToString
     decodeURIComponentStringToArray
-  ver 2015/07/02
+â—‡  ver 2015/07/02
     replaceAll
-  ver 2015/07/31
-E  st_js‚Æ‚µ‚Ä st.js/st_web.js ‚ğì¬
-  ver 2017/03/13
-E  ƒ^ƒCƒgƒ‹ƒwƒbƒ_[‚ª‚È‚©‚Á‚½‚Ì‚Å’Ç‰Á
-  ver 2017/04/17
-E  ƒtƒ@ƒCƒ‹–¼•ÏX
-	ver 2017/04/18
-E	getUrlParameter’Ç‰Á
+â—‡  ver 2015/07/31
+ãƒ»  st_jsã¨ã—ã¦ st.js/st_web.js ã‚’ä½œæˆ
+â—‡  ver 2017/03/13
+ãƒ»  ã‚¿ã‚¤ãƒˆãƒ«ãƒ˜ãƒƒãƒ€ãƒ¼ãŒãªã‹ã£ãŸã®ã§è¿½åŠ 
+â—‡  ver 2017/04/17
+ãƒ»  ãƒ•ã‚¡ã‚¤ãƒ«åå¤‰æ›´
+â—‡	ver 2017/04/18
+ãƒ»	getUrlParameterè¿½åŠ 
 //----------------------------------------*/
