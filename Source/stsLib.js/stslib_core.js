@@ -10,13 +10,106 @@ All Right Reserved:
 	Name:       Standard Software
 	URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/04/20
+Version:        2017/04/25
 //----------------------------------------*/
+
+var stsLib = stsLib || {};
+stsLib.String = {
+
+	test: function() {
+		this.test_isInclude();
+		this.test_indexOfFirst();
+		this.test_indexOfLast();
+	},
+
+	isInclude: function(str, value) {
+		if (value === '') { return false }
+		return (0 <= str.indexOf(value))
+	},
+
+	test_isInclude: function() {
+		check(true, this.isInclude('abc', 'a'));
+		check(true, this.isInclude('abc', 'b'));
+		check(true, this.isInclude('abc', 'c'));
+		check(false,this.isInclude('abc', 'd'));
+		check(false,this.isInclude('abc', ''));
+		check(false,this.isInclude('', 'a'));
+	},
+
+	indexOfFirst: function(str, value) {
+		if (value === '') { return -1 }
+		return str.indexOf(value);
+	},
+
+	test_indexOfFirst: function() {
+		check(-1, this.indexOfFirst('abc', 'd'));
+		check( 0, this.indexOfFirst('abc', 'a'));
+		check( 1, this.indexOfFirst('abc', 'b'));
+		check( 2, this.indexOfFirst('abc', 'c'));
+		check(-1, this.indexOfFirst('abc', ''));
+		check( 0, this.indexOfFirst('abcabc', 'a'));
+		check( 1, this.indexOfFirst('abcabc', 'b'));
+		check( 2, this.indexOfFirst('abcabc', 'c'));
+	},
+
+	indexOfLast: function(str, value) {
+		if (value === '') { return -1 }
+		return str.lastIndexOf(value);
+	},
+
+	test_indexOfLast: function() {
+		check(-1, this.indexOfLast('abc', 'd'));
+		check( 0, this.indexOfLast('abc', 'a'));
+		check( 1, this.indexOfLast('abc', 'b'));
+		check( 2, this.indexOfLast('abc', 'c'));
+		check(-1, this.indexOfLast('abc', ''));
+		check( 3, this.indexOfLast('abcabc', 'a'));
+		check( 4, this.indexOfLast('abcabc', 'b'));
+		check( 5, this.indexOfLast('abcabc', 'c'));
+	},
+};
+
+stsLib.string = function(str) {
+	var self = {};
+	self.isInclude = function(value) {
+		return stsLib.String.isInclude(str, value);
+	}
+	self.indexOfFirst = function(value) {
+		return stsLib.String.indexOfFirst(str, value);
+	}
+	self.indexOfLast = function(value) {
+		return stsLib.String.indexOfLast(str, value);
+	}
+	return self;
+};
+
+/*----------------------------------------
+
+	//外部からの呼び出し時は2通りのやり方ができる
+
+	//静的関数的な使い方
+	check(true, stsLib.String.isInclude('abc', 'a'));
+
+	//拡張メソッド的な使い方
+	var str1 = new stsLib.string('abc');
+	check(true, str1.isInclude('abc', 'b'));
+
+	//newしなくてもよい
+	var str2 = stsLib.string('abc');
+	check(true, str2.isInclude('abc', 'c'));
+
+//----------------------------------------*/
+
+
 
 //----------------------------------------
 //◆動作確認
 //----------------------------------------
 function test() {
+
+
+	stsLib.String.test();
+
 	test_equalOperator();
 
 	test_check();
@@ -1221,4 +1314,7 @@ function getExtensionIncludePeriod(path) {
 ・	degreeToRadian/radianToDegree 追加
 ・	angleRelative 追加
 ・	stslib_web.js に intervalLoop処理を追加
+◇	ver 2017/04/25
+・	名前空間を導入。関数群の名前がグローバル汚染を引き起こさないようにした。
+
 //----------------------------------------*/
