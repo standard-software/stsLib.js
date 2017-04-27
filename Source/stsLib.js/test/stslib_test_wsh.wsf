@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="shift-jis" ?>
 <job>
+    <script language="JavaScript" src="..\stslib_win_wsh.js"></script>
     <script language="JavaScript" src="..\stslib_core.js"></script>
     <script language="JavaScript">
     <![CDATA[
@@ -19,12 +20,7 @@ All Right Reserved:
 Version:       2017/04/17
 //----------------------------------------*/
 
-//WSH では alert が無いので関数を作成する
-function alert(messageText) {
-    WScript.Echo(messageText);
-}
-
-test();
+test_stslib_core();
 
 /*----------------------------------------
 ◇  ver 2015/08/11

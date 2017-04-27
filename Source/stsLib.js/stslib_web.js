@@ -10,8 +10,13 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/04/18
+Version:        2017/04/26
 //----------------------------------------*/
+
+function test_stslib_web() {
+	test_intervalForToAll();
+	test_intervalForDownToAll();
+}
 
 /*----------------------------------------
 	Cookieの書込み読込み処理
@@ -405,4 +410,5 @@ function test_intervalForDownToAll() {
 ・  ファイル名変更
 ◇	ver 2017/04/18
 ・	getUrlParameter追加
+以降、stslib_core.js でversion管理
 //----------------------------------------*/

@@ -15,25 +15,28 @@ Version:       2017/04/17
 
 
 //--------------------------------------------------
-//include st.js
+//include
 //--------------------------------------------------
 var fso = new ActiveXObject("Scripting.FileSystemObject")
 //--------------------------------------------------
 var basePath = fso.GetParentFolderName(WScript.ScriptFullName);
-var includeFileName = "..\\stslib_core.js"
 //--------------------------------------------------
+var includeFileName = "..\\stslib_win_wsh.js"
 eval( 
     fso.OpenTextFile(
         fso.BuildPath(basePath, includeFileName), 1)
     .ReadAll() );
+	//SHIFT_JIS でのファイル読込
+//--------------------------------------------------
+var includeFileName = "..\\stslib_core.js"
+eval( 
+	string_LoadFromFile(
+		fso.BuildPath(basePath, includeFileName), 
+		encodingTypeJpCharCode.UTF8_BOM));
+	//UTF-8 でのファイル読込
 //--------------------------------------------------
 
-//WSH では alert が無いので関数を作成する
-function alert(messageText) {
-    WScript.Echo(messageText);
-}
-
-test();
+test_stslib_core();
 
 
 /*----------------------------------------

@@ -13,102 +13,368 @@ All Right Reserved:
 Version:        2017/04/25
 //----------------------------------------*/
 
+//ライブラリ名前空間
 var stsLib = stsLib || {};
-stsLib.String = {
 
-	test: function() {
-		this.test_isInclude();
-		this.test_indexOfFirst();
-		this.test_indexOfLast();
-	},
+	//----------------------------------------
+	//◆文字列処理
+	//----------------------------------------
 
-	isInclude: function(str, value) {
-		if (value === '') { return false }
-		return (0 <= str.indexOf(value))
-	},
+	//文字列処理、名前空間
+	stsLib.string = stsLib.string || {};
 
-	test_isInclude: function() {
-		check(true, this.isInclude('abc', 'a'));
-		check(true, this.isInclude('abc', 'b'));
-		check(true, this.isInclude('abc', 'c'));
-		check(false,this.isInclude('abc', 'd'));
-		check(false,this.isInclude('abc', ''));
-		check(false,this.isInclude('', 'a'));
-	},
-
-	indexOfFirst: function(str, value) {
-		if (value === '') { return -1 }
-		return str.indexOf(value);
-	},
-
-	test_indexOfFirst: function() {
-		check(-1, this.indexOfFirst('abc', 'd'));
-		check( 0, this.indexOfFirst('abc', 'a'));
-		check( 1, this.indexOfFirst('abc', 'b'));
-		check( 2, this.indexOfFirst('abc', 'c'));
-		check(-1, this.indexOfFirst('abc', ''));
-		check( 0, this.indexOfFirst('abcabc', 'a'));
-		check( 1, this.indexOfFirst('abcabc', 'b'));
-		check( 2, this.indexOfFirst('abcabc', 'c'));
-	},
-
-	indexOfLast: function(str, value) {
-		if (value === '') { return -1 }
-		return str.lastIndexOf(value);
-	},
-
-	test_indexOfLast: function() {
-		check(-1, this.indexOfLast('abc', 'd'));
-		check( 0, this.indexOfLast('abc', 'a'));
-		check( 1, this.indexOfLast('abc', 'b'));
-		check( 2, this.indexOfLast('abc', 'c'));
-		check(-1, this.indexOfLast('abc', ''));
-		check( 3, this.indexOfLast('abcabc', 'a'));
-		check( 4, this.indexOfLast('abcabc', 'b'));
-		check( 5, this.indexOfLast('abcabc', 'c'));
-	},
-};
-
-stsLib.string = function(str) {
-	var self = {};
-	self.isInclude = function(value) {
-		return stsLib.String.isInclude(str, value);
-	}
-	self.indexOfFirst = function(value) {
-		return stsLib.String.indexOfFirst(str, value);
-	}
-	self.indexOfLast = function(value) {
-		return stsLib.String.indexOfLast(str, value);
-	}
-	return self;
-};
+		stsLib.string.test = function() {
+			func = stsLib.string;
+			func.test_isInclude();
+			func.test_includeCount();
+			func.test_indexOfFirst();
+			func.test_indexOfLast();
+			func.test_startsWith();
+			func.test_includeStart();
+			func.test_excludeStart();
+			func.test_endsWith();
+			func.test_includeEnd();
+			func.test_excludeEnd();
+		}
 
 /*----------------------------------------
-
-	//外部からの呼び出し時は2通りのやり方ができる
+//・外部からの呼び出し時は2通りのやり方ができる
 
 	//静的関数的な使い方
-	check(true, stsLib.String.isInclude('abc', 'a'));
+	check(true, stsLib.string.isInclude('abc', 'a'));
 
 	//拡張メソッド的な使い方
-	var str1 = new stsLib.string('abc');
-	check(true, str1.isInclude('abc', 'b'));
+	var str1 = new stsLib.String('abc');
+	check(true, str1.isInclude('a'));
+	check(true, str1.isInclude('b'));
+	check(true, str1.isInclude('c'));
+	check(false,str1.isInclude('d'));
 
 	//newしなくてもよい
-	var str2 = stsLib.string('abc');
-	check(true, str2.isInclude('abc', 'c'));
+	var str2 = stsLib.String('abc');
+	check(true, str2.isInclude('a'));
+	check(true, str2.isInclude('b'));
+	check(true, str2.isInclude('c'));
+	check(false,str2.isInclude('d'));
+
+
+//・拡張メソッドの方のオブジェクトは継承して
+//	次のようなものを作ることができる
+
+	stsLib.StringEx = stsLib.StringEx || function(value) {
+		var self = function() {};
+		self.prototype = stsLib.StringEx.prototype;
+		self.prototype.value = value;
+		return new self;
+	}
+	Object.setPrototypeOf(stsLib.StringEx.prototype, stsLib.String.prototype);
+	
+		stsLib.StringEx.prototype.isNotInclude = function(search) {
+			return !stsLib.string.isInclude(this.value, search);
+		}
+
+//	※ただし、setPrototypeOf は WSH非対応
+
+//	動作確認は次の通り	
+
+	//継承してもいい
+	var str3 = new stsLib.StringEx('abc');
+	check(false,str3.isNotInclude('a'));
+	check(false,str3.isNotInclude('b'));
+	check(false,str3.isNotInclude('c'));
+	check(true, str3.isNotInclude('d'));
+	check(true, str3.isInclude('a'));
+	check(true, str3.isInclude('b'));
+	check(true, str3.isInclude('c'));
+	check(false,str3.isInclude('d'));
+
+	//継承して new しなくてもよい
+	var str4 = new stsLib.StringEx('abc');
+	check(false,str4.isNotInclude('a'));
+	check(false,str4.isNotInclude('b'));
+	check(false,str4.isNotInclude('c'));
+	check(true, str4.isNotInclude('d'));
+	check(true, str4.isInclude('a'));
+	check(true, str4.isInclude('b'));
+	check(true, str4.isInclude('c'));
+	check(false,str4.isInclude('d'));
+
+
+//・名前空間は何度宣言してもよいので、
+//	別ファイルに同名の名前空間コードをコピペして
+//	作成し、同じ書き方でメソッドを追加していくことができる
+
+var stsLib = stsLib || {};
+
+	stsLib.string = stsLib.string || {};
+
+	stsLib.String = stsLib.String || function(value) {
+		var self = function() {};
+		self.prototype = stsLib.String.prototype;
+		self.prototype.value = value;
+		return new self;
+	}
 
 //----------------------------------------*/
 
+
+		//----------------------------------------
+		//◇Include
+		//----------------------------------------
+
+		stsLib.string.isInclude = this.isInclude;
+		function isInclude(str, search) {
+			return (0 <= stsLib.string.indexOfFirst(str, search))
+		}
+
+		stsLib.string.test_isInclude = function() {
+			func = stsLib.string;
+			check(true, func.isInclude('abc', 'a'));
+			check(true, func.isInclude('abc', 'b'));
+			check(true, func.isInclude('abc', 'c'));
+			check(false,func.isInclude('abc', 'd'));
+			check(false,func.isInclude('abc', ''));
+			check(false,func.isInclude('', 'a'));
+		}
+
+		stsLib.string.includeCount = this.includeCount;
+		function includeCount(str, search) {
+			//if (search === '') { return 0; }
+			var result = 0;
+			var index = 0;
+			do {
+				index = stsLib.string.indexOfFirst(str, search, index)
+				if (index === -1) { break; }
+				index = index + search.length;
+				result++;
+			} while (true)
+			return result;
+		}
+
+		stsLib.string.test_includeCount = function() {
+			func = stsLib.string;
+			check(3, func.includeCount("123123123", "1"),    "A");
+			check(3, func.includeCount("123123123", "2"),    "B");
+			check(3, func.includeCount("123123123", "3"),    "C");
+			check(3, func.includeCount("123123123", "12"),   "D");
+			check(2, func.includeCount("123123123", "31"),   "E");
+			check(6, func.includeCount("AAAAAA", "A"),       "F");
+			check(3, func.includeCount("AAAAAA", "AA"),      "G");
+		}
+
+		//----------------------------------------
+		//◇indexOf 系
+		//----------------------------------------
+
+		stsLib.string.indexOfFirst = this.indexOfFirst;
+		function indexOfFirst(str, search, startIndex) {
+			if (search === '') { return -1 }
+			if (isNullOrUndefined(startIndex)) { startIndex = 0; }
+			return str.indexOf(search, startIndex);
+		}
+
+		stsLib.string.test_indexOfFirst = function() {
+			func = stsLib.string;
+			check(-1, func.indexOfFirst('abc', 'd'));
+			check( 0, func.indexOfFirst('abc', 'a'));
+			check( 1, func.indexOfFirst('abc', 'b'));
+			check( 2, func.indexOfFirst('abc', 'c'));
+			check(-1, func.indexOfFirst('abc', ''));
+			check( 0, func.indexOfFirst('abcabc', 'a'));
+			check( 1, func.indexOfFirst('abcabc', 'b'));
+			check( 2, func.indexOfFirst('abcabc', 'c'));
+
+			check( 0, func.indexOfFirst('abcabc', 'a', 0));
+			check( 3, func.indexOfFirst('abcabc', 'a', 1));
+			check( 1, func.indexOfFirst('abcabc', 'b', 1));
+			check( 4, func.indexOfFirst('abcabc', 'b', 2));
+			check( 2, func.indexOfFirst('abcabc', 'c', 2));
+			check( 5, func.indexOfFirst('abcabc', 'c', 3));
+		}
+
+		stsLib.string.indexOfLast = this.indexOfLast;
+		function indexOfLast(str, search, startIndex) {
+			if (search === '') { return -1 }
+			if (isNullOrUndefined(startIndex)) { startIndex = str.length - 1; }
+			return str.lastIndexOf(search, startIndex);
+		}
+
+		stsLib.string.test_indexOfLast = function() {
+			func = stsLib.string;
+			check(-1, func.indexOfLast('abc', 'd'));
+			check( 0, func.indexOfLast('abc', 'a'));
+			check( 1, func.indexOfLast('abc', 'b'));
+			check( 2, func.indexOfLast('abc', 'c'));
+			check(-1, func.indexOfLast('abc', ''));
+			check( 3, func.indexOfLast('abcabc', 'a'));
+			check( 4, func.indexOfLast('abcabc', 'b'));
+			check( 5, func.indexOfLast('abcabc', 'c'));
+
+			check( 3, func.indexOfLast('abcabc', 'a', 3));
+			check( 0, func.indexOfLast('abcabc', 'a', 2));
+			check( 4, func.indexOfLast('abcabc', 'b', 4));
+			check( 1, func.indexOfLast('abcabc', 'b', 3));
+			check( 5, func.indexOfLast('abcabc', 'c', 5));
+			check( 2, func.indexOfLast('abcabc', 'c', 4));
+		}
+
+		//----------------------------------------
+		//◇Start
+		//----------------------------------------
+		stsLib.string.startsWith = this.startsWith;
+		function startsWith(str, search) {
+			if (search === '') { return false; }
+			if (str === '') { return false; }
+			if (str.length < search.length) { return false; }
+
+			if (stsLib.string.indexOfFirst(str, search) === 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		stsLib.string.test_startsWith = function() {
+			func = stsLib.string;
+			check(true,  func.startsWith("12345", "1"), "A");
+			check(true,  func.startsWith("12345", "12"), "B");
+			check(true,  func.startsWith("12345", "123"), "C");
+			check(false, func.startsWith("12345", "23"), "D");
+			check(false, func.startsWith("", "34"), "E");
+			check(false, func.startsWith("12345", ""), "F");
+			check(false, func.startsWith("123", "1234"), "G");
+		}
+
+		stsLib.string.includeStart = this.includeStart;
+		function includeStart(str, search) {
+			if (stsLib.string.startsWith(str, search)) {
+				return str;
+			} else {
+				return search + str;
+			};
+		}
+
+		stsLib.string.test_includeStart = function() {
+			func = stsLib.string;
+			check("12345", func.includeStart("12345", "1"));
+			check("12345", func.includeStart("12345", "12"));
+			check("12345", func.includeStart("12345", "123"));
+			check("2312345", func.includeStart("12345", "23"));
+		}
+
+		stsLib.string.excludeStart = this.excludeStart;
+		function excludeStart(str, search) {
+			if (stsLib.string.startsWith(str, search)) {
+				return str.substring(search.length);
+			} else {
+				return str;
+			};
+		}
+
+		stsLib.string.test_excludeStart = function() {
+			func = stsLib.string;
+			check("2345", excludeStart("12345", "1"));
+			check("345", excludeStart("12345", "12"));
+			check("45", excludeStart("12345", "123"));
+			check("12345", excludeStart("12345", "23"));
+		}
+
+		//----------------------------------------
+		//◇End
+		//----------------------------------------
+		stsLib.string.endsWith = this.endsWith;
+		function endsWith(str, search) {
+			if (search === '') { return false; }
+			if (str === '') { return false; }
+			if (str.length < search.length) { return false; }
+
+			if (str.substring(str.length - search.length) === search) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		stsLib.string.test_endsWith = function() {
+			func = stsLib.string;
+			check(true,  func.endsWith("12345", "5"));
+			check(true,  func.endsWith("12345", "45"));
+			check(true,  func.endsWith("12345", "345"));
+			check(false, func.endsWith("12345", "34"));
+			check(false, func.endsWith("", "34"));
+			check(false, func.endsWith("12345", ""));
+			check(false, func.endsWith("123", "1234"));
+		}
+
+		stsLib.string.includeEnd = this.includeEnd;
+		function includeEnd(str, search) {
+			if (stsLib.string.endsWith(str, search)) {
+				return str;
+			} else {
+				return str + search;
+			}
+		}
+
+		stsLib.string.test_includeEnd = function() {
+			func = stsLib.string;
+			check("12345",   func.includeEnd("12345", "5"));
+			check("12345",   func.includeEnd("12345", "45"));
+			check("12345",   func.includeEnd("12345", "345"));
+			check("1234534", func.includeEnd("12345", "34"));
+		}
+
+		stsLib.string.excludeEnd = this.excludeEnd;
+		function excludeEnd(str, search) {
+			if (stsLib.string.endsWith(str, search)) {
+				return str.substring(0, str.length - search.length);
+			} else {
+				return str;
+			};
+		}
+
+		stsLib.string.test_excludeEnd = function() {
+			func = stsLib.string;
+			check("1234",  func.excludeEnd("12345", "5"));
+			check("123",   func.excludeEnd("12345", "45"));
+			check("12",    func.excludeEnd("12345", "345"));
+			check("12345", func.excludeEnd("12345", "34"));
+		}
+
+
+
+
+	//----------------------------------------
+	//◇オブジェクト拡張メソッド
+	//----------------------------------------
+
+	//名前空間
+	stsLib.String = stsLib.String || function(value) {
+		var self = function() {};
+		self.prototype = stsLib.String.prototype;
+		self.prototype.value = value;
+		return new self;
+	}
+	//new ありでも new なしでも同様の動作をするようにしている
+
+		stsLib.String.prototype.isInclude = function(search) {
+			return stsLib.string.isInclude(this.value, search);
+		}
+
+		stsLib.String.prototype.indexOfFirst = function(search) {
+			return stsLib.string.indexOfFirst(this.value, search);
+		}
+
+		stsLib.String.prototype.indexOfLast = function(search) {
+			return stsLib.string.indexOfLast(this.value, search);
+		}
 
 
 //----------------------------------------
 //◆動作確認
 //----------------------------------------
-function test() {
+function test_stslib_core() {
 
-
-	stsLib.String.test();
+	stsLib.string.test();
 
 	test_equalOperator();
 
@@ -116,14 +382,6 @@ function test() {
 
 	test_isNumber();
 
-	test_strCount();
-
-	test_isFirstStr();
-	test_includeFirstStr();
-	test_excludeFirstStr();
-	test_isLastStr();
-	test_includeLastStr();
-	test_excludeLastStr();
 
 	test_firstStrFirstDelim();
 	test_firstStrLastDelim();
@@ -133,8 +391,8 @@ function test() {
 	test_tagInnerText();
 	test_tagOuterText();
 
-	test_trimFirstStrs();
-	test_trimLastStrs();
+//	test_trimFirstStrs();
+//	test_trimLastStrs();
 
 	test_replaceAll();
 
@@ -155,7 +413,7 @@ function test() {
 
 //    assert(false, "test");
 
-	alert("finish test");
+	alert("finish test テスト終了");
 }
 
 //----------------------------------------
@@ -413,13 +671,21 @@ function test_angleRelative() {
 //----------------------------------------
 
 //----------------------------------------
+//・配列確認
+//----------------------------------------
+function isArray(value) {
+	return Object.prototype.toString.call(value) === '[object Array]';
+}
+
+
+//----------------------------------------
 //・配列の値で比較する関数
 //----------------------------------------
 
 function arrayEqualArray(value1, value2)
 {
-	assert(Array.isArray(value1));
-	assert(Array.isArray(value2));
+	assert(isArray(value1));
+	assert(isArray(value2));
 
 	return value1.toString() === value2.toString();
 }
@@ -440,8 +706,8 @@ function test_arrayValueEqual()
 //----------------------------------------
 function arrayIndexOfArray(arrayList, arrayValue)
 {
-	assert(Array.isArray(arrayList));
-	assert(Array.isArray(arrayValue));
+	assert(isArray(arrayList));
+	assert(isArray(arrayValue));
 
 	for (var i = 0; i <= arrayList.length - 1; i++)
 	{
@@ -512,239 +778,105 @@ function test_stringToArray(){
 //◆文字列処理
 //----------------------------------------
 
-//----------------------------------------
-//・IsIncludeStr
-//----------------------------------------
-function isIncludeStr(str, subStr)
-{
-	return (0 <= str.indexOf(subStr))
-}
 
 //----------------------------------------
 //・値が空文字の場合だけ別の値を返す関数
 //----------------------------------------
 function ifEmptyStr(value , EmptyStrCaseValue) {
-	var result = ""
-	if (value == "") {
-		result = EmptyStrCaseValue
+	var result = "";
+	if (value === "") {
+		result = EmptyStrCaseValue;
 	} else {
-		result = value
+		result = value;
 	}
-	return result
-}
-
-//----------------------------------------
-//・StrCount
-//----------------------------------------
-function strCount(str, subStr) {
-	var result = 0;
-	var index = 0;
-	do {
-		index = str.indexOf(subStr, index)
-		if (index === -1) break;
-		index = index + subStr.length;
-		result++
-	} while (true)
 	return result;
-}
-
-function test_strCount() {
-	check(3, strCount("123123123", "1"),    "A");
-	check(3, strCount("123123123", "2"),    "B");
-	check(3, strCount("123123123", "3"),    "C");
-	check(3, strCount("123123123", "12"),   "D");
-	check(2, strCount("123123123", "31"),   "E");
-	check(6, strCount("AAAAAA", "A"),       "F");
-	check(3, strCount("AAAAAA", "AA"),      "G");
 }
 
 //----------------------------------------
 //◇First / Last
 //----------------------------------------
 
-//----------------------------------------
-//・FirstStr
-//----------------------------------------
-function isFirstStr(str , subStr) {
-	if (subStr === "") return false;
-	if (str === "") return false;
-	if (str.length < subStr.length) return false;
 
-	if (str.indexOf(subStr) === 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
 
-function test_isFirstStr() {
-	check(true, isFirstStr("12345", "1"), "A");
-	check(true, isFirstStr("12345", "12"), "B");
-	check(true, isFirstStr("12345", "123"), "C");
-	check(false, isFirstStr("12345", "23"), "D");
-	check(false, isFirstStr("", "34"), "E");
-	check(false, isFirstStr("12345", ""), "F");
-	check(false, isFirstStr("123", "1234"), "G");
-}
-
-function includeFirstStr(str, subStr) {
-	if (isFirstStr(str, subStr)) {
-		return str;
-	} else {
-		return subStr + str;
-	};
-}
-
-function test_includeFirstStr() {
-	check("12345", includeFirstStr("12345", "1"));
-	check("12345", includeFirstStr("12345", "12"));
-	check("12345", includeFirstStr("12345", "123"));
-	check("2312345", includeFirstStr("12345", "23"));
-}
-
-function excludeFirstStr(str, subStr) {
-	if (isFirstStr(str, subStr)) {
-		return str.substring(subStr.length);
-	} else {
-		return str;
-	};
-}
-
-function test_excludeFirstStr() {
-	check("2345", excludeFirstStr("12345", "1"));
-	check("345", excludeFirstStr("12345", "12"));
-	check("45", excludeFirstStr("12345", "123"));
-	check("12345", excludeFirstStr("12345", "23"));
-}
 
 //----------------------------------------
 //・FirstText
 //----------------------------------------
 //   ・  大小文字を区別せずに比較する
 //----------------------------------------
-function isFirstText(str , subStr) {
-	return isFirstStr(str.toLowerCase(), subStr.toLowerCase())
-}
-
-function includeFirstText(str , subStr) {
-	if (isFirstText(str, subStr)) {
-		return str;
-	} else {
-		return subStr + str;
-	}
-}
-
-function excludeFirstText(str, subStr) {
-	if (isFirstText(str, subStr)) {
-		return str.substring(subStr.length);
-	} else {
-		return str;
-	}
-}
+//function isFirstText(str , subStr) {
+//	return isFirstStr(str.toLowerCase(), subStr.toLowerCase())
+//}
+//
+//function includeFirstText(str , subStr) {
+//	if (isFirstText(str, subStr)) {
+//		return str;
+//	} else {
+//		return subStr + str;
+//	}
+//}
+//
+//function excludeFirstText(str, subStr) {
+//	if (isFirstText(str, subStr)) {
+//		return str.substring(subStr.length);
+//	} else {
+//		return str;
+//	}
+//}
 
 //----------------------------------------
 //・LastStr
 //----------------------------------------
-function isLastStr(str, subStr) {
-	if (subStr === "") return false;
-	if (str === "") return false;
-	if (str.length < subStr.length) return false;
 
-	if (str.substring(str.length - subStr.length) === subStr) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function test_isLastStr() {
-	check(true, isLastStr("12345", "5"));
-	check(true, isLastStr("12345", "45"));
-	check(true, isLastStr("12345", "345"));
-	check(false, isLastStr("12345", "34"));
-	check(false, isLastStr("", "34"));
-	check(false, isLastStr("12345", ""));
-	check(false, isLastStr("123", "1234"));
-}
-
-function includeLastStr(str, subStr) {
-	if (isLastStr(str, subStr)) {
-		return str;
-	} else {
-		return str + subStr;
-	}
-}
-
-function test_includeLastStr() {
-	check("12345", includeLastStr("12345", "5"));
-	check("12345", includeLastStr("12345", "45"));
-	check("12345", includeLastStr("12345", "345"));
-	check("1234534", includeLastStr("12345", "34"));
-}
-
-function excludeLastStr(str, subStr) {
-	if (isLastStr(str, subStr)) {
-		return str.substring(0, str.length - subStr.length);
-	} else {
-		return str;
-	}
-}
-
-function test_excludeLastStr() {
-	check("1234", excludeLastStr("12345", "5"));
-	check("123", excludeLastStr("12345", "45"));
-	check("12", excludeLastStr("12345", "345"));
-	check("12345", excludeLastStr("12345", "34"));
-}
 
 //----------------------------------------
 //・LastText
 //----------------------------------------
 //   ・  大小文字を区別せずに比較する
 //----------------------------------------
-function isLastText(str, subStr) {
-	return isLastStr(str.toLowerCase(), subStr.toLowerCase());
-}
+//function isLastText(str, subStr) {
+//	return isLastStr(str.toLowerCase(), subStr.toLowerCase());
+//}
+//
+//function includeLastText(str, subStr) {
+//	if (isLastText(str, subStr)) {
+//		return str;
+//	} else {
+//		return str + subStr;
+//	}
+//}
+//
+//function excludeLastText(str, subStr) {
+//	if (isLastText(str, subStr)) {
+//		return str.substring(0, str.length - subStr.length);
+//	} else {
+//		return str;
+//	}
+//}
 
-function includeLastText(str, subStr) {
-	if (isLastText(str, subStr)) {
-		return str;
-	} else {
-		return str + subStr;
-	}
-}
-
-function excludeLastText(str, subStr) {
-	if (isLastText(str, subStr)) {
-		return str.substring(0, str.length - subStr.length);
-	} else {
-		return str;
-	}
-}
-
-//----------------------------------------
-//・BothStr
-//----------------------------------------
-function includeBothEndsStr(str, subStr) {
-	return includeFirstStr(includeLastStr(str, subStr), subStr);
-}
-
-function excludeBothEndsStr(str, subStr) {
-	return excludeFirstStr(excludeLastStr(str, subStr), subStr);
-}
-
-//----------------------------------------
-//・BothText
-//----------------------------------------
-//   ・  大小文字を区別せずに比較する
-//----------------------------------------
-function includeBothEndsText(str, subStr) {
-	return includeFirstText(includeLastText(str, subStr), subStr);
-}
-
-function ExcludeBothEndsText(str, subStr) {
-	return excludeFirstText(excludeLastText(str, subStr), subStr);
-}
+////----------------------------------------
+////・BothStr
+////----------------------------------------
+//function includeBothEndsStr(str, subStr) {
+//	return includeFirstStr(includeLastStr(str, subStr), subStr);
+//}
+//
+//function excludeBothEndsStr(str, subStr) {
+//	return excludeFirstStr(excludeLastStr(str, subStr), subStr);
+//}
+//
+////----------------------------------------
+////・BothText
+////----------------------------------------
+////   ・  大小文字を区別せずに比較する
+////----------------------------------------
+//function includeBothEndsText(str, subStr) {
+//	return includeFirstText(includeLastText(str, subStr), subStr);
+//}
+//
+//function ExcludeBothEndsText(str, subStr) {
+//	return excludeFirstText(excludeLastText(str, subStr), subStr);
+//}
 
 //----------------------------------------
 //◇First / Last Delim
@@ -916,7 +1048,7 @@ function trimFirstStrs(str, trimStrArray) {
 	do {
 		str = result;
 		for (var i = 0; i <= trimStrArray.length - 1; i++) {
-			result = excludeFirstStr(result, trimStrArray[i]);
+			//result = excludeFirstStr(result, trimStrArray[i]);
 		}
 	} while (result !== str)
 	return result
@@ -933,7 +1065,7 @@ function trimLastStrs(str, trimStrArray) {
 	do {
 		str = result;
 		for (var i = 0; i <= trimStrArray.length - 1; i++) {
-			result = excludeLastStr(result, trimStrArray[i]);
+//			result = excludeLastStr(result, trimStrArray[i]);
 		}
 	} while (result !== str)
 	return result
@@ -1187,7 +1319,7 @@ function secondsCount(todayDate, birthDate) {
 参考：
 	JavaScript による日付・時刻・時間の計算・演算のまとめ - hoge256ブログ
 	http://www.hoge256.net/2007/08/64.html
---------------  */
+------------  */
 function getMonthEndDay(year, month) {
 	var dt = new Date(year, month, 0);
 	return dt.getDate();
@@ -1225,10 +1357,9 @@ function getExtensionIncludePeriod(path) {
 		result = ""
 	} else {
 		result = includeFirstStr(result, ".")
-		};
+	}
 	return result;
 }
-
 
 
 /*----------------------------------------
@@ -1316,5 +1447,9 @@ function getExtensionIncludePeriod(path) {
 ・	stslib_web.js に intervalLoop処理を追加
 ◇	ver 2017/04/25
 ・	名前空間を導入。関数群の名前がグローバル汚染を引き起こさないようにした。
-
+・	全体的に名前空間に入るようにリファクタリング対応中
+	isInclude/indexOfFirst/indexOfLast を追加
+◇	ver 2017/04/26
+・	Array.isArray を WSH 対応のために isArray で独自実装
+・	stslib_win_wsh.js に string_LoadFromFile/getEncodingTypeName 追加
 //----------------------------------------*/
