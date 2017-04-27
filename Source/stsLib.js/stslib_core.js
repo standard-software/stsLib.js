@@ -7,6 +7,8 @@ FileName:       stslib_core.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
+    Name:       Standard Software
+    URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
 Version:        2017/04/25
 //----------------------------------------*/
@@ -1535,18 +1537,61 @@ function getExtensionIncludePeriod(path) {
 /*----------------------------------------
 ◇  ver 2014/07/18
 ・  作成
+    lastStringCount
+    format_yyyy_mm_dd
+    format_hh_mm_dd(
+    getAgeYearMonthDay
+    getAgeMonthDay
+    getAgeDay
+    dayCount
+    hoursCount
+    minutesCount
+    secondsCount
+    getMonthEndDay
+    arrayToString
+    encodeURIComponentArrayToString
+    stringToArray
+    decodeURIComponentStringToArray
+    getFileName
 ◇  ver 2015/07/02
+    replaceAll
 ◇  ver 2015/07/31
 ・  firstStrFirstDelim/lastStrFirstDelim 追加
 ◇  ver 2015/08/02
 ・  追加
+    isFirstStr
+    includeFirstStr
+    excludeFirstStr
+    isFirstText
+    includeFirstText
+    excludeFirstText
+    isLastStr
+    includeLastStr
+    excludeLastStr
+    isLastText
+    includeLastText
+    excludeLastText
+    includeBothEndsStr
+    excludeBothEndsStr
+    includeBothEndsText
+    ExcludeBothEndsText
+    trimFirstStrs
+    trimLastStrs
+    trimBothEndsStrs
+    strCount
+    shellFileOpen
 ◇  ver 2015/08/12
 ・  追加
+    WshShellを定義
 ◇  ver 2015/08/13
 ・  追加
+    firstStrLastDelim/lastStrLastDelim
 ◇  ver 2017/03/12
 ・  修正
+    firstStrFirstDelim/lastStrFirstDelim
+    firstStrLastDelim/lastStrLastDelim
 ・  追加
+    tagInnerText/tagOuterText
 ◇  ver 2017/03/16
 ・  isIncludeStr 追加
 ・  st_gas_gs.js 追加
@@ -1557,7 +1602,9 @@ function getExtensionIncludePeriod(path) {
 ◇  ver 2017/04/17
 ・  isUndefined/isNull/isNullOrUndefined 追加
 ・  st.jsからstsLib.jsにプロジェクト名変更
+    ファイル名もst.jsからstslib_core.jsに変更
 ・  test_equalOperator stslib_test_web.htmlから
+    stslib_core.jsに移動
 ・  assert 追加
 ・  arrayEqualArray/arrayIndexOfArray 追加
 ◇  ver 2017/04/18
@@ -1573,6 +1620,7 @@ function getExtensionIncludePeriod(path) {
 ◇  ver 2017/04/25
 ・  名前空間を導入。関数群の名前がグローバル汚染を引き起こさないようにした。
 ・  全体的に名前空間に入るようにリファクタリング対応中
+    isInclude/indexOfFirst/indexOfLast を追加
 ◇  ver 2017/04/26
 ・  Array.isArray を WSH 対応のために isArray で独自実装
 ・  stslib_win_wsh.js に string_LoadFromFile/getEncodingTypeName 追加
