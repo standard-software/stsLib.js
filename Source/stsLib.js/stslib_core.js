@@ -17,6 +17,78 @@ Version:        2017/04/25
 var stsLib = stsLib || {};
 
   //----------------------------------------
+  //◆型処理
+  //----------------------------------------
+  stsLib.number = stsLib.number || {};
+
+    stsLib.number.test = function() {
+      var func = stsLib.number;
+      func.test_isNumber();
+    }
+
+    stsLib.number.isNumber = function(value) {
+      return (typeof value === 'number');
+    }
+
+    stsLib.number.test_isNumber = function() {
+      var func = stsLib.number;
+      check(true, func.isNumber(123));
+      check(true, func.isNumber(0));
+      check(true, func.isNumber(-1));
+      check(true ,func.isNumber(123.4));
+      check(true, func.isNumber(123.0));
+      check(false,func.isNumber(true));
+      check(false,func.isNumber(false));
+      check(false,func.isNumber(null));
+      check(false,func.isNumber(undefined));
+      check(false,func.isNumber(''));
+      check(false,func.isNumber('ABC'));
+      check(false,func.isNumber('0'));
+      check(false,func.isNumber('5'));
+      check(false,func.isNumber('-5'));
+      check(false,func.isNumber('100'));
+      check(false,func.isNumber('-100'));
+      check(false,func.isNumber([]));
+      check(false,func.isNumber({}));
+    }
+
+  stsLib.int = stsLib.int || {};
+
+    stsLib.int.test = function() {
+      var func = stsLib.int;
+      func.test_isInt();
+    }
+
+    stsLib.int.isInt = function(value) {
+      if (!stsLib.number.isNumber(value)) {
+        return false;
+      }
+      return Math.round(value) === value;
+    }
+
+    stsLib.int.test_isInt = function() {
+      var func = stsLib.int;
+      check(true, func.isInt(123));
+      check(true, func.isInt(0));
+      check(true, func.isInt(-1));
+      check(false,func.isInt(123.4));
+      check(true, func.isInt(123.0)); //どうやってもintじゃない！と判定できない
+      check(false,func.isInt(true));
+      check(false,func.isInt(false));
+      check(false,func.isInt(null));
+      check(false,func.isInt(undefined));
+      check(false,func.isInt(''));
+      check(false,func.isInt('ABC'));
+      check(false,func.isInt('0'));
+      check(false,func.isInt('5'));
+      check(false,func.isInt('-5'));
+      check(false,func.isInt('100'));
+      check(false,func.isInt('-100'));
+      check(false,func.isInt([]));
+      check(false,func.isInt({}));
+    }
+
+  //----------------------------------------
   //◆文字列処理
   //----------------------------------------
 
@@ -131,7 +203,7 @@ var stsLib = stsLib || {};
     }
 
     stsLib.string.test_isInclude = function() {
-      func = stsLib.string;
+      var func = stsLib.string;
       check(true, func.isInclude('abc', 'a'));
       check(true, func.isInclude('abc', 'b'));
       check(true, func.isInclude('abc', 'c'));
@@ -288,6 +360,8 @@ var stsLib = stsLib || {};
     //----------------------------------------
     stsLib.string.substrLength = function(str, startIndex, length) {
       if (length === 0) { return ''; }
+      if ((startIndex < (-1 * str.length)) 
+      || ((str.length) < startIndex)) { return '';}
       if (startIndex < 0) {
         startIndex = str.length + startIndex;
       }
@@ -301,11 +375,8 @@ var stsLib = stsLib || {};
       } else {
         endIndex = startIndex + length - 1;
       }
-      if (startIndex <= endIndex) {
-        return str.substring(startIndex, endIndex + 1);
-      } else {
-        return str.substring(endIndex, startIndex + 1);
-      }
+
+      return stsLib.string.substrIndex(str, startIndex, endIndex);
     }
 
     stsLib.string.test_substrLength = function() {
@@ -406,7 +477,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     stsLib.string.excludeStart = function(str, search) {
       if (stsLib.string.startsWith(str, search)) {
-        return str.substring(search.length);
+        return stsLib.string.substrIndex(str, search.length);
       } else {
         return str;
       };
@@ -453,7 +524,9 @@ var stsLib = stsLib || {};
       if (str === '') { return false; }
       if (str.length < search.length) { return false; }
 
-      if (str.substring(str.length - search.length) === search) {
+//      if (str.substring(str.length - search.length) === search) {
+      if (stsLib.string.indexOfLast(str, search) === 
+        str.length - search.length) {
         return true;
       } else {
         return false;
@@ -495,7 +568,8 @@ var stsLib = stsLib || {};
     //----------------------------------------
     stsLib.string.excludeEnd = function(str, search) {
       if (stsLib.string.endsWith(str, search)) {
-        return str.substring(0, str.length - search.length);
+        return stsLib.string.substrIndex(str, 0, 
+          str.length - search.length - 1);
       } else {
         return str;
       };
@@ -543,9 +617,8 @@ var stsLib = stsLib || {};
 //----------------------------------------
 function test_stslib_core() {
 
-//グローバル汚染チェック
-//  check(true, isInclude('abc', 'a')); 
-//  check(3, includeCount("123123123", "1"),    "A");
+  stsLib.number.test();
+  stsLib.int.test();
   stsLib.string.test();
 
   test_equalOperator();
