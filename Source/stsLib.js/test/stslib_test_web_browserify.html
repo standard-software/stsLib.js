@@ -2,25 +2,36 @@
 <html><head>
     <meta charset="UTF-8"><title>stsLib.js test page</title>
 
-    <script src="../stslib_core.js"></script>
-    <script src="../stslib_web.js"></script>
+    <script src="../build/build.js"></script>
     <script>
-
 /*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 --------------------------------------
 ModuleName:    Test WEB Module
-FileName:      stslib_test_web.html
+FileName:      stslib_test_web_browserify.html
 --------------------------------------
 License:        MIT License
 All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/05/18
+Version:        2017/05/15
 //----------------------------------------*/
 
+//----------------------------------------
+//browserify での ビルド方法は次の通り
+// > browserify -r ./stslib_web.js:stsLib -o ./build/build.js
+//
+//stslib_web.js は内部で stslib_core.js を require しているので
+//browserify のビルドでは stslib_web.js のみを指定すればよい
+//ブラウザ側での require は、browserify コマンドで指定した
+//外部に出力する名前で require すること
+//----------------------------------------
+
+if (typeof require !== 'undefined') {
+  var stsLib = require('stsLib')
+}
 
 function main() {
 

@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/04/30
+Version:        2017/05/22
 //----------------------------------------*/
 
 //----------------------------------------
@@ -25,19 +25,20 @@ Version:        2017/04/30
 //    alert がない環境(node.jsとか)での動作の時に
 //    エラーにならないように定義する
 //----------------------------------------
-var alert = alert || function(message) {
+var alert = alert || function (message) {
   console.log(message);
 }
 
 //----------------------------------------
 //・Array.isArray
 //----------------------------------------
-//  ・Array.isArray が存在しない環境(WSHとか)のため
+//  ・Array.isArray が存在しない環境(WSHなど)
+//    のために実装
+//  ・参考:書籍:JavaScriptパターン P51
 //----------------------------------------
-Array.isArray = Array.isArray || function(arg) {
+Array.isArray = Array.isArray || function (arg) {
   return Object.prototype.toString.call(arg) === '[object Array]';
 };
-//参考:書籍:JavaScriptパターン P51
 
 //----------------------------------------
 //■ライブラリ名前空間
@@ -63,7 +64,7 @@ var stsLib = stsLib || {};
     //      例外を出力する関数
     //  ・  他言語でよく使う
     //----------------------------------------
-    _.assert = function(value, message) {
+    _.assert = function (value, message) {
       var t = stsLib.type;
       if (t.isNullOrUndefined(message)) {
         message = '';
@@ -81,7 +82,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //  ・  2値が一致するかどうか確認する関数
     //----------------------------------------
-    _.check = function(a, b, message) {
+    _.check = function (a, b, message) {
       if (a === b) {
         return true;
       }
@@ -98,7 +99,7 @@ var stsLib = stsLib || {};
       return false;
     }
 
-    _.test_check = function() {
+    _.test_check = function () {
       var d = stsLib.debug;
       d.check(true, "123" === "123");
       d.check(true, " 123" == 123);
@@ -111,27 +112,27 @@ var stsLib = stsLib || {};
   //----------------------------------------
 
   //----------------------------------------
-  //◆型処理
+  //◆型 確認/変換 処理
   //----------------------------------------
   _.type = stsLib.type || {};
   (function () {
     var _ = stsLib.type;
 
-    _.isUndefined = function(value) {
+    _.isUndefined = function (value) {
       return (typeof value === 'undefined')
     }
 
-    _.isNull = function(value) {
+    _.isNull = function (value) {
       return (value === null);
     }
 
-    _.isNullOrUndefined = function(value)
+    _.isNullOrUndefined = function (value)
     {
       return (_.isNull(value) 
         || _.isUndefined(value));
     }
 
-    _.test_isNullOrUndefined = function() {
+    _.test_isNullOrUndefined = function () {
       var d = stsLib.debug;
       var a1;
       d.check(true,   _.isUndefined(a1));
@@ -149,97 +150,88 @@ var stsLib = stsLib || {};
       d.check(false,  _.isNullOrUndefined(a3));
     }
 
-    _.isBoolean = function(value) {
+    _.isBoolean = function (value) {
       return (typeof value === 'boolean')
     }
 
-    _.test_isBoolean = function() {
+    _.test_isBoolean = function () {
       var d = stsLib.debug;
-      var st = stsLib.type;
-      d.check(true, st.isBoolean(true));
-      d.check(true, st.isBoolean(false));
-      d.check(false,st.isBoolean(undefined));
-      d.check(false,st.isBoolean(null));
-      d.check(false,st.isBoolean(''));
-      d.check(false,st.isBoolean('true'));
-      d.check(false,st.isBoolean('false'));
-      d.check(false,st.isBoolean(123));
-      d.check(false,st.isBoolean(0));
-      d.check(false,st.isBoolean(-1));
+      d.check(true, _.isBoolean(true));
+      d.check(true, _.isBoolean(false));
+      d.check(false,_.isBoolean(undefined));
+      d.check(false,_.isBoolean(null));
+      d.check(false,_.isBoolean(''));
+      d.check(false,_.isBoolean('true'));
+      d.check(false,_.isBoolean('false'));
+      d.check(false,_.isBoolean(123));
+      d.check(false,_.isBoolean(0));
+      d.check(false,_.isBoolean(-1));
     }
 
-    _.isNumber = function(value) {
+    _.isNumber = function (value) {
       return (typeof value === 'number');
     }
 
-    _.test_isNumber = function() {
+    _.test_isNumber = function () {
       var d = stsLib.debug;
-      var st = stsLib.type;
-      d.check(true, st.isNumber(123));
-      d.check(true, st.isNumber(0));
-      d.check(true, st.isNumber(-1));
-      d.check(true ,st.isNumber(123.4));
-      d.check(true, st.isNumber(123.0));
-      d.check(false,st.isNumber(true));
-      d.check(false,st.isNumber(false));
-      d.check(false,st.isNumber(null));
-      d.check(false,st.isNumber(undefined));
-      d.check(false,st.isNumber(''));
-      d.check(false,st.isNumber('ABC'));
-      d.check(false,st.isNumber('ABC10'));
-      d.check(false,st.isNumber('10ABC'));
-      d.check(false,st.isNumber('0ABC'));
-      d.check(false,st.isNumber('0'));
-      d.check(false,st.isNumber('5'));
-      d.check(false,st.isNumber('-5'));
-      d.check(false,st.isNumber('100'));
-      d.check(false,st.isNumber('-100'));
-      d.check(false,st.isNumber([]));
-      d.check(false,st.isNumber({}));
+      d.check(true, _.isNumber(123));
+      d.check(true, _.isNumber(0));
+      d.check(true, _.isNumber(-1));
+      d.check(true ,_.isNumber(123.4));
+      d.check(true, _.isNumber(123.0));
+      d.check(false,_.isNumber(true));
+      d.check(false,_.isNumber(false));
+      d.check(false,_.isNumber(null));
+      d.check(false,_.isNumber(undefined));
+      d.check(false,_.isNumber(''));
+      d.check(false,_.isNumber('ABC'));
+      d.check(false,_.isNumber('ABC10'));
+      d.check(false,_.isNumber('10ABC'));
+      d.check(false,_.isNumber('0ABC'));
+      d.check(false,_.isNumber('0'));
+      d.check(false,_.isNumber('5'));
+      d.check(false,_.isNumber('-5'));
+      d.check(false,_.isNumber('100'));
+      d.check(false,_.isNumber('-100'));
+      d.check(false,_.isNumber([]));
+      d.check(false,_.isNumber({}));
     }
 
-    _.isInt = function(value) {
+    _.isInt = function (value) {
       if (!_.isNumber(value)) {
         return false;
       }
       return Math.round(value) === value;
     }
 
-    _.test_isInt = function() {
+    _.test_isInt = function () {
       var d = stsLib.debug;
-      var st = stsLib.type;
-      d.check(true, st.isInt(123));
-      d.check(true, st.isInt(0));
-      d.check(true, st.isInt(-1));
-      d.check(false,st.isInt(123.4));
-      d.check(true, st.isInt(123.0)); //どうやってもintじゃない！と判定できない
-      d.check(false,st.isInt(true));
-      d.check(false,st.isInt(false));
-      d.check(false,st.isInt(null));
-      d.check(false,st.isInt(undefined));
-      d.check(false,st.isInt(''));
-      d.check(false,st.isInt('ABC'));
-      d.check(false,st.isInt('0'));
-      d.check(false,st.isInt('5'));
-      d.check(false,st.isInt('-5'));
-      d.check(false,st.isInt('100'));
-      d.check(false,st.isInt('-100'));
-      d.check(false,st.isInt([]));
-      d.check(false,st.isInt({}));
+      d.check(true, _.isInt(123));
+      d.check(true, _.isInt(0));
+      d.check(true, _.isInt(-1));
+      d.check(false,_.isInt(123.4));
+      d.check(true, _.isInt(123.0)); 
+        //.0の場合は整数か少数かは判断できない
+      d.check(false,_.isInt(true));
+      d.check(false,_.isInt(false));
+      d.check(false,_.isInt(null));
+      d.check(false,_.isInt(undefined));
+      d.check(false,_.isInt(''));
+      d.check(false,_.isInt('ABC'));
+      d.check(false,_.isInt('0'));
+      d.check(false,_.isInt('5'));
+      d.check(false,_.isInt('-5'));
+      d.check(false,_.isInt('100'));
+      d.check(false,_.isInt('-100'));
+      d.check(false,_.isInt([]));
+      d.check(false,_.isInt({}));
     }
 
-    _.isString = function(value) {
+    _.isString = function (value) {
       return (typeof value === 'string');
     }
 
-    //----------------------------------------
-    //・配列確認
-    //----------------------------------------
-    _.isArray = function(value) {
-      return Object.prototype.toString.call(value) === '[object Array]';
-    }
   }());
-
 
   //----------------------------------------
   //◆数値
@@ -248,10 +240,174 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆角度
   //----------------------------------------
+  _.angle = stsLib.angle || {};
+  (function () {
+    var _ = stsLib.angle
+
+    //----------------------------------------
+    //・ラジアンと角度相互変換
+    //----------------------------------------
+    _.degreeToRadian = function (value) {
+      return value * Math.PI / 180;
+    }
+
+    _.radianToDegree = function (value) {
+      return value * 180 / Math.PI;
+    }
+
+    _.test_degreeToRadian = function () {
+      var d = stsLib.debug;
+      d.check(0, _.degreeToRadian(0));
+      d.check(Math.PI / 6, _.degreeToRadian(30));
+      d.check(0, _.radianToDegree(0));
+      d.check(30, Math.round(_.radianToDegree(Math.PI / 6)));
+    }
+
+    //----------------------------------------
+    //・絶対角度から相対角度を求める
+    //----------------------------------------
+    //  ・  base と target は角度の絶対座標で
+    //      0度から360度とする。
+    //      それ以上それ以下でも0-360に丸め込まれる
+    //  ・  戻り値は -180～+180 になる
+    //----------------------------------------
+    _.angleRelative = function (base, target) {
+      base = base % 360;
+      target = target % 360;
+      var result = target - base;
+      //result は -360～+360になる
+      if (180 < result) {
+        result = result -360;
+      } else if (result < -180) {
+        result = result + 360;
+      }
+      return result;
+    }
+
+    _.test_angleRelative = function () {
+      var d = stsLib.debug;
+      d.check(10, _.angleRelative(5, 15));
+      d.check(-10, _.angleRelative(15, 5));
+
+      d.check(90, _.angleRelative(90, 180));
+      d.check(180, _.angleRelative(90, 270));
+      d.check(180, _.angleRelative(0, 180));
+
+      d.check(-179, _.angleRelative(0, 181));
+      d.check(179, _.angleRelative(181, 0));
+      d.check(-179, _.angleRelative(179, 0));
+    }
+  }())
 
   //----------------------------------------
   //◆配列処理
   //----------------------------------------
+
+  _.array = stsLib.array || {};
+  (function () {
+    var _ = stsLib.array;
+
+    //----------------------------------------
+    //・配列の値で比較する関数
+    //----------------------------------------
+    _.equal = function (value1, value2) {
+      var d = stsLib.debug;
+      d.assert(Array.isArray(value1));
+      d.assert(Array.isArray(value2));
+
+      return value1.toString() === value2.toString();
+    }
+
+    _.test_equal = function ()
+    {
+      var d = stsLib.debug;
+      var a1 = [1, 2, 3];
+      var a2 = [1, 2, 3];
+
+      d.check(false, a1 == a2);
+      d.check(false, a1 === a2);
+
+      d.check(true, stsLib.array.equal(a1, a2));
+    }
+
+    //----------------------------------------
+    //・配列の値で比較して出力するindexOf
+    //----------------------------------------
+    _.arrayIndexOfArray = function (arrayList, arrayValue)
+    {
+      var d = stsLib.debug;
+      d.assert(Array.isArray(arrayList));
+      d.assert(Array.isArray(arrayValue));
+
+      for (var i = 0; i <= arrayList.length - 1; i++)
+      {
+        if (_.equal(arrayList[i], arrayValue))
+        {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    _.test_arrayIndexOfArray = function ()
+    {
+      var d = stsLib.debug;
+      var arrayList = [];
+      arrayList.push([1,1,1]);
+      arrayList.push([2,2,2]);
+      arrayList.push([3,3,3]);
+
+      var a1 = [1, 2, 3];
+      d.check(-1, _.arrayIndexOfArray(arrayList, a1));
+
+      a1 = [1, 1, 1];
+      d.check(0, _.arrayIndexOfArray(arrayList, a1));
+      a1 = [2, 2, 2];
+      d.check(1, _.arrayIndexOfArray(arrayList, a1));
+      a1 = [3, 3, 3];
+      d.check(2, _.arrayIndexOfArray(arrayList, a1));
+    }
+
+    //----------------------------------------
+    //◇配列文字列変換
+    //----------------------------------------
+
+    _.arrayToString = function (arrayValue, delimiter) {
+      var undefined;
+      if (arrayValue[0] === undefined) { return ""; };
+      if (delimiter === undefined) {delimiter = ""};
+      var result = arrayValue[0];
+      var i = 1;
+      while(arrayValue[i] !== undefined) {
+        result += delimiter + arrayValue[i];
+        i++;
+      }
+      return result;
+    }
+
+    _.test_arrayToString = function (){
+      var d = stsLib.debug;
+      var array01 = new Array();
+      array01[0] = "abc";
+      array01[1] = "def";
+      d.check("abc-def", _.arrayToString(array01, "-"));
+
+      var array02 = new Array("123", "456");
+      d.check("123_456", _.arrayToString(array02, "_"));
+    }
+
+    _.stringToArray = function (value, delimiter) {
+      return value.split(delimiter);
+    }
+
+    _.test_stringToArray = function (){
+      var d = stsLib.debug;
+      var array03 = _.stringToArray("ABC/DEF", "/");
+      d.check("ABC", array03[0]);
+      d.check("DEF", array03[1]);
+    }
+
+  }())
 
   //----------------------------------------
   //◆文字列処理
@@ -263,7 +419,8 @@ var stsLib = stsLib || {};
     var _ = stsLib.string;
 
 /*----------------------------------------
-//・外部からの呼び出し時は2通りのやり方ができる
+//・外部からの呼び出し時は
+//  静的関数的な使い方と拡張メソッドのような使い方ができる
 
   var d = stsLib.debug;
 
@@ -289,8 +446,8 @@ var stsLib = stsLib || {};
 
   stsLib.string = stsLib.string || {};
 
-  stsLib.String = stsLib.String || function(value) {
-    var self = function() {};
+  stsLib.String = stsLib.String || function (value) {
+    var self = function () {};
     self.prototype = stsLib.String.prototype;
     self.prototype.value = value;
     return new self;
@@ -299,14 +456,41 @@ var stsLib = stsLib || {};
 //----------------------------------------*/
 
     //----------------------------------------
+    //◇条件判断
+    //----------------------------------------
+
+    //----------------------------------------
+    //・NullかUndefinedか空文字('')ならTrueを返す
+    //----------------------------------------
+    _.isEmpty = function (str) {
+      var t = stsLib.type;
+      if (t.isNullOrUndefined(str) || str ===  '') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    //----------------------------------------
+    //・値が空文字/null/Undefinedの場合だけ別の値を返す関数
+    //----------------------------------------
+    _.ifEmptyValue = function (str , emptyValue) {
+      if (_.isEmpty(str)) {
+        return emptyValue;
+      } else {
+        return str;
+      }
+    };
+
+    //----------------------------------------
     //◇Include
     //----------------------------------------
 
-    _.isInclude = function(str, search) {
+    _.isInclude = function (str, search) {
       return (0 <= _.indexOfFirst(str, search))
     }
 
-    _.test_isInclude = function() {
+    _.test_isInclude = function () {
       var d = stsLib.debug;
       d.check(true, _.isInclude('abc', 'a'));
       d.check(true, _.isInclude('abc', 'b'));
@@ -316,7 +500,7 @@ var stsLib = stsLib || {};
       d.check(false,_.isInclude('', 'a'));
     }
 
-    _.includeCount = function(str, search) {
+    _.includeCount = function (str, search) {
       //if (search === '') { return 0; }
       var result = 0;
       var index = 0;
@@ -329,7 +513,7 @@ var stsLib = stsLib || {};
       return result;
     }
 
-    _.test_includeCount = function() {
+    _.test_includeCount = function () {
       var d = stsLib.debug;
       d.check(3, _.includeCount("123123123", "1"),    "A");
       d.check(3, _.includeCount("123123123", "2"),    "B");
@@ -344,13 +528,16 @@ var stsLib = stsLib || {};
     //◇indexOf 系
     //----------------------------------------
 
-    _.indexOfFirst = function(str, search, startIndex) {
+    _.indexOfFirst = function (str, search, startIndex) {
       if (search === '') { return -1 }
-      if (stsLib.type.isNullOrUndefined(startIndex)) { startIndex = 0; }
+      if (stsLib.type.isNullOrUndefined(startIndex)) 
+      {
+        startIndex = 0;
+      }
       return str.indexOf(search, startIndex);
     }
 
-    _.test_indexOfFirst = function() {
+    _.test_indexOfFirst = function () {
       var d = stsLib.debug;
       d.check(-1, _.indexOfFirst('abc', 'd'));
       d.check( 0, _.indexOfFirst('abc', 'a'));
@@ -369,7 +556,7 @@ var stsLib = stsLib || {};
       d.check( 5, _.indexOfFirst('abcabc', 'c', 3));
     }
 
-    _.indexOfLast = function(str, search, startIndex) {
+    _.indexOfLast = function (str, search, startIndex) {
       if (search === '') { return -1 }
       if (stsLib.type.isNullOrUndefined(startIndex)) {
         startIndex = str.length - 1; 
@@ -377,7 +564,7 @@ var stsLib = stsLib || {};
       return str.lastIndexOf(search, startIndex);
     }
 
-    _.test_indexOfLast = function() {
+    _.test_indexOfLast = function () {
       var d = stsLib.debug;
       d.check(-1, _.indexOfLast('abc', 'd'));
       d.check( 0, _.indexOfLast('abc', 'a'));
@@ -409,10 +596,10 @@ var stsLib = stsLib || {};
     //  ・負の値のIndexに対応
     //    -1は最後の文字になる
     //----------------------------------------
-    _.substrIndex = function(str, startIndex, endIndex) {
+    _.substrIndex = function (str, startIndex, endIndex) {
       var d = stsLib.debug;
       var t = stsLib.type;
-      if (t.isUndefined(endIndex)) {
+      if (t.isNullOrUndefined(endIndex)) {
         endIndex = str.length - 1;
       }
       d.assert(t.isString(str));
@@ -422,9 +609,7 @@ var stsLib = stsLib || {};
       if (startIndex < 0) {
         startIndex = str.length + startIndex;
       }
-      if (stsLib.type.isNullOrUndefined(endIndex)) {
-        endIndex = str.length - 1;
-      } else if (endIndex < 0) {
+      if (endIndex < 0) {
         endIndex = str.length + endIndex
       }
 
@@ -435,7 +620,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_substrIndex = function() {
+    _.test_substrIndex = function () {
       var d = stsLib.debug;
       d.check("45",     _.substrIndex("012345", 4));
       d.check("2345",   _.substrIndex("012345", -4));
@@ -473,14 +658,14 @@ var stsLib = stsLib || {};
     //  ・lengthは1を指定しても-1を指定しても同じ
     //    -2を指定すると前方文字を取得する
     //----------------------------------------
-    _.substrLength = function(str, startIndex, length) {
+    _.substrLength = function (str, startIndex, length) {
       if (length === 0) { return ''; }
       if ((startIndex < (-1 * str.length)) 
       || ((str.length) < startIndex)) { return '';}
       if (startIndex < 0) {
         startIndex = str.length + startIndex;
       }
-      
+
       if (stsLib.type.isNullOrUndefined(length)) {
         length = str.length;
       }
@@ -494,7 +679,7 @@ var stsLib = stsLib || {};
       return _.substrIndex(str, startIndex, endIndex);
     }
 
-    _.test_substrLength = function() {
+    _.test_substrLength = function () {
       var d = stsLib.debug;
       d.check("45",   _.substrLength("012345", 4));
       d.check("2345", _.substrLength("012345", -4));
@@ -525,18 +710,18 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・先頭を切り取るメソッド
     //----------------------------------------
-    _.start = function(str, length) {
+    _.start = function (str, length) {
       var d = stsLib.debug;
       var t = stsLib.type;
       d.assert(t.isString(str));
       d.assert(t.isInt(length));
       if (str === '') { return ''; }
       if (length <= 0) { return ''; }
-      
+
       return _.substrLength(str, 0, length);
     }
 
-    _.test_start = function() {
+    _.test_start = function () {
       var d = stsLib.debug;
       d.check("0123",   _.start("012345", 4));
       d.check("",       _.start("012345", 0));
@@ -547,7 +732,7 @@ var stsLib = stsLib || {};
       d.check("012345", _.start("012345", 10));
     }
 
-    _.startsWith = function(str, search) {
+    _.startsWith = function (str, search) {
       if (search === '') { return false; }
       if (str === '') { return false; }
       if (str.length < search.length) { return false; }
@@ -562,7 +747,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・先頭の一致を調べる
     //----------------------------------------
-    _.test_startsWith = function() {
+    _.test_startsWith = function () {
       var d = stsLib.debug;
       d.check(true,  _.startsWith("12345", "1"), "A");
       d.check(true,  _.startsWith("12345", "12"), "B");
@@ -576,7 +761,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・先頭に含む
     //----------------------------------------
-    _.includeStart = function(str, search) {
+    _.includeStart = function (str, search) {
       if (_.startsWith(str, search)) {
         return str;
       } else {
@@ -584,7 +769,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_includeStart = function() {
+    _.test_includeStart = function () {
       var d = stsLib.debug;
       d.check("12345",  _.includeStart("12345", "1"));
       d.check("12345",  _.includeStart("12345", "12"));
@@ -595,7 +780,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・先頭から取り除く
     //----------------------------------------
-    _.excludeStart = function(str, search) {
+    _.excludeStart = function (str, search) {
       if (_.startsWith(str, search)) {
         return _.substrIndex(str, search.length);
       } else {
@@ -603,7 +788,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_excludeStart = function() {
+    _.test_excludeStart = function () {
       var d = stsLib.debug;
       d.check("2345", _.excludeStart("12345", "1"));
       d.check("345",  _.excludeStart("12345", "12"));
@@ -618,14 +803,14 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・先頭を切り取るメソッド
     //----------------------------------------
-    _.end = function(str, length) {
+    _.end = function (str, length) {
       if (str === '') { return ''; }
       if (length <= 0) { return ''; }
       return _.substrLength(str, 
         Math.max(0, str.length - length));
     }
 
-    _.test_end = function() {
+    _.test_end = function () {
       var d = stsLib.debug;
       d.check("2345",   _.end("012345", 4));
       d.check("",       _.end("012345", 0));
@@ -639,7 +824,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・終端の一致を調べる
     //----------------------------------------
-    _.endsWith = function(str, search) {
+    _.endsWith = function (str, search) {
       if (search === '') { return false; }
       if (str === '') { return false; }
       if (str.length < search.length) { return false; }
@@ -652,7 +837,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_endsWith = function() {
+    _.test_endsWith = function () {
       var d = stsLib.debug;
       d.check(true,  _.endsWith("12345", "5"));
       d.check(true,  _.endsWith("12345", "45"));
@@ -666,7 +851,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・終端に含む
     //----------------------------------------
-    _.includeEnd = function(str, search) {
+    _.includeEnd = function (str, search) {
       if (_.endsWith(str, search)) {
         return str;
       } else {
@@ -674,7 +859,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_includeEnd = function() {
+    _.test_includeEnd = function () {
       var d = stsLib.debug;
       d.check("12345",   _.includeEnd("12345", "5"));
       d.check("12345",   _.includeEnd("12345", "45"));
@@ -685,7 +870,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・終端から取り除く
     //----------------------------------------
-    _.excludeEnd = function(str, search) {
+    _.excludeEnd = function (str, search) {
       if (_.endsWith(str, search)) {
         return _.substrIndex(str, 0, 
           str.length - search.length - 1);
@@ -694,7 +879,7 @@ var stsLib = stsLib || {};
       };
     }
 
-    _.test_excludeEnd = function() {
+    _.test_excludeEnd = function () {
       var d = stsLib.debug;
       d.check("1234",  _.excludeEnd("12345", "5"));
       d.check("123",   _.excludeEnd("12345", "45"));
@@ -705,15 +890,20 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //◇両端 BothEnds
     //----------------------------------------
-    _.includeBothEnds = function(str, search) {
+    _.bothEndsWith = function (str, search) {
+      return _.startsWith(str, search) && 
+        _.endsWith(str, search);
+    };
+
+    _.includeBothEnds = function (str, search) {
       return _.includeStart(
         _.includeEnd(str, search));
-    }
+    };
 
-    _.excludeBothEnds = function(str, search) {
+    _.excludeBothEnds = function (str, search) {
       return _.excludeStart(
         _.excludeEnd(str, search))
-    }
+    };
 
     //----------------------------------------
     //◇delimiter
@@ -722,7 +912,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・startFirstDelim
     //----------------------------------------
-    _.startFirstDelim = function(str, delimiter) {
+    _.startFirstDelim = function (str, delimiter) {
       var index = _.indexOfFirst(str, delimiter);
       if (index === -1) {
         return str;
@@ -733,7 +923,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_startFirstDelim = function() {
+    _.test_startFirstDelim = function () {
       var d = stsLib.debug;
       d.check("123", _.startFirstDelim("123,456", ","));
       d.check("123", _.startFirstDelim("123,456,789", ","));
@@ -749,7 +939,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・startLastDelim
     //----------------------------------------
-    _.startLastDelim = function(str, delimiter) {
+    _.startLastDelim = function (str, delimiter) {
       var index = _.indexOfLast(str, delimiter);
       if (index === -1) {
         return str;
@@ -760,7 +950,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_startLastDelim = function() {
+    _.test_startLastDelim = function () {
       var d = stsLib.debug;
       d.check("123", _.startLastDelim("123,456", ","));
       d.check("123,456", _.startLastDelim("123,456,789", ","));
@@ -776,7 +966,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //・endFirstDelim
     //----------------------------------------
-    _.endFirstDelim = function(str, delimiter) {
+    _.endFirstDelim = function (str, delimiter) {
       var index = _.indexOfFirst(str, delimiter);
       if (index === -1) {
         return str;
@@ -787,7 +977,7 @@ var stsLib = stsLib || {};
       }
     }
 
-    _.test_endFirstDelim = function() {
+    _.test_endFirstDelim = function () {
       var d = stsLib.debug;
       d.check("456", _.endFirstDelim("123,456", ","));
       d.check("456,789", _.endFirstDelim("123,456,789", ","));
@@ -800,22 +990,21 @@ var stsLib = stsLib || {};
       d.check("123,", _.endFirstDelim(",123,", ","))
     }
 
-
     //----------------------------------------
     //・endLastDelim
     //----------------------------------------
-    _.endLastDelim = function(str, delimiter) {
+    _.endLastDelim = function (str, delimiter) {
       var index = _.indexOfLast(str, delimiter);
       if (index === -1) {
         return str;
-      } else if (index === str.length - 1) {
+      } else if (index === str.length - delimiter.length) {
         return '';
       } else {
         return _.substrIndex(str, index + delimiter.length);
       }
     }
 
-    _.test_endLastDelim = function() {
+    _.test_endLastDelim = function () {
       var d = stsLib.debug;
 
       d.check("456", _.endLastDelim("123,456", ","));
@@ -827,10 +1016,506 @@ var stsLib = stsLib || {};
       d.check("", _.endLastDelim("123,", ","))
       d.check("123", _.endLastDelim(",123", ","))
       d.check("", _.endLastDelim(",123,", ","))
+
+      var Text = "<123>123<789> <123>456<789> <123>789<789>";
+      d.check('', _.endLastDelim(Text, "<789>"))
+
+
     }
 
-  }());
+    //--------------------------------------
+    //◇Trim
+    //--------------------------------------
+    _.trimStart = function (str, trimStrArray) {
+      var result = str
+      do {
+        str = result;
+        for (var i = 0; i <= trimStrArray.length - 1; i++) {
+          result = _.excludeStart(result, trimStrArray[i]);
+        }
+      } while (result !== str)
+      return result
+    }
 
+    _.test_trimStart = function () {
+      var d = stsLib.debug;
+      d.check("123 ",       _.trimStart("   123 ", [" "]))
+      d.check("\t  123 ",   _.trimStart("   \t  123 ", [" "]))
+      d.check("123 ",       _.trimStart("   \t  123 ", [" ", "\t"]))
+    }
+
+    _.trimEnd = function (str, trimStrArray) {
+      var result = str
+      do {
+        str = result;
+        for (var i = 0; i <= trimStrArray.length - 1; i++) {
+          result = _.excludeEnd(result, trimStrArray[i]);
+        }
+      } while (result !== str)
+      return result
+    }
+
+    _.test_trimEnd = function () {
+      var d = stsLib.debug;
+      d.check(" 123",       _.trimEnd(" 123   ", [" "]))
+      d.check(" 456  \t",   _.trimEnd(" 456  \t   ", [" "]))
+      d.check(" 789",       _.trimEnd(" 789  \t   ", [" ", "\t"]))
+    }
+
+    _.trimBothEnds = function (str, trimStrArray) {
+      return _.trimStart(
+        _.trimEnd(str, trimStrArray), trimStrArray)
+    }
+
+    _.trim = function (str) {
+      return _.trimBothEnds(str, [' ', '\t', '\r', '\n']);
+    }
+
+    //--------------------------------------
+    //◇Tag deleteFirst/Last
+    //--------------------------------------
+
+    _.deleteFirst = function (str, search) {
+      if (_.indexOfFirst(str, search) === -1) {
+        return str;
+      } else {
+        return _.startFirstDelim(str, search) + 
+          _.endFirstDelim(str, search);
+      }
+    };
+
+    _.deleteLast = function (str, search) {
+      if (_.indexOfLast(str, search) === -1) {
+        return str;
+      } else {
+        return _.startLastDelim(str, search) + 
+          _.endLastDelim(str, search);
+      }
+    };
+
+    _.test_deleteFirstLast = function () {
+      var d = stsLib.debug;
+      d.check("abcdefghi", _.deleteFirst(
+        _.deleteLast("abc<def>ghi", ">"), "<"));
+      d.check("abc><def><ghi", _.deleteFirst(
+        _.deleteLast("a<bc><def><gh>i", ">"), "<"));
+      d.check("abcdefghi", _.deleteFirst(
+        _.deleteLast("abc>def<ghi", ">"), "<"));
+      d.check("abc>def<ghi", _.deleteFirst(
+        _.deleteLast("a<bc>def<gh>i", ">"), "<"));
+    };
+
+    //--------------------------------------
+    //◇Tag deleteFirstTagInner/Outer
+    //--------------------------------------
+    _.deleteFirstTagInner = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = _.indexOfFirst(str, startTag);
+      var indexEndTag = _.indexOfFirst(str, endTag);
+      if ((indexStartTag !== -1) 
+      && (indexEndTag !== -1)
+      && (indexStartTag < indexEndTag)) {
+        str = _.startFirstDelim(str, startTag) + startTag + 
+          endTag + _.endFirstDelim(str, endTag) 
+      }
+      return str;
+    };
+
+    _.test_deleteFirstTagInner = function () {
+      var d = stsLib.debug;
+      d.check('abc<>ghi', _.deleteFirstTagInner('abc<def>ghi', '<', '>'));
+      d.check('abc<>ghi<jkl>mn', _.deleteFirstTagInner('abc<def>ghi<jkl>mn', '<', '>'));
+    };
+
+    _.deleteFirstTagOuter = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = str.indexOf(startTag);
+      var indexEndTag = str.indexOf(endTag);
+      if ((indexStartTag !== -1) 
+      && (indexEndTag !== -1)
+      && (indexStartTag < indexEndTag)) {
+        str = _.startFirstDelim(str, startTag) +  
+          _.endFirstDelim(str, endTag) 
+      }
+      return str;
+    };
+
+    _.test_deleteFirstTagOuter = function () {
+      var d = stsLib.debug;
+      d.check('abcghi', _.deleteFirstTagOuter('abc<def>ghi', '<', '>'));
+      d.check('abcghi<jkl>mn', _.deleteFirstTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
+    };
+
+    //--------------------------------------
+    //◇Tag deleteLastTagInner/Outer
+    //--------------------------------------
+    _.deleteLastTagInner = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = _.indexOfLast(str, startTag);
+      var indexEndTag = _.indexOfLast(str, endTag);
+      if ((indexStartTag !== -1) 
+      && (indexEndTag !== -1)
+      && (indexStartTag < indexEndTag)) {
+        str = _.startLastDelim(str, startTag) + startTag + 
+          endTag + _.endLastDelim(str, endTag) 
+      }
+      return str;
+    };
+
+    _.test_deleteLastTagInner = function () {
+      var d = stsLib.debug;
+      d.check('abc<>ghi', _.deleteLastTagInner('abc<def>ghi', '<', '>'));
+      d.check('abc<def>ghi<>mn', _.deleteLastTagInner('abc<def>ghi<jkl>mn', '<', '>'));
+    };
+
+    _.deleteLastTagOuter = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = _.indexOfLast(str, startTag);
+      var indexEndTag = _.indexOfLast(str, endTag);
+      if ((indexStartTag !== -1) 
+      && (indexEndTag !== -1)
+      && (indexStartTag < indexEndTag)) {
+        str = _.startLastDelim(str, startTag) +  
+          _.endLastDelim(str, endTag) 
+      }
+      return str;
+    };
+
+    _.test_deleteLastTagOuter = function () {
+      var d = stsLib.debug;
+      d.check('abcghi', _.deleteLastTagOuter('abc<def>ghi', '<', '>'));
+      d.check('abc<def>ghimn', _.deleteLastTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
+    };
+
+    //--------------------------------------
+    //◇deleteAllTagInner/TagOut
+    //--------------------------------------
+    _.deleteAllTag = function (str, startTag, endTag) {
+      var result = str;
+      do {
+        str = result;
+        result = _.deleteFirstTagOuter(str, startTag, endTag);
+      } while (str !== result);
+      return result;
+    };
+
+    _.test_deleteAllTag = function () {
+      var d = stsLib.debug;
+      d.check('abcghi', _.deleteAllTag('abc<def>ghi', '<', '>'));
+      d.check('abcghimn', _.deleteAllTag('abc<def>ghi<jkl>mn', '<', '>'));
+    };
+
+
+
+    //--------------------------------------
+    //◇Tag Inner/Outer
+    //--------------------------------------
+
+    //----------------------------------------
+    //・最初の start,end の組み合わせのタグを含まない文字
+    //----------------------------------------
+    _.tagInnerFirst = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = _.indexOfFirst(str, startTag);
+      var indexEndTag = _.indexOfFirst(str, endTag);
+      if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
+        //startTag/endTagは存在する場合
+        if (indexStartTag < indexEndTag) {
+          return _.startFirstDelim(
+            _.endFirstDelim(str, startTag), endTag);
+        } else {
+          //開始終了位置が逆の場合
+          return '';
+        }
+      } else if (indexStartTag !== -1) {
+        //startTagは存在する場合
+        return _.endFirstDelim(str, startTag);
+      } else if (indexEndTag !== -1) {
+        //endTagは存在する場合
+        return _.startFirstDelim(str, endTag);
+      } else {
+        //startTag/endTagどちらも存在しない場合
+        return str;
+      }
+    }
+
+    _.test_tagInnerFirst = function () {
+      var d = stsLib.debug;
+      d.check("456",  _.tagInnerFirst("000<123>456<789>000", "<123>", "<789>"), "test01");
+      d.check("456",  _.tagInnerFirst("<123>456<789>", "<123>", "<789>"), "test02");
+      d.check("456",  _.tagInnerFirst("000<123>456", "<123>", "<789>"), "test03");
+      d.check("456",  _.tagInnerFirst("456<789>000", "<123>", "<789>"), "test04");
+      d.check("456",  _.tagInnerFirst("456", "<123>", "<789>"), "test05");
+      d.check("",     _.tagInnerFirst("000<123><789>000", "<123>", "<789>"), "test06");
+      d.check("",  _.tagInnerFirst("000<123>456<789>000", "<789>", "<123>"), "test07");
+
+      var Text = "<123>123<789> <123>456<789> <123>789<789>";
+      d.check("123",
+        _.tagInnerFirst(Text, "<123>", "<789>"), 'test01');
+      d.check("123<789> <123>456<789> <123>789<789>",
+        _.tagInnerFirst(Text, "<123>", "<456>"), 'test02');
+      d.check("<123>123",
+        _.tagInnerFirst(Text, "<456>", "<789>"), 'test03');
+      d.check("",
+        _.tagInnerFirst(Text, "<456>", "<123>"), 'test04');
+      d.check(" <123>456<789> <123>789<789>",
+        _.tagInnerFirst(Text, "<789>", "<456>"), 'test05');
+      d.check(Text,
+        _.tagInnerFirst(Text, "<321>", "<456>"), 'test06');
+    }
+
+    //----------------------------------------
+    //・最初の start,end の組み合わせのタグを含む文字
+    //----------------------------------------
+    _.tagOuterFirst = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = _.indexOfFirst(str, startTag);
+      var indexEndTag = _.indexOfFirst(str, endTag);
+      if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
+        //startTag/endTagは存在する場合
+        if (indexStartTag < indexEndTag) {
+          return _.startFirstDelim(
+            startTag + _.endFirstDelim(str, startTag),
+            endTag) + endTag;
+        } else {
+          //開始終了位置が逆の場合
+          return '';
+        }
+      } else if (indexStartTag !== -1) {
+        //startTagは存在する場合
+        return startTag + _.endFirstDelim(str, startTag);
+      } else if (indexEndTag !== -1) {
+        //endTagは存在する場合
+        return _.startFirstDelim(str, endTag) + endTag;
+      } else {
+        //startTag/endTagどちらも存在しない場合
+        return str;
+      }
+    }
+
+    _.test_tagOuterFirst = function () {
+      var d = stsLib.debug;
+      d.check("<123>456<789>",  _.tagOuterFirst(
+        "000<123>456<789>000", "<123>", "<789>"), "test01")
+      d.check("<123>456<789>",  _.tagOuterFirst(
+        "<123>456<789>", "<123>", "<789>"), "test02")
+      d.check("<123>456",       _.tagOuterFirst(
+        "000<123>456", "<123>", "<789>"), "test03")
+      d.check("456<789>",       _.tagOuterFirst(
+        "456<789>000", "<123>", "<789>"), "test04")
+      d.check("456",            _.tagOuterFirst(
+        "456", "<123>", "<789>"), "test05")
+      d.check("<123><789>",     _.tagOuterFirst(
+        "000<123><789>000", "<123>", "<789>"), "test06");
+      d.check("",  _.tagOuterFirst(
+        "000<123>456<789>000", "<789>", "<123>"), "test07");
+
+      var Text = "<123>123<789> <123>456<789> <123>789<789>";
+      d.check("<123>123<789>",  
+        _.tagOuterFirst(Text, "<123>", "<789>"), 'test01');
+      d.check(Text,
+        _.tagOuterFirst(Text, "<123>", "<456>"), 'test02');
+      d.check("<123>123<789>",
+        _.tagOuterFirst(Text, "<456>", "<789>"), 'test03');
+      d.check("<123>",
+        _.tagOuterFirst(Text, "<456>", "<123>"), 'test04');
+      d.check("<789> <123>456<789> <123>789<789>",
+        _.tagOuterFirst(Text, "<789>", "<456>"), 'test05');
+      d.check(Text,
+        _.tagOuterFirst(Text, "<321>", "<456>"), 'test06');
+    }
+
+    //----------------------------------------
+    //・最後の start,end の組み合わせのタグを含まない文字
+    //----------------------------------------
+    _.tagInnerLast = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = _.indexOfLast(str, startTag);
+      var indexEndTag = _.indexOfLast(str, endTag);
+      if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
+        //startTag/endTagは存在する場合
+        if (indexStartTag < indexEndTag) {
+          return _.startLastDelim(
+            _.endLastDelim(str, startTag), endTag);
+        } else {
+          //開始終了位置が逆の場合
+          return '';
+        }
+      } else if (indexStartTag !== -1) {
+        //startTagは存在する場合
+        return _.endLastDelim(str, startTag);
+      } else if (indexEndTag !== -1) {
+        //endTagは存在する場合
+        return _.startLastDelim(str, endTag);
+      } else {
+        //startTag/endTagどちらも存在しない場合
+        return str;
+      }
+    }
+    _.test_tagInnerLast = function () {
+      var d = stsLib.debug;
+      d.check("456",  _.tagInnerLast("000<123>456<789>000", "<123>", "<789>"), "test01");
+      d.check("456",  _.tagInnerLast("<123>456<789>", "<123>", "<789>"), "test02");
+      d.check("456",  _.tagInnerLast("000<123>456", "<123>", "<789>"), "test03");
+      d.check("456",  _.tagInnerLast("456<789>000", "<123>", "<789>"), "test04");
+      d.check("456",  _.tagInnerLast("456", "<123>", "<789>"), "test05");
+      d.check("",     _.tagInnerLast("000<123><789>000", "<123>", "<789>"), "test06");
+      d.check("",  _.tagInnerLast("000<123>456<789>000", "<789>", "<123>"), "test07");
+
+      var Text = "<123>123<789> <123>456<789> <123>789<789>";
+      d.check("789",      
+        _.tagInnerLast(Text, "<123>", "<789>"), 'test01');
+      d.check("789<789>",
+        _.tagInnerLast(Text, "<123>", "<456>"), 'test02');
+      d.check("<123>123<789> <123>456<789> <123>789",
+        _.tagInnerLast(Text, "<456>", "<789>"), 'test03');
+      d.check("<123>123<789> <123>456<789> ",
+        _.tagInnerLast(Text, "<456>", "<123>"), 'test04');
+      d.check("",         
+        _.tagInnerLast(Text, "<789>", "<456>"), 'test05');
+      d.check(Text,
+        _.tagInnerLast(Text, "<321>", "<456>"), 'test06');
+    }
+
+    //----------------------------------------
+    //・最後の start,end の組み合わせのタグを含む文字
+    //----------------------------------------
+    _.tagOuterLast = function (str, startTag, endTag) {
+      var d = stsLib.debug;
+      var t = stsLib.type;
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      var indexStartTag = _.indexOfLast(str, startTag);
+      var indexEndTag = _.indexOfLast(str, endTag);
+      if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
+        //startTag/endTagは存在する場合
+        if (indexStartTag < indexEndTag) {
+          return _.startLastDelim(
+            startTag + _.endLastDelim(str, startTag),
+            endTag) + endTag;
+        } else {
+          //開始終了位置が逆の場合
+          return '';
+        }
+      } else if (indexStartTag !== -1) {
+        //startTagは存在する場合
+        return startTag + _.endLastDelim(str, startTag);
+      } else if (indexEndTag !== -1) {
+        //endTagは存在する場合
+        return _.startLastDelim(str, endTag) + endTag;
+      } else {
+        //startTag/endTagどちらも存在しない場合
+        return str;
+      }
+    }
+
+    _.test_tagOuterLast = function () {
+      var d = stsLib.debug;
+      d.check("<123>456<789>",  _.tagOuterLast(
+        "000<123>456<789>000", "<123>", "<789>"), "test01")
+      d.check("<123>456<789>",  _.tagOuterLast(
+        "<123>456<789>", "<123>", "<789>"), "test02")
+      d.check("<123>456",       _.tagOuterLast(
+        "000<123>456", "<123>", "<789>"), "test03")
+      d.check("456<789>",       _.tagOuterLast(
+        "456<789>000", "<123>", "<789>"), "test04")
+      d.check("456",            _.tagOuterLast(
+        "456", "<123>", "<789>"), "test05")
+      d.check("<123><789>",     _.tagOuterLast(
+        "000<123><789>000", "<123>", "<789>"), "test06");
+      d.check("",  _.tagOuterLast(
+        "000<123>456<789>000", "<789>", "<123>"), "test07");
+
+      var Text = "<123>123<789> <123>456<789> <123>789<789>";
+      d.check("<123>789<789>",  
+        _.tagOuterLast(Text, "<123>", "<789>"), 'test01');
+      d.check('<123>789<789>',
+        _.tagOuterLast(Text, "<123>", "<456>"), 'test02');
+      d.check(Text,
+        _.tagOuterLast(Text, "<456>", "<789>"), 'test03');
+      d.check("<123>123<789> <123>456<789> <123>",
+        _.tagOuterLast(Text, "<456>", "<123>"), 'test04');
+      d.check("<789>",
+        _.tagOuterLast(Text, "<789>", "<456>"), 'test05');
+      d.check(Text,
+        _.tagOuterLast(Text, "<321>", "<456>"), 'test06');
+    }
+
+    _.tagOuterAll = function () {
+    }
+
+    _.test_tagOuterAll = function () {
+      var d = stsLib.debug;
+      d.check('<def>', _.deleteAllTagOut('abc<def>ghi', '<', '>'));
+      d.check('<def><jkl>', _.deleteAllTagOut('abc<def>ghi<jkl>mn', '<', '>'));
+    };
+
+    //----------------------------------------
+    //◇置き換え
+    //----------------------------------------
+
+    //----------------------------------------
+    //・replaceAll
+    //----------------------------------------
+    //  ・  文字列の繰り返し置換
+    //----------------------------------------
+    function replaceAll(str, before, after) {
+      return str.split(before).join(after);
+    }
+
+    _.test_replaceAll = function () {
+        var d = stsLib.debug;
+        d.check("AAABBBAAA", replaceAll("123BBB123", "123", "AAA"));
+        d.check("AAAABBBBBBBAAAA", replaceAll("AAAAAAABBBBBBBAAAAAAA", "AA", "A"));
+    }
+
+
+  }());
 
   //----------------------------------------
   //◇オブジェクト拡張メソッド
@@ -844,8 +1529,8 @@ var stsLib = stsLib || {};
   //----------------------------------------
 
   //名前空間
-  _.String = stsLib.String || function(value) {
-    var self = function() {};
+  _.String = stsLib.String || function (value) {
+    var self = function () {};
     self.prototype = stsLib.String.prototype;
     self.prototype.value = value;
     return new self;
@@ -891,17 +1576,18 @@ var stsLib = stsLib || {};
   ////    次のようなものを作ることができる
   ////  ・ただしWSH JScript は Object.setPrototypeOf 非対応
   ////----------------------------------------
-  //_.StringEx = stsLib.StringEx || function(value) {
-  //  var self = function() {};
+  //_.StringEx = stsLib.StringEx || function (value) {
+  //  var self = function () {};
   //  self.prototype = stsLib.StringEx.prototype;
   //  self.prototype.value = value;
   //  return new self;
   //};
-  //Object.setPrototypeOf(stsLib.StringEx.prototype, stsLib.String.prototype);
+  //Object.setPrototypeOf(stsLib.StringEx.prototype, 
+  //  stsLib.String.prototype);
   //(function () {
   //  var _ = stsLib.StringEx;
   //
-  //  _.prototype.isNotInclude = function(search) {
+  //  _.prototype.isNotInclude = function (search) {
   //    return !stsLib.string.isInclude(this.value, search);
   //  }
   //
@@ -933,7 +1619,6 @@ var stsLib = stsLib || {};
   //
   //}());
 
-
   //----------------------------------------
   //◆日付時刻処理
   //----------------------------------------
@@ -942,572 +1627,196 @@ var stsLib = stsLib || {};
   //◆ファイルフォルダパス処理
   //----------------------------------------
 
-}());
+  //----------------------------------------
+  //◆動作確認
+  //----------------------------------------
+  _.test = stsLib.test || {};
+  (function () {
+    var _ = stsLib.test;
 
+    _.test_stslib_core = function () {
+
+      stsLib.debug.test_check();
+      var t = stsLib.type;
+
+      t.test_isNullOrUndefined();
+      t.test_isBoolean();
+      t.test_isNumber();
+      t.test_isInt();
+
+      var s = stsLib.string;
+      s.test_isInclude();
+      s.test_includeCount();
+      s.test_indexOfFirst();
+      s.test_indexOfLast();
+      s.test_substrIndex();
+      s.test_substrLength();
+      s.test_start();
+      s.test_startsWith();
+      s.test_includeStart();
+      s.test_excludeStart();
+      s.test_end();
+      s.test_endsWith();
+      s.test_includeEnd();
+      s.test_excludeEnd();
+      s.test_startFirstDelim();
+      s.test_startLastDelim();
+      s.test_endFirstDelim();
+      s.test_endLastDelim();
+
+      var new_String = new stsLib.String('abc');
+      new_String.test();
+
+      //WSH 非対応なので実行させない
+      //var new_StringEx = new stsLib.StringEx('123');
+      //new_StringEx.test();
+
+      _.test_equalOperator();
+
+      s.test_trimStart();
+      s.test_trimEnd();
+
+      s.test_deleteFirstLast();
+      s.test_deleteFirstTagInner();
+      s.test_deleteFirstTagOuter();
+      s.test_deleteLastTagInner();
+      s.test_deleteLastTagOuter();
+      s.test_deleteAllTag();
+      //s.test_deleteAllTagOut();
+
+      s.test_tagInnerFirst();
+      s.test_tagOuterFirst();
+      s.test_tagInnerLast();
+      s.test_tagOuterLast();
+
+
+      s.test_replaceAll();
+    //
+
+      var a = stsLib.array;
+      a.test_equal();
+      a.test_arrayToString();
+      a.test_stringToArray();
+
+      a.test_equal();
+      a.test_arrayIndexOfArray();
+
+    //  test_TagDelete();
+    //  test_deleteFirstTagInner();
+    //  test_deleteFirstTagOuter();
+
+      var angle = stsLib.angle;
+      angle.test_angleRelative();
+      angle.test_degreeToRadian();
+
+      alert("finish test テスト終了");
+      //エンコード確認のため、日本語を含めている
+      //Shift_JISのWSHからUTF-8の呼び出しが
+      //正しく行えているかどうかを確認できる
+    }
+
+    //----------------------------------------
+    //・イコール演算子の挙動調査
+    //----------------------------------------
+    _.test_equalOperator = function () {
+      var d = stsLib.debug;
+      var value;
+      value = true;
+      d.check(true , value==true        ,"v01-01");
+      //↓boolean型とstring型は比較一致不可能
+      d.check(false, value=="true"      ,"v01-02");
+      //↓『+""』を付属して文字列化すれば一致確認OK
+      d.check(true , value+""=="true"   ,"v01-03");
+      //↓文字列に『!!』を付属するとtrueが返される
+      d.check(true , value==!!"true"    ,"v01-04");
+      d.check(true , !!value==!!"true"  ,"v01-05");
+      //↓boolean型側に『!!』を付属させてもNG
+      d.check(false, !!value=="true"    ,"v01-06");
+      d.check(true , !!value==true      ,"v01-06-02");
+
+      d.check(false, value==false       ,"v01-07");
+      d.check(false, value=="false"     ,"v01-08");
+      d.check(false, value+""=="false"  ,"v01-09");
+      //↓文字列に『!!』を付属するとtrueが返されるので
+      //  判定はできない
+      d.check(true , value==!!"false"   ,"v01-10");
+      d.check(true , !!value==!!"false" ,"v01-11");
+      d.check(false, !!value=="false"   ,"v01-12");
+      d.check(false, !!value==false     ,"v01-13");
+
+      value = false;
+      d.check(false , value==true       ,"v02-01");
+      d.check(false, value=="true"      ,"v02-02");
+      d.check(false, value+""=="true"   ,"v02-03");
+      d.check(false, value==!!"true"    ,"v02-04");
+      d.check(false, !!value==!!"true"  ,"v02-05");
+      d.check(false, !!value=="true"    ,"v02-06");
+      d.check(false, !!value==true      ,"v02-06-02");
+
+      d.check(true , value==false       ,"v02-07");
+      //↓boolean型とstring型は比較一致不可能
+      d.check(false, value=="false"     ,"v02-08");
+      //↓『+""』を付属して文字列化すれば一致確認OK
+      d.check(true , value+""=="false"  ,"v02-09");
+      //↓文字列に『!!』を付属するとtrueが返されるので
+      //  判定はできない
+      d.check(false, value==!!"false"   ,"v02-10");
+      d.check(false, !!value==!!"false" ,"v02-11");
+      d.check(false, !!value=="false"   ,"v02-12");
+      d.check(true , !!value==false     ,"v02-13");
+
+      //というわけで
+      //falseの場合は[!!値]では判定できないので
+      //!!でキャストできるという噂は嘘
+
+      var s;
+      s = "true";
+      d.check(true , s=="true"          ,"V03-01");
+      //↓boolean型とstring型は比較一致不可能
+      d.check(false, s==true            ,"V03-01");
+      //↓文字列に『!!』を付属するとtrueが返されるので
+      //  合っているようにみえるが
+      d.check(true , !!s==true          ,"V03-02");
+
+      d.check(false, s==false           ,"V03-03");
+      //↓文字列に『!!』を付属するとtrueが返されるので
+      //  合っているようにみえるが
+      d.check(false, !!s==false         ,"V03-04");
+
+      s = "false";
+      d.check(false, s=="true"          ,"V04-01");
+      d.check(false, s==true            ,"V04-01");
+      //↓文字列に『!!』を付属するとtrueが返されるので
+      //  falseの場合でもtrueと判定してしまう
+      d.check(true , !!s==true          ,"V04-02");
+
+      d.check(false, s==false           ,"V04-03");
+      //↓文字列に『!!』を付属するとtrueが返されるので
+      //  falseの場合でも一致しない
+      d.check(false, !!s==false         ,"V04-04");
+    }
+
+  }());
+
+}(this));
+
+if (typeof module !== 'undefined') {
+  module.exports = stsLib;
+}
 
 //----------------------------------------
 //■リファクタリング前、関数部
 //----------------------------------------
 
 //----------------------------------------
-//◆動作確認
-//----------------------------------------
-function test_stslib_core() {
-
-  stsLib.debug.test_check();
-  stsLib.type.test_isNullOrUndefined();
-  stsLib.type.test_isBoolean();
-  stsLib.type.test_isNumber();
-  stsLib.type.test_isInt();
-  var st = stsLib.string;
-  st.test_isInclude();
-  st.test_includeCount();
-  st.test_indexOfFirst();
-  st.test_indexOfLast();
-  st.test_substrIndex();
-  st.test_substrLength();
-  st.test_start();
-  st.test_startsWith();
-  st.test_includeStart();
-  st.test_excludeStart();
-  st.test_end();
-  st.test_endsWith();
-  st.test_includeEnd();
-  st.test_excludeEnd();
-  st.test_startFirstDelim();
-  st.test_startLastDelim();
-  st.test_endFirstDelim();
-  st.test_endLastDelim();
-  
-  var new_String = new stsLib.String('abc');
-  new_String.test();
-
-  //WSH 非対応なので実行させない
-  //var new_StringEx = new stsLib.StringEx('123');
-  //new_StringEx.test();
-
-
-  test_equalOperator();
-
-//  test_firstStrFirstDelim();
-//  test_firstStrLastDelim();
-//  test_lastStrFirstDelim();
-//  test_lastStrLastDelim();
-//
-//  test_tagInnerText();
-//  test_tagOuterText();
-
-//  test_trimFirstStrs();
-//  test_trimLastStrs();
-
-//  test_replaceAll();
-//
-//  test_arrayToString();
-//  test_stringToArray();
-//
-//  test_arrayValueEqual();
-//  test_arrayIndexOfArray();
-//
-//  test_TagDelete();
-//  test_deleteTagInnerText();
-//  test_deleteTagOutterText();
-//
-//  test_angleRelative();
-//  test_degreeToRadian();
-
-  alert("finish test テスト終了");
-}
-
-//----------------------------------------
-//・イコール演算子の挙動
-//----------------------------------------
-function test_equalOperator() {
-  var d = stsLib.debug;
-  var value;
-  value = true;
-  d.check(true , value==true        ,"v01-01");
-  //↓boolean型とstring型は比較一致不可能
-  d.check(false, value=="true"      ,"v01-02");
-  //↓『+""』を付属して文字列化すれば一致確認OK
-  d.check(true , value+""=="true"   ,"v01-03");
-  //↓文字列に『!!』を付属するとtrueが返される
-  d.check(true , value==!!"true"    ,"v01-04");
-  d.check(true , !!value==!!"true"  ,"v01-05");
-  //↓boolean型側に『!!』を付属させてもNG
-  d.check(false, !!value=="true"    ,"v01-06");
-  d.check(true , !!value==true      ,"v01-06-02");
-
-  d.check(false, value==false       ,"v01-07");
-  d.check(false, value=="false"     ,"v01-08");
-  d.check(false, value+""=="false"  ,"v01-09");
-  //↓文字列に『!!』を付属するとtrueが返されるので
-  //  判定はできない
-  d.check(true , value==!!"false"   ,"v01-10");
-  d.check(true , !!value==!!"false" ,"v01-11");
-  d.check(false, !!value=="false"   ,"v01-12");
-  d.check(false, !!value==false     ,"v01-13");
-
-  value = false;
-  d.check(false , value==true       ,"v02-01");
-  d.check(false, value=="true"      ,"v02-02");
-  d.check(false, value+""=="true"   ,"v02-03");
-  d.check(false, value==!!"true"    ,"v02-04");
-  d.check(false, !!value==!!"true"  ,"v02-05");
-  d.check(false, !!value=="true"    ,"v02-06");
-  d.check(false, !!value==true      ,"v02-06-02");
-
-  d.check(true , value==false       ,"v02-07");
-  //↓boolean型とstring型は比較一致不可能
-  d.check(false, value=="false"     ,"v02-08");
-  //↓『+""』を付属して文字列化すれば一致確認OK
-  d.check(true , value+""=="false"  ,"v02-09");
-  //↓文字列に『!!』を付属するとtrueが返されるので
-  //  判定はできない
-  d.check(false, value==!!"false"   ,"v02-10");
-  d.check(false, !!value==!!"false" ,"v02-11");
-  d.check(false, !!value=="false"   ,"v02-12");
-  d.check(true , !!value==false     ,"v02-13");
-
-  //というわけで
-  //falseの場合は[!!値]では判定できないので
-  //!!でキャストできるという噂は嘘
-
-  var s;
-  s = "true";
-  d.check(true , s=="true"          ,"V03-01");
-  //↓boolean型とstring型は比較一致不可能
-  d.check(false, s==true            ,"V03-01");
-  //↓文字列に『!!』を付属するとtrueが返されるので
-  //  合っているようにみえるが
-  d.check(true , !!s==true          ,"V03-02");
-
-  d.check(false, s==false           ,"V03-03");
-  //↓文字列に『!!』を付属するとtrueが返されるので
-  //  合っているようにみえるが
-  d.check(false, !!s==false         ,"V03-04");
-
-  s = "false";
-  d.check(false, s=="true"          ,"V04-01");
-  d.check(false, s==true            ,"V04-01");
-  //↓文字列に『!!』を付属するとtrueが返されるので
-  //  falseの場合でもtrueと判定してしまう
-  d.check(true , !!s==true          ,"V04-02");
-
-  d.check(false, s==false           ,"V04-03");
-  //↓文字列に『!!』を付属するとtrueが返されるので
-  //  falseの場合でも一致しない
-  d.check(false, !!s==false         ,"V04-04");
-}
-
-//----------------------------------------
-//◆条件判断
-//----------------------------------------
-
-
-
-
-
-
-//----------------------------------------
-//◆型、型変換
-//----------------------------------------
-
-
-
-//----------------------------------------
-//◆数値
-//----------------------------------------
-
-//----------------------------------------
-//◆角度
-//----------------------------------------
-
-//----------------------------------------
-//・ラジアンと角度相互変換
-//----------------------------------------
-function degreeToRadian(value) {
-  return value * Math.PI / 180;
-}
-
-function radianToDegree(value) {
-  return value * 180 / Math.PI;
-}
-
-function test_degreeToRadian() {
-  var d = stsLib.debug;
-  d.check(0, degreeToRadian(0));
-  d.check(Math.PI / 6, degreeToRadian(30));
-  d.check(0, radianToDegree(0));
-  d.check(30, Math.round(radianToDegree(Math.PI / 6)));
-}
-
-
-//----------------------------------------
-//・絶対角度から相対角度を求める
-//----------------------------------------
-//  ・  base と target は角度の絶対座標で
-//      0度から360度とする。
-//      それ以上それ以下でも0-360に丸め込まれる
-//  ・  戻り値は -180～+180 になる
-//----------------------------------------
-function angleRelative(base, target) {
-  base = base % 360;
-  target = target % 360;
-  var result = target - base;
-  //result は -360～+360になる
-  if (180 < result) {
-    result = result -360;
-  } else if (result < -180) {
-    result = result + 360;
-  }
-  return result;
-}
-
-function test_angleRelative() {
-  var d = stsLib.debug;
-  d.check(10, angleRelative(5, 15));
-  d.check(-10, angleRelative(15, 5));
-
-  d.check(90, angleRelative(90, 180));
-  d.check(180, angleRelative(90, 270));
-  d.check(180, angleRelative(0, 180));
-
-  d.check(-179, angleRelative(0, 181));
-  d.check(179, angleRelative(181, 0));
-  d.check(-179, angleRelative(179, 0));
-}
-
-//----------------------------------------
-//◆配列処理
-//----------------------------------------
-
-
-//----------------------------------------
-//・配列の値で比較する関数
-//----------------------------------------
-
-function arrayEqualArray(value1, value2)
-{
-  var d = stsLib.debug;
-  d.assert(isArray(value1));
-  d.assert(isArray(value2));
-
-  return value1.toString() === value2.toString();
-}
-
-function test_arrayValueEqual()
-{
-  var d = stsLib.debug;
-  var a1 = [1, 2, 3];
-  var a2 = [1, 2, 3];
-
-  d.check(false, a1 == a2);
-  d.check(false, a1 === a2);
-
-  d.check(true, arrayEqualArray(a1, a2));
-}
-
-//----------------------------------------
-//・配列の値で比較して出力するindexOf
-//----------------------------------------
-function arrayIndexOfArray(arrayList, arrayValue)
-{
-  var d = stsLib.debug;
-  d.assert(isArray(arrayList));
-  d.assert(isArray(arrayValue));
-
-  for (var i = 0; i <= arrayList.length - 1; i++)
-  {
-    if (arrayEqualArray(arrayList[i], arrayValue))
-    {
-      return i;
-    }
-  }
-  return -1;
-}
-
-function test_arrayIndexOfArray()
-{
-  var d = stsLib.debug;
-  var arrayList = [];
-  arrayList.push([1,1,1]);
-  arrayList.push([2,2,2]);
-  arrayList.push([3,3,3]);
-
-  var a1 = [1, 2, 3];
-  d.check(-1, arrayIndexOfArray(arrayList, a1));
-
-  a1 = [1, 1, 1];
-  d.check(0, arrayIndexOfArray(arrayList, a1));
-  a1 = [2, 2, 2];
-  d.check(1, arrayIndexOfArray(arrayList, a1));
-  a1 = [3, 3, 3];
-  d.check(2, arrayIndexOfArray(arrayList, a1));
-}
-
-//----------------------------------------
-//◇配列文字列変換
-//----------------------------------------
-
-function arrayToString(arrayValue, delimiter) {
-  var undefined;
-  if (arrayValue[0] === undefined) { return ""; };
-  if (delimiter === undefined) {delimiter = ""};
-  var result = arrayValue[0];
-  var i = 1;
-  while(arrayValue[i] !== undefined) {
-    result += delimiter + arrayValue[i];
-    i++;
-  }
-  return result;
-}
-function test_arrayToString(){
-  var d = stsLib.debug;
-  var array01 = new Array();
-  array01[0] = "abc";
-  array01[1] = "def";
-  d.check("abc-def", arrayToString(array01, "-"));
-
-  var array02 = new Array("123", "456");
-  d.check("123_456", arrayToString(array02, "_"));
-}
-
-function stringToArray(value, delimiter) {
-  return value.split(delimiter);
-}
-function test_stringToArray(){
-  var d = stsLib.debug;
-  var array03 = stringToArray("ABC/DEF", "/");
-  d.check("ABC", array03[0]);
-  d.check("DEF", array03[1]);
-}
-
-
-
-//----------------------------------------
 //◆文字列処理
 //----------------------------------------
-
-
-//----------------------------------------
-//・値が空文字の場合だけ別の値を返す関数
-//----------------------------------------
-function ifEmptyStr(value , EmptyStrCaseValue) {
-  var result = "";
-  if (value === "") {
-    result = EmptyStrCaseValue;
-  } else {
-    result = value;
-  }
-  return result;
-}
-
-
-
-
-//--------------------------------------
-//Tag処理
-//--------------------------------------
-
-//----------------------------------------
-//・タグの内部文字列
-//----------------------------------------
-function tagInnerText(text, startTag, endTag) {
-
-  var result
-  result = lastStrFirstDelim(text, startTag)
-//  result = firstStrFirstDelim(result, endTag)
-  return result
-}
-
-function test_tagInnerText() {
-  var d = stsLib.debug;
-  d.check("456", tagInnerText("000<123>456<789>000", "<123>", "<789>"), "test01");
-  d.check("456", tagInnerText("<123>456<789>", "<123>", "<789>"), "test02");
-  d.check("456", tagInnerText("000<123>456", "<123>", "<789>"), "test03");
-  d.check("456", tagInnerText("456<789>000", "<123>", "<789>"), "test04");
-  d.check("456", tagInnerText("456", "<123>", "<789>"), "test05");
-  d.check("", tagInnerText("000<123><789>000", "<123>", "<789>"), "test06");
-
-  d.check("123", tagInnerText("<123>123<789> <123>456<789> <123>789<789>", "<123>", "<789>"));
-  var Text = "<123>123<789> <123>456<789> <123>789<789>";
-  d.check("<123>123", tagInnerText(Text, "<456>", "<789>"));
-  d.check("", tagInnerText(Text, "<456>", "<123>"));
-  d.check(Text, tagInnerText(Text, "<321>", "<456>"));
-}
-
-//----------------------------------------
-//・タグを含んだ内部文字列
-//----------------------------------------
-function tagOuterText(text, startTag, endTag) {
-
-  var result1;
-  var result2;
-  result1 = lastStrFirstDelim(text, startTag)
-  if (result1 != text) {
-    result1 = startTag + result1
-  }
-
-//  result2 = firstStrFirstDelim(result1, endTag)
-  if (result2 != result1) {
-    result2 = result2 + endTag
-  }
-  return result2
-}
-
-function test_tagOuterText() {
-  var d = stsLib.debug;
-  d.check("<123>456<789>", tagOuterText("000<123>456<789>000", "<123>", "<789>"), "test01")
-  d.check("<123>456<789>", tagOuterText("<123>456<789>", "<123>", "<789>"), "test02")
-  d.check("<123>456", tagOuterText("000<123>456", "<123>", "<789>"), "test03")
-  d.check("456<789>", tagOuterText("456<789>000", "<123>", "<789>"), "test04")
-  d.check("456", tagOuterText("456", "<123>", "<789>"), "test05")
-}
-
-//--------------------------------------
-//◇Trim
-//--------------------------------------
-function trimFirstStrs(str, trimStrArray) {
-  var result = str
-  do {
-    str = result;
-    for (var i = 0; i <= trimStrArray.length - 1; i++) {
-      //result = excludeFirstStr(result, trimStrArray[i]);
-    }
-  } while (result !== str)
-  return result
-}
-
-function test_trimFirstStrs() {
-  var d = stsLib.debug;
-  d.check("123 ",       trimFirstStrs("   123 ", [" "]))
-  d.check("\t  123 ",   trimFirstStrs("   \t  123 ", [" "]))
-  d.check("123 ",       trimFirstStrs("   \t  123 ", [" ", "\t"]))
-}
-
-function trimLastStrs(str, trimStrArray) {
-  var result = str
-  do {
-    str = result;
-    for (var i = 0; i <= trimStrArray.length - 1; i++) {
-//          result = excludeLastStr(result, trimStrArray[i]);
-    }
-  } while (result !== str)
-  return result
-}
-
-function test_trimLastStrs() {
-  var d = stsLib.debug;
-  d.check(" 123",       trimLastStrs(" 123   ", [" "]))
-  d.check(" 456  \t",   trimLastStrs(" 456  \t   ", [" "]))
-  d.check(" 789",       trimLastStrs(" 789  \t   ", [" ", "\t"]))
-}
-
-function trimBothEndsStrs(str, trimStrArray) {
-  return trimFirstStrs(trimLastStrs(str, trimStrArray), trimStrArray)
-}
-
-//--------------------------------------
-//◇置き換え処理
-//--------------------------------------
-
-//----------------------------------------
-//・replaceAll
-//----------------------------------------
-//  ・  文字列の繰り返し置換
-//----------------------------------------
-function replaceAll(strBuffer, strBefore, strAfter) {
-  var result = strBuffer
-  do {
-    strBuffer = result;
-    result = strBuffer.replace(strBefore, strAfter);
-  } while (strBuffer !== result);
-    return result;
-}
-
-function test_replaceAll() {
-    var d = stsLib.debug;
-    d.check("AAABBBAAA", replaceAll("123BBB123", "123", "AAA"));
-    d.check("ABBBBBBBA", replaceAll("AAAAAAABBBBBBBAAAAAAA", "AA", "A"));
-}
 
 //----------------------------------------
 //◇タグ処理
 //----------------------------------------
 
-function startTagDelete(value, tag) {
-  if (value.indexOf(tag) !== -1) {
-    return firstStrFirstDelim(value, tag) + 
-      lastStrFirstDelim(value, tag);
-  }
-  return value;
-}
 
-function endTagDelete(value, tag) {
-  if (value.lastIndexOf(tag) !== -1) {
-    return firstStrLastDelim(value, tag) + 
-      lastStrLastDelim(value, tag);
-  }
-  return value;
-}
-
-function test_TagDelete() {
-  var d = stsLib.debug;
-  d.check("abcdefghi", startTagDelete(endTagDelete("abc<def>ghi", ">"), "<"));
-  d.check("abc><def><ghi", startTagDelete(endTagDelete("a<bc><def><gh>i", ">"), "<"));
-  d.check("abcdefghi", startTagDelete(endTagDelete("abc>def<ghi", ">"), "<"));
-  d.check("abc>def<ghi", startTagDelete(endTagDelete("a<bc>def<gh>i", ">"), "<"));
-}
-
-function deleteTagInnerText(text, startTag, endTag) {
-  var d = stsLib.debug;
-  var t = stsLib.type;
-  d.assert((!t.isNullOrUndefined(text)) );
-  d.assert((!t.isNullOrUndefined(startTag)) && (startTag !=='') );
-  d.assert((!t.isNullOrUndefined(endTag)) && (endTag !=='') );
-  if (text === '') { return ''; }
-
-  var indexStartTag = text.indexOf(startTag);
-  var indexEndTag = text.indexOf(endTag);
-  if ((indexStartTag !== -1) 
-  && (indexEndTag !== -1)
-  && (indexStartTag < indexEndTag)) {
-    text = 
-      firstStrFirstDelim(text, startTag) + startTag + 
-      endTag + lastStrFirstDelim(text, endTag) 
-  }
-  return text;
-}
-
-function test_deleteTagInnerText() {
-  var d = stsLib.debug;
-  d.check('abc<>ghi', deleteTagInnerText('abc<def>ghi', '<', '>'));
-}
-
-function deleteTagOutterText(text, startTag, endTag) {
-  var d = stsLib.debug;
-  var t = stsLib.type;
-  d.assert((!t.isNullOrUndefined(text)) );
-  d.assert((!t.isNullOrUndefined(startTag)) && (startTag !=='') );
-  d.assert((!t.isNullOrUndefined(endTag)) && (endTag !=='') );
-  if (text === '') { return ''; }
-
-  var indexStartTag = text.indexOf(startTag);
-  var indexEndTag = text.indexOf(endTag);
-  if ((indexStartTag !== -1) 
-  && (indexEndTag !== -1)
-  && (indexStartTag < indexEndTag)) {
-    text = 
-      firstStrFirstDelim(text, startTag) +  
-      lastStrFirstDelim(text, endTag) 
-  }
-  return text;
-}
-
-function test_deleteTagOutterText() {
-  var d = stsLib.debug;
-  d.check('abcghi', deleteTagOutterText('abc<def>ghi', '<', '>'));
-}
 
 //----------------------------------------
 //◆日付時刻処理
@@ -1518,17 +1827,21 @@ function lastStringCount(value, count) {
 }
 
 function format_yyyy_mm_dd(value, delimiter){
-  return value.getFullYear() + delimiter +
-    lastStringCount("0" + (value.getMonth()+1), 2) + delimiter +
-    lastStringCount("0" + value.getDate(), 2);
-  //return "123";
+  var s = stsLib.string;
+  return value.getFullYear() + 
+    delimiter +
+    s.end("0" + (value.getMonth()+1), 2) + 
+    delimiter +
+    s.end("0" + value.getDate(), 2);
 }
 
 function format_hh_mm_dd(value, delimiter){
-  return value.getHours() + delimiter +
-    lastStringCount("0" + value.getMinutes(), 2) + delimiter +
-    lastStringCount("0" + value.getSeconds(), 2);
-  //return "123";
+  var s = stsLib.string;
+  return value.getHours() + 
+    delimiter +
+    s.end("0" + value.getMinutes(), 2) + 
+    delimiter +
+    s.end("0" + value.getSeconds(), 2);
 }
 
 //年齢
@@ -1659,7 +1972,6 @@ function getMonthEndDay(year, month) {
   return dt.getDate();
 }
 
-
 //----------------------------------------
 //◆ファイルフォルダパス処理
 //----------------------------------------
@@ -1694,7 +2006,6 @@ function getExtensionIncludePeriod(path) {
   }
   return result;
 }
-
 
 /*----------------------------------------
 ■履歴
@@ -1738,7 +2049,7 @@ function getExtensionIncludePeriod(path) {
     excludeBothEndsStr
     includeBothEndsText
     ExcludeBothEndsText
-    trimFirstStrs
+    trimFirstStr
     trimLastStrs
     trimBothEndsStrs
     strCount
@@ -1754,7 +2065,7 @@ function getExtensionIncludePeriod(path) {
     firstStrFirstDelim/lastStrFirstDelim
     firstStrLastDelim/lastStrLastDelim
 ・  追加
-    tagInnerText/tagOuterText
+    tagInnerFirst/tagOuterFirst
 ◇  ver 2017/03/16
 ・  isIncludeStr 追加
 ・  st_gas_gs.js 追加
@@ -1773,7 +2084,7 @@ function getExtensionIncludePeriod(path) {
 ◇  ver 2017/04/18
 ・  startTagDelete/endTagDelete 追加
 ◇  ver 2017/04/19
-・  deleteTagInnerText/deleteTagOutterText 追加
+・  deleteTagInnerText/deleteFirstTagOuter 追加
 ◇  ver 2017/04/20
 ・  stslib_win_wsh.js に shellFileOpen 移動
 ◇  ver 2017/04/22
@@ -1795,4 +2106,6 @@ function getExtensionIncludePeriod(path) {
 ・  名前空間に移行するリファクタリング中
 ◇  ver 2017/05/13
 ・  名前空間のリファクタリング完了。
+◇  ver 2017/05/21
+・  string系のメソッドのstsLib.stringへの移行
 //----------------------------------------*/

@@ -20,7 +20,7 @@ All Right Reserved:
 Version:       2017/04/17
 //----------------------------------------*/
 
-test_stslib_core();
+stsLib.test.test_stslib_core();
 
 /*----------------------------------------
   ver 2015/08/11
