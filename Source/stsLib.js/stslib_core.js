@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/05/22
+Version:        2017/05/23
 //----------------------------------------*/
 
 //----------------------------------------
@@ -75,7 +75,7 @@ var stsLib = stsLib || {};
       if (!value) {
         throw new Error('Error:' + message);
       }
-    }
+    };
 
     //----------------------------------------
     //・check関数
@@ -89,22 +89,22 @@ var stsLib = stsLib || {};
       if (stsLib.type.isNullOrUndefined(message)) {
         message = '';
       } else {
-        message = 'Test:' + message + "\n";
+        message = 'Test:' + message + '\n';
       }
       message = message +
-          "A != B" + "\n" +
-          "A = " + a + "\n" +
-          "B = " + b;
+          'A != B' + '\n' +
+          'A = ' + a + '\n' +
+          'B = ' + b;
       alert(message);
       return false;
-    }
+    };
 
     _.test_check = function () {
       var d = stsLib.debug;
-      d.check(true, "123" === "123");
-      d.check(true, " 123" == 123);
-      d.check(false, " 123" === 123);
-    }
+      d.check(true, '123' === '123');
+      d.check(true, ' 123' == 123);
+      d.check(false, ' 123' === 123);
+    };
   }());
 
   //----------------------------------------
@@ -120,17 +120,17 @@ var stsLib = stsLib || {};
 
     _.isUndefined = function (value) {
       return (typeof value === 'undefined')
-    }
+    };
 
     _.isNull = function (value) {
       return (value === null);
-    }
+    };
 
     _.isNullOrUndefined = function (value)
     {
       return (_.isNull(value) 
         || _.isUndefined(value));
-    }
+    };
 
     _.test_isNullOrUndefined = function () {
       var d = stsLib.debug;
@@ -148,11 +148,11 @@ var stsLib = stsLib || {};
       d.check(false,  _.isUndefined(a3));
       d.check(false,  _.isNull(a3));
       d.check(false,  _.isNullOrUndefined(a3));
-    }
+    };
 
     _.isBoolean = function (value) {
       return (typeof value === 'boolean')
-    }
+    };
 
     _.test_isBoolean = function () {
       var d = stsLib.debug;
@@ -166,11 +166,11 @@ var stsLib = stsLib || {};
       d.check(false,_.isBoolean(123));
       d.check(false,_.isBoolean(0));
       d.check(false,_.isBoolean(-1));
-    }
+    };
 
     _.isNumber = function (value) {
       return (typeof value === 'number');
-    }
+    };
 
     _.test_isNumber = function () {
       var d = stsLib.debug;
@@ -195,14 +195,14 @@ var stsLib = stsLib || {};
       d.check(false,_.isNumber('-100'));
       d.check(false,_.isNumber([]));
       d.check(false,_.isNumber({}));
-    }
+    };
 
     _.isInt = function (value) {
       if (!_.isNumber(value)) {
         return false;
       }
       return Math.round(value) === value;
-    }
+    };
 
     _.test_isInt = function () {
       var d = stsLib.debug;
@@ -225,11 +225,11 @@ var stsLib = stsLib || {};
       d.check(false,_.isInt('-100'));
       d.check(false,_.isInt([]));
       d.check(false,_.isInt({}));
-    }
+    };
 
     _.isString = function (value) {
       return (typeof value === 'string');
-    }
+    };
 
   }());
 
@@ -249,11 +249,11 @@ var stsLib = stsLib || {};
     //----------------------------------------
     _.degreeToRadian = function (value) {
       return value * Math.PI / 180;
-    }
+    };
 
     _.radianToDegree = function (value) {
       return value * 180 / Math.PI;
-    }
+    };
 
     _.test_degreeToRadian = function () {
       var d = stsLib.debug;
@@ -261,7 +261,7 @@ var stsLib = stsLib || {};
       d.check(Math.PI / 6, _.degreeToRadian(30));
       d.check(0, _.radianToDegree(0));
       d.check(30, Math.round(_.radianToDegree(Math.PI / 6)));
-    }
+    };
 
     //----------------------------------------
     //・絶対角度から相対角度を求める
@@ -282,7 +282,7 @@ var stsLib = stsLib || {};
         result = result + 360;
       }
       return result;
-    }
+    };
 
     _.test_angleRelative = function () {
       var d = stsLib.debug;
@@ -296,7 +296,7 @@ var stsLib = stsLib || {};
       d.check(-179, _.angleRelative(0, 181));
       d.check(179, _.angleRelative(181, 0));
       d.check(-179, _.angleRelative(179, 0));
-    }
+    };
   }())
 
   //----------------------------------------
@@ -316,7 +316,7 @@ var stsLib = stsLib || {};
       d.assert(Array.isArray(value2));
 
       return value1.toString() === value2.toString();
-    }
+    };
 
     _.test_equal = function ()
     {
@@ -328,7 +328,7 @@ var stsLib = stsLib || {};
       d.check(false, a1 === a2);
 
       d.check(true, stsLib.array.equal(a1, a2));
-    }
+    };
 
     //----------------------------------------
     //・配列の値で比較して出力するindexOf
@@ -347,7 +347,7 @@ var stsLib = stsLib || {};
         }
       }
       return -1;
-    }
+    };
 
     _.test_arrayIndexOfArray = function ()
     {
@@ -366,7 +366,7 @@ var stsLib = stsLib || {};
       d.check(1, _.arrayIndexOfArray(arrayList, a1));
       a1 = [3, 3, 3];
       d.check(2, _.arrayIndexOfArray(arrayList, a1));
-    }
+    };
 
     //----------------------------------------
     //◇配列文字列変換
@@ -374,8 +374,8 @@ var stsLib = stsLib || {};
 
     _.arrayToString = function (arrayValue, delimiter) {
       var undefined;
-      if (arrayValue[0] === undefined) { return ""; };
-      if (delimiter === undefined) {delimiter = ""};
+      if (arrayValue[0] === undefined) { return ''; };
+      if (delimiter === undefined) {delimiter = ''};
       var result = arrayValue[0];
       var i = 1;
       while(arrayValue[i] !== undefined) {
@@ -383,29 +383,29 @@ var stsLib = stsLib || {};
         i++;
       }
       return result;
-    }
+    };
 
     _.test_arrayToString = function (){
       var d = stsLib.debug;
       var array01 = new Array();
-      array01[0] = "abc";
-      array01[1] = "def";
-      d.check("abc-def", _.arrayToString(array01, "-"));
+      array01[0] = 'abc';
+      array01[1] = 'def';
+      d.check('abc-def', _.arrayToString(array01, '-'));
 
-      var array02 = new Array("123", "456");
-      d.check("123_456", _.arrayToString(array02, "_"));
-    }
+      var array02 = new Array('123', '456');
+      d.check('123_456', _.arrayToString(array02, '_'));
+    };
 
     _.stringToArray = function (value, delimiter) {
       return value.split(delimiter);
-    }
+    };
 
     _.test_stringToArray = function (){
       var d = stsLib.debug;
-      var array03 = _.stringToArray("ABC/DEF", "/");
-      d.check("ABC", array03[0]);
-      d.check("DEF", array03[1]);
-    }
+      var array03 = _.stringToArray('ABC/DEF', '/');
+      d.check('ABC', array03[0]);
+      d.check('DEF', array03[1]);
+    };
 
   }())
 
@@ -469,7 +469,7 @@ var stsLib = stsLib || {};
       } else {
         return false;
       }
-    }
+    };
 
     //----------------------------------------
     //・値が空文字/null/Undefinedの場合だけ別の値を返す関数
@@ -488,7 +488,7 @@ var stsLib = stsLib || {};
 
     _.isInclude = function (str, search) {
       return (0 <= _.indexOfFirst(str, search))
-    }
+    };
 
     _.test_isInclude = function () {
       var d = stsLib.debug;
@@ -498,7 +498,7 @@ var stsLib = stsLib || {};
       d.check(false,_.isInclude('abc', 'd'));
       d.check(false,_.isInclude('abc', ''));
       d.check(false,_.isInclude('', 'a'));
-    }
+    };
 
     _.includeCount = function (str, search) {
       //if (search === '') { return 0; }
@@ -511,18 +511,18 @@ var stsLib = stsLib || {};
         result++;
       } while (true)
       return result;
-    }
+    };
 
     _.test_includeCount = function () {
       var d = stsLib.debug;
-      d.check(3, _.includeCount("123123123", "1"),    "A");
-      d.check(3, _.includeCount("123123123", "2"),    "B");
-      d.check(3, _.includeCount("123123123", "3"),    "C");
-      d.check(3, _.includeCount("123123123", "12"),   "D");
-      d.check(2, _.includeCount("123123123", "31"),   "E");
-      d.check(6, _.includeCount("AAAAAA", "A"),       "F");
-      d.check(3, _.includeCount("AAAAAA", "AA"),      "G");
-    }
+      d.check(3, _.includeCount('123123123', '1'),    'A');
+      d.check(3, _.includeCount('123123123', '2'),    'B');
+      d.check(3, _.includeCount('123123123', '3'),    'C');
+      d.check(3, _.includeCount('123123123', '12'),   'D');
+      d.check(2, _.includeCount('123123123', '31'),   'E');
+      d.check(6, _.includeCount('AAAAAA', 'A'),       'F');
+      d.check(3, _.includeCount('AAAAAA', 'AA'),      'G');
+    };
 
     //----------------------------------------
     //◇indexOf 系
@@ -535,7 +535,7 @@ var stsLib = stsLib || {};
         startIndex = 0;
       }
       return str.indexOf(search, startIndex);
-    }
+    };
 
     _.test_indexOfFirst = function () {
       var d = stsLib.debug;
@@ -554,7 +554,7 @@ var stsLib = stsLib || {};
       d.check( 4, _.indexOfFirst('abcabc', 'b', 2));
       d.check( 2, _.indexOfFirst('abcabc', 'c', 2));
       d.check( 5, _.indexOfFirst('abcabc', 'c', 3));
-    }
+    };
 
     _.indexOfLast = function (str, search, startIndex) {
       if (search === '') { return -1 }
@@ -562,7 +562,7 @@ var stsLib = stsLib || {};
         startIndex = str.length - 1; 
       }
       return str.lastIndexOf(search, startIndex);
-    }
+    };
 
     _.test_indexOfLast = function () {
       var d = stsLib.debug;
@@ -581,7 +581,7 @@ var stsLib = stsLib || {};
       d.check( 1, _.indexOfLast('abcabc', 'b', 3));
       d.check( 5, _.indexOfLast('abcabc', 'c', 5));
       d.check( 2, _.indexOfLast('abcabc', 'c', 4));
-    }
+    };
 
     //----------------------------------------
     //◇Substring系
@@ -618,35 +618,35 @@ var stsLib = stsLib || {};
       } else {
         return str.substring(endIndex, startIndex + 1);
       }
-    }
+    };
 
     _.test_substrIndex = function () {
       var d = stsLib.debug;
-      d.check("45",     _.substrIndex("012345", 4));
-      d.check("2345",   _.substrIndex("012345", -4));
-      d.check("1",      _.substrIndex("012345", 1, 1));
-      d.check("1234",   _.substrIndex("012345", 1, 4));
-      d.check("345",    _.substrIndex("012345", 3, 10));
-      d.check("1234",   _.substrIndex("012345", 4, 1));
-      d.check("345",    _.substrIndex("012345", 10, 3));
+      d.check('45',     _.substrIndex('012345', 4));
+      d.check('2345',   _.substrIndex('012345', -4));
+      d.check('1',      _.substrIndex('012345', 1, 1));
+      d.check('1234',   _.substrIndex('012345', 1, 4));
+      d.check('345',    _.substrIndex('012345', 3, 10));
+      d.check('1234',   _.substrIndex('012345', 4, 1));
+      d.check('345',    _.substrIndex('012345', 10, 3));
 
-      d.check("5",      _.substrIndex("012345", -1, -1));
-      d.check("2345",   _.substrIndex("012345", -1, -4));
-      d.check("0123",   _.substrIndex("012345", -3, -10));
-      d.check("2345",   _.substrIndex("012345", -4, -1));
-      d.check("0123",   _.substrIndex("012345", -10, -3));
+      d.check('5',      _.substrIndex('012345', -1, -1));
+      d.check('2345',   _.substrIndex('012345', -1, -4));
+      d.check('0123',   _.substrIndex('012345', -3, -10));
+      d.check('2345',   _.substrIndex('012345', -4, -1));
+      d.check('0123',   _.substrIndex('012345', -10, -3));
 
-      d.check("0",      _.substrIndex("012345", 0, 0));
-      d.check("5",      _.substrIndex("012345", 5, 5));
-      d.check("45",     _.substrIndex("012345", -1, 4));
-      d.check("45",     _.substrIndex("012345", 4, -1));
-      d.check("12",   _.substrIndex("012345", -4, 1));
-      d.check("12",   _.substrIndex("012345", 1, -4));
-      d.check("0123",   _.substrIndex("012345", -10, 3));
-      d.check("0123",   _.substrIndex("012345", 3, -10));
-      d.check("345",   _.substrIndex("012345", 10, -3));
-      d.check("345",   _.substrIndex("012345", -3, 10));
-    }
+      d.check('0',      _.substrIndex('012345', 0, 0));
+      d.check('5',      _.substrIndex('012345', 5, 5));
+      d.check('45',     _.substrIndex('012345', -1, 4));
+      d.check('45',     _.substrIndex('012345', 4, -1));
+      d.check('12',   _.substrIndex('012345', -4, 1));
+      d.check('12',   _.substrIndex('012345', 1, -4));
+      d.check('0123',   _.substrIndex('012345', -10, 3));
+      d.check('0123',   _.substrIndex('012345', 3, -10));
+      d.check('345',   _.substrIndex('012345', 10, -3));
+      d.check('345',   _.substrIndex('012345', -3, 10));
+    };
 
     //----------------------------------------
     //・Length指定のSubstring
@@ -677,31 +677,31 @@ var stsLib = stsLib || {};
       }
 
       return _.substrIndex(str, startIndex, endIndex);
-    }
+    };
 
     _.test_substrLength = function () {
       var d = stsLib.debug;
-      d.check("45",   _.substrLength("012345", 4));
-      d.check("2345", _.substrLength("012345", -4));
-      d.check("23",   _.substrLength("012345", 2, 2));
-      d.check("234",  _.substrLength("012345", 2, 3));
-      d.check("345",  _.substrLength("012345", 3, 10));
-      d.check("4",    _.substrLength("012345", 4, 1));
-      d.check("",     _.substrLength("012345", 10, 3));
+      d.check('45',   _.substrLength('012345', 4));
+      d.check('2345', _.substrLength('012345', -4));
+      d.check('23',   _.substrLength('012345', 2, 2));
+      d.check('234',  _.substrLength('012345', 2, 3));
+      d.check('345',  _.substrLength('012345', 3, 10));
+      d.check('4',    _.substrLength('012345', 4, 1));
+      d.check('',     _.substrLength('012345', 10, 3));
 
-      d.check("5",    _.substrLength("012345", -1, -1));
-      d.check("45",   _.substrLength("012345", -1, -2));
-      d.check("0123", _.substrLength("012345", -3, -10));
-      d.check("34",   _.substrLength("012345", -3, 2));
-      d.check("2",    _.substrLength("012345", -4, -1));
-      d.check("2",    _.substrLength("012345", -4, 1));
-      d.check("12",   _.substrLength("012345", -4, -2));
-      d.check("23",   _.substrLength("012345", -4, 2));
-      d.check("",     _.substrLength("012345", -10, -3));
+      d.check('5',    _.substrLength('012345', -1, -1));
+      d.check('45',   _.substrLength('012345', -1, -2));
+      d.check('0123', _.substrLength('012345', -3, -10));
+      d.check('34',   _.substrLength('012345', -3, 2));
+      d.check('2',    _.substrLength('012345', -4, -1));
+      d.check('2',    _.substrLength('012345', -4, 1));
+      d.check('12',   _.substrLength('012345', -4, -2));
+      d.check('23',   _.substrLength('012345', -4, 2));
+      d.check('',     _.substrLength('012345', -10, -3));
 
-      d.check("",     _.substrLength("012345", 0, 0));
-      d.check("",     _.substrLength("012345", 3, 0));
-    }
+      d.check('',     _.substrLength('012345', 0, 0));
+      d.check('',     _.substrLength('012345', 3, 0));
+    };
 
     //----------------------------------------
     //◇Start
@@ -719,18 +719,18 @@ var stsLib = stsLib || {};
       if (length <= 0) { return ''; }
 
       return _.substrLength(str, 0, length);
-    }
+    };
 
     _.test_start = function () {
       var d = stsLib.debug;
-      d.check("0123",   _.start("012345", 4));
-      d.check("",       _.start("012345", 0));
-      d.check("",       _.start("012345", -3));
-      d.check("01",     _.start("012345", 2));
-      d.check("012",    _.start("012345", 3));
-      d.check("012345", _.start("012345", 6));
-      d.check("012345", _.start("012345", 10));
-    }
+      d.check('0123',   _.start('012345', 4));
+      d.check('',       _.start('012345', 0));
+      d.check('',       _.start('012345', -3));
+      d.check('01',     _.start('012345', 2));
+      d.check('012',    _.start('012345', 3));
+      d.check('012345', _.start('012345', 6));
+      d.check('012345', _.start('012345', 10));
+    };
 
     _.startsWith = function (str, search) {
       if (search === '') { return false; }
@@ -742,21 +742,21 @@ var stsLib = stsLib || {};
       } else {
         return false;
       }
-    }
+    };
 
     //----------------------------------------
     //・先頭の一致を調べる
     //----------------------------------------
     _.test_startsWith = function () {
       var d = stsLib.debug;
-      d.check(true,  _.startsWith("12345", "1"), "A");
-      d.check(true,  _.startsWith("12345", "12"), "B");
-      d.check(true,  _.startsWith("12345", "123"), "C");
-      d.check(false, _.startsWith("12345", "23"), "D");
-      d.check(false, _.startsWith("", "34"), "E");
-      d.check(false, _.startsWith("12345", ""), "F");
-      d.check(false, _.startsWith("123", "1234"), "G");
-    }
+      d.check(true,  _.startsWith('12345', '1'), 'A');
+      d.check(true,  _.startsWith('12345', '12'), 'B');
+      d.check(true,  _.startsWith('12345', '123'), 'C');
+      d.check(false, _.startsWith('12345', '23'), 'D');
+      d.check(false, _.startsWith('', '34'), 'E');
+      d.check(false, _.startsWith('12345', ''), 'F');
+      d.check(false, _.startsWith('123', '1234'), 'G');
+    };
 
     //----------------------------------------
     //・先頭に含む
@@ -767,15 +767,15 @@ var stsLib = stsLib || {};
       } else {
         return search + str;
       }
-    }
+    };
 
     _.test_includeStart = function () {
       var d = stsLib.debug;
-      d.check("12345",  _.includeStart("12345", "1"));
-      d.check("12345",  _.includeStart("12345", "12"));
-      d.check("12345",  _.includeStart("12345", "123"));
-      d.check("2312345",_.includeStart("12345", "23"));
-    }
+      d.check('12345',  _.includeStart('12345', '1'));
+      d.check('12345',  _.includeStart('12345', '12'));
+      d.check('12345',  _.includeStart('12345', '123'));
+      d.check('2312345',_.includeStart('12345', '23'));
+    };
 
     //----------------------------------------
     //・先頭から取り除く
@@ -786,15 +786,15 @@ var stsLib = stsLib || {};
       } else {
         return str;
       }
-    }
+    };
 
     _.test_excludeStart = function () {
       var d = stsLib.debug;
-      d.check("2345", _.excludeStart("12345", "1"));
-      d.check("345",  _.excludeStart("12345", "12"));
-      d.check("45",   _.excludeStart("12345", "123"));
-      d.check("12345",_.excludeStart("12345", "23"));
-    }
+      d.check('2345', _.excludeStart('12345', '1'));
+      d.check('345',  _.excludeStart('12345', '12'));
+      d.check('45',   _.excludeStart('12345', '123'));
+      d.check('12345',_.excludeStart('12345', '23'));
+    };
 
     //----------------------------------------
     //◇End
@@ -808,18 +808,18 @@ var stsLib = stsLib || {};
       if (length <= 0) { return ''; }
       return _.substrLength(str, 
         Math.max(0, str.length - length));
-    }
+    };
 
     _.test_end = function () {
       var d = stsLib.debug;
-      d.check("2345",   _.end("012345", 4));
-      d.check("",       _.end("012345", 0));
-      d.check("",       _.end("012345", -3));
-      d.check("45",     _.end("012345", 2));
-      d.check("345",    _.end("012345", 3));
-      d.check("012345", _.end("012345", 6));
-      d.check("012345", _.end("012345", 10));
-    }
+      d.check('2345',   _.end('012345', 4));
+      d.check('',       _.end('012345', 0));
+      d.check('',       _.end('012345', -3));
+      d.check('45',     _.end('012345', 2));
+      d.check('345',    _.end('012345', 3));
+      d.check('012345', _.end('012345', 6));
+      d.check('012345', _.end('012345', 10));
+    };
 
     //----------------------------------------
     //・終端の一致を調べる
@@ -835,18 +835,18 @@ var stsLib = stsLib || {};
       } else {
         return false;
       }
-    }
+    };
 
     _.test_endsWith = function () {
       var d = stsLib.debug;
-      d.check(true,  _.endsWith("12345", "5"));
-      d.check(true,  _.endsWith("12345", "45"));
-      d.check(true,  _.endsWith("12345", "345"));
-      d.check(false, _.endsWith("12345", "34"));
-      d.check(false, _.endsWith("", "34"));
-      d.check(false, _.endsWith("12345", ""));
-      d.check(false, _.endsWith("123", "1234"));
-    }
+      d.check(true,  _.endsWith('12345', '5'));
+      d.check(true,  _.endsWith('12345', '45'));
+      d.check(true,  _.endsWith('12345', '345'));
+      d.check(false, _.endsWith('12345', '34'));
+      d.check(false, _.endsWith('', '34'));
+      d.check(false, _.endsWith('12345', ''));
+      d.check(false, _.endsWith('123', '1234'));
+    };
 
     //----------------------------------------
     //・終端に含む
@@ -857,15 +857,15 @@ var stsLib = stsLib || {};
       } else {
         return str + search;
       }
-    }
+    };
 
     _.test_includeEnd = function () {
       var d = stsLib.debug;
-      d.check("12345",   _.includeEnd("12345", "5"));
-      d.check("12345",   _.includeEnd("12345", "45"));
-      d.check("12345",   _.includeEnd("12345", "345"));
-      d.check("1234534", _.includeEnd("12345", "34"));
-    }
+      d.check('12345',   _.includeEnd('12345', '5'));
+      d.check('12345',   _.includeEnd('12345', '45'));
+      d.check('12345',   _.includeEnd('12345', '345'));
+      d.check('1234534', _.includeEnd('12345', '34'));
+    };
 
     //----------------------------------------
     //・終端から取り除く
@@ -877,15 +877,15 @@ var stsLib = stsLib || {};
       } else {
         return str;
       };
-    }
+    };
 
     _.test_excludeEnd = function () {
       var d = stsLib.debug;
-      d.check("1234",  _.excludeEnd("12345", "5"));
-      d.check("123",   _.excludeEnd("12345", "45"));
-      d.check("12",    _.excludeEnd("12345", "345"));
-      d.check("12345", _.excludeEnd("12345", "34"));
-    }
+      d.check('1234',  _.excludeEnd('12345', '5'));
+      d.check('123',   _.excludeEnd('12345', '45'));
+      d.check('12',    _.excludeEnd('12345', '345'));
+      d.check('12345', _.excludeEnd('12345', '34'));
+    };
 
     //----------------------------------------
     //◇両端 BothEnds
@@ -921,20 +921,20 @@ var stsLib = stsLib || {};
       } else {
         return _.substrIndex(str, 0, index - 1);
       }
-    }
+    };
 
     _.test_startFirstDelim = function () {
       var d = stsLib.debug;
-      d.check("123", _.startFirstDelim("123,456", ","));
-      d.check("123", _.startFirstDelim("123,456,789", ","));
-      d.check("123", _.startFirstDelim("123ttt456", "ttt"));
-      d.check("123", _.startFirstDelim("123ttt456", "tt"));
-      d.check("123", _.startFirstDelim("123ttt456", "t"));
-      d.check("123ttt456", _.startFirstDelim("123ttt456", ","))
-      d.check("123", _.startFirstDelim("123,", ","))
-      d.check("", _.startFirstDelim(",123", ","))
-      d.check("", _.startFirstDelim(",123,", ","))
-    }
+      d.check('123', _.startFirstDelim('123,456', ','));
+      d.check('123', _.startFirstDelim('123,456,789', ','));
+      d.check('123', _.startFirstDelim('123ttt456', 'ttt'));
+      d.check('123', _.startFirstDelim('123ttt456', 'tt'));
+      d.check('123', _.startFirstDelim('123ttt456', 't'));
+      d.check('123ttt456', _.startFirstDelim('123ttt456', ','))
+      d.check('123', _.startFirstDelim('123,', ','))
+      d.check('', _.startFirstDelim(',123', ','))
+      d.check('', _.startFirstDelim(',123,', ','))
+    };
 
     //----------------------------------------
     //・startLastDelim
@@ -948,20 +948,20 @@ var stsLib = stsLib || {};
       } else {
         return _.substrIndex(str, 0, index -1);
       }
-    }
+    };
 
     _.test_startLastDelim = function () {
       var d = stsLib.debug;
-      d.check("123", _.startLastDelim("123,456", ","));
-      d.check("123,456", _.startLastDelim("123,456,789", ","));
-      d.check("123", _.startLastDelim("123ttt456", "ttt"));
-      d.check("123t", _.startLastDelim("123ttt456", "tt"));
-      d.check("123tt", _.startLastDelim("123ttt456", "t"));
-      d.check("123ttt456", _.startLastDelim("123ttt456", ","))
-      d.check("123", _.startLastDelim("123,", ","))
-      d.check("", _.startLastDelim(",123", ","))
-      d.check(",123", _.startLastDelim(",123,", ","))
-    }
+      d.check('123', _.startLastDelim('123,456', ','));
+      d.check('123,456', _.startLastDelim('123,456,789', ','));
+      d.check('123', _.startLastDelim('123ttt456', 'ttt'));
+      d.check('123t', _.startLastDelim('123ttt456', 'tt'));
+      d.check('123tt', _.startLastDelim('123ttt456', 't'));
+      d.check('123ttt456', _.startLastDelim('123ttt456', ','))
+      d.check('123', _.startLastDelim('123,', ','))
+      d.check('', _.startLastDelim(',123', ','))
+      d.check(',123', _.startLastDelim(',123,', ','))
+    };
 
     //----------------------------------------
     //・endFirstDelim
@@ -975,20 +975,20 @@ var stsLib = stsLib || {};
       } else {
         return _.substrIndex(str, index + delimiter.length);
       }
-    }
+    };
 
     _.test_endFirstDelim = function () {
       var d = stsLib.debug;
-      d.check("456", _.endFirstDelim("123,456", ","));
-      d.check("456,789", _.endFirstDelim("123,456,789", ","));
-      d.check("456", _.endFirstDelim("123ttt456", "ttt"));
-      d.check("t456", _.endFirstDelim("123ttt456", "tt"));
-      d.check("tt456", _.endFirstDelim("123ttt456", "t"));
-      d.check("123ttt456", _.endFirstDelim("123ttt456", ","))
-      d.check("", _.endFirstDelim("123,", ","))
-      d.check("123", _.endFirstDelim(",123", ","))
-      d.check("123,", _.endFirstDelim(",123,", ","))
-    }
+      d.check('456', _.endFirstDelim('123,456', ','));
+      d.check('456,789', _.endFirstDelim('123,456,789', ','));
+      d.check('456', _.endFirstDelim('123ttt456', 'ttt'));
+      d.check('t456', _.endFirstDelim('123ttt456', 'tt'));
+      d.check('tt456', _.endFirstDelim('123ttt456', 't'));
+      d.check('123ttt456', _.endFirstDelim('123ttt456', ','))
+      d.check('', _.endFirstDelim('123,', ','))
+      d.check('123', _.endFirstDelim(',123', ','))
+      d.check('123,', _.endFirstDelim(',123,', ','))
+    };
 
     //----------------------------------------
     //・endLastDelim
@@ -1002,26 +1002,25 @@ var stsLib = stsLib || {};
       } else {
         return _.substrIndex(str, index + delimiter.length);
       }
-    }
+    };
 
     _.test_endLastDelim = function () {
       var d = stsLib.debug;
 
-      d.check("456", _.endLastDelim("123,456", ","));
-      d.check("789", _.endLastDelim("123,456,789", ","));
-      d.check("456", _.endLastDelim("123ttt456", "ttt"));
-      d.check("456", _.endLastDelim("123ttt456", "tt"));
-      d.check("456", _.endLastDelim("123ttt456", "t"));
-      d.check("123ttt456", _.endLastDelim("123ttt456", ","))
-      d.check("", _.endLastDelim("123,", ","))
-      d.check("123", _.endLastDelim(",123", ","))
-      d.check("", _.endLastDelim(",123,", ","))
+      d.check('456', _.endLastDelim('123,456', ','));
+      d.check('789', _.endLastDelim('123,456,789', ','));
+      d.check('456', _.endLastDelim('123ttt456', 'ttt'));
+      d.check('456', _.endLastDelim('123ttt456', 'tt'));
+      d.check('456', _.endLastDelim('123ttt456', 't'));
+      d.check('123ttt456', _.endLastDelim('123ttt456', ','))
+      d.check('', _.endLastDelim('123,', ','))
+      d.check('123', _.endLastDelim(',123', ','))
+      d.check('', _.endLastDelim(',123,', ','))
 
-      var Text = "<123>123<789> <123>456<789> <123>789<789>";
-      d.check('', _.endLastDelim(Text, "<789>"))
+      var Text = '<123>123<789> <123>456<789> <123>789<789>';
+      d.check('', _.endLastDelim(Text, '<789>'))
 
-
-    }
+    };
 
     //--------------------------------------
     //◇Trim
@@ -1035,14 +1034,14 @@ var stsLib = stsLib || {};
         }
       } while (result !== str)
       return result
-    }
+    };
 
     _.test_trimStart = function () {
       var d = stsLib.debug;
-      d.check("123 ",       _.trimStart("   123 ", [" "]))
-      d.check("\t  123 ",   _.trimStart("   \t  123 ", [" "]))
-      d.check("123 ",       _.trimStart("   \t  123 ", [" ", "\t"]))
-    }
+      d.check('123 ',       _.trimStart('   123 ', [' ']))
+      d.check('\t  123 ',   _.trimStart('   \t  123 ', [' ']))
+      d.check('123 ',       _.trimStart('   \t  123 ', [' ', '\t']))
+    };
 
     _.trimEnd = function (str, trimStrArray) {
       var result = str
@@ -1053,23 +1052,23 @@ var stsLib = stsLib || {};
         }
       } while (result !== str)
       return result
-    }
+    };
 
     _.test_trimEnd = function () {
       var d = stsLib.debug;
-      d.check(" 123",       _.trimEnd(" 123   ", [" "]))
-      d.check(" 456  \t",   _.trimEnd(" 456  \t   ", [" "]))
-      d.check(" 789",       _.trimEnd(" 789  \t   ", [" ", "\t"]))
-    }
+      d.check(' 123',       _.trimEnd(' 123   ', [' ']))
+      d.check(' 456  \t',   _.trimEnd(' 456  \t   ', [' ']))
+      d.check(' 789',       _.trimEnd(' 789  \t   ', [' ', '\t']))
+    };
 
     _.trimBothEnds = function (str, trimStrArray) {
       return _.trimStart(
         _.trimEnd(str, trimStrArray), trimStrArray)
-    }
+    };
 
     _.trim = function (str) {
       return _.trimBothEnds(str, [' ', '\t', '\r', '\n']);
-    }
+    };
 
     //--------------------------------------
     //◇Tag deleteFirst/Last
@@ -1095,14 +1094,14 @@ var stsLib = stsLib || {};
 
     _.test_deleteFirstLast = function () {
       var d = stsLib.debug;
-      d.check("abcdefghi", _.deleteFirst(
-        _.deleteLast("abc<def>ghi", ">"), "<"));
-      d.check("abc><def><ghi", _.deleteFirst(
-        _.deleteLast("a<bc><def><gh>i", ">"), "<"));
-      d.check("abcdefghi", _.deleteFirst(
-        _.deleteLast("abc>def<ghi", ">"), "<"));
-      d.check("abc>def<ghi", _.deleteFirst(
-        _.deleteLast("a<bc>def<gh>i", ">"), "<"));
+      d.check('abcdefghi', _.deleteFirst(
+        _.deleteLast('abc<def>ghi', '>'), '<'));
+      d.check('abc><def><ghi', _.deleteFirst(
+        _.deleteLast('a<bc><def><gh>i', '>'), '<'));
+      d.check('abcdefghi', _.deleteFirst(
+        _.deleteLast('abc>def<ghi', '>'), '<'));
+      d.check('abc>def<ghi', _.deleteFirst(
+        _.deleteLast('a<bc>def<gh>i', '>'), '<'));
     };
 
     //--------------------------------------
@@ -1229,8 +1228,6 @@ var stsLib = stsLib || {};
       d.check('abcghimn', _.deleteAllTag('abc<def>ghi<jkl>mn', '<', '>'));
     };
 
-
-
     //--------------------------------------
     //◇Tag Inner/Outer
     //--------------------------------------
@@ -1267,32 +1264,32 @@ var stsLib = stsLib || {};
         //startTag/endTagどちらも存在しない場合
         return str;
       }
-    }
+    };
 
     _.test_tagInnerFirst = function () {
       var d = stsLib.debug;
-      d.check("456",  _.tagInnerFirst("000<123>456<789>000", "<123>", "<789>"), "test01");
-      d.check("456",  _.tagInnerFirst("<123>456<789>", "<123>", "<789>"), "test02");
-      d.check("456",  _.tagInnerFirst("000<123>456", "<123>", "<789>"), "test03");
-      d.check("456",  _.tagInnerFirst("456<789>000", "<123>", "<789>"), "test04");
-      d.check("456",  _.tagInnerFirst("456", "<123>", "<789>"), "test05");
-      d.check("",     _.tagInnerFirst("000<123><789>000", "<123>", "<789>"), "test06");
-      d.check("",  _.tagInnerFirst("000<123>456<789>000", "<789>", "<123>"), "test07");
+      d.check('456',  _.tagInnerFirst('000<123>456<789>000', '<123>', '<789>'), 'test01');
+      d.check('456',  _.tagInnerFirst('<123>456<789>', '<123>', '<789>'), 'test02');
+      d.check('456',  _.tagInnerFirst('000<123>456', '<123>', '<789>'), 'test03');
+      d.check('456',  _.tagInnerFirst('456<789>000', '<123>', '<789>'), 'test04');
+      d.check('456',  _.tagInnerFirst('456', '<123>', '<789>'), 'test05');
+      d.check('',     _.tagInnerFirst('000<123><789>000', '<123>', '<789>'), 'test06');
+      d.check('',  _.tagInnerFirst('000<123>456<789>000', '<789>', '<123>'), 'test07');
 
-      var Text = "<123>123<789> <123>456<789> <123>789<789>";
-      d.check("123",
-        _.tagInnerFirst(Text, "<123>", "<789>"), 'test01');
-      d.check("123<789> <123>456<789> <123>789<789>",
-        _.tagInnerFirst(Text, "<123>", "<456>"), 'test02');
-      d.check("<123>123",
-        _.tagInnerFirst(Text, "<456>", "<789>"), 'test03');
-      d.check("",
-        _.tagInnerFirst(Text, "<456>", "<123>"), 'test04');
-      d.check(" <123>456<789> <123>789<789>",
-        _.tagInnerFirst(Text, "<789>", "<456>"), 'test05');
+      var Text = '<123>123<789> <123>456<789> <123>789<789>';
+      d.check('123',
+        _.tagInnerFirst(Text, '<123>', '<789>'), 'test01');
+      d.check('123<789> <123>456<789> <123>789<789>',
+        _.tagInnerFirst(Text, '<123>', '<456>'), 'test02');
+      d.check('<123>123',
+        _.tagInnerFirst(Text, '<456>', '<789>'), 'test03');
+      d.check('',
+        _.tagInnerFirst(Text, '<456>', '<123>'), 'test04');
+      d.check(' <123>456<789> <123>789<789>',
+        _.tagInnerFirst(Text, '<789>', '<456>'), 'test05');
       d.check(Text,
-        _.tagInnerFirst(Text, "<321>", "<456>"), 'test06');
-    }
+        _.tagInnerFirst(Text, '<321>', '<456>'), 'test06');
+    };
 
     //----------------------------------------
     //・最初の start,end の組み合わせのタグを含む文字
@@ -1327,39 +1324,39 @@ var stsLib = stsLib || {};
         //startTag/endTagどちらも存在しない場合
         return str;
       }
-    }
+    };
 
     _.test_tagOuterFirst = function () {
       var d = stsLib.debug;
-      d.check("<123>456<789>",  _.tagOuterFirst(
-        "000<123>456<789>000", "<123>", "<789>"), "test01")
-      d.check("<123>456<789>",  _.tagOuterFirst(
-        "<123>456<789>", "<123>", "<789>"), "test02")
-      d.check("<123>456",       _.tagOuterFirst(
-        "000<123>456", "<123>", "<789>"), "test03")
-      d.check("456<789>",       _.tagOuterFirst(
-        "456<789>000", "<123>", "<789>"), "test04")
-      d.check("456",            _.tagOuterFirst(
-        "456", "<123>", "<789>"), "test05")
-      d.check("<123><789>",     _.tagOuterFirst(
-        "000<123><789>000", "<123>", "<789>"), "test06");
-      d.check("",  _.tagOuterFirst(
-        "000<123>456<789>000", "<789>", "<123>"), "test07");
+      d.check('<123>456<789>',  _.tagOuterFirst(
+        '000<123>456<789>000', '<123>', '<789>'), 'test01')
+      d.check('<123>456<789>',  _.tagOuterFirst(
+        '<123>456<789>', '<123>', '<789>'), 'test02')
+      d.check('<123>456',       _.tagOuterFirst(
+        '000<123>456', '<123>', '<789>'), 'test03')
+      d.check('456<789>',       _.tagOuterFirst(
+        '456<789>000', '<123>', '<789>'), 'test04')
+      d.check('456',            _.tagOuterFirst(
+        '456', '<123>', '<789>'), 'test05')
+      d.check('<123><789>',     _.tagOuterFirst(
+        '000<123><789>000', '<123>', '<789>'), 'test06');
+      d.check('',  _.tagOuterFirst(
+        '000<123>456<789>000', '<789>', '<123>'), 'test07');
 
-      var Text = "<123>123<789> <123>456<789> <123>789<789>";
-      d.check("<123>123<789>",  
-        _.tagOuterFirst(Text, "<123>", "<789>"), 'test01');
+      var Text = '<123>123<789> <123>456<789> <123>789<789>';
+      d.check('<123>123<789>',  
+        _.tagOuterFirst(Text, '<123>', '<789>'), 'test01');
       d.check(Text,
-        _.tagOuterFirst(Text, "<123>", "<456>"), 'test02');
-      d.check("<123>123<789>",
-        _.tagOuterFirst(Text, "<456>", "<789>"), 'test03');
-      d.check("<123>",
-        _.tagOuterFirst(Text, "<456>", "<123>"), 'test04');
-      d.check("<789> <123>456<789> <123>789<789>",
-        _.tagOuterFirst(Text, "<789>", "<456>"), 'test05');
+        _.tagOuterFirst(Text, '<123>', '<456>'), 'test02');
+      d.check('<123>123<789>',
+        _.tagOuterFirst(Text, '<456>', '<789>'), 'test03');
+      d.check('<123>',
+        _.tagOuterFirst(Text, '<456>', '<123>'), 'test04');
+      d.check('<789> <123>456<789> <123>789<789>',
+        _.tagOuterFirst(Text, '<789>', '<456>'), 'test05');
       d.check(Text,
-        _.tagOuterFirst(Text, "<321>", "<456>"), 'test06');
-    }
+        _.tagOuterFirst(Text, '<321>', '<456>'), 'test06');
+    };
 
     //----------------------------------------
     //・最後の start,end の組み合わせのタグを含まない文字
@@ -1393,31 +1390,31 @@ var stsLib = stsLib || {};
         //startTag/endTagどちらも存在しない場合
         return str;
       }
-    }
+    };
     _.test_tagInnerLast = function () {
       var d = stsLib.debug;
-      d.check("456",  _.tagInnerLast("000<123>456<789>000", "<123>", "<789>"), "test01");
-      d.check("456",  _.tagInnerLast("<123>456<789>", "<123>", "<789>"), "test02");
-      d.check("456",  _.tagInnerLast("000<123>456", "<123>", "<789>"), "test03");
-      d.check("456",  _.tagInnerLast("456<789>000", "<123>", "<789>"), "test04");
-      d.check("456",  _.tagInnerLast("456", "<123>", "<789>"), "test05");
-      d.check("",     _.tagInnerLast("000<123><789>000", "<123>", "<789>"), "test06");
-      d.check("",  _.tagInnerLast("000<123>456<789>000", "<789>", "<123>"), "test07");
+      d.check('456',  _.tagInnerLast('000<123>456<789>000', '<123>', '<789>'), 'test01');
+      d.check('456',  _.tagInnerLast('<123>456<789>', '<123>', '<789>'), 'test02');
+      d.check('456',  _.tagInnerLast('000<123>456', '<123>', '<789>'), 'test03');
+      d.check('456',  _.tagInnerLast('456<789>000', '<123>', '<789>'), 'test04');
+      d.check('456',  _.tagInnerLast('456', '<123>', '<789>'), 'test05');
+      d.check('',     _.tagInnerLast('000<123><789>000', '<123>', '<789>'), 'test06');
+      d.check('',  _.tagInnerLast('000<123>456<789>000', '<789>', '<123>'), 'test07');
 
-      var Text = "<123>123<789> <123>456<789> <123>789<789>";
-      d.check("789",      
-        _.tagInnerLast(Text, "<123>", "<789>"), 'test01');
-      d.check("789<789>",
-        _.tagInnerLast(Text, "<123>", "<456>"), 'test02');
-      d.check("<123>123<789> <123>456<789> <123>789",
-        _.tagInnerLast(Text, "<456>", "<789>"), 'test03');
-      d.check("<123>123<789> <123>456<789> ",
-        _.tagInnerLast(Text, "<456>", "<123>"), 'test04');
-      d.check("",         
-        _.tagInnerLast(Text, "<789>", "<456>"), 'test05');
+      var Text = '<123>123<789> <123>456<789> <123>789<789>';
+      d.check('789',      
+        _.tagInnerLast(Text, '<123>', '<789>'), 'test01');
+      d.check('789<789>',
+        _.tagInnerLast(Text, '<123>', '<456>'), 'test02');
+      d.check('<123>123<789> <123>456<789> <123>789',
+        _.tagInnerLast(Text, '<456>', '<789>'), 'test03');
+      d.check('<123>123<789> <123>456<789> ',
+        _.tagInnerLast(Text, '<456>', '<123>'), 'test04');
+      d.check('',         
+        _.tagInnerLast(Text, '<789>', '<456>'), 'test05');
       d.check(Text,
-        _.tagInnerLast(Text, "<321>", "<456>"), 'test06');
-    }
+        _.tagInnerLast(Text, '<321>', '<456>'), 'test06');
+    };
 
     //----------------------------------------
     //・最後の start,end の組み合わせのタグを含む文字
@@ -1452,48 +1449,48 @@ var stsLib = stsLib || {};
         //startTag/endTagどちらも存在しない場合
         return str;
       }
-    }
+    };
 
     _.test_tagOuterLast = function () {
       var d = stsLib.debug;
-      d.check("<123>456<789>",  _.tagOuterLast(
-        "000<123>456<789>000", "<123>", "<789>"), "test01")
-      d.check("<123>456<789>",  _.tagOuterLast(
-        "<123>456<789>", "<123>", "<789>"), "test02")
-      d.check("<123>456",       _.tagOuterLast(
-        "000<123>456", "<123>", "<789>"), "test03")
-      d.check("456<789>",       _.tagOuterLast(
-        "456<789>000", "<123>", "<789>"), "test04")
-      d.check("456",            _.tagOuterLast(
-        "456", "<123>", "<789>"), "test05")
-      d.check("<123><789>",     _.tagOuterLast(
-        "000<123><789>000", "<123>", "<789>"), "test06");
-      d.check("",  _.tagOuterLast(
-        "000<123>456<789>000", "<789>", "<123>"), "test07");
+      d.check('<123>456<789>',  _.tagOuterLast(
+        '000<123>456<789>000', '<123>', '<789>'), 'test01');
+      d.check('<123>456<789>',  _.tagOuterLast(
+        '<123>456<789>', '<123>', '<789>'), 'test02');
+      d.check('<123>456',       _.tagOuterLast(
+        '000<123>456', '<123>', '<789>'), 'test03');
+      d.check('456<789>',       _.tagOuterLast(
+        '456<789>000', '<123>', '<789>'), 'test04');
+      d.check('456',            _.tagOuterLast(
+        '456', '<123>', '<789>'), 'test05');
+      d.check('<123><789>',     _.tagOuterLast(
+        '000<123><789>000', '<123>', '<789>'), 'test06');
+      d.check('',  _.tagOuterLast(
+        '000<123>456<789>000', '<789>', '<123>'), 'test07');
 
-      var Text = "<123>123<789> <123>456<789> <123>789<789>";
-      d.check("<123>789<789>",  
-        _.tagOuterLast(Text, "<123>", "<789>"), 'test01');
+      var Text = '<123>123<789> <123>456<789> <123>789<789>';
+      d.check('<123>789<789>',  
+        _.tagOuterLast(Text, '<123>', '<789>'), 'test01');
       d.check('<123>789<789>',
-        _.tagOuterLast(Text, "<123>", "<456>"), 'test02');
+        _.tagOuterLast(Text, '<123>', '<456>'), 'test02');
       d.check(Text,
-        _.tagOuterLast(Text, "<456>", "<789>"), 'test03');
-      d.check("<123>123<789> <123>456<789> <123>",
-        _.tagOuterLast(Text, "<456>", "<123>"), 'test04');
-      d.check("<789>",
-        _.tagOuterLast(Text, "<789>", "<456>"), 'test05');
+        _.tagOuterLast(Text, '<456>', '<789>'), 'test03');
+      d.check('<123>123<789> <123>456<789> <123>',
+        _.tagOuterLast(Text, '<456>', '<123>'), 'test04');
+      d.check('<789>',
+        _.tagOuterLast(Text, '<789>', '<456>'), 'test05');
       d.check(Text,
-        _.tagOuterLast(Text, "<321>", "<456>"), 'test06');
-    }
-
-    _.tagOuterAll = function () {
-    }
-
-    _.test_tagOuterAll = function () {
-      var d = stsLib.debug;
-      d.check('<def>', _.deleteAllTagOut('abc<def>ghi', '<', '>'));
-      d.check('<def><jkl>', _.deleteAllTagOut('abc<def>ghi<jkl>mn', '<', '>'));
+        _.tagOuterLast(Text, '<321>', '<456>'), 'test06');
     };
+
+    //_.tagOuterAll = function () {
+    //}
+
+    //_.test_tagOuterAll = function () {
+    //  var d = stsLib.debug;
+    //  d.check('<def>', _.deleteAllTagOut('abc<def>ghi', '<', '>'));
+    //  d.check('<def><jkl>', _.deleteAllTagOut('abc<def>ghi<jkl>mn', '<', '>'));
+    //};
 
     //----------------------------------------
     //◇置き換え
@@ -1504,16 +1501,15 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //  ・  文字列の繰り返し置換
     //----------------------------------------
-    function replaceAll(str, before, after) {
+    _.replaceAll = function (str, before, after) {
       return str.split(before).join(after);
-    }
+    };
 
     _.test_replaceAll = function () {
         var d = stsLib.debug;
-        d.check("AAABBBAAA", replaceAll("123BBB123", "123", "AAA"));
-        d.check("AAAABBBBBBBAAAA", replaceAll("AAAAAAABBBBBBBAAAAAAA", "AA", "A"));
-    }
-
+        d.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
+        d.check('AAAABBBBBBBAAAA', _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
+    };
 
   }());
 
@@ -1528,7 +1524,6 @@ var stsLib = stsLib || {};
   //  ・stsLib.String の名前空間部分だけ記述が下記のように長い
   //----------------------------------------
 
-  //名前空間
   _.String = stsLib.String || function (value) {
     var self = function () {};
     self.prototype = stsLib.String.prototype;
@@ -1622,10 +1617,208 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆日付時刻処理
   //----------------------------------------
+  _.datetime = stsLib.datetime || {};
+  (function () {
+    var _ = stsLib.datetime;
+
+    //----------------------------------------
+    //◆日付時刻処理
+    //----------------------------------------
+    //文字列を後方から文字数指定で取得する
+    _.lastStringCount = function (value, count) {
+      return value.substr(value.length - count, count)
+    }
+
+    _.format_yyyy_mm_dd = function (value, delimiter){
+      var s = stsLib.string;
+      return value.getFullYear() + 
+        delimiter +
+        s.end('0' + (value.getMonth()+1), 2) + 
+        delimiter +
+        s.end('0' + value.getDate(), 2);
+    };
+
+    _.format_hh_mm_dd = function (value, delimiter){
+      var s = stsLib.string;
+      return value.getHours() + 
+        delimiter +
+        s.end('0' + value.getMinutes(), 2) + 
+        delimiter +
+        s.end('0' + value.getSeconds(), 2);
+    }
+
+    //年齢
+    _.getAgeYearMonthDay = function (todayDate, birthDate) {
+
+      var birthYear = birthDate.getFullYear();
+      var birthMonth = birthDate.getMonth() + 1;
+      var birthDay = birthDate.getDate();
+      var todayYear = todayDate.getFullYear();
+      var todayMonth = todayDate.getMonth() + 1;
+      var todayDay = todayDate.getDate();
+
+      //年齢計算
+      var diffYear = todayYear - birthYear;
+      //過去と同一日を過ぎていなければ１引く
+      if (todayMonth < birthMonth) {
+        diffYear = diffYear - 1;
+      } else {
+        if ((todayMonth === birthMonth) && (todayDay < birthDay)) {
+          diffYear = diffYear - 1;
+        };
+      }
+      //年齢の月計算
+      var diffMonth = ((todayYear * 12) + todayMonth)
+        - ((birthYear * 12) + birthMonth);
+      if (todayDay < birthDay) {
+        diffMonth = diffMonth - 1;
+      };
+      //年齢の日計算
+      var diffDay = todayDate.getDate() - birthDate.getDate();
+      if (diffDay < 0) {
+        //前月の過去日と同一日からの経過日数を計算している
+        diffDay =
+          getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
+          - birthDate.getDate()
+          + todayDate.getDate();
+      }
+      return {'year': diffYear,
+          'month': diffMonth - (diffYear * 12),
+          'day': diffDay};
+    };
+
+    //年齢
+    _.getAgeMonthDay = function (todayDate, birthDate) {
+
+      var birthYear = birthDate.getFullYear();
+      var birthMonth = birthDate.getMonth() + 1;
+      var birthDay = birthDate.getDate();
+      var todayYear = todayDate.getFullYear();
+      var todayMonth = todayDate.getMonth() + 1;
+      var todayDay = todayDate.getDate();
+
+      //年齢の月計算
+      var diffMonth = ((todayYear * 12) + todayMonth)
+        - ((birthYear * 12) + birthMonth);
+      if (todayDay < birthDay) {
+        diffMonth = diffMonth - 1;
+      };
+      //年齢の日計算
+      var diffDay = todayDate.getDate() - birthDate.getDate();
+      if (diffDay < 0) {
+        //前月の過去日と同一日からの経過日数を計算している
+        diffDay =
+          getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
+          - birthDate.getDate()
+          + todayDate.getDate();
+      }
+      return {'month': diffMonth,
+          'day': diffDay};
+    };
+
+    _.getAgeDay = function (todayDate, birthDate) {
+
+      var birthYear = birthDate.getFullYear();
+      var birthMonth = birthDate.getMonth() + 1;
+      var birthDay = birthDate.getDate();
+      var todayYear = todayDate.getFullYear();
+      var todayMonth = todayDate.getMonth() + 1;
+      var todayDay = todayDate.getDate();
+
+      //年齢の日計算
+      var date1 = new Date(birthYear, birthMonth - 1, birthDay);
+      var date2 = new Date(todayYear, todayMonth - 1, todayDay);
+
+      var diffDay = date2 - date1;
+      diffDay = diffDay / ( 24 * 60 * 60 * 1000);
+      return {'day': diffDay};
+    };
+
+    _.dayCount = function (todayDate, birthDate) {
+      var diff = todayDate - birthDate;
+      diff = diff / ( 24 * 60 * 60 * 1000);
+      return Math.floor(diff);
+    };
+
+    _.hoursCount = function (todayDate, birthDate) {
+      var diff = todayDate - birthDate;
+      var diff = diff / ( 60 * 60 * 1000);
+      return Math.floor(diff);
+    };
+
+    _.minutesCount = function (todayDate, birthDate) {
+      var diff = todayDate - birthDate;
+      var diff = diff / ( 60 * 1000);
+      return Math.floor(diff);
+    };
+
+    _.secondsCount = function (todayDate, birthDate) {
+      var diff = todayDate - birthDate;
+      var diff = diff / (1000);
+      return Math.floor(diff);
+    };
+
+    /*  --------------
+    年月を指定して月末日を求める関数
+    引数：  year 年
+        month 月
+    備考：  指定月の翌月の0日を取得して末日を求める
+        monthに11(月)を指定すると
+        Dateは0～11で月を表すためDate(year, 11, 0)は
+        12月の0日を表すので11月末日を示すことになる
+    参考：
+      JavaScript による日付・時刻・時間の計算・演算のまとめ - hoge256ブログ
+      http://www.hoge256.net/2007/08/64.html
+    ------------  */
+    _.getMonthEndDay = function (year, month) {
+      var dt = new Date(year, month, 0);
+      return dt.getDate();
+    };
+
+  }());
 
   //----------------------------------------
   //◆ファイルフォルダパス処理
   //----------------------------------------
+  _.path = stsLib.path || {};
+  (function () {
+    var _ = stsLib.path;
+
+    _.getFileName = function (fileName) {
+      return fileName.substring(fileName.lastIndexOf('/')+1,fileName.length);
+    };
+
+    _.test_getFileName = function () {
+      var d = stsLib.debug;
+      d.check('a.txt', _.getFileName('file://test/test/a.txt'));
+    };
+
+    //----------------------------------------
+    //・終端にパス区切りを追加する関数
+    //----------------------------------------
+    _.includeLastPathDelim = function (path) {
+      var result = '';
+      if (path != '') {
+        result = includeLastStr(path, '\\');
+      };
+      return result;
+    };
+
+    //----------------------------------------
+    //・ピリオドを含んだ拡張子を取得する
+    //----------------------------------------
+    _.getExtensionIncludePeriod = function (path) {
+      var result = '';
+      result = lastStrLastDelim(path, '.');
+      if (result == path) {
+        result = ''
+      } else {
+        result = includeFirstStr(result, '.')
+      }
+      return result;
+    };
+
+  }());
 
   //----------------------------------------
   //◆動作確認
@@ -1682,16 +1875,13 @@ var stsLib = stsLib || {};
       s.test_deleteLastTagInner();
       s.test_deleteLastTagOuter();
       s.test_deleteAllTag();
-      //s.test_deleteAllTagOut();
 
       s.test_tagInnerFirst();
       s.test_tagOuterFirst();
       s.test_tagInnerLast();
       s.test_tagOuterLast();
 
-
       s.test_replaceAll();
-    //
 
       var a = stsLib.array;
       a.test_equal();
@@ -1709,11 +1899,14 @@ var stsLib = stsLib || {};
       angle.test_angleRelative();
       angle.test_degreeToRadian();
 
-      alert("finish test テスト終了");
+      var path = stsLib.path;
+      path.test_getFileName();
+
+      alert('finish test テスト終了');
       //エンコード確認のため、日本語を含めている
       //Shift_JISのWSHからUTF-8の呼び出しが
       //正しく行えているかどうかを確認できる
-    }
+    };
 
     //----------------------------------------
     //・イコール演算子の挙動調査
@@ -1722,79 +1915,79 @@ var stsLib = stsLib || {};
       var d = stsLib.debug;
       var value;
       value = true;
-      d.check(true , value==true        ,"v01-01");
+      d.check(true , value==true        ,'v01-01');
       //↓boolean型とstring型は比較一致不可能
-      d.check(false, value=="true"      ,"v01-02");
-      //↓『+""』を付属して文字列化すれば一致確認OK
-      d.check(true , value+""=="true"   ,"v01-03");
+      d.check(false, value=='true'      ,'v01-02');
+      //↓『+''』を付属して文字列化すれば一致確認OK
+      d.check(true , value+''=='true'   ,'v01-03');
       //↓文字列に『!!』を付属するとtrueが返される
-      d.check(true , value==!!"true"    ,"v01-04");
-      d.check(true , !!value==!!"true"  ,"v01-05");
+      d.check(true , value==!!'true'    ,'v01-04');
+      d.check(true , !!value==!!'true'  ,'v01-05');
       //↓boolean型側に『!!』を付属させてもNG
-      d.check(false, !!value=="true"    ,"v01-06");
-      d.check(true , !!value==true      ,"v01-06-02");
+      d.check(false, !!value=='true'    ,'v01-06');
+      d.check(true , !!value==true      ,'v01-06-02');
 
-      d.check(false, value==false       ,"v01-07");
-      d.check(false, value=="false"     ,"v01-08");
-      d.check(false, value+""=="false"  ,"v01-09");
+      d.check(false, value==false       ,'v01-07');
+      d.check(false, value=='false'     ,'v01-08');
+      d.check(false, value+''=='false'  ,'v01-09');
       //↓文字列に『!!』を付属するとtrueが返されるので
       //  判定はできない
-      d.check(true , value==!!"false"   ,"v01-10");
-      d.check(true , !!value==!!"false" ,"v01-11");
-      d.check(false, !!value=="false"   ,"v01-12");
-      d.check(false, !!value==false     ,"v01-13");
+      d.check(true , value==!!'false'   ,'v01-10');
+      d.check(true , !!value==!!'false' ,'v01-11');
+      d.check(false, !!value=='false'   ,'v01-12');
+      d.check(false, !!value==false     ,'v01-13');
 
       value = false;
-      d.check(false , value==true       ,"v02-01");
-      d.check(false, value=="true"      ,"v02-02");
-      d.check(false, value+""=="true"   ,"v02-03");
-      d.check(false, value==!!"true"    ,"v02-04");
-      d.check(false, !!value==!!"true"  ,"v02-05");
-      d.check(false, !!value=="true"    ,"v02-06");
-      d.check(false, !!value==true      ,"v02-06-02");
+      d.check(false , value==true       ,'v02-01');
+      d.check(false, value=='true'      ,'v02-02');
+      d.check(false, value+''=='true'   ,'v02-03');
+      d.check(false, value==!!'true'    ,'v02-04');
+      d.check(false, !!value==!!'true'  ,'v02-05');
+      d.check(false, !!value=='true'    ,'v02-06');
+      d.check(false, !!value==true      ,'v02-06-02');
 
-      d.check(true , value==false       ,"v02-07");
+      d.check(true , value==false       ,'v02-07');
       //↓boolean型とstring型は比較一致不可能
-      d.check(false, value=="false"     ,"v02-08");
-      //↓『+""』を付属して文字列化すれば一致確認OK
-      d.check(true , value+""=="false"  ,"v02-09");
+      d.check(false, value=='false'     ,'v02-08');
+      //↓『+''』を付属して文字列化すれば一致確認OK
+      d.check(true , value+''=='false'  ,'v02-09');
       //↓文字列に『!!』を付属するとtrueが返されるので
       //  判定はできない
-      d.check(false, value==!!"false"   ,"v02-10");
-      d.check(false, !!value==!!"false" ,"v02-11");
-      d.check(false, !!value=="false"   ,"v02-12");
-      d.check(true , !!value==false     ,"v02-13");
+      d.check(false, value==!!'false'   ,'v02-10');
+      d.check(false, !!value==!!'false' ,'v02-11');
+      d.check(false, !!value=='false'   ,'v02-12');
+      d.check(true , !!value==false     ,'v02-13');
 
       //というわけで
       //falseの場合は[!!値]では判定できないので
       //!!でキャストできるという噂は嘘
 
       var s;
-      s = "true";
-      d.check(true , s=="true"          ,"V03-01");
+      s = 'true';
+      d.check(true , s=='true'          ,'V03-01');
       //↓boolean型とstring型は比較一致不可能
-      d.check(false, s==true            ,"V03-01");
+      d.check(false, s==true            ,'V03-01');
       //↓文字列に『!!』を付属するとtrueが返されるので
       //  合っているようにみえるが
-      d.check(true , !!s==true          ,"V03-02");
+      d.check(true , !!s==true          ,'V03-02');
 
-      d.check(false, s==false           ,"V03-03");
+      d.check(false, s==false           ,'V03-03');
       //↓文字列に『!!』を付属するとtrueが返されるので
       //  合っているようにみえるが
-      d.check(false, !!s==false         ,"V03-04");
+      d.check(false, !!s==false         ,'V03-04');
 
-      s = "false";
-      d.check(false, s=="true"          ,"V04-01");
-      d.check(false, s==true            ,"V04-01");
+      s = 'false';
+      d.check(false, s=='true'          ,'V04-01');
+      d.check(false, s==true            ,'V04-01');
       //↓文字列に『!!』を付属するとtrueが返されるので
       //  falseの場合でもtrueと判定してしまう
-      d.check(true , !!s==true          ,"V04-02");
+      d.check(true , !!s==true          ,'V04-02');
 
-      d.check(false, s==false           ,"V04-03");
+      d.check(false, s==false           ,'V04-03');
       //↓文字列に『!!』を付属するとtrueが返されるので
       //  falseの場合でも一致しない
-      d.check(false, !!s==false         ,"V04-04");
-    }
+      d.check(false, !!s==false         ,'V04-04');
+    };
 
   }());
 
@@ -1802,209 +1995,6 @@ var stsLib = stsLib || {};
 
 if (typeof module !== 'undefined') {
   module.exports = stsLib;
-}
-
-//----------------------------------------
-//■リファクタリング前、関数部
-//----------------------------------------
-
-//----------------------------------------
-//◆文字列処理
-//----------------------------------------
-
-//----------------------------------------
-//◇タグ処理
-//----------------------------------------
-
-
-
-//----------------------------------------
-//◆日付時刻処理
-//----------------------------------------
-//文字列を後方から文字数指定で取得する
-function lastStringCount(value, count) {
-  return value.substr(value.length - count, count)
-}
-
-function format_yyyy_mm_dd(value, delimiter){
-  var s = stsLib.string;
-  return value.getFullYear() + 
-    delimiter +
-    s.end("0" + (value.getMonth()+1), 2) + 
-    delimiter +
-    s.end("0" + value.getDate(), 2);
-}
-
-function format_hh_mm_dd(value, delimiter){
-  var s = stsLib.string;
-  return value.getHours() + 
-    delimiter +
-    s.end("0" + value.getMinutes(), 2) + 
-    delimiter +
-    s.end("0" + value.getSeconds(), 2);
-}
-
-//年齢
-function getAgeYearMonthDay(todayDate, birthDate) {
-
-  var birthYear = birthDate.getFullYear();
-  var birthMonth = birthDate.getMonth() + 1;
-  var birthDay = birthDate.getDate();
-  var todayYear = todayDate.getFullYear();
-  var todayMonth = todayDate.getMonth() + 1;
-  var todayDay = todayDate.getDate();
-
-  //年齢計算
-  var diffYear = todayYear - birthYear;
-  //過去と同一日を過ぎていなければ１引く
-  if (todayMonth < birthMonth) {
-    diffYear = diffYear - 1;
-  } else {
-    if ((todayMonth === birthMonth) && (todayDay < birthDay)) {
-      diffYear = diffYear - 1;
-    }
-  }
-  //年齢の月計算
-  var diffMonth = ((todayYear * 12) + todayMonth)
-    - ((birthYear * 12) + birthMonth);
-  if (todayDay < birthDay) {
-    diffMonth = diffMonth - 1;
-  };
-  //年齢の日計算
-  var diffDay = todayDate.getDate() - birthDate.getDate();
-  if (diffDay < 0) {
-    //前月の過去日と同一日からの経過日数を計算している
-    diffDay =
-      getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
-      - birthDate.getDate()
-      + todayDate.getDate();
-  }
-  return {"year": diffYear,
-      "month": diffMonth - (diffYear * 12),
-      "day": diffDay};
-}
-
-//年齢
-function getAgeMonthDay(todayDate, birthDate) {
-
-  var birthYear = birthDate.getFullYear();
-  var birthMonth = birthDate.getMonth() + 1;
-  var birthDay = birthDate.getDate();
-  var todayYear = todayDate.getFullYear();
-  var todayMonth = todayDate.getMonth() + 1;
-  var todayDay = todayDate.getDate();
-
-  //年齢の月計算
-  var diffMonth = ((todayYear * 12) + todayMonth)
-    - ((birthYear * 12) + birthMonth);
-  if (todayDay < birthDay) {
-    diffMonth = diffMonth - 1;
-  };
-  //年齢の日計算
-  var diffDay = todayDate.getDate() - birthDate.getDate();
-  if (diffDay < 0) {
-    //前月の過去日と同一日からの経過日数を計算している
-    diffDay =
-      getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
-      - birthDate.getDate()
-      + todayDate.getDate();
-  }
-  return {"month": diffMonth,
-      "day": diffDay};
-}
-
-function getAgeDay(todayDate, birthDate) {
-
-  var birthYear = birthDate.getFullYear();
-  var birthMonth = birthDate.getMonth() + 1;
-  var birthDay = birthDate.getDate();
-  var todayYear = todayDate.getFullYear();
-  var todayMonth = todayDate.getMonth() + 1;
-  var todayDay = todayDate.getDate();
-
-  //年齢の日計算
-  var date1 = new Date(birthYear, birthMonth - 1, birthDay);
-  var date2 = new Date(todayYear, todayMonth - 1, todayDay);
-
-  var diffDay = date2 - date1;
-  diffDay = diffDay / ( 24 * 60 * 60 * 1000);
-  return {"day": diffDay};
-}
-
-function dayCount(todayDate, birthDate) {
-  var diff = todayDate - birthDate;
-  diff = diff / ( 24 * 60 * 60 * 1000);
-  return Math.floor(diff);
-}
-
-function hoursCount(todayDate, birthDate) {
-  var diff = todayDate - birthDate;
-  var diff = diff / ( 60 * 60 * 1000);
-  return Math.floor(diff);
-}
-
-function minutesCount(todayDate, birthDate) {
-  var diff = todayDate - birthDate;
-  var diff = diff / ( 60 * 1000);
-  return Math.floor(diff);
-}
-
-function secondsCount(todayDate, birthDate) {
-  var diff = todayDate - birthDate;
-  var diff = diff / (1000);
-  return Math.floor(diff);
-}
-
-/*  --------------
-年月を指定して月末日を求める関数
-引数：  year 年
-    month 月
-備考：  指定月の翌月の0日を取得して末日を求める
-    monthに11(月)を指定すると
-    Dateは0～11で月を表すためDate(year, 11, 0)は
-    12月の0日を表すので11月末日を示すことになる
-参考：
-  JavaScript による日付・時刻・時間の計算・演算のまとめ - hoge256ブログ
-  http://www.hoge256.net/2007/08/64.html
-------------  */
-function getMonthEndDay(year, month) {
-  var dt = new Date(year, month, 0);
-  return dt.getDate();
-}
-
-//----------------------------------------
-//◆ファイルフォルダパス処理
-//----------------------------------------
-function getFileName(fileName) {
-  return fileName.substring(fileName.lastIndexOf("/")+1,fileName.length);
-}
-function test_getFileName() {
-  d.check("a.txt", getFileName("file://test/test/a.txt"));
-}
-
-//----------------------------------------
-//・終端にパス区切りを追加する関数
-//----------------------------------------
-function includeLastPathDelim(path) {
-  var result = "";
-  if (path != "") {
-    result = includeLastStr(path, "\\");
-  };
-  return result;
-}
-
-//----------------------------------------
-//・ピリオドを含んだ拡張子を取得する
-//----------------------------------------
-function getExtensionIncludePeriod(path) {
-  var result = "";
-  result = lastStrLastDelim(path, ".");
-  if (result == path) {
-    result = ""
-  } else {
-    result = includeFirstStr(result, ".")
-  }
-  return result;
 }
 
 /*----------------------------------------
@@ -2108,4 +2098,8 @@ function getExtensionIncludePeriod(path) {
 ・  名前空間のリファクタリング完了。
 ◇  ver 2017/05/21
 ・  string系のメソッドのstsLib.stringへの移行
+◇  ver 2017/05/23
+・  日付関係、ファイルパス関係を
+    stsLibの名前空間に移動
+・  replaceAllを修正
 //----------------------------------------*/
