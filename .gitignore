@@ -53,3 +53,5 @@ Temporary Items
 Backup
 _SupportTool
 *_開発メモ.txt
+Source/stsLib.js/build/build.js
+Source/stsLib.js/test/.vscode/tasks.json

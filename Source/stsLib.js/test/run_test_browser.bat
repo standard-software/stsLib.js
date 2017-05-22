@@ -1,0 +1,3 @@
+start stslib_test_web.html
+start stslib_test_web_browserify.html
+pause
