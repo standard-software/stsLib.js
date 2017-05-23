@@ -27,7 +27,7 @@ Version:        2017/05/23
 //----------------------------------------
 var alert = alert || function (message) {
   console.log(message);
-}
+};
 
 //----------------------------------------
 //・Array.isArray
@@ -119,7 +119,7 @@ var stsLib = stsLib || {};
     var _ = stsLib.type;
 
     _.isUndefined = function (value) {
-      return (typeof value === 'undefined')
+      return (typeof value === 'undefined');
     };
 
     _.isNull = function (value) {
@@ -128,7 +128,7 @@ var stsLib = stsLib || {};
 
     _.isNullOrUndefined = function (value)
     {
-      return (_.isNull(value) 
+      return (_.isNull(value)
         || _.isUndefined(value));
     };
 
@@ -151,7 +151,7 @@ var stsLib = stsLib || {};
     };
 
     _.isBoolean = function (value) {
-      return (typeof value === 'boolean')
+      return (typeof value === 'boolean');
     };
 
     _.test_isBoolean = function () {
@@ -210,7 +210,7 @@ var stsLib = stsLib || {};
       d.check(true, _.isInt(0));
       d.check(true, _.isInt(-1));
       d.check(false,_.isInt(123.4));
-      d.check(true, _.isInt(123.0)); 
+      d.check(true, _.isInt(123.0));
         //.0の場合は整数か少数かは判断できない
       d.check(false,_.isInt(true));
       d.check(false,_.isInt(false));
@@ -242,7 +242,7 @@ var stsLib = stsLib || {};
   //----------------------------------------
   _.angle = stsLib.angle || {};
   (function () {
-    var _ = stsLib.angle
+    var _ = stsLib.angle;
 
     //----------------------------------------
     //・ラジアンと角度相互変換
@@ -297,7 +297,7 @@ var stsLib = stsLib || {};
       d.check(179, _.angleRelative(181, 0));
       d.check(-179, _.angleRelative(179, 0));
     };
-  }())
+  }());
 
   //----------------------------------------
   //◆配列処理
@@ -374,8 +374,8 @@ var stsLib = stsLib || {};
 
     _.arrayToString = function (arrayValue, delimiter) {
       var undefined;
-      if (arrayValue[0] === undefined) { return ''; };
-      if (delimiter === undefined) {delimiter = ''};
+      if (arrayValue[0] === undefined) { return ''; }
+      if (delimiter === undefined) {delimiter = ''; }
       var result = arrayValue[0];
       var i = 1;
       while(arrayValue[i] !== undefined) {
@@ -407,7 +407,7 @@ var stsLib = stsLib || {};
       d.check('DEF', array03[1]);
     };
 
-  }())
+  }());
 
   //----------------------------------------
   //◆文字列処理
@@ -487,7 +487,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
 
     _.isInclude = function (str, search) {
-      return (0 <= _.indexOfFirst(str, search))
+      return (0 <= _.indexOfFirst(str, search));
     };
 
     _.test_isInclude = function () {
@@ -505,11 +505,11 @@ var stsLib = stsLib || {};
       var result = 0;
       var index = 0;
       do {
-        index = _.indexOfFirst(str, search, index)
+        index = _.indexOfFirst(str, search, index);
         if (index === -1) { break; }
         index = index + search.length;
         result++;
-      } while (true)
+      } while (true);
       return result;
     };
 
@@ -530,7 +530,7 @@ var stsLib = stsLib || {};
 
     _.indexOfFirst = function (str, search, startIndex) {
       var t = stsLib.type;
-      if (search === '') { return -1 }
+      if (search === '') { return -1; }
       if (t.isNullOrUndefined(startIndex)) {
         startIndex = 0;
       }
@@ -557,9 +557,9 @@ var stsLib = stsLib || {};
     };
 
     _.indexOfLast = function (str, search, startIndex) {
-      if (search === '') { return -1 }
+      if (search === '') { return -1; }
       if (stsLib.type.isNullOrUndefined(startIndex)) {
-        startIndex = str.length - 1; 
+        startIndex = str.length - 1;
       }
       return str.lastIndexOf(search, startIndex);
     };
@@ -610,7 +610,7 @@ var stsLib = stsLib || {};
         startIndex = str.length + startIndex;
       }
       if (endIndex < 0) {
-        endIndex = str.length + endIndex
+        endIndex = str.length + endIndex;
       }
 
       if (startIndex <= endIndex) {
@@ -660,7 +660,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     _.substrLength = function (str, startIndex, length) {
       if (length === 0) { return ''; }
-      if ((startIndex < (-1 * str.length)) 
+      if ((startIndex < (-1 * str.length))
       || ((str.length) < startIndex)) { return '';}
       if (startIndex < 0) {
         startIndex = str.length + startIndex;
@@ -806,7 +806,7 @@ var stsLib = stsLib || {};
     _.end = function (str, length) {
       if (str === '') { return ''; }
       if (length <= 0) { return ''; }
-      return _.substrLength(str, 
+      return _.substrLength(str,
         Math.max(0, str.length - length));
     };
 
@@ -829,7 +829,7 @@ var stsLib = stsLib || {};
       if (str === '') { return false; }
       if (str.length < search.length) { return false; }
 
-      if (_.indexOfLast(str, search) === 
+      if (_.indexOfLast(str, search) ===
         str.length - search.length) {
         return true;
       } else {
@@ -872,11 +872,11 @@ var stsLib = stsLib || {};
     //----------------------------------------
     _.excludeEnd = function (str, search) {
       if (_.endsWith(str, search)) {
-        return _.substrIndex(str, 0, 
+        return _.substrIndex(str, 0,
           str.length - search.length - 1);
       } else {
         return str;
-      };
+      }
     };
 
     _.test_excludeEnd = function () {
@@ -891,7 +891,7 @@ var stsLib = stsLib || {};
     //◇両端 BothEnds
     //----------------------------------------
     _.bothEndsWith = function (str, search) {
-      return _.startsWith(str, search) && 
+      return _.startsWith(str, search) &&
         _.endsWith(str, search);
     };
 
@@ -902,7 +902,7 @@ var stsLib = stsLib || {};
 
     _.excludeBothEnds = function (str, search) {
       return _.excludeStart(
-        _.excludeEnd(str, search))
+        _.excludeEnd(str, search));
     };
 
     //----------------------------------------
@@ -930,10 +930,10 @@ var stsLib = stsLib || {};
       d.check('123', _.startFirstDelim('123ttt456', 'ttt'));
       d.check('123', _.startFirstDelim('123ttt456', 'tt'));
       d.check('123', _.startFirstDelim('123ttt456', 't'));
-      d.check('123ttt456', _.startFirstDelim('123ttt456', ','))
-      d.check('123', _.startFirstDelim('123,', ','))
-      d.check('', _.startFirstDelim(',123', ','))
-      d.check('', _.startFirstDelim(',123,', ','))
+      d.check('123ttt456', _.startFirstDelim('123ttt456', ','));
+      d.check('123', _.startFirstDelim('123,', ','));
+      d.check('', _.startFirstDelim(',123', ','));
+      d.check('', _.startFirstDelim(',123,', ','));
     };
 
     //----------------------------------------
@@ -957,10 +957,10 @@ var stsLib = stsLib || {};
       d.check('123', _.startLastDelim('123ttt456', 'ttt'));
       d.check('123t', _.startLastDelim('123ttt456', 'tt'));
       d.check('123tt', _.startLastDelim('123ttt456', 't'));
-      d.check('123ttt456', _.startLastDelim('123ttt456', ','))
-      d.check('123', _.startLastDelim('123,', ','))
-      d.check('', _.startLastDelim(',123', ','))
-      d.check(',123', _.startLastDelim(',123,', ','))
+      d.check('123ttt456', _.startLastDelim('123ttt456', ','));
+      d.check('123', _.startLastDelim('123,', ','));
+      d.check('', _.startLastDelim(',123', ','));
+      d.check(',123', _.startLastDelim(',123,', ','));
     };
 
     //----------------------------------------
@@ -984,10 +984,10 @@ var stsLib = stsLib || {};
       d.check('456', _.endFirstDelim('123ttt456', 'ttt'));
       d.check('t456', _.endFirstDelim('123ttt456', 'tt'));
       d.check('tt456', _.endFirstDelim('123ttt456', 't'));
-      d.check('123ttt456', _.endFirstDelim('123ttt456', ','))
-      d.check('', _.endFirstDelim('123,', ','))
-      d.check('123', _.endFirstDelim(',123', ','))
-      d.check('123,', _.endFirstDelim(',123,', ','))
+      d.check('123ttt456', _.endFirstDelim('123ttt456', ','));
+      d.check('', _.endFirstDelim('123,', ','));
+      d.check('123', _.endFirstDelim(',123', ','));
+      d.check('123,', _.endFirstDelim(',123,', ','));
     };
 
     //----------------------------------------
@@ -1012,13 +1012,13 @@ var stsLib = stsLib || {};
       d.check('456', _.endLastDelim('123ttt456', 'ttt'));
       d.check('456', _.endLastDelim('123ttt456', 'tt'));
       d.check('456', _.endLastDelim('123ttt456', 't'));
-      d.check('123ttt456', _.endLastDelim('123ttt456', ','))
-      d.check('', _.endLastDelim('123,', ','))
-      d.check('123', _.endLastDelim(',123', ','))
-      d.check('', _.endLastDelim(',123,', ','))
+      d.check('123ttt456', _.endLastDelim('123ttt456', ','));
+      d.check('', _.endLastDelim('123,', ','));
+      d.check('123', _.endLastDelim(',123', ','));
+      d.check('', _.endLastDelim(',123,', ','));
 
       var Text = '<123>123<789> <123>456<789> <123>789<789>';
-      d.check('', _.endLastDelim(Text, '<789>'))
+      d.check('', _.endLastDelim(Text, '<789>'));
 
     };
 
@@ -1026,44 +1026,44 @@ var stsLib = stsLib || {};
     //◇Trim
     //--------------------------------------
     _.trimStart = function (str, trimStrArray) {
-      var result = str
+      var result = str;
       do {
         str = result;
         for (var i = 0; i <= trimStrArray.length - 1; i++) {
           result = _.excludeStart(result, trimStrArray[i]);
         }
-      } while (result !== str)
-      return result
+      } while (result !== str);
+      return result;
     };
 
     _.test_trimStart = function () {
       var d = stsLib.debug;
-      d.check('123 ',       _.trimStart('   123 ', [' ']))
-      d.check('\t  123 ',   _.trimStart('   \t  123 ', [' ']))
-      d.check('123 ',       _.trimStart('   \t  123 ', [' ', '\t']))
+      d.check('123 ',       _.trimStart('   123 ', [' ']));
+      d.check('\t  123 ',   _.trimStart('   \t  123 ', [' ']));
+      d.check('123 ',       _.trimStart('   \t  123 ', [' ', '\t']));
     };
 
     _.trimEnd = function (str, trimStrArray) {
-      var result = str
+      var result = str;
       do {
         str = result;
         for (var i = 0; i <= trimStrArray.length - 1; i++) {
           result = _.excludeEnd(result, trimStrArray[i]);
         }
-      } while (result !== str)
-      return result
+      } while (result !== str);
+      return result;
     };
 
     _.test_trimEnd = function () {
       var d = stsLib.debug;
-      d.check(' 123',       _.trimEnd(' 123   ', [' ']))
-      d.check(' 456  \t',   _.trimEnd(' 456  \t   ', [' ']))
-      d.check(' 789',       _.trimEnd(' 789  \t   ', [' ', '\t']))
+      d.check(' 123',       _.trimEnd(' 123   ', [' ']));
+      d.check(' 456  \t',   _.trimEnd(' 456  \t   ', [' ']));
+      d.check(' 789',       _.trimEnd(' 789  \t   ', [' ', '\t']));
     };
 
     _.trimBothEnds = function (str, trimStrArray) {
       return _.trimStart(
-        _.trimEnd(str, trimStrArray), trimStrArray)
+        _.trimEnd(str, trimStrArray), trimStrArray);
     };
 
     _.trim = function (str) {
@@ -1078,7 +1078,7 @@ var stsLib = stsLib || {};
       if (_.indexOfFirst(str, search) === -1) {
         return str;
       } else {
-        return _.startFirstDelim(str, search) + 
+        return _.startFirstDelim(str, search) +
           _.endFirstDelim(str, search);
       }
     };
@@ -1087,7 +1087,7 @@ var stsLib = stsLib || {};
       if (_.indexOfLast(str, search) === -1) {
         return str;
       } else {
-        return _.startLastDelim(str, search) + 
+        return _.startLastDelim(str, search) +
           _.endLastDelim(str, search);
       }
     };
@@ -1117,11 +1117,11 @@ var stsLib = stsLib || {};
 
       var indexStartTag = _.indexOfFirst(str, startTag);
       var indexEndTag = _.indexOfFirst(str, endTag);
-      if ((indexStartTag !== -1) 
+      if ((indexStartTag !== -1)
       && (indexEndTag !== -1)
       && (indexStartTag < indexEndTag)) {
-        str = _.startFirstDelim(str, startTag) + startTag + 
-          endTag + _.endFirstDelim(str, endTag) 
+        str = _.startFirstDelim(str, startTag) + startTag +
+          endTag + _.endFirstDelim(str, endTag);
       }
       return str;
     };
@@ -1142,11 +1142,11 @@ var stsLib = stsLib || {};
 
       var indexStartTag = str.indexOf(startTag);
       var indexEndTag = str.indexOf(endTag);
-      if ((indexStartTag !== -1) 
+      if ((indexStartTag !== -1)
       && (indexEndTag !== -1)
       && (indexStartTag < indexEndTag)) {
-        str = _.startFirstDelim(str, startTag) +  
-          _.endFirstDelim(str, endTag) 
+        str = _.startFirstDelim(str, startTag) +
+          _.endFirstDelim(str, endTag);
       }
       return str;
     };
@@ -1170,11 +1170,11 @@ var stsLib = stsLib || {};
 
       var indexStartTag = _.indexOfLast(str, startTag);
       var indexEndTag = _.indexOfLast(str, endTag);
-      if ((indexStartTag !== -1) 
+      if ((indexStartTag !== -1)
       && (indexEndTag !== -1)
       && (indexStartTag < indexEndTag)) {
-        str = _.startLastDelim(str, startTag) + startTag + 
-          endTag + _.endLastDelim(str, endTag) 
+        str = _.startLastDelim(str, startTag) + startTag +
+          endTag + _.endLastDelim(str, endTag);
       }
       return str;
     };
@@ -1195,11 +1195,11 @@ var stsLib = stsLib || {};
 
       var indexStartTag = _.indexOfLast(str, startTag);
       var indexEndTag = _.indexOfLast(str, endTag);
-      if ((indexStartTag !== -1) 
+      if ((indexStartTag !== -1)
       && (indexEndTag !== -1)
       && (indexStartTag < indexEndTag)) {
-        str = _.startLastDelim(str, startTag) +  
-          _.endLastDelim(str, endTag) 
+        str = _.startLastDelim(str, startTag) +
+          _.endLastDelim(str, endTag);
       }
       return str;
     };
@@ -1329,22 +1329,22 @@ var stsLib = stsLib || {};
     _.test_tagOuterFirst = function () {
       var d = stsLib.debug;
       d.check('<123>456<789>',  _.tagOuterFirst(
-        '000<123>456<789>000', '<123>', '<789>'), 'test01')
+        '000<123>456<789>000', '<123>', '<789>'), 'test01');
       d.check('<123>456<789>',  _.tagOuterFirst(
-        '<123>456<789>', '<123>', '<789>'), 'test02')
+        '<123>456<789>', '<123>', '<789>'), 'test02');
       d.check('<123>456',       _.tagOuterFirst(
-        '000<123>456', '<123>', '<789>'), 'test03')
+        '000<123>456', '<123>', '<789>'), 'test03');
       d.check('456<789>',       _.tagOuterFirst(
-        '456<789>000', '<123>', '<789>'), 'test04')
+        '456<789>000', '<123>', '<789>'), 'test04');
       d.check('456',            _.tagOuterFirst(
-        '456', '<123>', '<789>'), 'test05')
+        '456', '<123>', '<789>'), 'test05');
       d.check('<123><789>',     _.tagOuterFirst(
         '000<123><789>000', '<123>', '<789>'), 'test06');
       d.check('',  _.tagOuterFirst(
         '000<123>456<789>000', '<789>', '<123>'), 'test07');
 
       var Text = '<123>123<789> <123>456<789> <123>789<789>';
-      d.check('<123>123<789>',  
+      d.check('<123>123<789>',
         _.tagOuterFirst(Text, '<123>', '<789>'), 'test01');
       d.check(Text,
         _.tagOuterFirst(Text, '<123>', '<456>'), 'test02');
@@ -1402,7 +1402,7 @@ var stsLib = stsLib || {};
       d.check('',  _.tagInnerLast('000<123>456<789>000', '<789>', '<123>'), 'test07');
 
       var Text = '<123>123<789> <123>456<789> <123>789<789>';
-      d.check('789',      
+      d.check('789',
         _.tagInnerLast(Text, '<123>', '<789>'), 'test01');
       d.check('789<789>',
         _.tagInnerLast(Text, '<123>', '<456>'), 'test02');
@@ -1410,7 +1410,7 @@ var stsLib = stsLib || {};
         _.tagInnerLast(Text, '<456>', '<789>'), 'test03');
       d.check('<123>123<789> <123>456<789> ',
         _.tagInnerLast(Text, '<456>', '<123>'), 'test04');
-      d.check('',         
+      d.check('',
         _.tagInnerLast(Text, '<789>', '<456>'), 'test05');
       d.check(Text,
         _.tagInnerLast(Text, '<321>', '<456>'), 'test06');
@@ -1469,7 +1469,7 @@ var stsLib = stsLib || {};
         '000<123>456<789>000', '<789>', '<123>'), 'test07');
 
       var Text = '<123>123<789> <123>456<789> <123>789<789>';
-      d.check('<123>789<789>',  
+      d.check('<123>789<789>',
         _.tagOuterLast(Text, '<123>', '<789>'), 'test01');
       d.check('<123>789<789>',
         _.tagOuterLast(Text, '<123>', '<456>'), 'test02');
@@ -1490,7 +1490,6 @@ var stsLib = stsLib || {};
       var
         d = stsLib.debug,
         t = stsLib.type,
-        indexStart,
         indexStartTag,
         indexEndTag,
         result,
@@ -1502,7 +1501,6 @@ var stsLib = stsLib || {};
       if (str === '') { return ''; }
 
       result = '';
-      indexStart = 0;
       while (true) {
         indexStartTag = _.indexOfFirst(str, startTag);
         indexEndTag = _.indexOfFirst(str, endTag);
@@ -1529,7 +1527,7 @@ var stsLib = stsLib || {};
         }
       }
       return result;
-    }
+    };
 
     _.test_tagOuterAll = function () {
       var d = stsLib.debug;
@@ -1551,9 +1549,10 @@ var stsLib = stsLib || {};
     };
 
     _.test_replaceAll = function () {
-        var d = stsLib.debug;
-        d.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
-        d.check('AAAABBBBBBBAAAA', _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
+      var d = stsLib.debug;
+      d.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
+      d.check('AAAABBBBBBBAAAA', 
+        _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
     };
 
   }());
@@ -1622,7 +1621,7 @@ var stsLib = stsLib || {};
   //  self.prototype.value = value;
   //  return new self;
   //};
-  //Object.setPrototypeOf(stsLib.StringEx.prototype, 
+  //Object.setPrototypeOf(stsLib.StringEx.prototype,
   //  stsLib.String.prototype);
   //(function () {
   //  var _ = stsLib.StringEx;
@@ -1671,26 +1670,26 @@ var stsLib = stsLib || {};
     //----------------------------------------
     //文字列を後方から文字数指定で取得する
     _.lastStringCount = function (value, count) {
-      return value.substr(value.length - count, count)
-    }
+      return value.substr(value.length - count, count);
+    };
 
     _.format_yyyy_mm_dd = function (value, delimiter){
       var s = stsLib.string;
-      return value.getFullYear() + 
+      return value.getFullYear() +
         delimiter +
-        s.end('0' + (value.getMonth()+1), 2) + 
+        s.end('0' + (value.getMonth()+1), 2) +
         delimiter +
         s.end('0' + value.getDate(), 2);
     };
 
     _.format_hh_mm_dd = function (value, delimiter){
       var s = stsLib.string;
-      return value.getHours() + 
+      return value.getHours() +
         delimiter +
-        s.end('0' + value.getMinutes(), 2) + 
+        s.end('0' + value.getMinutes(), 2) +
         delimiter +
         s.end('0' + value.getSeconds(), 2);
-    }
+    };
 
     //年齢
     _.getAgeYearMonthDay = function (todayDate, birthDate) {
@@ -1710,26 +1709,26 @@ var stsLib = stsLib || {};
       } else {
         if ((todayMonth === birthMonth) && (todayDay < birthDay)) {
           diffYear = diffYear - 1;
-        };
+        }
       }
       //年齢の月計算
       var diffMonth = ((todayYear * 12) + todayMonth)
         - ((birthYear * 12) + birthMonth);
       if (todayDay < birthDay) {
         diffMonth = diffMonth - 1;
-      };
+      }
       //年齢の日計算
       var diffDay = todayDate.getDate() - birthDate.getDate();
       if (diffDay < 0) {
         //前月の過去日と同一日からの経過日数を計算している
         diffDay =
-          getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
+          _.getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
           - birthDate.getDate()
           + todayDate.getDate();
       }
       return {'year': diffYear,
-          'month': diffMonth - (diffYear * 12),
-          'day': diffDay};
+        'month': diffMonth - (diffYear * 12),
+        'day': diffDay};
     };
 
     //年齢
@@ -1747,18 +1746,18 @@ var stsLib = stsLib || {};
         - ((birthYear * 12) + birthMonth);
       if (todayDay < birthDay) {
         diffMonth = diffMonth - 1;
-      };
+      }
       //年齢の日計算
       var diffDay = todayDate.getDate() - birthDate.getDate();
       if (diffDay < 0) {
         //前月の過去日と同一日からの経過日数を計算している
         diffDay =
-          getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
+          _.getMonthEndDay(todayDate.getYear(), todayDate.getMonth())
           - birthDate.getDate()
           + todayDate.getDate();
       }
       return {'month': diffMonth,
-          'day': diffDay};
+        'day': diffDay};
     };
 
     _.getAgeDay = function (todayDate, birthDate) {
@@ -1787,19 +1786,19 @@ var stsLib = stsLib || {};
 
     _.hoursCount = function (todayDate, birthDate) {
       var diff = todayDate - birthDate;
-      var diff = diff / ( 60 * 60 * 1000);
+      diff = diff / ( 60 * 60 * 1000);
       return Math.floor(diff);
     };
 
     _.minutesCount = function (todayDate, birthDate) {
       var diff = todayDate - birthDate;
-      var diff = diff / ( 60 * 1000);
+      diff = diff / ( 60 * 1000);
       return Math.floor(diff);
     };
 
     _.secondsCount = function (todayDate, birthDate) {
       var diff = todayDate - birthDate;
-      var diff = diff / (1000);
+      diff = diff / (1000);
       return Math.floor(diff);
     };
 
@@ -1844,8 +1843,8 @@ var stsLib = stsLib || {};
     _.includeLastPathDelim = function (path) {
       var result = '';
       if (path != '') {
-        result = includeLastStr(path, '\\');
-      };
+        result = stsLib.string.includeEnd(path, '\\');
+      }
       return result;
     };
 
@@ -1853,12 +1852,15 @@ var stsLib = stsLib || {};
     //・ピリオドを含んだ拡張子を取得する
     //----------------------------------------
     _.getExtensionIncludePeriod = function (path) {
-      var result = '';
-      result = lastStrLastDelim(path, '.');
+      var
+        s = stsLib.string,
+        result = '',
+      varend;
+      result = s.endLastDelim(path, '.');
       if (result == path) {
-        result = ''
+        result = '';
       } else {
-        result = includeFirstStr(result, '.')
+        result = s.includeStart(result, '.');
       }
       return result;
     };
