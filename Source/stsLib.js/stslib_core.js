@@ -529,9 +529,9 @@ var stsLib = stsLib || {};
     //----------------------------------------
 
     _.indexOfFirst = function (str, search, startIndex) {
+      var t = stsLib.type;
       if (search === '') { return -1 }
-      if (stsLib.type.isNullOrUndefined(startIndex)) 
-      {
+      if (t.isNullOrUndefined(startIndex)) {
         startIndex = 0;
       }
       return str.indexOf(search, startIndex);
@@ -1483,14 +1483,59 @@ var stsLib = stsLib || {};
         _.tagOuterLast(Text, '<321>', '<456>'), 'test06');
     };
 
-    //_.tagOuterAll = function () {
-    //}
+    //----------------------------------------
+    //・タグで囲まれた文字を全て抽出する
+    //----------------------------------------
+    _.tagOuterAll = function (str, startTag, endTag) {
+      var
+        d = stsLib.debug,
+        t = stsLib.type,
+        indexStart,
+        indexStartTag,
+        indexEndTag,
+        result,
+      varend;
 
-    //_.test_tagOuterAll = function () {
-    //  var d = stsLib.debug;
-    //  d.check('<def>', _.deleteAllTagOut('abc<def>ghi', '<', '>'));
-    //  d.check('<def><jkl>', _.deleteAllTagOut('abc<def>ghi<jkl>mn', '<', '>'));
-    //};
+      d.assert((!t.isNullOrUndefined(str)) );
+      d.assert(!_.isEmpty(startTag));
+      d.assert(!_.isEmpty(endTag));
+      if (str === '') { return ''; }
+
+      result = '';
+      indexStart = 0;
+      while (true) {
+        indexStartTag = _.indexOfFirst(str, startTag);
+        indexEndTag = _.indexOfFirst(str, endTag);
+        if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
+          //startTag/endTagは存在する場合
+          if (indexStartTag < indexEndTag) {
+            result = result + _.startFirstDelim(
+              startTag + _.endFirstDelim(str, startTag),
+              endTag) + endTag;
+          } else {
+            //開始終了位置が逆の場合
+            return '';
+          }
+          str = _.substrIndex(str, indexEndTag + endTag.length);
+        } else if (indexStartTag !== -1) {
+          //startTagのみ存在する場合
+          return result + startTag + _.endFirstDelim(str, startTag);
+        } else if (indexEndTag !== -1) {
+          //endTagのみ存在する場合
+          return result;
+        } else {
+          //startTag/endTagどちらも存在しない場合
+          return result;
+        }
+      }
+      return result;
+    }
+
+    _.test_tagOuterAll = function () {
+      var d = stsLib.debug;
+      d.check('<def>', _.tagOuterAll('abc<def>ghi', '<', '>'));
+      d.check('<def><jkl>', _.tagOuterAll('abc<def>ghi<jkl>mn', '<', '>'));
+    };
 
     //----------------------------------------
     //◇置き換え
@@ -1880,6 +1925,7 @@ var stsLib = stsLib || {};
       s.test_tagOuterFirst();
       s.test_tagInnerLast();
       s.test_tagOuterLast();
+      s.test_tagOuterAll();
 
       s.test_replaceAll();
 
@@ -2102,4 +2148,6 @@ if (typeof module !== 'undefined') {
 ・  日付関係、ファイルパス関係を
     stsLibの名前空間に移動
 ・  replaceAllを修正
+◇  ver 2017/05/24
+・  tagOuterAll 追加
 //----------------------------------------*/
