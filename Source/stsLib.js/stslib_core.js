@@ -1558,35 +1558,183 @@ var stsLib = stsLib || {};
   }());
 
   //----------------------------------------
-  //◇オブジェクト拡張メソッド
+  //◆文字列拡張メソッド
   //----------------------------------------
   //  ・拡張メソッドのように後方にメソッドを接続して
   //    動作させることができる
-  //      var str1 = new stsLib.String('abc');
-  //      str1.isInclude('a');  //true
+  //      var str = new stsLib.String('abc');
+  //      str.isInclude('a');  //true
   //  ・new 無しでも動作するようにする仕組みも組み込んでいる
   //  ・stsLib.String の名前空間部分だけ記述が下記のように長い
   //----------------------------------------
 
   _.String = stsLib.String || function (value) {
-    var self = function () {};
-    self.prototype = stsLib.String.prototype;
-    self.prototype.value = value;
-    return new self;
+    if (!(this instanceof stsLib.String)) {
+      return new stsLib.String(value);
+    }
+    this.value = value;
   };
   (function () {
     var _ = stsLib.String;
+
+    _.prototype.isEmpty = function () {
+      return stsLib.string.isEmpty(this.value);
+    };
+
+    _.prototype.ifEmptyValue = function (emptyValue) {
+      return stsLib.string.ifEmptyValue(this.value, emptyValue);
+    };
 
     _.prototype.isInclude = function (search) {
       return stsLib.string.isInclude(this.value, search);
     };
 
-    _.prototype.indexOfFirst = function (search) {
-      return stsLib.string.indexOfFirst(this.value, search);
+    _.prototype.includeCount = function (search) {
+      return stsLib.string.includeCount(this.value, search);
     };
 
-    _.prototype.indexOfLast = function (search) {
-      return stsLib.string.indexOfLast(this.value, search);
+    _.prototype.indexOfFirst = function (search, startIndex) {
+      return stsLib.string.indexOfFirst(this.value, search, startIndex);
+    };
+
+    _.prototype.indexOfLast = function (search, startIndex) {
+      return stsLib.string.indexOfLast(this.value, search, startIndex);
+    };
+
+    _.prototype.substrIndex = function (startIndex, endIndex) {
+      return stsLib.string.substrIndex(this.value, startIndex, endIndex);
+    };
+
+    _.prototype.substrLength = function (startIndex, length) {
+      return stsLib.string.substrLength(this.value, startIndex, length);
+    };
+
+    _.prototype.start = function (length) {
+      return stsLib.string.start(this.value, length);
+    };
+
+    _.prototype.startsWith = function (search) {
+      return stsLib.string.startsWith(this.value, search);
+    };
+
+    _.prototype.includeStart = function (search) {
+      return stsLib.string.includeStart(this.value, search);
+    };
+
+    _.prototype.excludeStart = function (search) {
+      return stsLib.string.excludeStart(this.value, search);
+    };
+
+    _.prototype.end = function (length) {
+      return stsLib.string.end(this.value, length);
+    };
+
+    _.prototype.endsWith = function (search) {
+      return stsLib.string.endsWith(this.value, search);
+    };
+
+    _.prototype.includeEnd = function (search) {
+      return stsLib.string.includeEnd(this.value, search);
+    };
+
+    _.prototype.excludeEnd = function (search) {
+      return stsLib.string.excludeEnd(this.value, search);
+    };
+
+    _.prototype.bothEndsWith = function (search) {
+      return stsLib.string.bothEndsWith(this.value, search);
+    };
+
+    _.prototype.includeBothEnds = function (search) {
+      return stsLib.string.includeBothEnds(this.value, search);
+    };
+
+    _.prototype.excludeBothEnds = function (search) {
+      return stsLib.string.excludeBothEnds(this.value, search);
+    };
+
+    _.prototype.startFirstDelim = function (delimiter) {
+      return stsLib.string.startFirstDelim(this.value, delimiter);
+    };
+
+    _.prototype.startLastDelim = function (delimiter) {
+      return stsLib.string.startLastDelim(this.value, delimiter);
+    };
+
+    _.prototype.endFirstDelim = function (delimiter) {
+      return stsLib.string.endFirstDelim(this.value, delimiter);
+    };
+
+    _.prototype.endLastDelim = function (delimiter) {
+      return stsLib.string.endLastDelim(this.value, delimiter);
+    };
+
+    _.prototype.trimStart = function (trimStrArray) {
+      return stsLib.string.trimStart(this.value, trimStrArray);
+    };
+
+    _.prototype.trimEnd = function (trimStrArray) {
+      return stsLib.string.trimEnd(this.value, trimStrArray);
+    };
+
+    _.prototype.trimBothEnds = function (trimStrArray) {
+      return stsLib.string.trimBothEnds(this.value, trimStrArray);
+    };
+
+    _.prototype.trim = function () {
+      return stsLib.string.trim(this.value)
+    };
+
+    _.prototype.deleteFirst = function (search) {
+      return stsLib.string.deleteFirst(this.value, search);
+    };
+
+    _.prototype.deleteLast = function (search) {
+      return stsLib.string.deleteLast(this.value, search);
+    };
+
+    _.prototype.deleteFirstTagInner = function (startTag, endTag) {
+      return stsLib.string.deleteFirstTagInner(this.value, startTag, endTag);
+    };
+
+    _.prototype.deleteFirstTagOuter = function (startTag, endTag) {
+      return stsLib.string.deleteFirstTagOuter(this.value, startTag, endTag);
+    };
+
+    _.prototype.deleteLastTagInner = function (startTag, endTag) {
+      return stsLib.string.deleteLastTagInner(this.value, startTag, endTag);
+    };
+
+    _.prototype.deleteLastTagOuter = function (startTag, endTag) {
+      return stsLib.string.deleteLastTagOuter(this.value, startTag, endTag);
+    };
+
+    _.prototype.deleteAllTag = function (startTag, endTag) {
+      return stsLib.string.deleteAllTag(this.value, startTag, endTag);
+    };
+
+    _.prototype.tagInnerFirst = function (startTag, endTag) {
+      return stsLib.string.tagInnerFirst(this.value, startTag, endTag);
+    };
+
+    _.prototype.tagOuterFirst = function (startTag, endTag) {
+      return stsLib.string.tagOuterFirst(this.value, startTag, endTag);
+    };
+
+    _.prototype.tagInnerLast = function (startTag, endTag) {
+      return stsLib.string.tagInnerLast(this.value, startTag, endTag);
+    };
+
+    _.prototype.tagOuterLast = function (startTag, endTag) {
+      return stsLib.string.tagOuterLast(this.value, startTag, endTag);
+    };
+
+    _.prototype.tagOuterAll = function (startTag, endTag) {
+      return stsLib.string.tagOuterAll(this.value, startTag, endTag);
+    };
+
+    _.prototype.replaceAll = function (before, after) {
+      return stsLib.string.replaceAll(this.value, before, after);
     };
 
     _.prototype.test = function () {
@@ -1608,18 +1756,21 @@ var stsLib = stsLib || {};
     };
   }());
 
-  ////----------------------------------------
-  ////◇オブジェクト拡張メソッド継承
-  ////----------------------------------------
-  ////  ・拡張メソッドの方のオブジェクトは継承して
-  ////    次のようなものを作ることができる
-  ////  ・ただしWSH JScript は Object.setPrototypeOf 非対応
-  ////----------------------------------------
+  //----------------------------------------
+  //◇オブジェクト拡張メソッド継承
+  //----------------------------------------
+  //  ・拡張メソッドの方のオブジェクトは継承して
+  //    次のようなものを作ることができる
+  //  ・ただしWSH JScript は Object.setPrototypeOf 非対応
+  //  ・このような形での継承は
+  //    あまり利用価値がないのでコメントアウトしておく
+  //----------------------------------------
+
   //_.StringEx = stsLib.StringEx || function (value) {
-  //  var self = function () {};
-  //  self.prototype = stsLib.StringEx.prototype;
-  //  self.prototype.value = value;
-  //  return new self;
+  //  if (!(this instanceof stsLib.StringEx)) {
+  //    return new stsLib.StringEx(value);
+  //  }
+  //  this.value = value;
   //};
   //Object.setPrototypeOf(stsLib.StringEx.prototype,
   //  stsLib.String.prototype);
@@ -1654,6 +1805,7 @@ var stsLib = stsLib || {};
   //    d.check(true, str4.isInclude('b'));
   //    d.check(true, str4.isInclude('c'));
   //    d.check(false,str4.isInclude('d'));
+  //
   //  };
   //
   //}());
@@ -1904,12 +2056,12 @@ var stsLib = stsLib || {};
       s.test_endFirstDelim();
       s.test_endLastDelim();
 
-      var new_String = new stsLib.String('abc');
-      new_String.test();
+      var str = new stsLib.String('abc');
+      str.test();
 
-      //WSH 非対応なので実行させない
-      //var new_StringEx = new stsLib.StringEx('123');
-      //new_StringEx.test();
+      ////WSH 非対応なので実行させない
+      //var strEx = new stsLib.StringEx('123');
+      //strEx.test();
 
       _.test_equalOperator();
 
@@ -2152,4 +2304,8 @@ if (typeof module !== 'undefined') {
 ・  replaceAllを修正
 ◇  ver 2017/05/24
 ・  tagOuterAll 追加
+◇  ver 2017/05/25
+・  stsLib.Stringの拡張メソッド形式の部分を
+    stsLib.stringの全てのメソッドをから
+    作成した。
 //----------------------------------------*/
