@@ -7,10 +7,10 @@ FileName:       stslib_win_wsh.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
-	Name:       Standard Software
-	URL:        https://www.facebook.com/stndardsoftware/
+	Name:         Standard Software
+	URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/04/26
+Version:        2017/05/28
 //----------------------------------------*/
 
 //----------------------------------------
@@ -27,7 +27,7 @@ function alert(messageText) {
 }
 
 //----------------------------------------
-//・テキスト ファイル 入出力
+//◆テキスト ファイル 入出力
 //----------------------------------------
 var encodingTypeJpCharCode = {
 	NONE                :0,
@@ -99,7 +99,7 @@ function string_LoadFromFile(filePath, encodingType) {
 //----------------------------------------
 //◆システム
 //----------------------------------------
-WshShell = new ActiveXObject( "WScript.Shell" );
+wshShell = new ActiveXObject( "WScript.Shell" );
 
 //----------------------------------------
 //・ファイル指定したシェル起動
@@ -113,13 +113,47 @@ WshShell = new ActiveXObject( "WScript.Shell" );
 
 function shellFileOpen(FilePath, Focus) {
 
-	WshShell.Run(
+	wshShell.Run(
 		"rundll32.exe url.dll" +
 		",FileProtocolHandler " + FilePath
 		, Focus, false)
 	//ファイル起動の場合
 	//第三引数のWaitはtrueにしても無視される様子
 }
+
+//----------------------------------------
+//◆メッセージ表示
+//----------------------------------------
+
+  //  ボタンの種類
+  var BTN_OK                 = 0;    // [ＯＫ]ボタン
+  var BTN_OK_CANCL           = 1;    // [ＯＫ][キャンセル]ボタン
+  var BTN_STOP_RETRI_DISRGRD = 2;    // [中止][再試行][無視]ボタン
+  var BTN_YES_NO_CANCL       = 3;    // [はい][いいえ][キャンセル]ボタン
+  var BTN_YES_NO             = 4;    // [はい][いいえ]ボタン
+  var BTN_RETRI_CANCL        = 5;    // [再試行][キャンセル]ボタン
+
+  //  アイコンの種類
+  var ICON_STOP              = 16;   // [Stop]アイコン
+  var ICON_QUESTN            = 32;   // [?]アイコン
+  var ICON_EXCLA             = 48;   // [!]アイコン
+  var ICON_I                 = 64;   // [i]アイコン
+
+  //  押されたボタンごとの戻り値
+  var BTNR_OK                =  1;   // [ＯＫ]ボタン押下時
+  var BTNR_CANCL             =  2;   // [キャンセル]ボタン押下時
+  var BTNR_STOP              =  3;   // [中止]ボタン押下時
+  var BTNR_RETRI             =  4;   // [再試行]ボタン押下時
+  var BTNR_DISRGRD           =  5;   // [無視]ボタン押下時
+  var BTNR_YES               =  6;   // [はい]ボタン押下時
+  var BTNR_NO                =  7;   // [いいえ]ボタン押下時
+  var BTNR_NOT               = -1;   // どのボタンも押さなかったとき
+
+  //使い方
+//  var msgResult = wshShell.Popup(
+//    '本文', 10,
+//    'タイトル', (BTN_YES_NO_CANCL + ICON_QUESTN));
+
 
 /*----------------------------------------
 ◇  ver 2017/03/12

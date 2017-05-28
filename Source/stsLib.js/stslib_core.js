@@ -10,13 +10,12 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/05/23
+Version:        2017/05/28
 //----------------------------------------*/
 
 //----------------------------------------
 //■グローバル
 //----------------------------------------
-'use strict';
 
 //----------------------------------------
 //・alert
@@ -48,7 +47,34 @@ Array.isArray = Array.isArray || function (arg) {
 //----------------------------------------
 var stsLib = stsLib || {};
 (function (global) {
+  'use strict';
   var _ = stsLib;
+
+  //----------------------------------------
+  //◆基本的な処理
+  //----------------------------------------
+
+    //----------------------------------------
+    //・クラス継承関数
+    //----------------------------------------
+    _.inherits = function(childCtor, parentCtor) {
+        // ES6
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(childCtor.prototype, parentCtor.prototype);
+        }
+        // ES5
+        else if (Object.create) {
+            childCtor.prototype = Object.create(parentCtor.prototype);
+        }
+        // legacy platform
+        else {
+            function tempCtor() {};
+            tempCtor.prototype = parentCtor.prototype;
+            childCtor.superClass_ = parentCtor.prototype;
+            childCtor.prototype = new tempCtor();
+            childCtor.prototype.constructor = childCtor;
+        }
+    };
 
   //----------------------------------------
   //◆デバッグ処理
@@ -105,6 +131,25 @@ var stsLib = stsLib || {};
       d.check(true, ' 123' == 123);
       d.check(false, ' 123' === 123);
     };
+
+    _.benchMark = function (loopCount, func) {
+      var startTime = new Date();
+
+      for (var _len = arguments.length, 
+        args = Array(_len > 2 ? _len - 2 : 0),
+        _key = 2;
+        _key < _len; _key++) {
+        args[_key - 2] = arguments[_key];
+      }
+
+      for (var i = 0; i < loopCount; i++) {
+        func.apply(undefined, args);
+      }
+
+      var endTime = new Date();
+      return endTime - startTime;
+    }
+
   }());
 
   //----------------------------------------
@@ -1526,7 +1571,6 @@ var stsLib = stsLib || {};
           return result;
         }
       }
-      return result;
     };
 
     _.test_tagOuterAll = function () {
@@ -1682,7 +1726,7 @@ var stsLib = stsLib || {};
     };
 
     _.prototype.trim = function () {
-      return stsLib.string.trim(this.value)
+      return stsLib.string.trim(this.value);
     };
 
     _.prototype.deleteFirst = function (search) {
@@ -1761,54 +1805,74 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //  ・拡張メソッドの方のオブジェクトは継承して
   //    次のようなものを作ることができる
-  //  ・ただしWSH JScript は Object.setPrototypeOf 非対応
-  //  ・このような形での継承は
-  //    あまり利用価値がないのでコメントアウトしておく
+  //  ・StringEx は継承の実装例なので
+  //    ライブラリとして使うためのものではない
   //----------------------------------------
 
-  //_.StringEx = stsLib.StringEx || function (value) {
-  //  if (!(this instanceof stsLib.StringEx)) {
-  //    return new stsLib.StringEx(value);
-  //  }
-  //  this.value = value;
-  //};
-  //Object.setPrototypeOf(stsLib.StringEx.prototype,
-  //  stsLib.String.prototype);
-  //(function () {
-  //  var _ = stsLib.StringEx;
-  //
-  //  _.prototype.isNotInclude = function (search) {
-  //    return !stsLib.string.isInclude(this.value, search);
-  //  }
-  //
-  //  _.prototype.test = function () {
-  //    var d = stsLib.debug;
-  //
-  //    //継承してもいい
-  //    var str3 = new stsLib.StringEx('abc');
-  //    d.check(false,str3.isNotInclude('a'));
-  //    d.check(false,str3.isNotInclude('b'));
-  //    d.check(false,str3.isNotInclude('c'));
-  //    d.check(true, str3.isNotInclude('d'));
-  //    d.check(true, str3.isInclude('a'));
-  //    d.check(true, str3.isInclude('b'));
-  //    d.check(true, str3.isInclude('c'));
-  //    d.check(false,str3.isInclude('d'));
-  //
-  //    //継承して new しなくてもよい
-  //    var str4 = new stsLib.StringEx('abc');
-  //    d.check(false,str4.isNotInclude('a'));
-  //    d.check(false,str4.isNotInclude('b'));
-  //    d.check(false,str4.isNotInclude('c'));
-  //    d.check(true, str4.isNotInclude('d'));
-  //    d.check(true, str4.isInclude('a'));
-  //    d.check(true, str4.isInclude('b'));
-  //    d.check(true, str4.isInclude('c'));
-  //    d.check(false,str4.isInclude('d'));
-  //
-  //  };
-  //
-  //}());
+  _.StringEx = stsLib.StringEx || function (value) {
+    if (!(this instanceof stsLib.StringEx)) {
+      return new stsLib.StringEx(value);
+    }
+    _.String.call(this);
+    this.value = value;
+  };
+  stsLib.inherits(_.StringEx, _.String);
+
+  (function () {
+    var _ = stsLib.StringEx;
+  
+    _.prototype.isNotInclude = function (search) {
+      return !stsLib.string.isInclude(this.value, search);
+    }
+  
+    _.prototype.test = function () {
+      var d = stsLib.debug;
+  
+      //継承しているので継承元のメソッドが使える
+      var str3 = new stsLib.StringEx('abc');
+      d.check(false,str3.isNotInclude('a'));
+      d.check(false,str3.isNotInclude('b'));
+      d.check(false,str3.isNotInclude('c'));
+      d.check(true, str3.isNotInclude('d'));
+      d.check(true, str3.isInclude('a'));
+      d.check(true, str3.isInclude('b'));
+      d.check(true, str3.isInclude('c'));
+      d.check(false,str3.isInclude('d'));
+  
+      //継承しても new しなくてもよい
+      var str4 = new stsLib.StringEx('abc');
+      d.check(false,str4.isNotInclude('a'));
+      d.check(false,str4.isNotInclude('b'));
+      d.check(false,str4.isNotInclude('c'));
+      d.check(true, str4.isNotInclude('d'));
+      d.check(true, str4.isInclude('a'));
+      d.check(true, str4.isInclude('b'));
+      d.check(true, str4.isInclude('c'));
+      d.check(false,str4.isInclude('d'));
+
+      var str5 = new stsLib.String('abc');
+      //d.check(false,str5.isNotInclude('a'));
+      //str5にはisNotIncludeメソッドはないために
+      //これはエラーになる
+
+      d.check(true,  str3 instanceof stsLib.String);
+      d.check(true,  str3 instanceof stsLib.StringEx);
+      d.check(false, str3.constructor === stsLib.String);
+      d.check(true,  str3.constructor === stsLib.StringEx);
+
+      d.check(true,  str4 instanceof stsLib.String);
+      d.check(true,  str4 instanceof stsLib.StringEx);
+      d.check(false, str4.constructor === stsLib.String);
+      d.check(true,  str4.constructor === stsLib.StringEx);
+
+      d.check(true,  str5 instanceof stsLib.String);
+      d.check(false, str5 instanceof stsLib.StringEx);
+      d.check(true,  str5.constructor === stsLib.String);
+      d.check(false, str5.constructor === stsLib.StringEx);
+
+    };
+  
+  }());
 
   //----------------------------------------
   //◆日付時刻処理
@@ -2059,9 +2123,9 @@ var stsLib = stsLib || {};
       var str = new stsLib.String('abc');
       str.test();
 
-      ////WSH 非対応なので実行させない
-      //var strEx = new stsLib.StringEx('123');
-      //strEx.test();
+      //WSH 非対応なので実行させない
+      var strEx = new stsLib.StringEx('123');
+      strEx.test();
 
       _.test_equalOperator();
 
@@ -2308,4 +2372,13 @@ if (typeof module !== 'undefined') {
 ・  stsLib.Stringの拡張メソッド形式の部分を
     stsLib.stringの全てのメソッドをから
     作成した。
+◇  ver 2017/05/28
+・  継承の仕組みを
+      stsLib.StringEx.prototype = new stsLib.String();
+      stsLib.StringEx.prototype.constructor = stsLib.StringEx;
+    から
+      inherits関数(Google Closure Library)に変更
+    テストも追加した
+・  benchMarkを追加
+・  stslib_win_wsh.js メッセージ表示機能追加
 //----------------------------------------*/
