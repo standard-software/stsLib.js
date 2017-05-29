@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/05/28
+Version:        2017/05/30
 //----------------------------------------*/
 
 //----------------------------------------
@@ -46,7 +46,7 @@ Array.isArray = Array.isArray || function (arg) {
 //    定義し直しても別関数を定義していくことができる
 //----------------------------------------
 var stsLib = stsLib || {};
-(function (global) {
+(function (stsLib, global) {
   'use strict';
   var _ = stsLib;
 
@@ -1813,8 +1813,7 @@ var stsLib = stsLib || {};
     if (!(this instanceof stsLib.StringEx)) {
       return new stsLib.StringEx(value);
     }
-    _.String.call(this);
-    this.value = value;
+    _.String.call(this, value);
   };
   stsLib.inherits(_.StringEx, _.String);
 
@@ -2255,7 +2254,7 @@ var stsLib = stsLib || {};
 
   }());
 
-}(this));
+}(stsLib, this));
 
 if (typeof module !== 'undefined') {
   module.exports = stsLib;
@@ -2381,4 +2380,8 @@ if (typeof module !== 'undefined') {
     テストも追加した
 ・  benchMarkを追加
 ・  stslib_win_wsh.js メッセージ表示機能追加
+◇  ver 2017/05/30
+・  stsLib名前空間でstsLib自体を定義して
+    グローバル変数を見に行かないようにした
+・  .StringExを.Stringのvalueを呼び出すようにした
 //----------------------------------------*/
