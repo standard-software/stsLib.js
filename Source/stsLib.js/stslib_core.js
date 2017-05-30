@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/05/30
+Version:        2017/05/31
 //----------------------------------------*/
 
 //----------------------------------------
@@ -132,18 +132,55 @@ var stsLib = stsLib || {};
       d.check(false, ' 123' === 123);
     };
 
+    //----------------------------------------
+    //・checkExc(例外チェック)関数
+    //----------------------------------------
+    //  ・  関数と結果が、=か!=か例外発生かを
+    //      判定することができる関数
+    //----------------------------------------
+    _.checkExc = function (result, func) {
+      try {
+        var args = [].slice.call(arguments,2);
+        if (result !== func.apply(null, args)) {
+          return 'NG';
+        } else {
+          return 'OK';
+        }
+      } catch(e) {
+        return 'ER';
+      }
+    };
+
+    _.test_checkExc = function () {
+      var d = stsLib.debug;
+      var testFunc1 = function (a, b) {
+        return a / b;
+      };
+      var testFunc2 = function (a, b) {
+        if (b === 0) {
+          throw new Error('error');;
+        }
+        return a / b;
+      };
+      
+      d.check('OK', _.checkExc(5, testFunc1, 5, 1));
+      d.check('NG', _.checkExc(1, testFunc1, 5, 1));
+      d.check('OK', _.checkExc(2.5, testFunc1, 5, 2));
+      d.check('OK', _.checkExc(Infinity, testFunc1, 5, 0));
+      d.check('OK', _.checkExc(5, testFunc2, 5, 1));
+      d.check('NG', _.checkExc(1, testFunc2, 5, 1));
+      d.check('OK', _.checkExc(2.5, testFunc2, 5, 2));
+      d.check('ER', _.checkExc(Infinity, testFunc2, 5, 0));
+    };
+
     _.benchMark = function (loopCount, func) {
       var startTime = new Date();
 
-      for (var _len = arguments.length, 
-        args = Array(_len > 2 ? _len - 2 : 0),
-        _key = 2;
-        _key < _len; _key++) {
-        args[_key - 2] = arguments[_key];
-      }
+      var args = [].slice.call(arguments,2);
 
-      for (var i = 0; i < loopCount; i++) {
-        func.apply(undefined, args);
+      for (var i = 0, max = loopCount - 1;
+        i <= max - 1; i++) {
+        func.apply(null, args);
       }
 
       var endTime = new Date();
@@ -2165,6 +2202,9 @@ var stsLib = stsLib || {};
       var path = stsLib.path;
       path.test_getFileName();
 
+      var d = stsLib.debug;
+      d.test_checkExc();
+
       alert('finish test テスト終了');
       //エンコード確認のため、日本語を含めている
       //Shift_JISのWSHからUTF-8の呼び出しが
@@ -2384,4 +2424,7 @@ if (typeof module !== 'undefined') {
 ・  stsLib名前空間でstsLib自体を定義して
     グローバル変数を見に行かないようにした
 ・  .StringExを.Stringのvalueを呼び出すようにした
+◇  ver 2017/05/31
+・  benchMarkを修正
+・  checkExcを追加
 //----------------------------------------*/
