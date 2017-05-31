@@ -153,12 +153,3 @@ function shellFileOpen(FilePath, Focus) {
 //  var msgResult = wshShell.Popup(
 //    '本文', 10,
 //    'タイトル', (BTN_YES_NO_CANCL + ICON_QUESTN));
-
-
-/*----------------------------------------
-◇  ver 2017/03/12
-・  作成
-◇  ver 2017/04/17
-・  ファイル名変更
-以降、stslib_core.js でversion管理
-//----------------------------------------*/

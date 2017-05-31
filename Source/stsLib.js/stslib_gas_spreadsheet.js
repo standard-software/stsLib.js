@@ -56,10 +56,3 @@ function dataLastRow(sheet, colIndex)
     }
 	return result;
 }
-
-/*----------------------------------------
-  ver 2017/03/16
-E  ì¬
-    dataLastCol
-    dataLastRow
-//----------------------------------------*/

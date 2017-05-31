@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/05/31
+Version:        2017/06/01
 //----------------------------------------*/
 
 //----------------------------------------
@@ -133,15 +133,15 @@ var stsLib = stsLib || {};
     };
 
     //----------------------------------------
-    //・checkExc(例外チェック)関数
+    //・例外チェック関数
     //----------------------------------------
     //  ・  関数と結果が、=か!=か例外発生かを
     //      判定することができる関数
     //----------------------------------------
-    _.checkExc = function (result, func) {
+    _.checkException = function (funcResult, func) {
       try {
         var args = [].slice.call(arguments,2);
-        if (result !== func.apply(null, args)) {
+        if (funcResult !== func.apply(null, args)) {
           return 'NG';
         } else {
           return 'OK';
@@ -151,7 +151,7 @@ var stsLib = stsLib || {};
       }
     };
 
-    _.test_checkExc = function () {
+    _.test_checkException = function () {
       var d = stsLib.debug;
       var testFunc1 = function (a, b) {
         return a / b;
@@ -163,14 +163,88 @@ var stsLib = stsLib || {};
         return a / b;
       };
       
-      d.check('OK', _.checkExc(5, testFunc1, 5, 1));
-      d.check('NG', _.checkExc(1, testFunc1, 5, 1));
-      d.check('OK', _.checkExc(2.5, testFunc1, 5, 2));
-      d.check('OK', _.checkExc(Infinity, testFunc1, 5, 0));
-      d.check('OK', _.checkExc(5, testFunc2, 5, 1));
-      d.check('NG', _.checkExc(1, testFunc2, 5, 1));
-      d.check('OK', _.checkExc(2.5, testFunc2, 5, 2));
-      d.check('ER', _.checkExc(Infinity, testFunc2, 5, 0));
+      d.check('OK', _.checkException(5, testFunc1, 5, 1));
+      d.check('NG', _.checkException(1, testFunc1, 5, 1));
+      d.check('OK', _.checkException(2.5, testFunc1, 5, 2));
+      d.check('OK', _.checkException(Infinity, testFunc1, 5, 0));
+      d.check('OK', _.checkException(5, testFunc2, 5, 1));
+      d.check('NG', _.checkException(1, testFunc2, 5, 1));
+      d.check('OK', _.checkException(2.5, testFunc2, 5, 2));
+      d.check('ER', _.checkException(Infinity, testFunc2, 5, 0));
+    };
+
+    //----------------------------------------
+    //・例外を含めた結果チェック関数
+    //----------------------------------------
+    //  ・  returnResultに 'OK'/'NG'/'ER'の
+    //      どれかを指定して
+    //      funcResultとfuncの戻り値の、一致/不一致/例外発生
+    //      をテストすることができる
+    //  ・  check関数とcheckException関数の組み合わせで
+    //      下記のように実装もできるが
+    //      メッセージなど作り込みたかったり
+    //      何より単独でコピペできないので
+    //      コード行数は長いが、現在の実装を採用する
+    //        var checkResult = function (returnResult, funcResult, func) {
+    //          var args = [].slice.call(arguments, 1);
+    //          check(returnResult, checkException.apply(null, args));
+    //        };
+    //----------------------------------------
+    _.checkResult = function (returnResult, funcResult, func) {
+      var args, message, a, b;
+      message = '';
+      args = [].slice.call(arguments, 3);
+      a = funcResult;
+      try {
+        b = func.apply(null, args);
+        if (a === b) {
+          if (returnResult !== 'OK') {
+            message = returnResult + '!=OK\n' + 
+              'A == B' + '\n' +
+              'A = ' + a.toString() + '\n' +
+              'B = ' + b.toString();
+          }
+        } else {
+          if (returnResult !== 'NG') {
+            message = returnResult + '!=NG\n' + 
+              'A != B' + '\n' +
+              'A = ' + a.toString() + '\n' +
+              'B = ' + b.toString();
+          }
+        }
+      } catch(e) {
+        if (returnResult !== 'ER') {
+          message = returnResult + '!=ER\n' + 
+            'A = ' + a.toString() + '\n' +
+            'B = undefined';
+        }
+      }
+      if (message !== '') {
+        alert(message);
+      }
+    };
+
+    _.test_checkResult = function () {
+      var d = stsLib.debug;
+
+      var sampleDiv1 = function (a, b) {
+        return a / b;
+      };
+      var sampleDiv2 = function (a, b) {
+        if (b === 0) {
+          throw new Error('error');
+        }
+        return a / b;
+      };
+
+      d.checkResult('OK', 5,       sampleDiv1, 5, 1);
+      d.checkResult('NG', 1,       sampleDiv1, 5, 1);
+      d.checkResult('OK', 2.5,     sampleDiv1, 5, 2);
+      d.checkResult('OK', Infinity,sampleDiv1, 5, 0);
+      d.checkResult('OK', 5,       sampleDiv2, 5, 1);
+      d.checkResult('NG', 1,       sampleDiv2, 5, 1);
+      d.checkResult('OK', 2.5,     sampleDiv2, 5, 2);
+      d.checkResult('ER', Infinity,sampleDiv2, 5, 0);
     };
 
     _.benchMark = function (loopCount, func) {
@@ -318,6 +392,65 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆数値
   //----------------------------------------
+  _.number = stsLib.number || {};
+  (function () {
+    var _ = stsLib.number;
+
+    //----------------------------------------
+    //・四捨五入する
+    //----------------------------------------
+    //  ・  digitは桁数
+    //      0なら1の位
+    //      1なら小数点1位
+    //      2なら小数点2位
+    //      -1なら10の位
+    //      -2なら100の位
+    //      四捨五入して、その位にする
+    //----------------------------------------
+    _.round = function (value, digit) {
+      var 
+        d = stsLib.debug,
+        t = stsLib.type,
+        powResult,
+      varend = null;
+      if (t.isNullOrUndefined(digit)) {
+        digit = 0;
+      }
+      d.assert(t.isInt(digit));
+      powResult = Math.pow(10, digit);
+      return Math.round(value * powResult) / powResult;
+    };
+
+    _.test_round = function () {
+      var 
+        d = stsLib.debug,
+        n = stsLib.number,
+      varend = null;
+      d.check(5,    n.round(5));
+      d.check(5,    n.round(5.4));
+      d.check(6,    n.round(5.5));
+      d.check(5,    n.round(5,    0));
+      d.check(5,    n.round(5.4,  0));
+      d.check(6,    n.round(5.5,  0));
+      d.check(5.4,  n.round(5.44, 1));
+      d.check(5.5,  n.round(5.45, 1));
+      d.check(5.5,  n.round(5.54, 1));
+      d.check(5.6,  n.round(5.55, 1));
+      d.check(5.04, n.round(5.044, 2));
+      d.check(5.05, n.round(5.045, 2));
+      d.check(5.05, n.round(5.054, 2));
+      d.check(5.06, n.round(5.055, 2));
+      d.check(540,  n.round(544, -1));
+      d.check(550,  n.round(545, -1));
+      d.check(550,  n.round(554, -1));
+      d.check(560,  n.round(555, -1));
+      d.check(5400, n.round(5440, -2));
+      d.check(5500, n.round(5450, -2));
+      d.check(5500, n.round(5540, -2));
+      d.check(5600, n.round(5550, -2));
+    };
+
+  }());
 
   //----------------------------------------
   //◆角度
@@ -2128,13 +2261,19 @@ var stsLib = stsLib || {};
 
     _.test_stslib_core = function () {
 
-      stsLib.debug.test_check();
-      var t = stsLib.type;
+      var d = stsLib.debug;
+      d.test_check();
+      d.test_checkException();
+      d.test_checkResult();
 
+      var t = stsLib.type;
       t.test_isNullOrUndefined();
       t.test_isBoolean();
       t.test_isNumber();
       t.test_isInt();
+
+      var n = stsLib.number;
+      n.test_round();
 
       var s = stsLib.string;
       s.test_isInclude();
@@ -2202,8 +2341,7 @@ var stsLib = stsLib || {};
       var path = stsLib.path;
       path.test_getFileName();
 
-      var d = stsLib.debug;
-      d.test_checkExc();
+
 
       alert('finish test テスト終了');
       //エンコード確認のため、日本語を含めている
@@ -2300,131 +2438,3 @@ if (typeof module !== 'undefined') {
   module.exports = stsLib;
 }
 
-/*----------------------------------------
-■履歴
-◇  ver 2014/07/18
-・  作成
-    lastStringCount
-    format_yyyy_mm_dd
-    format_hh_mm_dd(
-    getAgeYearMonthDay
-    getAgeMonthDay
-    getAgeDay
-    dayCount
-    hoursCount
-    minutesCount
-    secondsCount
-    getMonthEndDay
-    arrayToString
-    encodeURIComponentArrayToString
-    stringToArray
-    decodeURIComponentStringToArray
-    getFileName
-◇  ver 2015/07/02
-    replaceAll
-◇  ver 2015/07/31
-・  firstStrFirstDelim/lastStrFirstDelim 追加
-◇  ver 2015/08/02
-・  追加
-    isFirstStr
-    includeFirstStr
-    excludeFirstStr
-    isFirstText
-    includeFirstText
-    excludeFirstText
-    isLastStr
-    includeLastStr
-    excludeLastStr
-    isLastText
-    includeLastText
-    excludeLastText
-    includeBothEndsStr
-    excludeBothEndsStr
-    includeBothEndsText
-    ExcludeBothEndsText
-    trimFirstStr
-    trimLastStrs
-    trimBothEndsStrs
-    strCount
-    shellFileOpen
-◇  ver 2015/08/12
-・  追加
-    WshShellを定義
-◇  ver 2015/08/13
-・  追加
-    firstStrLastDelim/lastStrLastDelim
-◇  ver 2017/03/12
-・  修正
-    firstStrFirstDelim/lastStrFirstDelim
-    firstStrLastDelim/lastStrLastDelim
-・  追加
-    tagInnerFirst/tagOuterFirst
-◇  ver 2017/03/16
-・  isIncludeStr 追加
-・  st_gas_gs.js 追加
-◇  ver 2017/03/17
-・  isNumber 追加
-◇  ver 2017/04/13
-・  getExtensionIncludePeriod 追加
-◇  ver 2017/04/17
-・  isUndefined/isNull/isNullOrUndefined 追加
-・  st.jsからstsLib.jsにプロジェクト名変更
-    ファイル名もst.jsからstslib_core.jsに変更
-・  test_equalOperator stslib_test_web.htmlから
-    stslib_core.jsに移動
-・  assert 追加
-・  arrayEqualArray/arrayIndexOfArray 追加
-◇  ver 2017/04/18
-・  startTagDelete/endTagDelete 追加
-◇  ver 2017/04/19
-・  deleteTagInnerText/deleteFirstTagOuter 追加
-◇  ver 2017/04/20
-・  stslib_win_wsh.js に shellFileOpen 移動
-◇  ver 2017/04/22
-・  degreeToRadian/radianToDegree 追加
-・  angleRelative 追加
-・  stslib_web.js に intervalLoop処理を追加
-◇  ver 2017/04/25
-・  名前空間を導入。関数群の名前がグローバル汚染を引き起こさないようにした。
-・  全体的に名前空間に入るようにリファクタリング対応中
-    isInclude/indexOfFirst/indexOfLast を追加
-◇  ver 2017/04/26
-・  Array.isArray を WSH 対応のために isArray で独自実装
-・  stslib_win_wsh.js に string_LoadFromFile/getEncodingTypeName 追加
-◇  ver 2017/04/27
-・  インデントを2に変更
-・  substrIndex/substrLength 追加
-・  start/end 追加
-◇  ver 2017/04/30
-・  名前空間に移行するリファクタリング中
-◇  ver 2017/05/13
-・  名前空間のリファクタリング完了。
-◇  ver 2017/05/21
-・  string系のメソッドのstsLib.stringへの移行
-◇  ver 2017/05/23
-・  日付関係、ファイルパス関係を
-    stsLibの名前空間に移動
-・  replaceAllを修正
-◇  ver 2017/05/24
-・  tagOuterAll 追加
-◇  ver 2017/05/25
-・  stsLib.Stringの拡張メソッド形式の部分を
-    stsLib.stringの全てのメソッドをから
-    作成した。
-◇  ver 2017/05/28
-・  継承の仕組みを
-      stsLib.StringEx.prototype = new stsLib.String();
-      stsLib.StringEx.prototype.constructor = stsLib.StringEx;
-    から
-      inherits関数(Google Closure Library)に変更
-    テストも追加した
-・  benchMarkを追加
-・  stslib_win_wsh.js メッセージ表示機能追加
-◇  ver 2017/05/30
-・  stsLib名前空間でstsLib自体を定義して
-    グローバル変数を見に行かないようにした
-・  .StringExを.Stringのvalueを呼び出すようにした
-◇  ver 2017/05/31
-・  benchMarkを修正
-・  checkExcを追加
-//----------------------------------------*/

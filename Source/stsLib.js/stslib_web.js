@@ -418,22 +418,3 @@ if (typeof module !== 'undefined') {
   module.exports = stsLib;
 }
 
-/*----------------------------------------
-◇  ver 2014/07/18
-・  作成
-    setCookie
-    getCookie
-    encodeURIComponentArrayToString
-    decodeURIComponentStringToArray
-◇  ver 2015/07/02
-    replaceAll
-◇  ver 2015/07/31
-・  st_jsとして st.js/st_web.js を作成
-◇  ver 2017/03/13
-・  タイトルヘッダーがなかったので追加
-◇  ver 2017/04/17
-・  ファイル名変更
-◇  ver 2017/04/18
-・  getUrlParameter追加
-以降、stslib_core.js でversion管理
-//----------------------------------------*/
