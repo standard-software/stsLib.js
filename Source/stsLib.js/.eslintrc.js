@@ -24,7 +24,7 @@ module.exports = {
         "no-constant-condition": [
             "warn",
             {
-              "checkLoops": false
+                "checkLoops": false
             }
         ],
         "no-unused-vars": [
@@ -37,7 +37,7 @@ module.exports = {
             },
         ],
         "no-console": [
-          "off",
+            "off",
         ],
         "no-undef": [
             "error",

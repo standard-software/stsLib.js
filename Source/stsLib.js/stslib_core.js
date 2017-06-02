@@ -424,30 +424,66 @@ var stsLib = stsLib || {};
     _.test_round = function () {
       var 
         d = lib.debug,
-        n = lib.number,
       varend;
-      d.check(5,    n.round(5));
-      d.check(5,    n.round(5.4));
-      d.check(6,    n.round(5.5));
-      d.check(5,    n.round(5,    0));
-      d.check(5,    n.round(5.4,  0));
-      d.check(6,    n.round(5.5,  0));
-      d.check(5.4,  n.round(5.44, 1));
-      d.check(5.5,  n.round(5.45, 1));
-      d.check(5.5,  n.round(5.54, 1));
-      d.check(5.6,  n.round(5.55, 1));
-      d.check(5.04, n.round(5.044, 2));
-      d.check(5.05, n.round(5.045, 2));
-      d.check(5.05, n.round(5.054, 2));
-      d.check(5.06, n.round(5.055, 2));
-      d.check(540,  n.round(544, -1));
-      d.check(550,  n.round(545, -1));
-      d.check(550,  n.round(554, -1));
-      d.check(560,  n.round(555, -1));
-      d.check(5400, n.round(5440, -2));
-      d.check(5500, n.round(5450, -2));
-      d.check(5500, n.round(5540, -2));
-      d.check(5600, n.round(5550, -2));
+      d.check(5,    _.round(5));
+      d.check(5,    _.round(5.4));
+      d.check(6,    _.round(5.5));
+      d.check(5,    _.round(5,    0));
+      d.check(5,    _.round(5.4,  0));
+      d.check(6,    _.round(5.5,  0));
+      d.check(5.4,  _.round(5.44, 1));
+      d.check(5.5,  _.round(5.45, 1));
+      d.check(5.5,  _.round(5.54, 1));
+      d.check(5.6,  _.round(5.55, 1));
+      d.check(5.04, _.round(5.044, 2));
+      d.check(5.05, _.round(5.045, 2));
+      d.check(5.05, _.round(5.054, 2));
+      d.check(5.06, _.round(5.055, 2));
+      d.check(540,  _.round(544, -1));
+      d.check(550,  _.round(545, -1));
+      d.check(550,  _.round(554, -1));
+      d.check(560,  _.round(555, -1));
+      d.check(5400, _.round(5440, -2));
+      d.check(5500, _.round(5450, -2));
+      d.check(5500, _.round(5540, -2));
+      d.check(5600, _.round(5550, -2));
+    };
+
+    _.nearEqual = function (a, b, diff) {
+      var
+        d = lib.debug,
+        t = lib.type,
+      varend;
+      d.assert(t.isNumber(a));
+      d.assert(t.isNumber(b));
+      d.assert(t.isNumber(diff));
+      d.assert(0 <= diff);
+      if ( Math.abs(a - b) <= diff ) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    _.test_nearEqual = function () {
+      var 
+        d = lib.debug,
+      varend;
+      d.check(true, _.nearEqual(0.049999,   0.050011,     0.001));
+      d.check(true, _.nearEqual(0.050,      0.051,        0.001));
+      d.check(true, _.nearEqual(0.050,      0.0509,       0.001));
+      d.check(true, _.nearEqual(0.050,      0.0510,       0.001));
+      d.check(false,_.nearEqual(0.050,      0.051000001,  0.001));
+      d.check(true, _.nearEqual(0.050011,   0.049999,     0.001));
+      d.check(true, _.nearEqual(0.051,      0.050,        0.001));
+      d.check(true, _.nearEqual(0.0509,     0.050,        0.001));
+      d.check(true, _.nearEqual(0.0510,     0.050,        0.001));
+      d.check(false,_.nearEqual(0.051000001,0.050,        0.001));
+
+      d.checkResult('ER', null, _.nearEqual, '0.50', 0.51, 0.001)
+      d.checkResult('ER', null, _.nearEqual, 0.50, '0.51', 0.001)
+      d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, '0.001')
+      d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, -0.001)
     };
 
   }());
@@ -2274,6 +2310,7 @@ var lib = lib || {};
 
       var n = lib.number;
       n.test_round();
+      n.test_nearEqual();
 
       var s = lib.string;
       s.test_isInclude();
