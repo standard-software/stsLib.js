@@ -1,6 +1,7 @@
 module.exports = {
     "env": {
-        "browser": true
+        "browser": true,
+        "node": true,
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -9,16 +10,37 @@ module.exports = {
             2
         ],
         "linebreak-style": [
-            "error",
+            "warn",
             "windows"
         ],
         "quotes": [
-            "error",
+            "warn",
             "single"
         ],
         "semi": [
             "error",
             "always"
+        ],
+        "no-constant-condition": [
+            "warn",
+            {
+              "checkLoops": false
+            }
+        ],
+        "no-unused-vars": [
+            "warn",
+            {
+              "vars": "all", "args": "after-used", 
+              "ignoreRestSiblings": false ,
+              "argsIgnorePattern": "global",
+              "varsIgnorePattern": "varend",
+            },
+        ],
+        "no-console": [
+          "off",
+        ],
+        "no-undef": [
+            "error",
         ]
     }
 };

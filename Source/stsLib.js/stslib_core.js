@@ -1,5 +1,5 @@
 ﻿/*----------------------------------------
-stsLib.js
+lib.js
 Standard Software Library JavaScript
 ----------------------------------------
 ModuleName:     Core Module
@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/01
+Version:        2017/06/03
 //----------------------------------------*/
 
 //----------------------------------------
@@ -46,42 +46,42 @@ Array.isArray = Array.isArray || function (arg) {
 //    定義し直しても別関数を定義していくことができる
 //----------------------------------------
 var stsLib = stsLib || {};
-(function (stsLib, global) {
+(function (lib, global) {
   'use strict';
-  var _ = stsLib;
+  var _ = lib;
 
   //----------------------------------------
   //◆基本的な処理
   //----------------------------------------
 
-    //----------------------------------------
-    //・クラス継承関数
-    //----------------------------------------
-    _.inherits = function(childCtor, parentCtor) {
-        // ES6
-        if (Object.setPrototypeOf) {
-            Object.setPrototypeOf(childCtor.prototype, parentCtor.prototype);
-        }
-        // ES5
-        else if (Object.create) {
-            childCtor.prototype = Object.create(parentCtor.prototype);
-        }
-        // legacy platform
-        else {
-            function tempCtor() {};
-            tempCtor.prototype = parentCtor.prototype;
-            childCtor.superClass_ = parentCtor.prototype;
-            childCtor.prototype = new tempCtor();
-            childCtor.prototype.constructor = childCtor;
-        }
-    };
+  //----------------------------------------
+  //・クラス継承関数
+  //----------------------------------------
+  _.inherits = function(childCtor, parentCtor) {
+    function tempCtor() {}
+    // ES6
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(childCtor.prototype, parentCtor.prototype);
+    }
+    // ES5
+    else if (Object.create) {
+      childCtor.prototype = Object.create(parentCtor.prototype);
+    }
+    // legacy platform
+    else {
+      tempCtor.prototype = parentCtor.prototype;
+      childCtor.superClass_ = parentCtor.prototype;
+      childCtor.prototype = new tempCtor();
+      childCtor.prototype.constructor = childCtor;
+    }
+  };
 
   //----------------------------------------
   //◆デバッグ処理
   //----------------------------------------
-  _.debug = stsLib.debug || {};
+  _.debug = lib.debug || {};
   (function () {
-    var _ = stsLib.debug;
+    var _ = lib.debug;
 
     //----------------------------------------
     //・assert関数
@@ -91,7 +91,7 @@ var stsLib = stsLib || {};
     //  ・  他言語でよく使う
     //----------------------------------------
     _.assert = function (value, message) {
-      var t = stsLib.type;
+      var t = lib.type;
       if (t.isNullOrUndefined(message)) {
         message = '';
       }
@@ -112,7 +112,7 @@ var stsLib = stsLib || {};
       if (a === b) {
         return true;
       }
-      if (stsLib.type.isNullOrUndefined(message)) {
+      if (lib.type.isNullOrUndefined(message)) {
         message = '';
       } else {
         message = 'Test:' + message + '\n';
@@ -126,7 +126,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_check = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(true, '123' === '123');
       d.check(true, ' 123' == 123);
       d.check(false, ' 123' === 123);
@@ -152,13 +152,13 @@ var stsLib = stsLib || {};
     };
 
     _.test_checkException = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       var testFunc1 = function (a, b) {
         return a / b;
       };
       var testFunc2 = function (a, b) {
         if (b === 0) {
-          throw new Error('error');;
+          throw new Error('error');
         }
         return a / b;
       };
@@ -225,7 +225,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_checkResult = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
 
       var sampleDiv1 = function (a, b) {
         return a / b;
@@ -259,7 +259,7 @@ var stsLib = stsLib || {};
 
       var endTime = new Date();
       return endTime - startTime;
-    }
+    };
 
   }());
 
@@ -270,9 +270,9 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆型 確認/変換 処理
   //----------------------------------------
-  _.type = stsLib.type || {};
+  _.type = lib.type || {};
   (function () {
-    var _ = stsLib.type;
+    var _ = lib.type;
 
     _.isUndefined = function (value) {
       return (typeof value === 'undefined');
@@ -289,7 +289,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_isNullOrUndefined = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       var a1;
       d.check(true,   _.isUndefined(a1));
       d.check(false,  _.isNull(a1));
@@ -311,7 +311,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_isBoolean = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(true, _.isBoolean(true));
       d.check(true, _.isBoolean(false));
       d.check(false,_.isBoolean(undefined));
@@ -329,7 +329,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_isNumber = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(true, _.isNumber(123));
       d.check(true, _.isNumber(0));
       d.check(true, _.isNumber(-1));
@@ -361,7 +361,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_isInt = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(true, _.isInt(123));
       d.check(true, _.isInt(0));
       d.check(true, _.isInt(-1));
@@ -392,9 +392,9 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆数値
   //----------------------------------------
-  _.number = stsLib.number || {};
+  _.number = lib.number || {};
   (function () {
-    var _ = stsLib.number;
+    var _ = lib.number;
 
     //----------------------------------------
     //・四捨五入する
@@ -409,10 +409,10 @@ var stsLib = stsLib || {};
     //----------------------------------------
     _.round = function (value, digit) {
       var 
-        d = stsLib.debug,
-        t = stsLib.type,
+        d = lib.debug,
+        t = lib.type,
         powResult,
-      varend = null;
+      varend;
       if (t.isNullOrUndefined(digit)) {
         digit = 0;
       }
@@ -423,9 +423,9 @@ var stsLib = stsLib || {};
 
     _.test_round = function () {
       var 
-        d = stsLib.debug,
-        n = stsLib.number,
-      varend = null;
+        d = lib.debug,
+        n = lib.number,
+      varend;
       d.check(5,    n.round(5));
       d.check(5,    n.round(5.4));
       d.check(6,    n.round(5.5));
@@ -455,9 +455,9 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆角度
   //----------------------------------------
-  _.angle = stsLib.angle || {};
+  _.angle = lib.angle || {};
   (function () {
-    var _ = stsLib.angle;
+    var _ = lib.angle;
 
     //----------------------------------------
     //・ラジアンと角度相互変換
@@ -471,7 +471,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_degreeToRadian = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(0, _.degreeToRadian(0));
       d.check(Math.PI / 6, _.degreeToRadian(30));
       d.check(0, _.radianToDegree(0));
@@ -500,7 +500,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_angleRelative = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(10, _.angleRelative(5, 15));
       d.check(-10, _.angleRelative(15, 5));
 
@@ -518,15 +518,15 @@ var stsLib = stsLib || {};
   //◆配列処理
   //----------------------------------------
 
-  _.array = stsLib.array || {};
+  _.array = lib.array || {};
   (function () {
-    var _ = stsLib.array;
+    var _ = lib.array;
 
     //----------------------------------------
     //・配列の値で比較する関数
     //----------------------------------------
     _.equal = function (value1, value2) {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.assert(Array.isArray(value1));
       d.assert(Array.isArray(value2));
 
@@ -535,14 +535,14 @@ var stsLib = stsLib || {};
 
     _.test_equal = function ()
     {
-      var d = stsLib.debug;
+      var d = lib.debug;
       var a1 = [1, 2, 3];
       var a2 = [1, 2, 3];
 
       d.check(false, a1 == a2);
       d.check(false, a1 === a2);
 
-      d.check(true, stsLib.array.equal(a1, a2));
+      d.check(true, lib.array.equal(a1, a2));
     };
 
     //----------------------------------------
@@ -550,7 +550,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     _.arrayIndexOfArray = function (arrayList, arrayValue)
     {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.assert(Array.isArray(arrayList));
       d.assert(Array.isArray(arrayValue));
 
@@ -566,7 +566,7 @@ var stsLib = stsLib || {};
 
     _.test_arrayIndexOfArray = function ()
     {
-      var d = stsLib.debug;
+      var d = lib.debug;
       var arrayList = [];
       arrayList.push([1,1,1]);
       arrayList.push([2,2,2]);
@@ -601,7 +601,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_arrayToString = function (){
-      var d = stsLib.debug;
+      var d = lib.debug;
       var array01 = new Array();
       array01[0] = 'abc';
       array01[1] = 'def';
@@ -616,7 +616,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_stringToArray = function (){
-      var d = stsLib.debug;
+      var d = lib.debug;
       var array03 = _.stringToArray('ABC/DEF', '/');
       d.check('ABC', array03[0]);
       d.check('DEF', array03[1]);
@@ -629,41 +629,41 @@ var stsLib = stsLib || {};
   //----------------------------------------
 
   //文字列処理、名前空間
-  _.string = stsLib.string || {};
+  _.string = lib.string || {};
   (function () {
-    var _ = stsLib.string;
+    var _ = lib.string;
 
 /*----------------------------------------
 //・外部からの呼び出し時は
 //  静的関数的な使い方と拡張メソッドのような使い方ができる
 
-  var d = stsLib.debug;
+  var d = lib.debug;
 
   //・静的関数的な使い方
   //  先頭小文字の string を使う
-  d.check(true, stsLib.string.isInclude('abc', 'a'));
+  d.check(true, lib.string.isInclude('abc', 'a'));
 
   //・拡張メソッド的な使い方
   //  先頭大文字の String を使う
-  var str1 = new stsLib.String('abc');
+  var str1 = new lib.String('abc');
   d.check(true, str1.isInclude('a'));
 
   //・拡張メソッド的な使い方
   //  newしなくても使用できる
-  var str2 = stsLib.String('abc');
+  var str2 = lib.String('abc');
   d.check(true, str2.isInclude('a'));
 
 //・名前空間は何度宣言してもよいので、
 //  別ファイルに同名の名前空間コードをコピペして
 //  作成し、同じ書き方でメソッドを追加していくことができる
 
-var stsLib = stsLib || {};
+var lib = lib || {};
 
-  stsLib.string = stsLib.string || {};
+  lib.string = lib.string || {};
 
-  stsLib.String = stsLib.String || function (value) {
+  lib.String = lib.String || function (value) {
     var self = function () {};
-    self.prototype = stsLib.String.prototype;
+    self.prototype = lib.String.prototype;
     self.prototype.value = value;
     return new self;
   }
@@ -678,7 +678,7 @@ var stsLib = stsLib || {};
     //・NullかUndefinedか空文字('')ならTrueを返す
     //----------------------------------------
     _.isEmpty = function (str) {
-      var t = stsLib.type;
+      var t = lib.type;
       if (t.isNullOrUndefined(str) || str ===  '') {
         return true;
       } else {
@@ -706,7 +706,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_isInclude = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(true, _.isInclude('abc', 'a'));
       d.check(true, _.isInclude('abc', 'b'));
       d.check(true, _.isInclude('abc', 'c'));
@@ -729,7 +729,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_includeCount = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(3, _.includeCount('123123123', '1'),    'A');
       d.check(3, _.includeCount('123123123', '2'),    'B');
       d.check(3, _.includeCount('123123123', '3'),    'C');
@@ -744,7 +744,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
 
     _.indexOfFirst = function (str, search, startIndex) {
-      var t = stsLib.type;
+      var t = lib.type;
       if (search === '') { return -1; }
       if (t.isNullOrUndefined(startIndex)) {
         startIndex = 0;
@@ -753,7 +753,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_indexOfFirst = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(-1, _.indexOfFirst('abc', 'd'));
       d.check( 0, _.indexOfFirst('abc', 'a'));
       d.check( 1, _.indexOfFirst('abc', 'b'));
@@ -773,14 +773,14 @@ var stsLib = stsLib || {};
 
     _.indexOfLast = function (str, search, startIndex) {
       if (search === '') { return -1; }
-      if (stsLib.type.isNullOrUndefined(startIndex)) {
+      if (lib.type.isNullOrUndefined(startIndex)) {
         startIndex = str.length - 1;
       }
       return str.lastIndexOf(search, startIndex);
     };
 
     _.test_indexOfLast = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(-1, _.indexOfLast('abc', 'd'));
       d.check( 0, _.indexOfLast('abc', 'a'));
       d.check( 1, _.indexOfLast('abc', 'b'));
@@ -812,8 +812,8 @@ var stsLib = stsLib || {};
     //    -1は最後の文字になる
     //----------------------------------------
     _.substrIndex = function (str, startIndex, endIndex) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       if (t.isNullOrUndefined(endIndex)) {
         endIndex = str.length - 1;
       }
@@ -836,7 +836,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_substrIndex = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('45',     _.substrIndex('012345', 4));
       d.check('2345',   _.substrIndex('012345', -4));
       d.check('1',      _.substrIndex('012345', 1, 1));
@@ -881,7 +881,7 @@ var stsLib = stsLib || {};
         startIndex = str.length + startIndex;
       }
 
-      if (stsLib.type.isNullOrUndefined(length)) {
+      if (lib.type.isNullOrUndefined(length)) {
         length = str.length;
       }
       var endIndex;
@@ -895,7 +895,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_substrLength = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('45',   _.substrLength('012345', 4));
       d.check('2345', _.substrLength('012345', -4));
       d.check('23',   _.substrLength('012345', 2, 2));
@@ -926,8 +926,8 @@ var stsLib = stsLib || {};
     //・先頭を切り取るメソッド
     //----------------------------------------
     _.start = function (str, length) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert(t.isString(str));
       d.assert(t.isInt(length));
       if (str === '') { return ''; }
@@ -937,7 +937,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_start = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('0123',   _.start('012345', 4));
       d.check('',       _.start('012345', 0));
       d.check('',       _.start('012345', -3));
@@ -963,7 +963,7 @@ var stsLib = stsLib || {};
     //・先頭の一致を調べる
     //----------------------------------------
     _.test_startsWith = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(true,  _.startsWith('12345', '1'), 'A');
       d.check(true,  _.startsWith('12345', '12'), 'B');
       d.check(true,  _.startsWith('12345', '123'), 'C');
@@ -985,7 +985,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_includeStart = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('12345',  _.includeStart('12345', '1'));
       d.check('12345',  _.includeStart('12345', '12'));
       d.check('12345',  _.includeStart('12345', '123'));
@@ -1004,7 +1004,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_excludeStart = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('2345', _.excludeStart('12345', '1'));
       d.check('345',  _.excludeStart('12345', '12'));
       d.check('45',   _.excludeStart('12345', '123'));
@@ -1026,7 +1026,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_end = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('2345',   _.end('012345', 4));
       d.check('',       _.end('012345', 0));
       d.check('',       _.end('012345', -3));
@@ -1053,7 +1053,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_endsWith = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(true,  _.endsWith('12345', '5'));
       d.check(true,  _.endsWith('12345', '45'));
       d.check(true,  _.endsWith('12345', '345'));
@@ -1075,7 +1075,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_includeEnd = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('12345',   _.includeEnd('12345', '5'));
       d.check('12345',   _.includeEnd('12345', '45'));
       d.check('12345',   _.includeEnd('12345', '345'));
@@ -1095,7 +1095,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_excludeEnd = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('1234',  _.excludeEnd('12345', '5'));
       d.check('123',   _.excludeEnd('12345', '45'));
       d.check('12',    _.excludeEnd('12345', '345'));
@@ -1139,7 +1139,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_startFirstDelim = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('123', _.startFirstDelim('123,456', ','));
       d.check('123', _.startFirstDelim('123,456,789', ','));
       d.check('123', _.startFirstDelim('123ttt456', 'ttt'));
@@ -1166,7 +1166,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_startLastDelim = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('123', _.startLastDelim('123,456', ','));
       d.check('123,456', _.startLastDelim('123,456,789', ','));
       d.check('123', _.startLastDelim('123ttt456', 'ttt'));
@@ -1193,7 +1193,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_endFirstDelim = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('456', _.endFirstDelim('123,456', ','));
       d.check('456,789', _.endFirstDelim('123,456,789', ','));
       d.check('456', _.endFirstDelim('123ttt456', 'ttt'));
@@ -1220,7 +1220,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_endLastDelim = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
 
       d.check('456', _.endLastDelim('123,456', ','));
       d.check('789', _.endLastDelim('123,456,789', ','));
@@ -1252,7 +1252,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_trimStart = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('123 ',       _.trimStart('   123 ', [' ']));
       d.check('\t  123 ',   _.trimStart('   \t  123 ', [' ']));
       d.check('123 ',       _.trimStart('   \t  123 ', [' ', '\t']));
@@ -1270,7 +1270,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_trimEnd = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check(' 123',       _.trimEnd(' 123   ', [' ']));
       d.check(' 456  \t',   _.trimEnd(' 456  \t   ', [' ']));
       d.check(' 789',       _.trimEnd(' 789  \t   ', [' ', '\t']));
@@ -1308,7 +1308,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_deleteFirstLast = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('abcdefghi', _.deleteFirst(
         _.deleteLast('abc<def>ghi', '>'), '<'));
       d.check('abc><def><ghi', _.deleteFirst(
@@ -1323,8 +1323,8 @@ var stsLib = stsLib || {};
     //◇Tag deleteFirstTagInner/Outer
     //--------------------------------------
     _.deleteFirstTagInner = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1342,14 +1342,14 @@ var stsLib = stsLib || {};
     };
 
     _.test_deleteFirstTagInner = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('abc<>ghi', _.deleteFirstTagInner('abc<def>ghi', '<', '>'));
       d.check('abc<>ghi<jkl>mn', _.deleteFirstTagInner('abc<def>ghi<jkl>mn', '<', '>'));
     };
 
     _.deleteFirstTagOuter = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1367,7 +1367,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_deleteFirstTagOuter = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('abcghi', _.deleteFirstTagOuter('abc<def>ghi', '<', '>'));
       d.check('abcghi<jkl>mn', _.deleteFirstTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
     };
@@ -1376,8 +1376,8 @@ var stsLib = stsLib || {};
     //◇Tag deleteLastTagInner/Outer
     //--------------------------------------
     _.deleteLastTagInner = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1395,14 +1395,14 @@ var stsLib = stsLib || {};
     };
 
     _.test_deleteLastTagInner = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('abc<>ghi', _.deleteLastTagInner('abc<def>ghi', '<', '>'));
       d.check('abc<def>ghi<>mn', _.deleteLastTagInner('abc<def>ghi<jkl>mn', '<', '>'));
     };
 
     _.deleteLastTagOuter = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1420,7 +1420,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_deleteLastTagOuter = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('abcghi', _.deleteLastTagOuter('abc<def>ghi', '<', '>'));
       d.check('abc<def>ghimn', _.deleteLastTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
     };
@@ -1438,7 +1438,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_deleteAllTag = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('abcghi', _.deleteAllTag('abc<def>ghi', '<', '>'));
       d.check('abcghimn', _.deleteAllTag('abc<def>ghi<jkl>mn', '<', '>'));
     };
@@ -1451,8 +1451,8 @@ var stsLib = stsLib || {};
     //・最初の start,end の組み合わせのタグを含まない文字
     //----------------------------------------
     _.tagInnerFirst = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1482,7 +1482,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_tagInnerFirst = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('456',  _.tagInnerFirst('000<123>456<789>000', '<123>', '<789>'), 'test01');
       d.check('456',  _.tagInnerFirst('<123>456<789>', '<123>', '<789>'), 'test02');
       d.check('456',  _.tagInnerFirst('000<123>456', '<123>', '<789>'), 'test03');
@@ -1510,8 +1510,8 @@ var stsLib = stsLib || {};
     //・最初の start,end の組み合わせのタグを含む文字
     //----------------------------------------
     _.tagOuterFirst = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1542,7 +1542,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_tagOuterFirst = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('<123>456<789>',  _.tagOuterFirst(
         '000<123>456<789>000', '<123>', '<789>'), 'test01');
       d.check('<123>456<789>',  _.tagOuterFirst(
@@ -1577,8 +1577,8 @@ var stsLib = stsLib || {};
     //・最後の start,end の組み合わせのタグを含まない文字
     //----------------------------------------
     _.tagInnerLast = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1607,7 +1607,7 @@ var stsLib = stsLib || {};
       }
     };
     _.test_tagInnerLast = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('456',  _.tagInnerLast('000<123>456<789>000', '<123>', '<789>'), 'test01');
       d.check('456',  _.tagInnerLast('<123>456<789>', '<123>', '<789>'), 'test02');
       d.check('456',  _.tagInnerLast('000<123>456', '<123>', '<789>'), 'test03');
@@ -1635,8 +1635,8 @@ var stsLib = stsLib || {};
     //・最後の start,end の組み合わせのタグを含む文字
     //----------------------------------------
     _.tagOuterLast = function (str, startTag, endTag) {
-      var d = stsLib.debug;
-      var t = stsLib.type;
+      var d = lib.debug;
+      var t = lib.type;
       d.assert((!t.isNullOrUndefined(str)) );
       d.assert(!_.isEmpty(startTag));
       d.assert(!_.isEmpty(endTag));
@@ -1667,7 +1667,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_tagOuterLast = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('<123>456<789>',  _.tagOuterLast(
         '000<123>456<789>000', '<123>', '<789>'), 'test01');
       d.check('<123>456<789>',  _.tagOuterLast(
@@ -1703,8 +1703,8 @@ var stsLib = stsLib || {};
     //----------------------------------------
     _.tagOuterAll = function (str, startTag, endTag) {
       var
-        d = stsLib.debug,
-        t = stsLib.type,
+        d = lib.debug,
+        t = lib.type,
         indexStartTag,
         indexEndTag,
         result,
@@ -1744,7 +1744,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_tagOuterAll = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('<def>', _.tagOuterAll('abc<def>ghi', '<', '>'));
       d.check('<def><jkl>', _.tagOuterAll('abc<def>ghi<jkl>mn', '<', '>'));
     };
@@ -1763,7 +1763,7 @@ var stsLib = stsLib || {};
     };
 
     _.test_replaceAll = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
       d.check('AAAABBBBBBBAAAA', 
         _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
@@ -1776,193 +1776,193 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //  ・拡張メソッドのように後方にメソッドを接続して
   //    動作させることができる
-  //      var str = new stsLib.String('abc');
+  //      var str = new lib.String('abc');
   //      str.isInclude('a');  //true
   //  ・new 無しでも動作するようにする仕組みも組み込んでいる
-  //  ・stsLib.String の名前空間部分だけ記述が下記のように長い
+  //  ・lib.String の名前空間部分だけ記述が下記のように長い
   //----------------------------------------
 
-  _.String = stsLib.String || function (value) {
-    if (!(this instanceof stsLib.String)) {
-      return new stsLib.String(value);
+  _.String = lib.String || function (value) {
+    if (!(this instanceof lib.String)) {
+      return new lib.String(value);
     }
     this.value = value;
   };
   (function () {
-    var _ = stsLib.String;
+    var _ = lib.String;
 
     _.prototype.isEmpty = function () {
-      return stsLib.string.isEmpty(this.value);
+      return lib.string.isEmpty(this.value);
     };
 
     _.prototype.ifEmptyValue = function (emptyValue) {
-      return stsLib.string.ifEmptyValue(this.value, emptyValue);
+      return lib.string.ifEmptyValue(this.value, emptyValue);
     };
 
     _.prototype.isInclude = function (search) {
-      return stsLib.string.isInclude(this.value, search);
+      return lib.string.isInclude(this.value, search);
     };
 
     _.prototype.includeCount = function (search) {
-      return stsLib.string.includeCount(this.value, search);
+      return lib.string.includeCount(this.value, search);
     };
 
     _.prototype.indexOfFirst = function (search, startIndex) {
-      return stsLib.string.indexOfFirst(this.value, search, startIndex);
+      return lib.string.indexOfFirst(this.value, search, startIndex);
     };
 
     _.prototype.indexOfLast = function (search, startIndex) {
-      return stsLib.string.indexOfLast(this.value, search, startIndex);
+      return lib.string.indexOfLast(this.value, search, startIndex);
     };
 
     _.prototype.substrIndex = function (startIndex, endIndex) {
-      return stsLib.string.substrIndex(this.value, startIndex, endIndex);
+      return lib.string.substrIndex(this.value, startIndex, endIndex);
     };
 
     _.prototype.substrLength = function (startIndex, length) {
-      return stsLib.string.substrLength(this.value, startIndex, length);
+      return lib.string.substrLength(this.value, startIndex, length);
     };
 
     _.prototype.start = function (length) {
-      return stsLib.string.start(this.value, length);
+      return lib.string.start(this.value, length);
     };
 
     _.prototype.startsWith = function (search) {
-      return stsLib.string.startsWith(this.value, search);
+      return lib.string.startsWith(this.value, search);
     };
 
     _.prototype.includeStart = function (search) {
-      return stsLib.string.includeStart(this.value, search);
+      return lib.string.includeStart(this.value, search);
     };
 
     _.prototype.excludeStart = function (search) {
-      return stsLib.string.excludeStart(this.value, search);
+      return lib.string.excludeStart(this.value, search);
     };
 
     _.prototype.end = function (length) {
-      return stsLib.string.end(this.value, length);
+      return lib.string.end(this.value, length);
     };
 
     _.prototype.endsWith = function (search) {
-      return stsLib.string.endsWith(this.value, search);
+      return lib.string.endsWith(this.value, search);
     };
 
     _.prototype.includeEnd = function (search) {
-      return stsLib.string.includeEnd(this.value, search);
+      return lib.string.includeEnd(this.value, search);
     };
 
     _.prototype.excludeEnd = function (search) {
-      return stsLib.string.excludeEnd(this.value, search);
+      return lib.string.excludeEnd(this.value, search);
     };
 
     _.prototype.bothEndsWith = function (search) {
-      return stsLib.string.bothEndsWith(this.value, search);
+      return lib.string.bothEndsWith(this.value, search);
     };
 
     _.prototype.includeBothEnds = function (search) {
-      return stsLib.string.includeBothEnds(this.value, search);
+      return lib.string.includeBothEnds(this.value, search);
     };
 
     _.prototype.excludeBothEnds = function (search) {
-      return stsLib.string.excludeBothEnds(this.value, search);
+      return lib.string.excludeBothEnds(this.value, search);
     };
 
     _.prototype.startFirstDelim = function (delimiter) {
-      return stsLib.string.startFirstDelim(this.value, delimiter);
+      return lib.string.startFirstDelim(this.value, delimiter);
     };
 
     _.prototype.startLastDelim = function (delimiter) {
-      return stsLib.string.startLastDelim(this.value, delimiter);
+      return lib.string.startLastDelim(this.value, delimiter);
     };
 
     _.prototype.endFirstDelim = function (delimiter) {
-      return stsLib.string.endFirstDelim(this.value, delimiter);
+      return lib.string.endFirstDelim(this.value, delimiter);
     };
 
     _.prototype.endLastDelim = function (delimiter) {
-      return stsLib.string.endLastDelim(this.value, delimiter);
+      return lib.string.endLastDelim(this.value, delimiter);
     };
 
     _.prototype.trimStart = function (trimStrArray) {
-      return stsLib.string.trimStart(this.value, trimStrArray);
+      return lib.string.trimStart(this.value, trimStrArray);
     };
 
     _.prototype.trimEnd = function (trimStrArray) {
-      return stsLib.string.trimEnd(this.value, trimStrArray);
+      return lib.string.trimEnd(this.value, trimStrArray);
     };
 
     _.prototype.trimBothEnds = function (trimStrArray) {
-      return stsLib.string.trimBothEnds(this.value, trimStrArray);
+      return lib.string.trimBothEnds(this.value, trimStrArray);
     };
 
     _.prototype.trim = function () {
-      return stsLib.string.trim(this.value);
+      return lib.string.trim(this.value);
     };
 
     _.prototype.deleteFirst = function (search) {
-      return stsLib.string.deleteFirst(this.value, search);
+      return lib.string.deleteFirst(this.value, search);
     };
 
     _.prototype.deleteLast = function (search) {
-      return stsLib.string.deleteLast(this.value, search);
+      return lib.string.deleteLast(this.value, search);
     };
 
     _.prototype.deleteFirstTagInner = function (startTag, endTag) {
-      return stsLib.string.deleteFirstTagInner(this.value, startTag, endTag);
+      return lib.string.deleteFirstTagInner(this.value, startTag, endTag);
     };
 
     _.prototype.deleteFirstTagOuter = function (startTag, endTag) {
-      return stsLib.string.deleteFirstTagOuter(this.value, startTag, endTag);
+      return lib.string.deleteFirstTagOuter(this.value, startTag, endTag);
     };
 
     _.prototype.deleteLastTagInner = function (startTag, endTag) {
-      return stsLib.string.deleteLastTagInner(this.value, startTag, endTag);
+      return lib.string.deleteLastTagInner(this.value, startTag, endTag);
     };
 
     _.prototype.deleteLastTagOuter = function (startTag, endTag) {
-      return stsLib.string.deleteLastTagOuter(this.value, startTag, endTag);
+      return lib.string.deleteLastTagOuter(this.value, startTag, endTag);
     };
 
     _.prototype.deleteAllTag = function (startTag, endTag) {
-      return stsLib.string.deleteAllTag(this.value, startTag, endTag);
+      return lib.string.deleteAllTag(this.value, startTag, endTag);
     };
 
     _.prototype.tagInnerFirst = function (startTag, endTag) {
-      return stsLib.string.tagInnerFirst(this.value, startTag, endTag);
+      return lib.string.tagInnerFirst(this.value, startTag, endTag);
     };
 
     _.prototype.tagOuterFirst = function (startTag, endTag) {
-      return stsLib.string.tagOuterFirst(this.value, startTag, endTag);
+      return lib.string.tagOuterFirst(this.value, startTag, endTag);
     };
 
     _.prototype.tagInnerLast = function (startTag, endTag) {
-      return stsLib.string.tagInnerLast(this.value, startTag, endTag);
+      return lib.string.tagInnerLast(this.value, startTag, endTag);
     };
 
     _.prototype.tagOuterLast = function (startTag, endTag) {
-      return stsLib.string.tagOuterLast(this.value, startTag, endTag);
+      return lib.string.tagOuterLast(this.value, startTag, endTag);
     };
 
     _.prototype.tagOuterAll = function (startTag, endTag) {
-      return stsLib.string.tagOuterAll(this.value, startTag, endTag);
+      return lib.string.tagOuterAll(this.value, startTag, endTag);
     };
 
     _.prototype.replaceAll = function (before, after) {
-      return stsLib.string.replaceAll(this.value, before, after);
+      return lib.string.replaceAll(this.value, before, after);
     };
 
     _.prototype.test = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
 
       //拡張メソッド的な使い方
-      var str1 = new stsLib.String('abc');
+      var str1 = new lib.String('abc');
       d.check(true, str1.isInclude('a'));
       d.check(true, str1.isInclude('b'));
       d.check(true, str1.isInclude('c'));
       d.check(false,str1.isInclude('d'));
 
       //newしなくてもよい
-      var str2 = stsLib.String('abc');
+      var str2 = lib.String('abc');
       d.check(true, str2.isInclude('a'));
       d.check(true, str2.isInclude('b'));
       d.check(true, str2.isInclude('c'));
@@ -1979,26 +1979,26 @@ var stsLib = stsLib || {};
   //    ライブラリとして使うためのものではない
   //----------------------------------------
 
-  _.StringEx = stsLib.StringEx || function (value) {
-    if (!(this instanceof stsLib.StringEx)) {
-      return new stsLib.StringEx(value);
+  _.StringEx = lib.StringEx || function (value) {
+    if (!(this instanceof lib.StringEx)) {
+      return new lib.StringEx(value);
     }
     _.String.call(this, value);
   };
-  stsLib.inherits(_.StringEx, _.String);
+  lib.inherits(_.StringEx, _.String);
 
   (function () {
-    var _ = stsLib.StringEx;
+    var _ = lib.StringEx;
   
     _.prototype.isNotInclude = function (search) {
-      return !stsLib.string.isInclude(this.value, search);
-    }
+      return !lib.string.isInclude(this.value, search);
+    };
   
     _.prototype.test = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
   
       //継承しているので継承元のメソッドが使える
-      var str3 = new stsLib.StringEx('abc');
+      var str3 = new lib.StringEx('abc');
       d.check(false,str3.isNotInclude('a'));
       d.check(false,str3.isNotInclude('b'));
       d.check(false,str3.isNotInclude('c'));
@@ -2009,7 +2009,7 @@ var stsLib = stsLib || {};
       d.check(false,str3.isInclude('d'));
   
       //継承しても new しなくてもよい
-      var str4 = new stsLib.StringEx('abc');
+      var str4 = new lib.StringEx('abc');
       d.check(false,str4.isNotInclude('a'));
       d.check(false,str4.isNotInclude('b'));
       d.check(false,str4.isNotInclude('c'));
@@ -2019,25 +2019,25 @@ var stsLib = stsLib || {};
       d.check(true, str4.isInclude('c'));
       d.check(false,str4.isInclude('d'));
 
-      var str5 = new stsLib.String('abc');
+      var str5 = new lib.String('abc');
       //d.check(false,str5.isNotInclude('a'));
       //str5にはisNotIncludeメソッドはないために
       //これはエラーになる
 
-      d.check(true,  str3 instanceof stsLib.String);
-      d.check(true,  str3 instanceof stsLib.StringEx);
-      d.check(false, str3.constructor === stsLib.String);
-      d.check(true,  str3.constructor === stsLib.StringEx);
+      d.check(true,  str3 instanceof lib.String);
+      d.check(true,  str3 instanceof lib.StringEx);
+      d.check(false, str3.constructor === lib.String);
+      d.check(true,  str3.constructor === lib.StringEx);
 
-      d.check(true,  str4 instanceof stsLib.String);
-      d.check(true,  str4 instanceof stsLib.StringEx);
-      d.check(false, str4.constructor === stsLib.String);
-      d.check(true,  str4.constructor === stsLib.StringEx);
+      d.check(true,  str4 instanceof lib.String);
+      d.check(true,  str4 instanceof lib.StringEx);
+      d.check(false, str4.constructor === lib.String);
+      d.check(true,  str4.constructor === lib.StringEx);
 
-      d.check(true,  str5 instanceof stsLib.String);
-      d.check(false, str5 instanceof stsLib.StringEx);
-      d.check(true,  str5.constructor === stsLib.String);
-      d.check(false, str5.constructor === stsLib.StringEx);
+      d.check(true,  str5 instanceof lib.String);
+      d.check(false, str5 instanceof lib.StringEx);
+      d.check(true,  str5.constructor === lib.String);
+      d.check(false, str5.constructor === lib.StringEx);
 
     };
   
@@ -2046,9 +2046,9 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆日付時刻処理
   //----------------------------------------
-  _.datetime = stsLib.datetime || {};
+  _.datetime = lib.datetime || {};
   (function () {
-    var _ = stsLib.datetime;
+    var _ = lib.datetime;
 
     //----------------------------------------
     //◆日付時刻処理
@@ -2059,7 +2059,7 @@ var stsLib = stsLib || {};
     };
 
     _.format_yyyy_mm_dd = function (value, delimiter){
-      var s = stsLib.string;
+      var s = lib.string;
       return value.getFullYear() +
         delimiter +
         s.end('0' + (value.getMonth()+1), 2) +
@@ -2068,7 +2068,7 @@ var stsLib = stsLib || {};
     };
 
     _.format_hh_mm_dd = function (value, delimiter){
-      var s = stsLib.string;
+      var s = lib.string;
       return value.getHours() +
         delimiter +
         s.end('0' + value.getMinutes(), 2) +
@@ -2209,16 +2209,16 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆ファイルフォルダパス処理
   //----------------------------------------
-  _.path = stsLib.path || {};
+  _.path = lib.path || {};
   (function () {
-    var _ = stsLib.path;
+    var _ = lib.path;
 
     _.getFileName = function (fileName) {
       return fileName.substring(fileName.lastIndexOf('/')+1,fileName.length);
     };
 
     _.test_getFileName = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.check('a.txt', _.getFileName('file://test/test/a.txt'));
     };
 
@@ -2228,7 +2228,7 @@ var stsLib = stsLib || {};
     _.includeLastPathDelim = function (path) {
       var result = '';
       if (path != '') {
-        result = stsLib.string.includeEnd(path, '\\');
+        result = lib.string.includeEnd(path, '\\');
       }
       return result;
     };
@@ -2238,7 +2238,7 @@ var stsLib = stsLib || {};
     //----------------------------------------
     _.getExtensionIncludePeriod = function (path) {
       var
-        s = stsLib.string,
+        s = lib.string,
         result = '',
       varend;
       result = s.endLastDelim(path, '.');
@@ -2255,27 +2255,27 @@ var stsLib = stsLib || {};
   //----------------------------------------
   //◆動作確認
   //----------------------------------------
-  _.test = stsLib.test || {};
+  _.test = lib.test || {};
   (function () {
-    var _ = stsLib.test;
+    var _ = lib.test;
 
     _.test_stslib_core = function () {
 
-      var d = stsLib.debug;
+      var d = lib.debug;
       d.test_check();
       d.test_checkException();
       d.test_checkResult();
 
-      var t = stsLib.type;
+      var t = lib.type;
       t.test_isNullOrUndefined();
       t.test_isBoolean();
       t.test_isNumber();
       t.test_isInt();
 
-      var n = stsLib.number;
+      var n = lib.number;
       n.test_round();
 
-      var s = stsLib.string;
+      var s = lib.string;
       s.test_isInclude();
       s.test_includeCount();
       s.test_indexOfFirst();
@@ -2295,11 +2295,11 @@ var stsLib = stsLib || {};
       s.test_endFirstDelim();
       s.test_endLastDelim();
 
-      var str = new stsLib.String('abc');
+      var str = new lib.String('abc');
       str.test();
 
       //WSH 非対応なので実行させない
-      var strEx = new stsLib.StringEx('123');
+      var strEx = new lib.StringEx('123');
       strEx.test();
 
       _.test_equalOperator();
@@ -2322,7 +2322,7 @@ var stsLib = stsLib || {};
 
       s.test_replaceAll();
 
-      var a = stsLib.array;
+      var a = lib.array;
       a.test_equal();
       a.test_arrayToString();
       a.test_stringToArray();
@@ -2334,11 +2334,11 @@ var stsLib = stsLib || {};
     //  test_deleteFirstTagInner();
     //  test_deleteFirstTagOuter();
 
-      var angle = stsLib.angle;
+      var angle = lib.angle;
       angle.test_angleRelative();
       angle.test_degreeToRadian();
 
-      var path = stsLib.path;
+      var path = lib.path;
       path.test_getFileName();
 
 
@@ -2353,7 +2353,7 @@ var stsLib = stsLib || {};
     //・イコール演算子の挙動調査
     //----------------------------------------
     _.test_equalOperator = function () {
-      var d = stsLib.debug;
+      var d = lib.debug;
       var value;
       value = true;
       d.check(true , value==true        ,'v01-01');

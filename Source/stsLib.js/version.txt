@@ -1,6 +1,6 @@
-������
-��  ver 2014/07/18
-�E  �쐬
+﻿■履歴
+◇  ver 2014/07/18
+・  作成
     lastStringCount
     format_yyyy_mm_dd
     format_hh_mm_dd(
@@ -17,20 +17,20 @@
     stringToArray
     decodeURIComponentStringToArray
     getFileName
-��  ver 2015/07/02
+◇  ver 2015/07/02
     replaceAll
-��  ver 2014/07/18 stslib_web.js
-�E  �쐬 
+◇  ver 2014/07/18 stslib_web.js
+・  作成 
     setCookie
     getCookie
     encodeURIComponentArrayToString
     decodeURIComponentStringToArray
-��  ver 2015/07/31
-�E  firstStrFirstDelim/lastStrFirstDelim �ǉ�
-��  ver 2015/07/31 stslib_web.js
-�E  st_js�Ƃ��� st.js/st_web.js ���쐬
-��  ver 2015/08/02
-�E  �ǉ�
+◇  ver 2015/07/31
+・  firstStrFirstDelim/lastStrFirstDelim 追加
+◇  ver 2015/07/31 stslib_web.js
+・  st_jsとして st.js/st_web.js を作成
+◇  ver 2015/08/02
+・  追加
     isFirstStr
     includeFirstStr
     excludeFirstStr
@@ -52,102 +52,106 @@
     trimBothEndsStrs
     strCount
     shellFileOpen
-��  ver 2015/08/12
-�E  �ǉ�
-    WshShell���`
-��  ver 2015/08/13
-�E  �ǉ�
+◇  ver 2015/08/12
+・  追加
+    WshShellを定義
+◇  ver 2015/08/13
+・  追加
     firstStrLastDelim/lastStrLastDelim
-��  ver 2017/03/12
-�E  �C��
+◇  ver 2017/03/12
+・  修正
     firstStrFirstDelim/lastStrFirstDelim
     firstStrLastDelim/lastStrLastDelim
-�E  �ǉ�
+・  追加
     tagInnerText/tagOuterText
-��  ver 2017/03/12 stslib_win_wsh.js
-�E  stslib_win_wsh.js �쐬
-��  ver 2017/03/13 stslib_web.js
-�E  �^�C�g���w�b�_�[���Ȃ������̂Œǉ�
-��  ver 2017/03/16 stslib_gas_spreadsheet.js
-�E  stslib_gas_spreadsheet.js�쐬
-    dataLastCol/dataLastRow �ǉ�
-��  ver 2017/03/16
-�E  isIncludeStr �ǉ�
-�E  st_gas_gs.js �ǉ�
-��  ver 2017/03/17
-�E  isNumber �ǉ�
-��  ver 2017/04/13
-�E  getExtensionIncludePeriod �ǉ�
-��  ver 2017/04/17
-�E  isUndefined/isNull/isNullOrUndefined �ǉ�
-�E  st.js����stsLib.js�Ƀv���W�F�N�g���ύX
-    �t�@�C������st.js����stslib_core.js�ɕύX
-�E  test_equalOperator stslib_test_web.html����
-    stslib_core.js�Ɉړ�
-�E  assert �ǉ�
-�E  arrayEqualArray/arrayIndexOfArray �ǉ�
-��  ver 2017/04/17 stslib_web.js
-�E  �t�@�C�����ύX
-��  ver 2017/04/17 stslib_win_wsh.js
-�E  �t�@�C�����ύX
-��  ver 2017/04/18
-�E  startTagDelete/endTagDelete �ǉ�
-��  ver 2017/04/18 stslib_web.js
-�E  getUrlParameter�ǉ�
-��  ver 2017/04/19
-�E  deleteTagInnerText/deleteTagOuterText �ǉ�
-��  ver 2017/04/20
-�E  stslib_win_wsh.js �� shellFileOpen �ړ�
-��  ver 2017/04/22
-�E  degreeToRadian/radianToDegree �ǉ�
-�E  angleRelative �ǉ�
-�E  stslib_web.js �� intervalLoop������ǉ�
-��  ver 2017/04/25
-�E  ���O��Ԃ𓱓��B�֐��Q�̖��O���O���[�o�������������N�����Ȃ��悤�ɂ����B
-�E  �S�̓I�ɖ��O��Ԃɓ���悤�Ƀ��t�@�N�^�����O�Ή���
-    isInclude/indexOfFirst/indexOfLast ��ǉ�
-��  ver 2017/04/26
-�E  Array.isArray �� WSH �Ή��̂��߂� isArray �œƎ�����
-�E  stslib_win_wsh.js �� string_LoadFromFile/getEncodingTypeName �ǉ�
-��  ver 2017/04/27
-�E  �C���f���g��2�ɕύX
-�E  substrIndex/substrLength �ǉ�
-�E  start/end �ǉ�
-��  ver 2017/04/30
-�E  ���O��ԂɈڍs���郊�t�@�N�^�����O��
-��  ver 2017/05/13
-�E  ���O��Ԃ̃��t�@�N�^�����O�����B
-��  ver 2017/05/21
-�E  string�n�̃��\�b�h��stsLib.string�ւ̈ڍs
-��  ver 2017/05/23
-�E  ���t�֌W�A�t�@�C���p�X�֌W��
-    stsLib�̖��O��ԂɈړ�
-�E  replaceAll���C��
-��  ver 2017/05/24
-�E  tagOuterAll �ǉ�
-��  ver 2017/05/25
-�E  stsLib.String�̊g�����\�b�h�`���̕�����
-    stsLib.string�̑S�Ẵ��\�b�h������
-    �쐬�����B
-��  ver 2017/05/28
-�E  �p���̎d�g�݂�
+◇  ver 2017/03/12 stslib_win_wsh.js
+・  stslib_win_wsh.js 作成
+◇  ver 2017/03/13 stslib_web.js
+・  タイトルヘッダーがなかったので追加
+◇  ver 2017/03/16 stslib_gas_spreadsheet.js
+・  stslib_gas_spreadsheet.js作成
+    dataLastCol/dataLastRow 追加
+◇  ver 2017/03/16
+・  isIncludeStr 追加
+・  st_gas_gs.js 追加
+◇  ver 2017/03/17
+・  isNumber 追加
+◇  ver 2017/04/13
+・  getExtensionIncludePeriod 追加
+◇  ver 2017/04/17
+・  isUndefined/isNull/isNullOrUndefined 追加
+・  st.jsからstsLib.jsにプロジェクト名変更
+    ファイル名もst.jsからstslib_core.jsに変更
+・  test_equalOperator stslib_test_web.htmlから
+    stslib_core.jsに移動
+・  assert 追加
+・  arrayEqualArray/arrayIndexOfArray 追加
+◇  ver 2017/04/17 stslib_web.js
+・  ファイル名変更
+◇  ver 2017/04/17 stslib_win_wsh.js
+・  ファイル名変更
+◇  ver 2017/04/18
+・  startTagDelete/endTagDelete 追加
+◇  ver 2017/04/18 stslib_web.js
+・  getUrlParameter追加
+◇  ver 2017/04/19
+・  deleteTagInnerText/deleteTagOuterText 追加
+◇  ver 2017/04/20
+・  stslib_win_wsh.js に shellFileOpen 移動
+◇  ver 2017/04/22
+・  degreeToRadian/radianToDegree 追加
+・  angleRelative 追加
+・  stslib_web.js に intervalLoop処理を追加
+◇  ver 2017/04/25
+・  名前空間を導入。関数群の名前がグローバル汚染を引き起こさないようにした。
+・  全体的に名前空間に入るようにリファクタリング対応中
+    isInclude/indexOfFirst/indexOfLast を追加
+◇  ver 2017/04/26
+・  Array.isArray を WSH 対応のために isArray で独自実装
+・  stslib_win_wsh.js に string_LoadFromFile/getEncodingTypeName 追加
+◇  ver 2017/04/27
+・  インデントを2に変更
+・  substrIndex/substrLength 追加
+・  start/end 追加
+◇  ver 2017/04/30
+・  名前空間に移行するリファクタリング中
+◇  ver 2017/05/13
+・  名前空間のリファクタリング完了。
+◇  ver 2017/05/21
+・  string系のメソッドのstsLib.stringへの移行
+◇  ver 2017/05/23
+・  日付関係、ファイルパス関係を
+    stsLibの名前空間に移動
+・  replaceAllを修正
+◇  ver 2017/05/24
+・  tagOuterAll 追加
+◇  ver 2017/05/25
+・  stsLib.Stringの拡張メソッド形式の部分を
+    stsLib.stringの全てのメソッドをから
+    作成した。
+◇  ver 2017/05/28
+・  継承の仕組みを
       stsLib.StringEx.prototype = new stsLib.String();
       stsLib.StringEx.prototype.constructor = stsLib.StringEx;
-    ����
-      inherits�֐�(Google Closure Library)�ɕύX
-    �e�X�g���ǉ�����
-�E  benchMark��ǉ�
-�E  stslib_win_wsh.js ���b�Z�[�W�\���@�\�ǉ�
-��  ver 2017/05/30
-�E  stsLib���O��Ԃ�stsLib���̂��`����
-    �O���[�o���ϐ������ɍs���Ȃ��悤�ɂ���
-�E  .StringEx��.String��value���Ăяo���悤�ɂ���
-��  ver 2017/05/31
-�E  benchMark���C��
-�E  checkExc��ǉ�
-��  ver 2017/06/01
-�E  checkExc >> checkException ���O�ύX
-�E  checkResult ��ǉ�
-�E  �o�[�W�������� stslib_core.js �̉�������
-    version.txt �ɕ�������
-�E  number.round��ǉ�
+    から
+      inherits関数(Google Closure Library)に変更
+    テストも追加した
+・  benchMarkを追加
+・  stslib_win_wsh.js メッセージ表示機能追加
+◇  ver 2017/05/30
+・  stsLib名前空間でstsLib自体を定義して
+    グローバル変数を見に行かないようにした
+・  .StringExを.Stringのvalueを呼び出すようにした
+◇  ver 2017/05/31
+・  benchMarkを修正
+・  checkExcを追加
+◇  ver 2017/06/01
+・  checkExc >> checkException 名前変更
+・  checkResult を追加
+・  バージョン情報を stslib_core.js の下部から
+    version.txt に分離した
+・  number.roundを追加
+◇  ver 2017/06/03
+・  コピペしやすいようにstsLibの名前を減らした
+・  ESLintの設定をしてエラーと警告を極力除外した
+
