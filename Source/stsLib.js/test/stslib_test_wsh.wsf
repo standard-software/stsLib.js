@@ -20,6 +20,8 @@ All Right Reserved:
 Version:       2017/04/17
 //----------------------------------------*/
 
+var stsLib = require('stsLib');
+
 stsLib.test.test_stslib_core();
 
 /*----------------------------------------

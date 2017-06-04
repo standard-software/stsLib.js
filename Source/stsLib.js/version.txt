@@ -155,3 +155,8 @@
 ・  コピペしやすいようにstsLibの名前を減らした
 ・  ESLintの設定をしてエラーと警告を極力除外した
 ・  nearEqual を追加
+◇  ver 2017/06/05
+・  stsLib_core.jsとstsLib_web.jsを
+    requireのない環境でもrequire関数対応した
+    モジュールバージョンの異なるものの同時使用などが
+    やりやすくなる

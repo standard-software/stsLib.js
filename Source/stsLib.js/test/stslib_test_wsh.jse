@@ -36,6 +36,8 @@ eval(
 	//UTF-8 ‚Å‚Ìƒtƒ@ƒCƒ‹“Ç
 //--------------------------------------------------
 
+var stsLib = require('stsLib');
+
 stsLib.test.test_stslib_core();
 
 
