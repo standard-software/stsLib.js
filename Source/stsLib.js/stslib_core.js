@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/05
+Version:        2017/06/08
 //----------------------------------------*/
 
 //----------------------------------------
@@ -872,11 +872,14 @@ if (typeof module === 'undefined') {
       _.substrIndex = function (str, startIndex, endIndex) {
         var d = lib.debug;
         var t = lib.type;
-        if (t.isNullOrUndefined(endIndex)) {
-          endIndex = str.length - 1;
-        }
         d.assert(t.isString(str));
         d.assert(t.isInt(startIndex));
+        if (t.isNullOrUndefined(endIndex)) {
+          if (str.length <= startIndex) {
+            return '';
+          }
+          endIndex = str.length - 1;
+        }
         d.assert(t.isInt(endIndex));
 
         if (startIndex < 0) {
@@ -919,6 +922,9 @@ if (typeof module === 'undefined') {
         d.check('0123',   _.substrIndex('012345', 3, -10));
         d.check('345',   _.substrIndex('012345', 10, -3));
         d.check('345',   _.substrIndex('012345', -3, 10));
+
+        d.check('',     _.substrIndex(' ', 1));
+        d.check('',     _.substrIndex(' ', 1, 1));
       };
 
       //----------------------------------------
@@ -1067,6 +1073,7 @@ if (typeof module === 'undefined') {
         d.check('345',  _.excludeStart('12345', '12'));
         d.check('45',   _.excludeStart('12345', '123'));
         d.check('12345',_.excludeStart('12345', '23'));
+        d.check('',     _.excludeStart(' ', ' '));
       };
 
       //----------------------------------------
@@ -1311,9 +1318,13 @@ if (typeof module === 'undefined') {
 
       _.test_trimStart = function () {
         var d = lib.debug;
-        d.check('123 ',       _.trimStart('   123 ', [' ']));
-        d.check('\t  123 ',   _.trimStart('   \t  123 ', [' ']));
-        d.check('123 ',       _.trimStart('   \t  123 ', [' ', '\t']));
+        d.check('123 ',           _.trimStart('   123 ', [' ']));
+        d.check('\t  123 ',       _.trimStart('   \t  123 ', [' ']));
+        d.check('123 ',           _.trimStart('   \t  123 ', [' ', '\t']));
+        d.check('\t 456  \t   ',  _.trimStart('  \t 456  \t   ', [' ']));
+        d.check('456  \t   ',     _.trimStart('  \t 456  \t   ', [' ', '\t']));
+        d.check('\t   \t   ',     _.trimStart('  \t   \t   ', [' ']));
+        d.check('',               _.trimStart('  \t   \t   ', [' ', '\t']));
       };
 
       _.trimEnd = function (str, trimStrArray) {
