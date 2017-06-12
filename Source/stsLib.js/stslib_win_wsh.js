@@ -22,9 +22,9 @@ Version:        2017/05/28
 //----------------------------------------
 //	・	WSH では alert が無いので関数を作成する
 //----------------------------------------
-function alert(messageText) {
-	WScript.Echo(messageText);
-}
+var alert = alert || function (message) {
+	WScript.Echo(message);
+};
 
 //----------------------------------------
 //◆テキスト ファイル 入出力

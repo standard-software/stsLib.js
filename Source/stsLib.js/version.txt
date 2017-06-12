@@ -164,3 +164,7 @@
 ・  substrIndexの不具合を修正。
     テストコードも修正
 ・  trimのテストコードも修正
+◇  ver 2017/06/10
+・  orValue 追加
+・  string.isIncludeAll 追加
+・  EsLint対応など若干の修正

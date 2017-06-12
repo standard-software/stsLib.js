@@ -32,8 +32,8 @@ module.exports = {
             {
               "vars": "all", "args": "after-used", 
               "ignoreRestSiblings": false ,
-              "argsIgnorePattern": "global",
-              "varsIgnorePattern": "varend",
+              "argsIgnorePattern": "global|compares",
+              "varsIgnorePattern": "varend|require",
             },
         ],
         "no-console": [

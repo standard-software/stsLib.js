@@ -1,5 +1,5 @@
 ﻿/*----------------------------------------
-lib.js
+stsLib.js
 Standard Software Library JavaScript
 ----------------------------------------
 ModuleName:     Core Module
@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/08
+Version:        2017/06/10
 //----------------------------------------*/
 
 //----------------------------------------
@@ -288,6 +288,40 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆条件判断
     //----------------------------------------
+    _.compare = lib.compare || {};
+    (function () {
+      var _ = lib.compare;
+
+      //----------------------------------------
+      //・orValue関数
+      //----------------------------------------
+      //  ・  値が引数と一致しているかどうかを確認する関数
+      //  ・  orValue(a, 0, 1); として
+      //      aが0か1かならtrueを返す
+      //----------------------------------------
+      _.orValue = function (value, compares) {
+        var d = stsLib.debug;
+        d.assert(2 <= arguments.length);
+        var count = arguments.length;
+        for (var i = 1; i < count; i += 1) {
+          if (value === arguments[i]) {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      _.test_orValue = function () {
+        var d = stsLib.debug;
+        var a = 1;
+        d.check(true, _.orValue(a, 1));
+        d.check(true, _.orValue(a, 1, 2));
+        d.check(true, _.orValue(a, 1, 2, 3));
+        d.check(false,_.orValue(a, 2, 3, 4));
+        d.checkResult('ER', 0, _.orValue, a);
+      };
+
+    }());
 
     //----------------------------------------
     //◆型 確認/変換 処理
@@ -430,11 +464,9 @@ if (typeof module === 'undefined') {
       //      四捨五入して、その位にする
       //----------------------------------------
       _.round = function (value, digit) {
-        var 
-          d = lib.debug,
-          t = lib.type,
-          powResult,
-        varend;
+        var d = lib.debug;
+        var t = lib.type;
+        var powResult;
         if (t.isNullOrUndefined(digit)) {
           digit = 0;
         }
@@ -444,9 +476,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_round = function () {
-        var 
-          d = lib.debug,
-        varend;
+        var d = lib.debug;
         d.check(5,    _.round(5));
         d.check(5,    _.round(5.4));
         d.check(6,    _.round(5.5));
@@ -472,10 +502,8 @@ if (typeof module === 'undefined') {
       };
 
       _.nearEqual = function (a, b, diff) {
-        var
-          d = lib.debug,
-          t = lib.type,
-        varend;
+        var d = lib.debug;
+        var t = lib.type;
         d.assert(t.isNumber(a));
         d.assert(t.isNumber(b));
         d.assert(t.isNumber(diff));
@@ -488,9 +516,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_nearEqual = function () {
-        var 
-          d = lib.debug,
-        varend;
+        var d = lib.debug;
         d.check(true, _.nearEqual(0.049999,   0.050011,     0.001));
         d.check(true, _.nearEqual(0.050,      0.051,        0.001));
         d.check(true, _.nearEqual(0.050,      0.0509,       0.001));
@@ -502,10 +528,10 @@ if (typeof module === 'undefined') {
         d.check(true, _.nearEqual(0.0510,     0.050,        0.001));
         d.check(false,_.nearEqual(0.051000001,0.050,        0.001));
 
-        d.checkResult('ER', null, _.nearEqual, '0.50', 0.51, 0.001)
-        d.checkResult('ER', null, _.nearEqual, 0.50, '0.51', 0.001)
-        d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, '0.001')
-        d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, -0.001)
+        d.checkResult('ER', null, _.nearEqual, '0.50', 0.51, 0.001);
+        d.checkResult('ER', null, _.nearEqual, 0.50, '0.51', 0.001);
+        d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, '0.001');
+        d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, -0.001);
       };
 
     }());
@@ -795,6 +821,31 @@ if (typeof module === 'undefined') {
         d.check(2, _.includeCount('123123123', '31'),   'E');
         d.check(6, _.includeCount('AAAAAA', 'A'),       'F');
         d.check(3, _.includeCount('AAAAAA', 'AA'),      'G');
+      };
+
+      //----------------------------------------
+      //・全てが含まれているかどうか確認する
+      //----------------------------------------
+      //  ・  指定した配列の中身の内容で
+      //      文字列が全て成り立っているかどうか確認する関数
+      //  ・  isIncludeAll('abc', ['a', 'b', 'c'])
+      //      とすると、true が戻る
+      //----------------------------------------
+      _.isIncludeAll = function (str, searchArray) {
+        var d = stsLib.debug;
+        var s = stsLib.string;
+        d.assert(Array.isArray(searchArray));
+        for (var i = 0; i < searchArray.length; i += 1) {
+          str = s.replaceAll(str, searchArray[i], '');
+        }
+        return s.isEmpty(str);
+      };
+
+      _.test_isIncludeAll = function () {
+        var d = stsLib.debug;
+        d.check(true, _.isIncludeAll('abc', ['a', 'b', 'c']));
+        d.check(true, _.isIncludeAll('abc', ['a', 'b', 'c', 'd']));
+        d.check(false,_.isIncludeAll('abc', ['a', 'b']));
       };
 
       //----------------------------------------
@@ -1771,13 +1822,10 @@ if (typeof module === 'undefined') {
       //・タグで囲まれた文字を全て抽出する
       //----------------------------------------
       _.tagOuterAll = function (str, startTag, endTag) {
-        var
-          d = lib.debug,
-          t = lib.type,
-          indexStartTag,
-          indexEndTag,
-          result,
-        varend;
+        var d = lib.debug;
+        var t = lib.type;
+        var indexStartTag, indexEndTag;
+        var result;
 
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
@@ -2078,7 +2126,7 @@ if (typeof module === 'undefined') {
         d.check(false,str3.isInclude('d'));
     
         //継承しても new しなくてもよい
-        var str4 = new lib.StringEx('abc');
+        var str4 = lib.StringEx('abc');
         d.check(false,str4.isNotInclude('a'));
         d.check(false,str4.isNotInclude('b'));
         d.check(false,str4.isNotInclude('c'));
@@ -2306,10 +2354,8 @@ if (typeof module === 'undefined') {
       //・ピリオドを含んだ拡張子を取得する
       //----------------------------------------
       _.getExtensionIncludePeriod = function (path) {
-        var
-          s = lib.string,
-          result = '',
-        varend;
+        var s = lib.string;
+        var result = '';
         result = s.endLastDelim(path, '.');
         if (result == path) {
           result = '';
@@ -2335,6 +2381,9 @@ if (typeof module === 'undefined') {
         d.test_checkException();
         d.test_checkResult();
 
+        var c = lib.compare;
+        c.test_orValue();
+
         var t = lib.type;
         t.test_isNullOrUndefined();
         t.test_isBoolean();
@@ -2348,6 +2397,7 @@ if (typeof module === 'undefined') {
         var s = lib.string;
         s.test_isInclude();
         s.test_includeCount();
+        s.test_isIncludeAll();
         s.test_indexOfFirst();
         s.test_indexOfLast();
         s.test_substrIndex();
@@ -2510,5 +2560,5 @@ if (typeof module === 'undefined') {
     module.exports = stsLib;
   }
 
-}())
+}());
 
