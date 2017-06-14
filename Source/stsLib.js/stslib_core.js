@@ -471,8 +471,13 @@ if (typeof module === 'undefined') {
           digit = 0;
         }
         d.assert(t.isInt(digit));
+        var minusFlag = value < 0 ? true: false;
         powResult = Math.pow(10, digit);
-        return Math.round(value * powResult) / powResult;
+        if (minusFlag !== true) {
+          return Math.round(value * powResult) / powResult;
+        } else {
+          return -1 * Math.round(-1 * value * powResult) / powResult;
+        }
       };
 
       _.test_round = function () {
@@ -499,6 +504,29 @@ if (typeof module === 'undefined') {
         d.check(5500, _.round(5450, -2));
         d.check(5500, _.round(5540, -2));
         d.check(5600, _.round(5550, -2));
+
+        d.check(-5,    _.round(-5));
+        d.check(-5,    _.round(-5.4));
+        d.check(-6,    _.round(-5.5));
+        d.check(-5,    _.round(-5,    0));
+        d.check(-5,    _.round(-5.4,  0));
+        d.check(-6,    _.round(-5.5,  0));
+        d.check(-5.4,  _.round(-5.44, 1));
+        d.check(-5.5,  _.round(-5.45, 1));
+        d.check(-5.5,  _.round(-5.54, 1));
+        d.check(-5.6,  _.round(-5.55, 1));
+        d.check(-5.04, _.round(-5.044, 2));
+        d.check(-5.05, _.round(-5.045, 2));
+        d.check(-5.05, _.round(-5.054, 2));
+        d.check(-5.06, _.round(-5.055, 2));
+        d.check(-540,  _.round(-544, -1));
+        d.check(-550,  _.round(-545, -1));
+        d.check(-550,  _.round(-554, -1));
+        d.check(-560,  _.round(-555, -1));
+        d.check(-5400, _.round(-5440, -2));
+        d.check(-5500, _.round(-5450, -2));
+        d.check(-5500, _.round(-5540, -2));
+        d.check(-5600, _.round(-5550, -2));
       };
 
       _.nearEqual = function (a, b, diff) {
