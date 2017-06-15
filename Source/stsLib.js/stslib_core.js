@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/10
+Version:        2017/06/16
 //----------------------------------------*/
 
 //----------------------------------------
@@ -1231,8 +1231,12 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.excludeEnd = function (str, search) {
         if (_.endsWith(str, search)) {
-          return _.substrIndex(str, 0,
-            str.length - search.length - 1);
+          if (str.length === search.length) {
+            return '';
+          } else {
+            return _.substrIndex(str, 0,
+              str.length - search.length - 1);
+          }
         } else {
           return str;
         }
@@ -1240,10 +1244,12 @@ if (typeof module === 'undefined') {
 
       _.test_excludeEnd = function () {
         var d = lib.debug;
-        d.check('1234',  _.excludeEnd('12345', '5'));
-        d.check('123',   _.excludeEnd('12345', '45'));
-        d.check('12',    _.excludeEnd('12345', '345'));
-        d.check('12345', _.excludeEnd('12345', '34'));
+        d.check('1234',   _.excludeEnd('12345', '5'));
+        d.check('123',    _.excludeEnd('12345', '45'));
+        d.check('12',     _.excludeEnd('12345', '345'));
+        d.check('12345',  _.excludeEnd('12345', '34'));
+        d.check('  ',     _.excludeEnd('   ', ' '));
+        d.check('',       _.excludeEnd(' ', ' '));
       };
 
       //----------------------------------------
@@ -1422,6 +1428,8 @@ if (typeof module === 'undefined') {
         d.check(' 123',       _.trimEnd(' 123   ', [' ']));
         d.check(' 456  \t',   _.trimEnd(' 456  \t   ', [' ']));
         d.check(' 789',       _.trimEnd(' 789  \t   ', [' ', '\t']));
+        d.check('  \t   \t',  _.trimEnd('  \t   \t   ', [' ']));
+        d.check('',           _.trimEnd('  \t   \t   ', [' ', '\t']));
       };
 
       _.trimBothEnds = function (str, trimStrArray) {

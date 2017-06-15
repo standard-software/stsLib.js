@@ -168,3 +168,7 @@
 ・  orValue 追加
 ・  string.isIncludeAll 追加
 ・  EsLint対応など若干の修正
+◇  ver 2017/06/15
+・  round関数を負の数に対応
+◇  ver 2017/06/16
+・  excludeEndとtrimEndの不具合修正
