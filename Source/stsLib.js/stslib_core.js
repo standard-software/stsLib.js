@@ -783,7 +783,7 @@ if (typeof module === 'undefined') {
   //----------------------------------------*/
 
       //----------------------------------------
-      //◇条件判断
+      //◇空文字・空行
       //----------------------------------------
 
       //----------------------------------------
@@ -801,12 +801,19 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・値が空文字/null/Undefinedの場合だけ別の値を返す関数
       //----------------------------------------
-      _.ifEmptyValue = function (str , emptyValue) {
+      _.ifEmptyValue = function (str, emptyValue) {
         if (_.isEmpty(str)) {
           return emptyValue;
         } else {
           return str;
         }
+      };
+
+      //----------------------------------------
+      //・空行かどうか判断する
+      //----------------------------------------
+      _.isEmptyLine = function (line) {
+        return _.isIncludeAll(line, [' ', '\t', '\r', '\n', '　']);
       };
 
       //----------------------------------------
@@ -1090,7 +1097,10 @@ if (typeof module === 'undefined') {
         d.check('012345', _.start('012345', 10));
       };
 
-      _.startsWith = function (str, search) {
+      //----------------------------------------
+      //・先頭の一致を調べる
+      //----------------------------------------
+      _.isStart = function (str, search) {
         if (search === '') { return false; }
         if (str === '') { return false; }
         if (str.length < search.length) { return false; }
@@ -1102,25 +1112,30 @@ if (typeof module === 'undefined') {
         }
       };
 
-      //----------------------------------------
-      //・先頭の一致を調べる
-      //----------------------------------------
-      _.test_startsWith = function () {
+      _.startsWith = function (str, search) {
+        return _.isStart(str, search);
+      };
+
+      _.hasPrefix = function (str, search) {
+        return _.isStart(str, search);
+      };
+
+      _.test_isStart = function () {
         var d = lib.debug;
-        d.check(true,  _.startsWith('12345', '1'), 'A');
-        d.check(true,  _.startsWith('12345', '12'), 'B');
-        d.check(true,  _.startsWith('12345', '123'), 'C');
-        d.check(false, _.startsWith('12345', '23'), 'D');
-        d.check(false, _.startsWith('', '34'), 'E');
-        d.check(false, _.startsWith('12345', ''), 'F');
-        d.check(false, _.startsWith('123', '1234'), 'G');
+        d.check(true,  _.isStart('12345', '1'), 'A');
+        d.check(true,  _.isStart('12345', '12'), 'B');
+        d.check(true,  _.isStart('12345', '123'), 'C');
+        d.check(false, _.isStart('12345', '23'), 'D');
+        d.check(false, _.isStart('', '34'), 'E');
+        d.check(false, _.isStart('12345', ''), 'F');
+        d.check(false, _.isStart('123', '1234'), 'G');
       };
 
       //----------------------------------------
       //・先頭に含む
       //----------------------------------------
       _.includeStart = function (str, search) {
-        if (_.startsWith(str, search)) {
+        if (_.isStart(str, search)) {
           return str;
         } else {
           return search + str;
@@ -1139,7 +1154,7 @@ if (typeof module === 'undefined') {
       //・先頭から取り除く
       //----------------------------------------
       _.excludeStart = function (str, search) {
-        if (_.startsWith(str, search)) {
+        if (_.isStart(str, search)) {
           return _.substrIndex(str, search.length);
         } else {
           return str;
@@ -1183,7 +1198,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・終端の一致を調べる
       //----------------------------------------
-      _.endsWith = function (str, search) {
+      _.isEnd = function (str, search) {
         if (search === '') { return false; }
         if (str === '') { return false; }
         if (str.length < search.length) { return false; }
@@ -1196,22 +1211,30 @@ if (typeof module === 'undefined') {
         }
       };
 
-      _.test_endsWith = function () {
+      _.endsWith = function (str, search) {
+        return _.isEnd(str, search);
+      };
+
+      _.hasSuffix = function (str, search) {
+        return _.isEnd(str, search);
+      };
+
+      _.test_isEnd = function () {
         var d = lib.debug;
-        d.check(true,  _.endsWith('12345', '5'));
-        d.check(true,  _.endsWith('12345', '45'));
-        d.check(true,  _.endsWith('12345', '345'));
-        d.check(false, _.endsWith('12345', '34'));
-        d.check(false, _.endsWith('', '34'));
-        d.check(false, _.endsWith('12345', ''));
-        d.check(false, _.endsWith('123', '1234'));
+        d.check(true,  _.isEnd('12345', '5'));
+        d.check(true,  _.isEnd('12345', '45'));
+        d.check(true,  _.isEnd('12345', '345'));
+        d.check(false, _.isEnd('12345', '34'));
+        d.check(false, _.isEnd('', '34'));
+        d.check(false, _.isEnd('12345', ''));
+        d.check(false, _.isEnd('123', '1234'));
       };
 
       //----------------------------------------
       //・終端に含む
       //----------------------------------------
       _.includeEnd = function (str, search) {
-        if (_.endsWith(str, search)) {
+        if (_.isEnd(str, search)) {
           return str;
         } else {
           return str + search;
@@ -1230,7 +1253,7 @@ if (typeof module === 'undefined') {
       //・終端から取り除く
       //----------------------------------------
       _.excludeEnd = function (str, search) {
-        if (_.endsWith(str, search)) {
+        if (_.isEnd(str, search)) {
           if (str.length === search.length) {
             return '';
           } else {
@@ -1256,8 +1279,8 @@ if (typeof module === 'undefined') {
       //◇両端 BothEnds
       //----------------------------------------
       _.bothEndsWith = function (str, search) {
-        return _.startsWith(str, search) &&
-          _.endsWith(str, search);
+        return _.isStart(str, search) &&
+          _.isEnd(str, search);
       };
 
       _.includeBothEnds = function (str, search) {
@@ -1440,6 +1463,24 @@ if (typeof module === 'undefined') {
       _.trim = function (str) {
         return _.trimBothEnds(str, [' ', '\t', '\r', '\n']);
       };
+
+      _.trimSpaceOnly = function (str) {
+        return _.trimBothEnds(str, [' ']);
+      };
+
+      //----------------------------------------
+      //・TrimでCutする方の文字列を取得する
+      //----------------------------------------
+      _.trimCutStart = function (str, trimStrArray) {
+        return _.start(str,
+          str.length - _.trimStart(str, trimStrArray).length);
+      };
+
+      _.trimCutEnd = function (str, trimStrArray) {
+        return _.end(str,
+          str.length - _.trimEnd(str, trimStrArray).length)
+      };
+
 
       //--------------------------------------
       //◇Tag deleteFirst/Last
@@ -1980,8 +2021,8 @@ if (typeof module === 'undefined') {
         return lib.string.start(this.value, length);
       };
 
-      _.prototype.startsWith = function (search) {
-        return lib.string.startsWith(this.value, search);
+      _.prototype.isStart = function (search) {
+        return lib.string.isStart(this.value, search);
       };
 
       _.prototype.includeStart = function (search) {
@@ -1996,8 +2037,8 @@ if (typeof module === 'undefined') {
         return lib.string.end(this.value, length);
       };
 
-      _.prototype.endsWith = function (search) {
-        return lib.string.endsWith(this.value, search);
+      _.prototype.isEnd = function (search) {
+        return lib.string.isEnd(this.value, search);
       };
 
       _.prototype.includeEnd = function (search) {
@@ -2439,11 +2480,11 @@ if (typeof module === 'undefined') {
         s.test_substrIndex();
         s.test_substrLength();
         s.test_start();
-        s.test_startsWith();
+        s.test_isStart();
         s.test_includeStart();
         s.test_excludeStart();
         s.test_end();
-        s.test_endsWith();
+        s.test_isEnd();
         s.test_includeEnd();
         s.test_excludeEnd();
         s.test_startFirstDelim();

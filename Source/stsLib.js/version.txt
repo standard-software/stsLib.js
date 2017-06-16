@@ -172,3 +172,6 @@
 ・  round関数を負の数に対応
 ◇  ver 2017/06/16
 ・  excludeEndとtrimEndの不具合修正
+・  isEmptyLine 追加
+・  trimSpaceOnly 追加
+・  trimCutStart/trimCutEnd 追加
