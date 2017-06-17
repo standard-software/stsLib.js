@@ -53,7 +53,8 @@
     strCount
     shellFileOpen
 ◇  ver 2015/08/11
-・  WSH用の jse ファイルと wsf ファイル作成
+・  テスト用に WSHの jse ファイルと wsf ファイル作成
+・  テスト用に webの ファイル作成
 ◇  ver 2015/08/12
 ・  追加
     WshShellを定義
@@ -181,3 +182,5 @@
 ・  stslib_emeditor_macro.js 作成
 ◇	ver 2017/06/17
 ・  stslib_win_wsh.js に string_SaveToFile 追加
+・	stslib_test_web_CDN.html 作成
+
