@@ -23,13 +23,8 @@ Version:       2017/04/17
 var stsLib = require('stsLib');
 
 stsLib.test.test_stslib_core();
+test_stslib_win_wsh();
 
-/*----------------------------------------
-◇  ver 2015/08/11
-・  作成
-◇  ver 2017/04/17
-・  ファイル名変更
-//----------------------------------------*/
     ]]>
     </script>
 </job>

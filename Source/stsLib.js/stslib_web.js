@@ -50,7 +50,7 @@ if (typeof module === 'undefined') {
       var _ = stsLib.web;
 
       //----------------------------------------
-      //◆デバッグ処理
+      //◆テスト
       //----------------------------------------
       _.test_stslib_web = function () {
         _.test_intervalForToAll();

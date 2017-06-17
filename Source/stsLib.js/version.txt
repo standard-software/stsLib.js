@@ -52,6 +52,8 @@
     trimBothEndsStrs
     strCount
     shellFileOpen
+◇  ver 2015/08/11
+・  WSH用の jse ファイルと wsf ファイル作成
 ◇  ver 2015/08/12
 ・  追加
     WshShellを定義
@@ -86,10 +88,11 @@
     stslib_core.jsに移動
 ・  assert 追加
 ・  arrayEqualArray/arrayIndexOfArray 追加
-◇  ver 2017/04/17 stslib_web.js
+◇  ver 2017/04/17 
 ・  ファイル名変更
-◇  ver 2017/04/17 stslib_win_wsh.js
-・  ファイル名変更
+    stslib_web.js
+    /stslib_win_wsh.js
+    /stslib_test_wsh.jse/stslib_test_wsh.wsf
 ◇  ver 2017/04/18
 ・  startTagDelete/endTagDelete 追加
 ◇  ver 2017/04/18 stslib_web.js
@@ -176,3 +179,4 @@
 ・  trimSpaceOnly 追加
 ・  trimCutStart/trimCutEnd 追加
 ・  stslib_emeditor_macro.js 作成
+◇	ver 2017/06/17
