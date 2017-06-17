@@ -180,3 +180,4 @@
 ・  trimCutStart/trimCutEnd 追加
 ・  stslib_emeditor_macro.js 作成
 ◇	ver 2017/06/17
+・  stslib_win_wsh.js に string_SaveToFile 追加
