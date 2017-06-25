@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/16
+Version:        2017/06/26
 //----------------------------------------*/
 
 //----------------------------------------
@@ -529,6 +529,9 @@ if (typeof module === 'undefined') {
         d.check(-5600, _.round(-5550, -2));
       };
 
+      //----------------------------------------
+      //・ニアイコールを判定する
+      //----------------------------------------
       _.nearEqual = function (a, b, diff) {
         var d = lib.debug;
         var t = lib.type;
@@ -560,6 +563,23 @@ if (typeof module === 'undefined') {
         d.checkResult('ER', null, _.nearEqual, 0.50, '0.51', 0.001);
         d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, '0.001');
         d.checkResult('ER', null, _.nearEqual, 0.50, 0.51, -0.001);
+      };
+
+      //----------------------------------------
+      //・範囲内に値が含まれるかどうか確認
+      //----------------------------------------
+      _.isRange = function (value, from, to) {
+        var d = lib.debug;
+        var t = lib.type;
+        d.assert(t.isNumber(from));
+        d.assert(t.isNumber(to));
+        d.assert(from <= to);
+
+        if ((from <= value) && (value <= to)) {
+          return true;
+        } else {
+          return false;
+        }
       };
 
     }());
@@ -822,6 +842,10 @@ if (typeof module === 'undefined') {
 
       _.isInclude = function (str, search) {
         return (0 <= _.indexOfFirst(str, search));
+      };
+
+      _.contains = function (str, search) {
+        return _.isInclude(str, search);
       };
 
       _.test_isInclude = function () {
@@ -1424,6 +1448,10 @@ if (typeof module === 'undefined') {
         return result;
       };
 
+      _.trimLeft = function (str, trimStrArray) {
+        return _.trimStart(str, trimStrArray);
+      };
+
       _.test_trimStart = function () {
         var d = lib.debug;
         d.check('123 ',           _.trimStart('   123 ', [' ']));
@@ -1444,6 +1472,10 @@ if (typeof module === 'undefined') {
           }
         } while (result !== str);
         return result;
+      };
+
+      _.trimRight = function (str, trimStrArray) {
+        return _.trimEnd(str, trimStrArray);
       };
 
       _.test_trimEnd = function () {
@@ -1944,6 +1976,22 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //◇文字列生成
+      //----------------------------------------
+      _.repeat = function (str, count) {
+        var result = '';
+        for (var i = 0; i < count; i += 1) {
+          result += str;
+        }
+        return result;
+      };
+
+      _.test_repeat = function () {
+        var d = lib.debug;
+        d.check('AAAAA', _.repeat('A', 5));
+      };
+
+      //----------------------------------------
       //◇置き換え
       //----------------------------------------
 
@@ -2237,6 +2285,94 @@ if (typeof module === 'undefined') {
     
     }());
 
+    _.Document = lib.Document || function (value) {
+      if (!(this instanceof lib.Document)) {
+        return new lib.Document(value);
+      }
+      var textArray;
+      this.getLine = function (index) {
+        var d = stsLib.debug;
+        var t = stsLib.type;
+        var n = stsLib.number;
+        d.assert(t.isInt(index));
+        d.assert(n.isRange(index, 0, textArray.length - 1));
+        return textArray[index];
+      };
+
+      this.setLine = function (index, line) {
+        var d = stsLib.debug;
+        var t = stsLib.type;
+        var n = stsLib.number;
+        d.assert(t.isInt(index));
+        d.assert(n.isRange(index, 0, textArray.length));
+        if (n.isRange(index, 0, textArray.length - 1)) {
+          textArray[index] = line;
+        } else {
+          textArray.push(line);
+        }
+        this.setText(this.getText());
+        //改行コードなしのlineをセットした時にでも
+        //配列がリフレッシュされる
+      };
+
+      this.getText = function () {
+        return textArray.join('');
+      };
+
+      this.setText = function (value) {
+        textArray = value.match(/[^\r\n]*(\r\n|\r|\n|$)/g);
+      };
+
+      this.setText(value);
+    };
+    (function () {
+      var _ = lib.Document;
+
+      _.prototype.test = function () {
+        var d = lib.debug;
+
+        var originalText = '0123\r456\n789\r\n0123\r\r456\n\n789\r\n\r\n0123\n\r\n\r456';
+        var doc = lib.Document(originalText);
+
+        d.check('0123\r',   doc.getLine(0));
+        d.check('456\n',    doc.getLine(1));
+        d.check('789\r\n',  doc.getLine(2));
+        d.check('0123\r',   doc.getLine(3));
+        d.check('\r',       doc.getLine(4));
+        d.check('456\n',    doc.getLine(5));
+        d.check('\n',       doc.getLine(6));
+        d.check('789\r\n',  doc.getLine(7));
+        d.check('\r\n',     doc.getLine(8));
+        d.check('0123\n',   doc.getLine(9));
+        d.check('\r\n',     doc.getLine(10));
+        d.check('\r',       doc.getLine(11));
+        d.check('456',      doc.getLine(12));
+
+        //getTextのテスト
+        d.check(originalText, doc.getText());
+
+        //setLineのテスト
+        doc.setLine(0, 'ABC\r\n');
+        doc.setLine(1, 'DEF\r');
+        d.check('ABC\r\n',  doc.getLine(0));
+        d.check('DEF\r',    doc.getLine(1));
+        d.check('789\r\n',  doc.getLine(2));
+
+        //setLine 最終行追加のテスト
+        doc.setLine(0, '0123\r');
+        doc.setLine(1, '456\n');
+        doc.setLine(13, 'GHI\r\n');
+        d.check(originalText + 'GHI\r\n', doc.getText());
+
+        //setLine 改行コード無しのテスト
+        doc.setLine(0, 'A');
+        doc.setLine(0, 'B');
+        d.check('B789\r\n',  doc.getLine(0));
+        d.check('0123\r',   doc.getLine(1));
+      };
+
+    }());
+
     //----------------------------------------
     //◆日付時刻処理
     //----------------------------------------
@@ -2247,10 +2383,6 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◆日付時刻処理
       //----------------------------------------
-      //文字列を後方から文字数指定で取得する
-      _.lastStringCount = function (value, count) {
-        return value.substr(value.length - count, count);
-      };
 
       _.format_yyyy_mm_dd = function (value, delimiter){
         var s = lib.string;
@@ -2417,17 +2549,6 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //・終端にパス区切りを追加する関数
-      //----------------------------------------
-      _.includeLastPathDelim = function (path) {
-        var result = '';
-        if (path != '') {
-          result = lib.string.includeEnd(path, '\\');
-        }
-        return result;
-      };
-
-      //----------------------------------------
       //・ピリオドを含んだ拡張子を取得する
       //----------------------------------------
       _.getExtensionIncludePeriod = function (path) {
@@ -2517,6 +2638,7 @@ if (typeof module === 'undefined') {
         s.test_tagOuterLast();
         s.test_tagOuterAll();
 
+        s.test_repeat();
         s.test_replaceAll();
 
         var a = lib.array;
@@ -2538,7 +2660,8 @@ if (typeof module === 'undefined') {
         var path = lib.path;
         path.test_getFileName();
 
-
+        var doc = lib.Document('');
+        doc.test();
 
         alert('finish test テスト終了');
         //エンコード確認のため、日本語を含めている
