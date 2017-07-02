@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/26
+Version:        2017/07/02
 //----------------------------------------*/
 
 //----------------------------------------
@@ -2289,47 +2289,52 @@ if (typeof module === 'undefined') {
       if (!(this instanceof lib.Document)) {
         return new lib.Document(value);
       }
-      var textArray;
-      this.getLine = function (index) {
+      this._textArray = [];
+      this.setText(value);
+    };
+    (function () {
+      var _ = lib.Document;
+
+      _.prototype.getLine = function (index) {
         var d = stsLib.debug;
         var t = stsLib.type;
         var n = stsLib.number;
         d.assert(t.isInt(index));
-        d.assert(n.isRange(index, 0, textArray.length - 1));
-        return textArray[index];
+        d.assert(n.isRange(index, 0, this._textArray.length - 1));
+        return this._textArray[index];
       };
 
-      this.setLine = function (index, line) {
+      _.prototype.setLine = function (index, line) {
         var d = stsLib.debug;
         var t = stsLib.type;
         var n = stsLib.number;
         d.assert(t.isInt(index));
-        d.assert(n.isRange(index, 0, textArray.length));
-        if (n.isRange(index, 0, textArray.length - 1)) {
-          textArray[index] = line;
+        d.assert(n.isRange(index, 0, this._textArray.length));
+        if (n.isRange(index, 0, this._textArray.length - 1)) {
+          this._textArray[index] = line;
         } else {
-          textArray.push(line);
+          this._textArray.push(line);
         }
         this.setText(this.getText());
         //改行コードなしのlineをセットした時にでも
         //配列がリフレッシュされる
       };
 
-      this.getText = function () {
-        return textArray.join('');
+      _.prototype.getText = function () {
+        return this._textArray.join('');
       };
 
-      this.setText = function (value) {
-        textArray = value.match(/[^\r\n]*(\r\n|\r|\n|$)/g);
+      _.prototype.setText = function (value) {
+        this._textArray = value.match(/[^\r\n]*(\r\n|\r|\n|$)/g);
       };
 
-      this.setText(value);
-    };
+    }());
     (function () {
       var _ = lib.Document;
 
       _.prototype.test = function () {
         var d = lib.debug;
+        var t = lib.type;
 
         var originalText = '0123\r456\n789\r\n0123\r\r456\n\n789\r\n\r\n0123\n\r\n\r456';
         var doc = lib.Document(originalText);

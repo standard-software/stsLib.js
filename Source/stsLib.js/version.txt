@@ -190,4 +190,9 @@
     contains/trimLeft/trimRight
 ・  Documentクラス作成、追加。
 ・  lastStringCount / includeLastPathDelimを削除
-
+◇  ver 2017/07/02
+・  cscript stslib_test_wsh.jse を削除
+    Win7 64bit環境の WSHでADODB.Streamが
+    動作する環境としない環境があり
+    UTF-8のファイルをJScriptで読み込めないため
+・  Documentコンストラクタを修正
