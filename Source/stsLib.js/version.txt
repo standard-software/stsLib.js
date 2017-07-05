@@ -196,3 +196,6 @@
     動作する環境としない環境があり
     UTF-8のファイルをJScriptで読み込めないため
 ・  Documentコンストラクタを修正
+◇	ver 2017/07/05
+・	excludeEndLineBreak を追加
+

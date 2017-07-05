@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/07/02
+Version:        2017/07/05
 //----------------------------------------*/
 
 //----------------------------------------
@@ -835,6 +835,19 @@ if (typeof module === 'undefined') {
       _.isEmptyLine = function (line) {
         return _.isIncludeAll(line, [' ', '\t', '\r', '\n', '　']);
       };
+
+      //----------------------------------------
+      //・終端の改行コードを削除する
+      //----------------------------------------
+      //  ・\nを取り除き\rを取り除けば、
+      //    \r\n/\r/\n すべてのタイプの改行コードを
+      //    終端から取り除ける
+      //----------------------------------------
+      _.excludeEndLineBreak = function (line) {
+        return _.excludeEnd(
+          _.excludeEnd(line, ['\n']), ['\r']);
+      };
+
 
       //----------------------------------------
       //◇Include
