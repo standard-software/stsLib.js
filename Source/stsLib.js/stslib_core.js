@@ -582,6 +582,51 @@ if (typeof module === 'undefined') {
         }
       };
 
+      //----------------------------------------
+      //・数値を3桁カンマ区切りなどにする
+      //----------------------------------------
+      //  ・整数部分は右から
+      //    小数部分は左から桁区切りする
+      //----------------------------------------
+      _.formatDigitComma = function (value,
+        delimiterInt, digitInt, delimiterFloat, digitFloat) {
+        var d = lib.debug;
+        var t = lib.type;
+        d.assert(t.isNumber(value));
+        d.assert(t.isInt(digitInt));
+        d.assert(t.isString(delimiterInt));
+        d.assert(t.isInt(digitFloat));
+        d.assert(t.isString(delimiterFloat));
+
+        var s = lib.string;
+        var valueStr = value.toString();
+        if (t.isInt(value)) {
+          return s.formatInsertLast(valueStr, delimiterInt, digitInt);
+        } else {
+          return s.formatInsertLast(
+              s.startFirstDelim(valueStr, '.'),
+              delimiterInt, digitInt) +
+            '.' + 
+            s.formatInsertFirst(
+              s.endFirstDelim(valueStr, '.'),
+              delimiterFloat, digitFloat);
+        }
+      };
+
+      _.test_formatDigitComma = function () {
+        var d = lib.debug;
+        d.check('123,456,789.123 456 7',
+          _.formatDigitComma(123456789.1234567, ',', 3, ' ', 3));
+        d.check('123,456,789',
+          _.formatDigitComma(123456789, ',', 3, ' ', 3));
+        d.check('1,234,567,890',
+          _.formatDigitComma(1234567890, ',', 3, ' ', 3));
+        d.check('0.123 456 789 012',
+          _.formatDigitComma(0.123456789012, ',', 3, ' ', 3));
+        d.check('0.012 345 678 901 2',
+          _.formatDigitComma(0.0123456789012, ',', 3, ' ', 3));
+      }
+
     }());
 
     //----------------------------------------
@@ -2001,7 +2046,12 @@ if (typeof module === 'undefined') {
 
       _.test_repeat = function () {
         var d = lib.debug;
-        d.check('AAAAA', _.repeat('A', 5));
+        d.check('AAAAA',  _.repeat('A', 5));
+        d.check('ABABAB', _.repeat('AB', 3));
+        d.check('AB',     _.repeat('AB', 1));
+        d.check('',       _.repeat('AB', 0));
+        d.check('',       _.repeat('', 0));
+        d.check('',       _.repeat('', 5));
       };
 
       //----------------------------------------
@@ -2022,6 +2072,110 @@ if (typeof module === 'undefined') {
         d.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
         d.check('AAAABBBBBBBAAAA', 
           _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
+      };
+
+      //----------------------------------------
+      //◇変換
+      //----------------------------------------
+
+      //----------------------------------------
+      //・逆順
+      //----------------------------------------
+      _.reverse = function (str) {
+         return str.split('').reverse().join('');
+      };
+
+      _.test_reverse = function () {
+        var d = lib.debug;
+        d.check('54321', _.reverse('12345'));
+        d.check('321', _.reverse('123'));
+        d.check('21', _.reverse('12'));
+        d.check('2', _.reverse('2'));
+        d.check('', _.reverse(''));
+      };
+
+      //----------------------------------------
+      //◇カンマ区切り/スペース区切り
+      //----------------------------------------
+
+      //----------------------------------------
+      //・先頭から区切る
+      //----------------------------------------
+      _.formatInsertFirst = function (str, delimiter, count) {
+        var t = lib.type;
+        var d = lib.debug;
+        d.assert(t.isString(str));
+        d.assert(t.isString(delimiter));
+        d.assert(t.isInt(count));
+        var s = lib.string;
+        if (s.isEmpty(str)) {
+          return '';
+        }
+
+        //WSHは文字列をstr[i]の形で扱えないので
+        //その対策を行う
+        str = str.split('');
+
+        var result = str[0];
+        for (var i = 1; i <= str.length - 1; i += 1) {
+          if (i % count === 0) {
+            result += delimiter + str[i];
+          } else {
+            result += str[i];
+          }
+        }
+        return result;
+      };
+
+      _.test_formatInsertFirst = function () {
+        var d = lib.debug;
+        d.check('123 456 789 012 3',_.formatInsertFirst('1234567890123', ' ', 3));
+        d.check('123 456 789 123',  _.formatInsertFirst('123456789123', ' ', 3));
+        d.check('123,4',            _.formatInsertFirst('1234', ',', 3));
+        d.check('123',              _.formatInsertFirst('123', ',', 3));
+        d.check('12',               _.formatInsertFirst('12', ',', 3));
+        d.check('0',                _.formatInsertFirst('0', ',', 3));
+        d.check('',                 _.formatInsertFirst('', ',', 3));
+      };
+
+      //----------------------------------------
+      //・先頭から区切る
+      //----------------------------------------
+      _.formatInsertLast = function (str, delimiter, count) {
+        var t = lib.type;
+        var d = lib.debug;
+        d.assert(t.isString(str));
+        d.assert(t.isString(delimiter));
+        d.assert(t.isInt(count));
+        var s = lib.string;
+        if (s.isEmpty(str)) {
+          return '';
+        }
+
+        //WSHは文字列をstr[i]の形で扱えないので
+        //その対策を行う
+        str = str.split('');
+
+        var result = str[str.length - 1];
+        for (var i = 1; i <= str.length - 1; i += 1) {
+          if (i % count === 0) {
+            result += delimiter + str[str.length - 1 - i];
+          } else {
+            result += str[str.length - 1 - i];
+          }
+        }
+        return s.reverse(result);
+      };
+
+      _.test_formatInsertLast = function () {
+        var d = lib.debug;
+        d.check('1 234 567 890 123',_.formatInsertLast('1234567890123', ' ', 3));
+        d.check('123 456 789 123',  _.formatInsertLast('123456789123', ' ', 3));
+        d.check('1,234',            _.formatInsertLast('1234', ',', 3));
+        d.check('123',              _.formatInsertLast('123', ',', 3));
+        d.check('12',               _.formatInsertLast('12', ',', 3));
+        d.check('0',                _.formatInsertLast('0', ',', 3));
+        d.check('',                 _.formatInsertLast('', ',', 3));
       };
 
     }());
@@ -2609,6 +2763,7 @@ if (typeof module === 'undefined') {
         var n = lib.number;
         n.test_round();
         n.test_nearEqual();
+        n.test_formatDigitComma();
 
         var s = lib.string;
         s.test_isInclude();
@@ -2658,6 +2813,10 @@ if (typeof module === 'undefined') {
 
         s.test_repeat();
         s.test_replaceAll();
+        s.test_reverse();
+
+        s.test_formatInsertFirst();
+        s.test_formatInsertLast();
 
         var a = lib.array;
         a.test_equal();

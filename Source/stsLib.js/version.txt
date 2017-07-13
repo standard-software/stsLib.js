@@ -198,4 +198,7 @@
 ・  Documentコンストラクタを修正
 ◇	ver 2017/07/05
 ・	excludeEndLineBreak を追加
+◇  ver 2017/07/13
+・  formatDigitComma追加
+・  formatInsertFirst/formatInsertLast追加
 
