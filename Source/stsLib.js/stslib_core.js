@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/07/05
+Version:        2017/07/13
 //----------------------------------------*/
 
 //----------------------------------------
@@ -2139,7 +2139,7 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //・先頭から区切る
+      //・後方から区切る
       //----------------------------------------
       _.formatInsertLast = function (str, delimiter, count) {
         var t = lib.type;
