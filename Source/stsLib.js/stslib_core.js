@@ -14,32 +14,6 @@ Version:        2017/07/13
 //----------------------------------------*/
 
 //----------------------------------------
-//■グローバル
-//----------------------------------------
-
-//----------------------------------------
-//・alert
-//----------------------------------------
-//  ・ライブラリ内部で alert を使うので
-//    alert がない環境(node.jsとか)での動作の時に
-//    エラーにならないように定義する
-//----------------------------------------
-var alert = alert || function (message) {
-  console.log(message);
-};
-
-//----------------------------------------
-//・Array.isArray
-//----------------------------------------
-//  ・Array.isArray が存在しない環境(WSHなど)
-//    のために実装
-//  ・参考:書籍:JavaScriptパターン P51
-//----------------------------------------
-Array.isArray = Array.isArray || function (arg) {
-  return Object.prototype.toString.call(arg) === '[object Array]';
-};
-
-//----------------------------------------
 //・require関数
 //----------------------------------------
 //  ・  require/moduleの無い環境に対応
@@ -330,40 +304,125 @@ if (typeof module === 'undefined') {
     (function () {
       var _ = lib.type;
 
-      _.isUndefined = function (value) {
-        return (typeof value === 'undefined');
+      //----------------------------------------
+      //◇引数すべてに型をチェックする
+      //----------------------------------------
+
+
+      //----------------------------------------
+      //・argumentsのような arraylike なものを配列にする
+      //----------------------------------------
+      //  ・ES6だと args = Array.from(arguments) とできる
+      //----------------------------------------
+      var argsToArray = function (values) {
+        return Array.prototype.slice.call(values);
       };
 
-      _.isNull = function (value) {
-        return (value === null);
+      _.isUndefined = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element === 'undefined');
+          });
+      };
+      //下記のようにも書けるがより現代的なArary.prototype.everyを使う
+      // _.isUndefined = function () {
+      //   for (var i = 0; i <= arguments.length - 1; i += 1) {
+      //     if (typeof arguments[i] !== 'undefined') {
+      //       return false;
+      //     }
+      //   }
+      //   return true;
+      // };
+
+      _.isNotUndefined = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element !== 'undefined');
+          });
       };
 
-      _.isNullOrUndefined = function (value)
+      _.isNull = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (element === null);
+          });
+      };
+
+      _.isNotNull = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (element !== null);
+          });
+      };
+
+      _.isNullOrUndefined = function ()
       {
-        return (_.isNull(value)
-          || _.isUndefined(value));
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (_.isNull(element)
+              || _.isUndefined(element));
+          });
+      };
+
+      _.isNotNullOrUndefined = function ()
+      {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return !(_.isNull(element)
+              || _.isUndefined(element));
+          });
       };
 
       _.test_isNullOrUndefined = function () {
         var d = lib.debug;
-        var a1;
-        d.check(true,   _.isUndefined(a1));
-        d.check(false,  _.isNull(a1));
-        d.check(true,   _.isNullOrUndefined(a1));
+        var u1;
+        var n1 = null;
+        var v1 = 1;
 
-        var a2 = null;
-        d.check(false,  _.isUndefined(a2));
-        d.check(true,   _.isNull(a2));
-        d.check(true,   _.isNullOrUndefined(a2));
+        d.check(true,   _.isUndefined(u1));
+        d.check(false,  _.isNull(u1));
+        d.check(true,   _.isNullOrUndefined(u1));
 
-        var a3 = 10;
-        d.check(false,  _.isUndefined(a3));
-        d.check(false,  _.isNull(a3));
-        d.check(false,  _.isNullOrUndefined(a3));
+        d.check(false,  _.isUndefined(n1));
+        d.check(true,   _.isNull(n1));
+        d.check(true,   _.isNullOrUndefined(n1));
+
+        d.check(false,  _.isUndefined(v1));
+        d.check(false,  _.isNull(v1));
+        d.check(false,  _.isNullOrUndefined(v1));
+
+        var u2;
+        var n2 = null;
+        var v2 = 1;
+        d.check(true,   _.isUndefined(u1, u2));
+        d.check(false,  _.isUndefined(u1, n2));
+        d.check(false,  _.isUndefined(u1, v2));
+
+        d.check(false,  _.isNull(n1, u2));
+        d.check(true,   _.isNull(n1, n2));
+        d.check(false,  _.isNull(n1, v2));
+
+        d.check(true,   _.isNullOrUndefined(u1, u2));
+        d.check(true,   _.isNullOrUndefined(u1, n2));
+        d.check(false,  _.isNullOrUndefined(u1, v2));
+        d.check(true,   _.isNullOrUndefined(n1, u2));
+        d.check(true,   _.isNullOrUndefined(n1, n2));
+        d.check(false,  _.isNullOrUndefined(n1, v2));
+
       };
 
-      _.isBoolean = function (value) {
-        return (typeof value === 'boolean');
+      _.isBoolean = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element === 'boolean');
+          });
+      };
+
+      _.isNotBoolean = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element !== 'boolean');
+          });
       };
 
       _.test_isBoolean = function () {
@@ -378,10 +437,25 @@ if (typeof module === 'undefined') {
         d.check(false,_.isBoolean(123));
         d.check(false,_.isBoolean(0));
         d.check(false,_.isBoolean(-1));
+
+        d.check(true, _.isBoolean(true, true));
+        d.check(true, _.isBoolean(true, true, true));
+        d.check(true, _.isBoolean(true, false, true));
+        d.check(false, _.isBoolean(true, 1, true));
       };
 
-      _.isNumber = function (value) {
-        return (typeof value === 'number');
+      _.isNumber = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element === 'number');
+          });
+      };
+
+      _.isNotNumber = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element !== 'number');
+          });
       };
 
       _.test_isNumber = function () {
@@ -407,13 +481,31 @@ if (typeof module === 'undefined') {
         d.check(false,_.isNumber('-100'));
         d.check(false,_.isNumber([]));
         d.check(false,_.isNumber({}));
+
+        d.check(true, _.isNumber(1, 2));
+        d.check(true, _.isNumber(3, 4, 5));
+        d.check(true, _.isNumber(10.5, 20.5, 30.5));
+        d.check(false, _.isNumber(1, 2, true));
       };
 
-      _.isInt = function (value) {
-        if (!_.isNumber(value)) {
-          return false;
-        }
-        return Math.round(value) === value;
+      _.isInt = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            if (!_.isNumber(element)) {
+              return false;
+            }
+            return Math.round(element) === element;
+          });
+      };
+
+      _.isNotInt = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            if (!_.isNumber(element)) {
+              return false;
+            }
+            return Math.round(element) !== element;
+          });
       };
 
       _.test_isInt = function () {
@@ -437,10 +529,25 @@ if (typeof module === 'undefined') {
         d.check(false,_.isInt('-100'));
         d.check(false,_.isInt([]));
         d.check(false,_.isInt({}));
+
+        d.check(true, _.isInt(1, 2));
+        d.check(true, _.isInt(3, 4, 5));
+        d.check(true, _.isInt(10, 20, 30));
+        d.check(false, _.isInt(1, 2, 3.5));
       };
 
-      _.isString = function (value) {
-        return (typeof value === 'string');
+      _.isString = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element === 'string');
+          });
+      };
+
+      _.isNotString = function () {
+        return argsToArray(arguments).every(
+          function (element, index, array) {
+            return (typeof element !== 'string');
+          });
       };
 
     }());
@@ -593,10 +700,8 @@ if (typeof module === 'undefined') {
         var d = lib.debug;
         var t = lib.type;
         d.assert(t.isNumber(value));
-        d.assert(t.isInt(digitInt));
-        d.assert(t.isString(delimiterInt));
-        d.assert(t.isInt(digitFloat));
-        d.assert(t.isString(delimiterFloat));
+        d.assert(t.isInt(digitInt, digitFloat));
+        d.assert(t.isString(delimiterInt, delimiterFloat));
 
         var s = lib.string;
         var valueStr = value.toString();
@@ -2738,6 +2843,80 @@ if (typeof module === 'undefined') {
     }());
 
     //----------------------------------------
+    //◆グローバル拡張
+    //----------------------------------------
+    (function () {
+      var _ = global;
+
+      //----------------------------------------
+      //・alert
+      //----------------------------------------
+      //  ・ライブラリ内部で alert を使うので
+      //    alert がない環境(node.jsとか)での動作の時に
+      //    エラーにならないように定義する
+      //----------------------------------------
+      _.alert = _.alert || function (message) {
+        console.log(message);
+      };
+
+      //----------------------------------------
+      //・Array.isArray
+      //----------------------------------------
+      //  ・Array.isArray が存在しない環境(WSHなど)
+      //    のために実装
+      //  ・参考:書籍:JavaScriptパターン P51
+      //----------------------------------------
+      _.Array.isArray = _.Array.isArray || function (arg) {
+        return Object.prototype.toString.call(arg) === '[object Array]';
+      };
+
+      //----------------------------------------
+      //・Array.every
+      //----------------------------------------
+      //  ・配列がすべてfuncで指定した条件を満たしているか
+      //    を調べるメソッド
+      //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+      //----------------------------------------
+      _.Array.prototype.every = _.Array.prototype.every || function(func, thisObj) {
+        for (var i = 0, max = this.length; i < max; i += 1) {
+          if (!func.call(thisObj, this[i], i, this)) {
+            return false;
+          }
+        }
+        return true;
+      };
+
+      //----------------------------------------
+      //・Array.some
+      //----------------------------------------
+      //  ・配列のどれかがfuncで指定した条件を満たしているか
+      //    を調べるメソッド
+      //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+      //----------------------------------------
+      _.Array.prototype.some = _.Array.prototype.some || function(func, thisObj) {
+        for (var i = 0, max = this.length; i < max; i += 1) {
+          if (func.call(thisObj, this[i], i, this)) {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      //----------------------------------------
+      //・Array.some
+      //----------------------------------------
+      //  ・すべての要素に対してfuncを実行する
+      //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+      //----------------------------------------
+      _.Array.prototype.forEach = _.Array.prototype.forEach || function(func, thisObj) {
+        for (var i = 0, max = this.length; i < max; i += 1) {
+          func.call(thisObj, this[i], i, this);
+        }
+      };
+
+    }()); //global
+
+    //----------------------------------------
     //◆動作確認
     //----------------------------------------
     _.test = lib.test || {};
@@ -2746,26 +2925,26 @@ if (typeof module === 'undefined') {
 
       _.test_stslib_core = function () {
 
-        var d = lib.debug;
+        var d = stsLib.debug;
         d.test_check();
         d.test_checkException();
         d.test_checkResult();
 
-        var c = lib.compare;
+        var c = stsLib.compare;
         c.test_orValue();
 
-        var t = lib.type;
+        var t = stsLib.type;
         t.test_isNullOrUndefined();
         t.test_isBoolean();
         t.test_isNumber();
         t.test_isInt();
 
-        var n = lib.number;
+        var n = stsLib.number;
         n.test_round();
         n.test_nearEqual();
         n.test_formatDigitComma();
 
-        var s = lib.string;
+        var s = stsLib.string;
         s.test_isInclude();
         s.test_includeCount();
         s.test_isIncludeAll();
@@ -2786,14 +2965,15 @@ if (typeof module === 'undefined') {
         s.test_endFirstDelim();
         s.test_endLastDelim();
 
-        var str = new lib.String('abc');
+        var str = new stsLib.String('abc');
         str.test();
 
         //WSH 非対応なので実行させない
-        var strEx = new lib.StringEx('123');
+        var strEx = new stsLib.StringEx('123');
         strEx.test();
 
-        _.test_equalOperator();
+        var t = stsLib.test;
+        t.test_equalOperator();
 
         s.test_trimStart();
         s.test_trimEnd();
@@ -2818,7 +2998,7 @@ if (typeof module === 'undefined') {
         s.test_formatInsertFirst();
         s.test_formatInsertLast();
 
-        var a = lib.array;
+        var a = stsLib.array;
         a.test_equal();
         a.test_arrayToString();
         a.test_stringToArray();
@@ -2826,25 +3006,81 @@ if (typeof module === 'undefined') {
         a.test_equal();
         a.test_arrayIndexOfArray();
 
-      //  test_TagDelete();
-      //  test_deleteFirstTagInner();
-      //  test_deleteFirstTagOuter();
+        //  test_TagDelete();
+        //  test_deleteFirstTagInner();
+        //  test_deleteFirstTagOuter();
 
-        var angle = lib.angle;
+        var angle = stsLib.angle;
         angle.test_angleRelative();
         angle.test_degreeToRadian();
 
-        var path = lib.path;
+        var path = stsLib.path;
         path.test_getFileName();
 
-        var doc = lib.Document('');
+        var doc = stsLib.Document('');
         doc.test();
 
-        alert('finish test テスト終了');
-        //エンコード確認のため、日本語を含めている
-        //Shift_JISのWSHからUTF-8の呼び出しが
-        //正しく行えているかどうかを確認できる
-      };
+        d.check(true,   Array.isArray([]));
+        d.check(false,  Array.isArray(123));
+        d.check(false,  Array.isArray('abc'));
+        d.check(false,  Array.isArray({}));
+
+        //Array.prototype.everyの動作確認
+        d.check(true, [1,1,1].every(
+          function (element, index, array) {
+            return (element === 1);
+          }));
+        d.check(false, [1,1,2].every(
+          function (element, index, array) {
+            return (element === 1);
+          }));
+        var testObj = {value: 1};
+        d.check(true, [1,1,1].every(
+          function (element, index, array) {
+            return (element + this.value === 2);
+          }, testObj)); //everyのthis指定
+        d.check(false, [1,1,2].every(
+          function (element, index, array) {
+            return (element + this.value === 2);
+          }, testObj)); //everyのthis指定
+
+        //Array.prototype.someの動作確認
+        d.check(true, [1,2,3].some(
+          function (element, index, array) {
+            return (element === 1);
+          }));
+        d.check(false, [2,2,3].some(
+          function (element, index, array) {
+            return (element === 1);
+          }));
+        var testObj = {value: 1};
+        d.check(true, [1,2,3].some(
+          function (element, index, array) {
+            return (element + this.value === 2);
+          }, testObj)); //someのthis指定
+        d.check(false, [2,2,3].some(
+          function (element, index, array) {
+            return (element + this.value === 2);
+          }, testObj)); //someのthis指定
+
+        //Array.prototype.forEach
+        var result = '';
+        [1, 2, 3].forEach(function (element, index, array) {
+          result += element;
+        });
+        d.check('123', result);
+        var testObj = {value: 'A'};
+        var result = '';
+        [1, 2, 3].forEach(function (element, index, array) {
+          result += element.toString() + this.value;
+        }, testObj);
+        d.check('1A2A3A', result);
+
+        alert('finish stslib_core_test テスト終了');
+        //日本語メッセージが表示されることで
+        //エンコード確認も兼ねる
+
+      };  //test_stslib_core
 
       //----------------------------------------
       //・イコール演算子の挙動調査
@@ -2925,11 +3161,13 @@ if (typeof module === 'undefined') {
         //↓文字列に『!!』を付属するとtrueが返されるので
         //  falseの場合でも一致しない
         d.check(false, !!s==false         ,'V04-04');
+
       };
 
-    }());
+    }()); //_.test
 
-  }(stsLib, this));
+
+  }(stsLib, this)); //var stsLib
 
   if (typeof module === 'undefined') {
     requireList['stsLib'] = stsLib;
@@ -2938,4 +3176,3 @@ if (typeof module === 'undefined') {
   }
 
 }());
-

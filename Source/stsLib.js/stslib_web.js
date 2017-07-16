@@ -55,6 +55,7 @@ if (typeof module === 'undefined') {
       _.test_stslib_web = function () {
         _.test_intervalForToAll();
         _.test_intervalForDownToAll();
+        alert('finish stslib_web_test テスト終了');
       }
       
       /*----------------------------------------
@@ -445,3 +446,5 @@ if (typeof module === 'undefined') {
   }
 
 }());
+
+

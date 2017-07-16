@@ -22,6 +22,7 @@ var test_stslib_win_wsh = function () {
   //test_string_fileIO();
   test_string_SaveToFile();
   test_string_LoadFromFile();
+  alert('finish stslib_win_wsh_test テスト終了');
 }
 
 //----------------------------------------
@@ -195,7 +196,7 @@ function string_SaveToFile(str, filePath, encodingType) {
 function test_string_SaveToFile() {
   var textTest = 'test\r\n123\r456\nあいうえお\r\ntest\r\n';
   var folderPathTestBase = scriptFolderPath() + '\\TestData\\FileIoTest';
-  alert(folderPathTestBase);
+  // alert(folderPathTestBase);
 
   string_SaveToFile(textTest, folderPathTestBase + '\\SJIS_File.txt',
     encodingTypeJpCharCode.Shift_JIS);

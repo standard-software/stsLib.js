@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="shift-jis" ?>
 <job>
+    <script language="JavaScript" src="..\stsLib_core.js"></script>
     <script language="JavaScript" src="..\stslib_win_wsh.js"></script>
-    <script language="JavaScript" src="..\stslib_core.js"></script>
     <script language="JavaScript">
     <![CDATA[
 
