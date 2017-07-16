@@ -10,7 +10,7 @@ module.exports = {
             2
         ],
         "linebreak-style": [
-            "warn",
+            "off",
             "windows"
         ],
         "quotes": [
@@ -36,7 +36,7 @@ module.exports = {
             {
               "vars": "all", "args": "after-used", 
               "ignoreRestSiblings": false ,
-              "argsIgnorePattern": "global|compares",
+              "argsIgnorePattern": "global|compares|array|index",
               "varsIgnorePattern": "varend|require",
             },
         ],

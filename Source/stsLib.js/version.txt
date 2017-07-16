@@ -206,4 +206,5 @@
 ・  Array.protobype.every/some/forEach を実装
 ・  isNull/isUndefined/isBoolean/isInt などを
     複数引数対応にした。
-
+・  var t = / var d = / var s = などを
+    関数ごとに定義するのではなく、ライブラリ内で統一した

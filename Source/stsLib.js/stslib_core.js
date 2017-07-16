@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/07/13
+Version:        2017/07/16
 //----------------------------------------*/
 
 //----------------------------------------
@@ -87,7 +87,7 @@ if (typeof module === 'undefined') {
       //  ・  他言語でよく使う
       //----------------------------------------
       _.assert = function (value, message) {
-        var t = lib.type;
+
         if (t.isNullOrUndefined(message)) {
           message = '';
         }
@@ -122,7 +122,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_check = function () {
-        var d = lib.debug;
+
         d.check(true, '123' === '123');
         d.check(true, ' 123' == 123);
         d.check(false, ' 123' === 123);
@@ -148,7 +148,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_checkException = function () {
-        var d = lib.debug;
+
         var testFunc1 = function (a, b) {
           return a / b;
         };
@@ -158,7 +158,7 @@ if (typeof module === 'undefined') {
           }
           return a / b;
         };
-        
+
         d.check('OK', _.checkException(5, testFunc1, 5, 1));
         d.check('NG', _.checkException(1, testFunc1, 5, 1));
         d.check('OK', _.checkException(2.5, testFunc1, 5, 2));
@@ -221,7 +221,6 @@ if (typeof module === 'undefined') {
       };
 
       _.test_checkResult = function () {
-        var d = lib.debug;
 
         var sampleDiv1 = function (a, b) {
           return a / b;
@@ -258,6 +257,7 @@ if (typeof module === 'undefined') {
       };
 
     }());
+    var d = lib.debug;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆条件判断
@@ -274,7 +274,7 @@ if (typeof module === 'undefined') {
       //      aが0か1かならtrueを返す
       //----------------------------------------
       _.orValue = function (value, compares) {
-        var d = stsLib.debug;
+
         d.assert(2 <= arguments.length);
         var count = arguments.length;
         for (var i = 1; i < count; i += 1) {
@@ -286,7 +286,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_orValue = function () {
-        var d = stsLib.debug;
+
         var a = 1;
         d.check(true, _.orValue(a, 1));
         d.check(true, _.orValue(a, 1, 2));
@@ -296,6 +296,7 @@ if (typeof module === 'undefined') {
       };
 
     }());
+    // var c = lib.compare;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆型 確認/変換 処理
@@ -307,7 +308,6 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◇引数すべてに型をチェックする
       //----------------------------------------
-
 
       //----------------------------------------
       //・argumentsのような arraylike なものを配列にする
@@ -374,7 +374,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isNullOrUndefined = function () {
-        var d = lib.debug;
+
         var u1;
         var n1 = null;
         var v1 = 1;
@@ -426,7 +426,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isBoolean = function () {
-        var d = lib.debug;
+
         d.check(true, _.isBoolean(true));
         d.check(true, _.isBoolean(false));
         d.check(false,_.isBoolean(undefined));
@@ -459,7 +459,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isNumber = function () {
-        var d = lib.debug;
+
         d.check(true, _.isNumber(123));
         d.check(true, _.isNumber(0));
         d.check(true, _.isNumber(-1));
@@ -509,13 +509,14 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isInt = function () {
-        var d = lib.debug;
+
         d.check(true, _.isInt(123));
         d.check(true, _.isInt(0));
         d.check(true, _.isInt(-1));
         d.check(false,_.isInt(123.4));
         d.check(true, _.isInt(123.0));
-          //.0の場合は整数か少数かは判断できない
+        //.0の場合は整数か小数かは判断できない
+
         d.check(false,_.isInt(true));
         d.check(false,_.isInt(false));
         d.check(false,_.isInt(null));
@@ -551,6 +552,7 @@ if (typeof module === 'undefined') {
       };
 
     }());
+    var t = lib.type;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆数値
@@ -571,8 +573,7 @@ if (typeof module === 'undefined') {
       //      四捨五入して、その位にする
       //----------------------------------------
       _.round = function (value, digit) {
-        var d = lib.debug;
-        var t = lib.type;
+
         var powResult;
         if (t.isNullOrUndefined(digit)) {
           digit = 0;
@@ -588,7 +589,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_round = function () {
-        var d = lib.debug;
+
         d.check(5,    _.round(5));
         d.check(5,    _.round(5.4));
         d.check(6,    _.round(5.5));
@@ -640,8 +641,7 @@ if (typeof module === 'undefined') {
       //・ニアイコールを判定する
       //----------------------------------------
       _.nearEqual = function (a, b, diff) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert(t.isNumber(a));
         d.assert(t.isNumber(b));
         d.assert(t.isNumber(diff));
@@ -654,7 +654,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_nearEqual = function () {
-        var d = lib.debug;
+
         d.check(true, _.nearEqual(0.049999,   0.050011,     0.001));
         d.check(true, _.nearEqual(0.050,      0.051,        0.001));
         d.check(true, _.nearEqual(0.050,      0.0509,       0.001));
@@ -676,8 +676,7 @@ if (typeof module === 'undefined') {
       //・範囲内に値が含まれるかどうか確認
       //----------------------------------------
       _.isRange = function (value, from, to) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert(t.isNumber(from));
         d.assert(t.isNumber(to));
         d.assert(from <= to);
@@ -697,29 +696,28 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.formatDigitComma = function (value,
         delimiterInt, digitInt, delimiterFloat, digitFloat) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert(t.isNumber(value));
         d.assert(t.isInt(digitInt, digitFloat));
         d.assert(t.isString(delimiterInt, delimiterFloat));
 
-        var s = lib.string;
         var valueStr = value.toString();
         if (t.isInt(value)) {
           return s.formatInsertLast(valueStr, delimiterInt, digitInt);
         } else {
-          return s.formatInsertLast(
+          return (
+            s.formatInsertLast(
               s.startFirstDelim(valueStr, '.'),
               delimiterInt, digitInt) +
             '.' + 
             s.formatInsertFirst(
               s.endFirstDelim(valueStr, '.'),
-              delimiterFloat, digitFloat);
+              delimiterFloat, digitFloat));
         }
       };
 
       _.test_formatDigitComma = function () {
-        var d = lib.debug;
+
         d.check('123,456,789.123 456 7',
           _.formatDigitComma(123456789.1234567, ',', 3, ' ', 3));
         d.check('123,456,789',
@@ -730,9 +728,10 @@ if (typeof module === 'undefined') {
           _.formatDigitComma(0.123456789012, ',', 3, ' ', 3));
         d.check('0.012 345 678 901 2',
           _.formatDigitComma(0.0123456789012, ',', 3, ' ', 3));
-      }
+      };
 
     }());
+    // var n = lib.number;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆角度
@@ -753,7 +752,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_degreeToRadian = function () {
-        var d = lib.debug;
+
         d.check(0, _.degreeToRadian(0));
         d.check(Math.PI / 6, _.degreeToRadian(30));
         d.check(0, _.radianToDegree(0));
@@ -782,7 +781,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_angleRelative = function () {
-        var d = lib.debug;
+
         d.check(10, _.angleRelative(5, 15));
         d.check(-10, _.angleRelative(15, 5));
 
@@ -808,7 +807,7 @@ if (typeof module === 'undefined') {
       //・配列の値で比較する関数
       //----------------------------------------
       _.equal = function (value1, value2) {
-        var d = lib.debug;
+
         d.assert(Array.isArray(value1));
         d.assert(Array.isArray(value2));
 
@@ -817,7 +816,7 @@ if (typeof module === 'undefined') {
 
       _.test_equal = function ()
       {
-        var d = lib.debug;
+
         var a1 = [1, 2, 3];
         var a2 = [1, 2, 3];
 
@@ -832,7 +831,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.arrayIndexOfArray = function (arrayList, arrayValue)
       {
-        var d = lib.debug;
+
         d.assert(Array.isArray(arrayList));
         d.assert(Array.isArray(arrayValue));
 
@@ -848,7 +847,7 @@ if (typeof module === 'undefined') {
 
       _.test_arrayIndexOfArray = function ()
       {
-        var d = lib.debug;
+
         var arrayList = [];
         arrayList.push([1,1,1]);
         arrayList.push([2,2,2]);
@@ -883,7 +882,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_arrayToString = function (){
-        var d = lib.debug;
+
         var array01 = new Array();
         array01[0] = 'abc';
         array01[1] = 'def';
@@ -898,7 +897,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_stringToArray = function (){
-        var d = lib.debug;
+
         var array03 = _.stringToArray('ABC/DEF', '/');
         d.check('ABC', array03[0]);
         d.check('DEF', array03[1]);
@@ -915,42 +914,42 @@ if (typeof module === 'undefined') {
     (function () {
       var _ = lib.string;
 
-  /*----------------------------------------
-  //・外部からの呼び出し時は
-  //  静的関数的な使い方と拡張メソッドのような使い方ができる
+      /*----------------------------------------
+      //・外部からの呼び出し時は
+      //  静的関数的な使い方と拡張メソッドのような使い方ができる
 
-    var d = lib.debug;
+        var d = lib.debug;
 
-    //・静的関数的な使い方
-    //  先頭小文字の string を使う
-    d.check(true, lib.string.isInclude('abc', 'a'));
+        //・静的関数的な使い方
+        //  先頭小文字の string を使う
+        d.check(true, lib.string.isInclude('abc', 'a'));
 
-    //・拡張メソッド的な使い方
-    //  先頭大文字の String を使う
-    var str1 = new lib.String('abc');
-    d.check(true, str1.isInclude('a'));
+        //・拡張メソッド的な使い方
+        //  先頭大文字の String を使う
+        var str1 = new lib.String('abc');
+        d.check(true, str1.isInclude('a'));
 
-    //・拡張メソッド的な使い方
-    //  newしなくても使用できる
-    var str2 = lib.String('abc');
-    d.check(true, str2.isInclude('a'));
+        //・拡張メソッド的な使い方
+        //  newしなくても使用できる
+        var str2 = lib.String('abc');
+        d.check(true, str2.isInclude('a'));
 
-  //・名前空間は何度宣言してもよいので、
-  //  別ファイルに同名の名前空間コードをコピペして
-  //  作成し、同じ書き方でメソッドを追加していくことができる
+      //・名前空間は何度宣言してもよいので、
+      //  別ファイルに同名の名前空間コードをコピペして
+      //  作成し、同じ書き方でメソッドを追加していくことができる
 
-  var lib = lib || {};
+      var lib = lib || {};
 
-    lib.string = lib.string || {};
+        lib.string = lib.string || {};
 
-    lib.String = lib.String || function (value) {
-      var self = function () {};
-      self.prototype = lib.String.prototype;
-      self.prototype.value = value;
-      return new self;
-    }
+        lib.String = lib.String || function (value) {
+          var self = function () {};
+          self.prototype = lib.String.prototype;
+          self.prototype.value = value;
+          return new self;
+        }
 
-  //----------------------------------------*/
+      //----------------------------------------*/
 
       //----------------------------------------
       //◇空文字・空行
@@ -960,7 +959,7 @@ if (typeof module === 'undefined') {
       //・NullかUndefinedか空文字('')ならTrueを返す
       //----------------------------------------
       _.isEmpty = function (str) {
-        var t = lib.type;
+
         if (t.isNullOrUndefined(str) || str ===  '') {
           return true;
         } else {
@@ -998,7 +997,6 @@ if (typeof module === 'undefined') {
           _.excludeEnd(line, ['\n']), ['\r']);
       };
 
-
       //----------------------------------------
       //◇Include
       //----------------------------------------
@@ -1012,7 +1010,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isInclude = function () {
-        var d = lib.debug;
+
         d.check(true, _.isInclude('abc', 'a'));
         d.check(true, _.isInclude('abc', 'b'));
         d.check(true, _.isInclude('abc', 'c'));
@@ -1035,7 +1033,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_includeCount = function () {
-        var d = lib.debug;
+
         d.check(3, _.includeCount('123123123', '1'),    'A');
         d.check(3, _.includeCount('123123123', '2'),    'B');
         d.check(3, _.includeCount('123123123', '3'),    'C');
@@ -1054,8 +1052,7 @@ if (typeof module === 'undefined') {
       //      とすると、true が戻る
       //----------------------------------------
       _.isIncludeAll = function (str, searchArray) {
-        var d = stsLib.debug;
-        var s = stsLib.string;
+
         d.assert(Array.isArray(searchArray));
         for (var i = 0; i < searchArray.length; i += 1) {
           str = s.replaceAll(str, searchArray[i], '');
@@ -1064,7 +1061,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isIncludeAll = function () {
-        var d = stsLib.debug;
+
         d.check(true, _.isIncludeAll('abc', ['a', 'b', 'c']));
         d.check(true, _.isIncludeAll('abc', ['a', 'b', 'c', 'd']));
         d.check(false,_.isIncludeAll('abc', ['a', 'b']));
@@ -1075,7 +1072,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.indexOfFirst = function (str, search, startIndex) {
-        var t = lib.type;
+
         if (search === '') { return -1; }
         if (t.isNullOrUndefined(startIndex)) {
           startIndex = 0;
@@ -1084,7 +1081,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_indexOfFirst = function () {
-        var d = lib.debug;
+
         d.check(-1, _.indexOfFirst('abc', 'd'));
         d.check( 0, _.indexOfFirst('abc', 'a'));
         d.check( 1, _.indexOfFirst('abc', 'b'));
@@ -1111,7 +1108,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_indexOfLast = function () {
-        var d = lib.debug;
+
         d.check(-1, _.indexOfLast('abc', 'd'));
         d.check( 0, _.indexOfLast('abc', 'a'));
         d.check( 1, _.indexOfLast('abc', 'b'));
@@ -1143,8 +1140,7 @@ if (typeof module === 'undefined') {
       //    -1は最後の文字になる
       //----------------------------------------
       _.substrIndex = function (str, startIndex, endIndex) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert(t.isString(str));
         d.assert(t.isInt(startIndex));
         if (t.isNullOrUndefined(endIndex)) {
@@ -1170,7 +1166,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_substrIndex = function () {
-        var d = lib.debug;
+
         d.check('45',     _.substrIndex('012345', 4));
         d.check('2345',   _.substrIndex('012345', -4));
         d.check('1',      _.substrIndex('012345', 1, 1));
@@ -1232,7 +1228,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_substrLength = function () {
-        var d = lib.debug;
+
         d.check('45',   _.substrLength('012345', 4));
         d.check('2345', _.substrLength('012345', -4));
         d.check('23',   _.substrLength('012345', 2, 2));
@@ -1263,8 +1259,7 @@ if (typeof module === 'undefined') {
       //・先頭を切り取るメソッド
       //----------------------------------------
       _.start = function (str, length) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert(t.isString(str));
         d.assert(t.isInt(length));
         if (str === '') { return ''; }
@@ -1274,7 +1269,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_start = function () {
-        var d = lib.debug;
+
         d.check('0123',   _.start('012345', 4));
         d.check('',       _.start('012345', 0));
         d.check('',       _.start('012345', -3));
@@ -1308,7 +1303,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isStart = function () {
-        var d = lib.debug;
+
         d.check(true,  _.isStart('12345', '1'), 'A');
         d.check(true,  _.isStart('12345', '12'), 'B');
         d.check(true,  _.isStart('12345', '123'), 'C');
@@ -1330,7 +1325,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_includeStart = function () {
-        var d = lib.debug;
+
         d.check('12345',  _.includeStart('12345', '1'));
         d.check('12345',  _.includeStart('12345', '12'));
         d.check('12345',  _.includeStart('12345', '123'));
@@ -1349,7 +1344,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_excludeStart = function () {
-        var d = lib.debug;
+
         d.check('2345', _.excludeStart('12345', '1'));
         d.check('345',  _.excludeStart('12345', '12'));
         d.check('45',   _.excludeStart('12345', '123'));
@@ -1372,7 +1367,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_end = function () {
-        var d = lib.debug;
+
         d.check('2345',   _.end('012345', 4));
         d.check('',       _.end('012345', 0));
         d.check('',       _.end('012345', -3));
@@ -1407,7 +1402,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isEnd = function () {
-        var d = lib.debug;
+
         d.check(true,  _.isEnd('12345', '5'));
         d.check(true,  _.isEnd('12345', '45'));
         d.check(true,  _.isEnd('12345', '345'));
@@ -1429,7 +1424,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_includeEnd = function () {
-        var d = lib.debug;
+
         d.check('12345',   _.includeEnd('12345', '5'));
         d.check('12345',   _.includeEnd('12345', '45'));
         d.check('12345',   _.includeEnd('12345', '345'));
@@ -1453,7 +1448,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_excludeEnd = function () {
-        var d = lib.debug;
+
         d.check('1234',   _.excludeEnd('12345', '5'));
         d.check('123',    _.excludeEnd('12345', '45'));
         d.check('12',     _.excludeEnd('12345', '345'));
@@ -1499,7 +1494,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_startFirstDelim = function () {
-        var d = lib.debug;
+
         d.check('123', _.startFirstDelim('123,456', ','));
         d.check('123', _.startFirstDelim('123,456,789', ','));
         d.check('123', _.startFirstDelim('123ttt456', 'ttt'));
@@ -1526,7 +1521,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_startLastDelim = function () {
-        var d = lib.debug;
+
         d.check('123', _.startLastDelim('123,456', ','));
         d.check('123,456', _.startLastDelim('123,456,789', ','));
         d.check('123', _.startLastDelim('123ttt456', 'ttt'));
@@ -1553,7 +1548,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_endFirstDelim = function () {
-        var d = lib.debug;
+
         d.check('456', _.endFirstDelim('123,456', ','));
         d.check('456,789', _.endFirstDelim('123,456,789', ','));
         d.check('456', _.endFirstDelim('123ttt456', 'ttt'));
@@ -1580,7 +1575,6 @@ if (typeof module === 'undefined') {
       };
 
       _.test_endLastDelim = function () {
-        var d = lib.debug;
 
         d.check('456', _.endLastDelim('123,456', ','));
         d.check('789', _.endLastDelim('123,456,789', ','));
@@ -1616,7 +1610,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_trimStart = function () {
-        var d = lib.debug;
+
         d.check('123 ',           _.trimStart('   123 ', [' ']));
         d.check('\t  123 ',       _.trimStart('   \t  123 ', [' ']));
         d.check('123 ',           _.trimStart('   \t  123 ', [' ', '\t']));
@@ -1642,7 +1636,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_trimEnd = function () {
-        var d = lib.debug;
+
         d.check(' 123',       _.trimEnd(' 123   ', [' ']));
         d.check(' 456  \t',   _.trimEnd(' 456  \t   ', [' ']));
         d.check(' 789',       _.trimEnd(' 789  \t   ', [' ', '\t']));
@@ -1673,9 +1667,8 @@ if (typeof module === 'undefined') {
 
       _.trimCutEnd = function (str, trimStrArray) {
         return _.end(str,
-          str.length - _.trimEnd(str, trimStrArray).length)
+          str.length - _.trimEnd(str, trimStrArray).length);
       };
-
 
       //--------------------------------------
       //◇Tag deleteFirst/Last
@@ -1700,7 +1693,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_deleteFirstLast = function () {
-        var d = lib.debug;
+
         d.check('abcdefghi', _.deleteFirst(
           _.deleteLast('abc<def>ghi', '>'), '<'));
         d.check('abc><def><ghi', _.deleteFirst(
@@ -1715,8 +1708,7 @@ if (typeof module === 'undefined') {
       //◇Tag deleteFirstTagInner/Outer
       //--------------------------------------
       _.deleteFirstTagInner = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -1734,14 +1726,13 @@ if (typeof module === 'undefined') {
       };
 
       _.test_deleteFirstTagInner = function () {
-        var d = lib.debug;
+
         d.check('abc<>ghi', _.deleteFirstTagInner('abc<def>ghi', '<', '>'));
         d.check('abc<>ghi<jkl>mn', _.deleteFirstTagInner('abc<def>ghi<jkl>mn', '<', '>'));
       };
 
       _.deleteFirstTagOuter = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -1759,7 +1750,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_deleteFirstTagOuter = function () {
-        var d = lib.debug;
+
         d.check('abcghi', _.deleteFirstTagOuter('abc<def>ghi', '<', '>'));
         d.check('abcghi<jkl>mn', _.deleteFirstTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
       };
@@ -1768,8 +1759,7 @@ if (typeof module === 'undefined') {
       //◇Tag deleteLastTagInner/Outer
       //--------------------------------------
       _.deleteLastTagInner = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -1787,14 +1777,13 @@ if (typeof module === 'undefined') {
       };
 
       _.test_deleteLastTagInner = function () {
-        var d = lib.debug;
+
         d.check('abc<>ghi', _.deleteLastTagInner('abc<def>ghi', '<', '>'));
         d.check('abc<def>ghi<>mn', _.deleteLastTagInner('abc<def>ghi<jkl>mn', '<', '>'));
       };
 
       _.deleteLastTagOuter = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -1812,7 +1801,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_deleteLastTagOuter = function () {
-        var d = lib.debug;
+
         d.check('abcghi', _.deleteLastTagOuter('abc<def>ghi', '<', '>'));
         d.check('abc<def>ghimn', _.deleteLastTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
       };
@@ -1830,7 +1819,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_deleteAllTag = function () {
-        var d = lib.debug;
+
         d.check('abcghi', _.deleteAllTag('abc<def>ghi', '<', '>'));
         d.check('abcghimn', _.deleteAllTag('abc<def>ghi<jkl>mn', '<', '>'));
       };
@@ -1843,8 +1832,7 @@ if (typeof module === 'undefined') {
       //・最初の start,end の組み合わせのタグを含まない文字
       //----------------------------------------
       _.tagInnerFirst = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -1874,7 +1862,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_tagInnerFirst = function () {
-        var d = lib.debug;
+
         d.check('456',  _.tagInnerFirst('000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('456',  _.tagInnerFirst('<123>456<789>', '<123>', '<789>'), 'test02');
         d.check('456',  _.tagInnerFirst('000<123>456', '<123>', '<789>'), 'test03');
@@ -1902,8 +1890,7 @@ if (typeof module === 'undefined') {
       //・最初の start,end の組み合わせのタグを含む文字
       //----------------------------------------
       _.tagOuterFirst = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -1934,7 +1921,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_tagOuterFirst = function () {
-        var d = lib.debug;
+
         d.check('<123>456<789>',  _.tagOuterFirst(
           '000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('<123>456<789>',  _.tagOuterFirst(
@@ -1969,8 +1956,7 @@ if (typeof module === 'undefined') {
       //・最後の start,end の組み合わせのタグを含まない文字
       //----------------------------------------
       _.tagInnerLast = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -1999,7 +1985,7 @@ if (typeof module === 'undefined') {
         }
       };
       _.test_tagInnerLast = function () {
-        var d = lib.debug;
+
         d.check('456',  _.tagInnerLast('000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('456',  _.tagInnerLast('<123>456<789>', '<123>', '<789>'), 'test02');
         d.check('456',  _.tagInnerLast('000<123>456', '<123>', '<789>'), 'test03');
@@ -2027,8 +2013,7 @@ if (typeof module === 'undefined') {
       //・最後の start,end の組み合わせのタグを含む文字
       //----------------------------------------
       _.tagOuterLast = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         d.assert((!t.isNullOrUndefined(str)) );
         d.assert(!_.isEmpty(startTag));
         d.assert(!_.isEmpty(endTag));
@@ -2059,7 +2044,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_tagOuterLast = function () {
-        var d = lib.debug;
+
         d.check('<123>456<789>',  _.tagOuterLast(
           '000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('<123>456<789>',  _.tagOuterLast(
@@ -2094,8 +2079,7 @@ if (typeof module === 'undefined') {
       //・タグで囲まれた文字を全て抽出する
       //----------------------------------------
       _.tagOuterAll = function (str, startTag, endTag) {
-        var d = lib.debug;
-        var t = lib.type;
+
         var indexStartTag, indexEndTag;
         var result;
 
@@ -2133,7 +2117,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_tagOuterAll = function () {
-        var d = lib.debug;
+
         d.check('<def>', _.tagOuterAll('abc<def>ghi', '<', '>'));
         d.check('<def><jkl>', _.tagOuterAll('abc<def>ghi<jkl>mn', '<', '>'));
       };
@@ -2150,7 +2134,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_repeat = function () {
-        var d = lib.debug;
+
         d.check('AAAAA',  _.repeat('A', 5));
         d.check('ABABAB', _.repeat('AB', 3));
         d.check('AB',     _.repeat('AB', 1));
@@ -2173,7 +2157,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_replaceAll = function () {
-        var d = lib.debug;
+
         d.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
         d.check('AAAABBBBBBBAAAA', 
           _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
@@ -2187,11 +2171,11 @@ if (typeof module === 'undefined') {
       //・逆順
       //----------------------------------------
       _.reverse = function (str) {
-         return str.split('').reverse().join('');
+        return str.split('').reverse().join('');
       };
 
       _.test_reverse = function () {
-        var d = lib.debug;
+
         d.check('54321', _.reverse('12345'));
         d.check('321', _.reverse('123'));
         d.check('21', _.reverse('12'));
@@ -2207,12 +2191,11 @@ if (typeof module === 'undefined') {
       //・先頭から区切る
       //----------------------------------------
       _.formatInsertFirst = function (str, delimiter, count) {
-        var t = lib.type;
-        var d = lib.debug;
+
         d.assert(t.isString(str));
         d.assert(t.isString(delimiter));
         d.assert(t.isInt(count));
-        var s = lib.string;
+
         if (s.isEmpty(str)) {
           return '';
         }
@@ -2233,7 +2216,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_formatInsertFirst = function () {
-        var d = lib.debug;
+
         d.check('123 456 789 012 3',_.formatInsertFirst('1234567890123', ' ', 3));
         d.check('123 456 789 123',  _.formatInsertFirst('123456789123', ' ', 3));
         d.check('123,4',            _.formatInsertFirst('1234', ',', 3));
@@ -2247,12 +2230,11 @@ if (typeof module === 'undefined') {
       //・後方から区切る
       //----------------------------------------
       _.formatInsertLast = function (str, delimiter, count) {
-        var t = lib.type;
-        var d = lib.debug;
+
         d.assert(t.isString(str));
         d.assert(t.isString(delimiter));
         d.assert(t.isInt(count));
-        var s = lib.string;
+
         if (s.isEmpty(str)) {
           return '';
         }
@@ -2273,7 +2255,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_formatInsertLast = function () {
-        var d = lib.debug;
+
         d.check('1 234 567 890 123',_.formatInsertLast('1234567890123', ' ', 3));
         d.check('123 456 789 123',  _.formatInsertLast('123456789123', ' ', 3));
         d.check('1,234',            _.formatInsertLast('1234', ',', 3));
@@ -2284,6 +2266,7 @@ if (typeof module === 'undefined') {
       };
 
     }());
+    var s = lib.string; //ショートカット呼び出し
 
     //----------------------------------------
     //◆文字列拡張メソッド
@@ -2466,7 +2449,6 @@ if (typeof module === 'undefined') {
       };
 
       _.prototype.test = function () {
-        var d = lib.debug;
 
         //拡張メソッド的な使い方
         var str1 = new lib.String('abc');
@@ -2503,14 +2485,13 @@ if (typeof module === 'undefined') {
 
     (function () {
       var _ = lib.StringEx;
-    
+
       _.prototype.isNotInclude = function (search) {
         return !lib.string.isInclude(this.value, search);
       };
-    
+
       _.prototype.test = function () {
-        var d = lib.debug;
-    
+
         //継承しているので継承元のメソッドが使える
         var str3 = new lib.StringEx('abc');
         d.check(false,str3.isNotInclude('a'));
@@ -2521,7 +2502,7 @@ if (typeof module === 'undefined') {
         d.check(true, str3.isInclude('b'));
         d.check(true, str3.isInclude('c'));
         d.check(false,str3.isInclude('d'));
-    
+
         //継承しても new しなくてもよい
         var str4 = lib.StringEx('abc');
         d.check(false,str4.isNotInclude('a'));
@@ -2554,7 +2535,7 @@ if (typeof module === 'undefined') {
         d.check(false, str5.constructor === lib.StringEx);
 
       };
-    
+
     }());
 
     _.Document = lib.Document || function (value) {
@@ -2568,8 +2549,7 @@ if (typeof module === 'undefined') {
       var _ = lib.Document;
 
       _.prototype.getLine = function (index) {
-        var d = stsLib.debug;
-        var t = stsLib.type;
+
         var n = stsLib.number;
         d.assert(t.isInt(index));
         d.assert(n.isRange(index, 0, this._textArray.length - 1));
@@ -2577,8 +2557,7 @@ if (typeof module === 'undefined') {
       };
 
       _.prototype.setLine = function (index, line) {
-        var d = stsLib.debug;
-        var t = stsLib.type;
+
         var n = stsLib.number;
         d.assert(t.isInt(index));
         d.assert(n.isRange(index, 0, this._textArray.length));
@@ -2605,8 +2584,6 @@ if (typeof module === 'undefined') {
       var _ = lib.Document;
 
       _.prototype.test = function () {
-        var d = lib.debug;
-        var t = lib.type;
 
         var originalText = '0123\r456\n789\r\n0123\r\r456\n\n789\r\n\r\n0123\n\r\n\r456';
         var doc = lib.Document(originalText);
@@ -2662,7 +2639,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.format_yyyy_mm_dd = function (value, delimiter){
-        var s = lib.string;
+
         return value.getFullYear() +
           delimiter +
           s.end('0' + (value.getMonth()+1), 2) +
@@ -2671,7 +2648,7 @@ if (typeof module === 'undefined') {
       };
 
       _.format_hh_mm_dd = function (value, delimiter){
-        var s = lib.string;
+
         return value.getHours() +
           delimiter +
           s.end('0' + value.getMinutes(), 2) +
@@ -2821,7 +2798,7 @@ if (typeof module === 'undefined') {
       };
 
       _.test_getFileName = function () {
-        var d = lib.debug;
+
         d.check('a.txt', _.getFileName('file://test/test/a.txt'));
       };
 
@@ -2829,7 +2806,7 @@ if (typeof module === 'undefined') {
       //・ピリオドを含んだ拡張子を取得する
       //----------------------------------------
       _.getExtensionIncludePeriod = function (path) {
-        var s = lib.string;
+
         var result = '';
         result = s.endLastDelim(path, '.');
         if (result == path) {
@@ -2925,7 +2902,6 @@ if (typeof module === 'undefined') {
 
       _.test_stslib_core = function () {
 
-        var d = stsLib.debug;
         d.test_check();
         d.test_checkException();
         d.test_checkResult();
@@ -2933,7 +2909,6 @@ if (typeof module === 'undefined') {
         var c = stsLib.compare;
         c.test_orValue();
 
-        var t = stsLib.type;
         t.test_isNullOrUndefined();
         t.test_isBoolean();
         t.test_isNumber();
@@ -2944,7 +2919,6 @@ if (typeof module === 'undefined') {
         n.test_nearEqual();
         n.test_formatDigitComma();
 
-        var s = stsLib.string;
         s.test_isInclude();
         s.test_includeCount();
         s.test_isIncludeAll();
@@ -2972,8 +2946,7 @@ if (typeof module === 'undefined') {
         var strEx = new stsLib.StringEx('123');
         strEx.test();
 
-        var t = stsLib.test;
-        t.test_equalOperator();
+        stsLib.test.test_equalOperator();
 
         s.test_trimStart();
         s.test_trimEnd();
@@ -3034,7 +3007,8 @@ if (typeof module === 'undefined') {
           function (element, index, array) {
             return (element === 1);
           }));
-        var testObj = {value: 1};
+        var testObj;
+        testObj = {value: 1};
         d.check(true, [1,1,1].every(
           function (element, index, array) {
             return (element + this.value === 2);
@@ -3053,7 +3027,7 @@ if (typeof module === 'undefined') {
           function (element, index, array) {
             return (element === 1);
           }));
-        var testObj = {value: 1};
+        testObj = {value: 1};
         d.check(true, [1,2,3].some(
           function (element, index, array) {
             return (element + this.value === 2);
@@ -3069,8 +3043,8 @@ if (typeof module === 'undefined') {
           result += element;
         });
         d.check('123', result);
-        var testObj = {value: 'A'};
-        var result = '';
+        testObj = {value: 'A'};
+        result = '';
         [1, 2, 3].forEach(function (element, index, array) {
           result += element.toString() + this.value;
         }, testObj);
@@ -3086,7 +3060,7 @@ if (typeof module === 'undefined') {
       //・イコール演算子の挙動調査
       //----------------------------------------
       _.test_equalOperator = function () {
-        var d = lib.debug;
+
         var value;
         value = true;
         d.check(true , value==true        ,'v01-01');
@@ -3165,7 +3139,6 @@ if (typeof module === 'undefined') {
       };
 
     }()); //_.test
-
 
   }(stsLib, this)); //var stsLib
 
