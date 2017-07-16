@@ -318,7 +318,10 @@ if (typeof module === 'undefined') {
         return Array.prototype.slice.call(values);
       };
 
-      _.isUndefined = function () {
+      _.isUndefined = function (value) {
+        if (arguments.length === 1) {
+          return (typeof value === 'undefined');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element === 'undefined');
@@ -335,28 +338,40 @@ if (typeof module === 'undefined') {
       // };
 
       _.isNotUndefined = function () {
+        if (arguments.length === 1) {
+          return (typeof value !== 'undefined');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element !== 'undefined');
           });
       };
 
-      _.isNull = function () {
+      _.isNull = function (value) {
+        if (arguments.length === 1) {
+          return (value === null);
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (element === null);
           });
       };
 
-      _.isNotNull = function () {
+      _.isNotNull = function (value) {
+        if (arguments.length === 1) {
+          return (value !== null);
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (element !== null);
           });
       };
 
-      _.isNullOrUndefined = function ()
-      {
+      _.isNullOrUndefined = function (value) {
+        if (arguments.length === 1) {
+          return (_.isNull(value)
+            || _.isUndefined(value));
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (_.isNull(element)
@@ -364,8 +379,11 @@ if (typeof module === 'undefined') {
           });
       };
 
-      _.isNotNullOrUndefined = function ()
-      {
+      _.isNotNullOrUndefined = function (value) {
+        if (arguments.length === 1) {
+          return (_.isNull(value)
+            || _.isUndefined(value));
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return !(_.isNull(element)
@@ -411,14 +429,20 @@ if (typeof module === 'undefined') {
 
       };
 
-      _.isBoolean = function () {
+      _.isBoolean = function (value) {
+        if (arguments.length === 1) {
+          return (typeof value === 'boolean');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element === 'boolean');
           });
       };
 
-      _.isNotBoolean = function () {
+      _.isNotBoolean = function (value) {
+        if (arguments.length === 1) {
+          return (typeof value !== 'boolean');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element !== 'boolean');
@@ -444,14 +468,20 @@ if (typeof module === 'undefined') {
         d.check(false, _.isBoolean(true, 1, true));
       };
 
-      _.isNumber = function () {
+      _.isNumber = function (value) {
+        if (arguments.length === 1) {
+          return (typeof value === 'number');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element === 'number');
           });
       };
 
-      _.isNotNumber = function () {
+      _.isNotNumber = function (value) {
+        if (arguments.length === 1) {
+          return (typeof value !== 'number');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element !== 'number');
@@ -488,7 +518,13 @@ if (typeof module === 'undefined') {
         d.check(false, _.isNumber(1, 2, true));
       };
 
-      _.isInt = function () {
+      _.isInt = function (value) {
+        if (arguments.length === 1) {
+          if (!_.isNumber(value)) {
+              return false;
+            }
+          return Math.round(value) === value;
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             if (!_.isNumber(element)) {
@@ -498,7 +534,13 @@ if (typeof module === 'undefined') {
           });
       };
 
-      _.isNotInt = function () {
+      _.isNotInt = function (value) {
+        if (arguments.length === 1) {
+          if (!_.isNumber(value)) {
+              return false;
+            }
+          return Math.round(value) !== value;
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             if (!_.isNumber(element)) {
@@ -537,7 +579,10 @@ if (typeof module === 'undefined') {
         d.check(false, _.isInt(1, 2, 3.5));
       };
 
-      _.isString = function () {
+      _.isString = function (value) {
+        if (arguments.length === 1) {
+          return (typeof value === 'string');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element === 'string');
@@ -545,6 +590,9 @@ if (typeof module === 'undefined') {
       };
 
       _.isNotString = function () {
+        if (arguments.length === 1) {
+          return (typeof value !== 'string');
+        }
         return argsToArray(arguments).every(
           function (element, index, array) {
             return (typeof element !== 'string');
@@ -566,6 +614,13 @@ if (typeof module === 'undefined') {
         } else {
           return value;
         }
+      };
+
+      _.test_ifNullOrUndefinedValue = function () {
+        d.check(1,  _.ifNullOrUndefinedValue(1, 5));
+        d.check(5,  _.ifNullOrUndefinedValue(null, 5));
+        d.check(5,  _.ifNullOrUndefinedValue(undefined, 5));
+        d.check('', _.ifNullOrUndefinedValue('', 5));
       };
 
 
@@ -743,9 +798,9 @@ if (typeof module === 'undefined') {
         d.check('1,234,567,890',
           _.formatDigitComma(1234567890, ',', 3, ' ', 3));
         d.check('0.123 456 789 012',
-          _.formatDigitComma(0.123456789012, ',', 3, ' ', 3));
+          _.formatDigitComma(.123456789012, ',', 3, ' ', 3));
         d.check('0.012 345 678 901 2',
-          _.formatDigitComma(0.0123456789012, ',', 3, ' ', 3));
+          _.formatDigitComma(.0123456789012, ',', 3, ' ', 3));
       };
 
     }());
@@ -841,87 +896,336 @@ if (typeof module === 'undefined') {
         d.check(false, a1 == a2);
         d.check(false, a1 === a2);
 
-        d.check(true, lib.array.equal(a1, a2));
+        d.check(true, _.equal(a1, a2));
+      };
+
+
+      //----------------------------------------
+      //◇insert add
+      //----------------------------------------
+
+      //----------------------------------------
+      //・insert
+      //----------------------------------------
+      //  ・元の配列の内容を変更するinsert
+      //  ・戻り値も同じ配列の参照を返す
+      //  ・indexはarray.lengthと同じ値の場合は
+      //    配列に追加することになる
+      //  ・unshiftやpushはspliceを使えば使わなくてよい
+      //----------------------------------------
+      _.insert = function (array, value, index) {
+        d.assert(Array.isArray(array));
+        index = t.ifNullOrUndefinedValue(index, 0);
+        d.assert(t.isInt(index));
+
+        array.splice(index, 0, value);
+        return array;
       };
 
       //----------------------------------------
-      //・配列の値で比較して出力するindexOf
+      //・insertAdd
       //----------------------------------------
-      _.arrayIndexOfArray = function (arrayList, arrayValue)
-      {
+      //  ・指定した項目の下の位置にinsertする関数
+      //----------------------------------------
+      _.insertAdd = function (array, value, index) {
+        return _.insert(array, value, index + 1);
+      };
 
-        d.assert(Array.isArray(arrayList));
-        d.assert(Array.isArray(arrayValue));
+      //----------------------------------------
+      //・add
+      //----------------------------------------
+      //  ・Array.prototype.push と同等の機能。
+      //----------------------------------------
 
-        for (var i = 0; i <= arrayList.length - 1; i++)
+      _.add = function (array, value) {
+        _.insert(array, value, array.length);
+        return array;
+      };
+
+      _.test_insert = function () {
+        var a1 = [1,2,3];
+        var a2 = _.insert(a1, 0);
+        d.check(true, _.equal([0,1,2,3], a1));
+        d.check(true, _.equal([0,1,2,3], a2));
+
+        a1[0] = 4;
+        d.check(true, _.equal([4,1,2,3], a1));
+        d.check(true, _.equal([4,1,2,3], a2));
+
+        d.check(true, _.equal([4,0,1,2,3], _.insert(a1, 0, 1)));
+        d.check(true, _.equal([4,0,1,2,3,4], _.insert(a1, 4, 5)));
+      };
+
+      //----------------------------------------
+      //◇delete
+      //----------------------------------------
+
+      //----------------------------------------
+      //・Index指定のdelete
+      //----------------------------------------
+      //  ・indexは負の値などには対応しない
+      //  ・endIndexを省略すると最後まで削除する
+      //----------------------------------------
+      _.deleteIndex = function (array, startIndex, endIndex) {
+        d.assert(Array.isArray(array));
+        endIndex = t.ifNullOrUndefinedValue(endIndex, array.length - 1);
+        d.assert(t.isInt(startIndex, endIndex));
+        d.assert((0 <= startIndex) && (startIndex <= array.length - 1));
+        d.assert((0 <= endIndex));
+        d.assert(startIndex <= endIndex);
+
+        array.splice(startIndex, endIndex - startIndex + 1);
+        return array;
+      };
+
+      _.test_deleteIndex = function () {
+        d.check(true, _.equal([1,3],_.deleteIndex([1,2,3], 1, 1)));
+        d.check(true, _.equal([1],  _.deleteIndex([1,2,3], 1, 2)));
+        d.check(true, _.equal([],   _.deleteIndex([1,2,3], 0, 3)));
+        d.check(true, _.equal([1,5],   _.deleteIndex([1,2,3,4,5], 1, 3)));
+        d.check(true, _.equal([1,2],   _.deleteIndex([1,2,3,4,5], 2)));
+      };
+
+      //----------------------------------------
+      //・Length指定のdelete
+      //----------------------------------------
+      _.deleteLength = function (array, startIndex, length) {
+        d.assert(Array.isArray(array));
+        length = t.ifNullOrUndefinedValue(length, array.length - startIndex);
+        d.assert(t.isInt(startIndex, length));
+        d.assert((0 <= startIndex) && (startIndex <= array.length - 1));
+        d.assert((1 <= length));
+        
+        array.splice(startIndex, length);
+        return array;
+      };
+
+      _.test_deleteLength = function () {
+        d.check(true, _.equal([1,3],_.deleteLength([1,2,3], 1, 1)));
+        d.check(true, _.equal([3],  _.deleteLength([1,2,3], 0, 2)));
+        d.check(true, _.equal([],   _.deleteLength([1,2,3], 0, 3)));
+        d.check(true, _.equal([1,5],   _.deleteLength([1,2,3,4,5], 1, 3)));
+      };
+
+      //----------------------------------------
+      //◇indexOf
+      //----------------------------------------
+
+      _.indexOfFirst = function (array, search, startIndex) {
+
+        d.assert(Array.isArray(array));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        d.assert(t.isInt(startIndex));
+
         {
-          if (_.equal(arrayList[i], arrayValue))
-          {
-            return i;
+          if (array.length === 0) {
+            return -1;
           }
+          if (startIndex < 0) {
+            startIndex += array.length;
+          };
+
+          for (var i = startIndex, max = array.length; i < max; i += 1) {
+            if (array[i] === search) {
+              return i;
+            }
+          }
+          return -1;
         }
-        return -1;
+        //上記ブロックはWSH以外なら下記で書ける
+        //return array.indexOf(search, startIndex);
+      }; 
+
+      _.test_indexOfFirst = function () {
+
+        d.check(-1, _.indexOfFirst(['a','b','c'], 'd'));
+        d.check( 0, _.indexOfFirst(['a','b','c'], 'a'));
+        d.check( 1, _.indexOfFirst(['a','b','c'], 'b'));
+        d.check( 2, _.indexOfFirst(['a','b','c'], 'c'));
+        d.check(-1, _.indexOfFirst(['a','b','c'], ''));
+        d.check( 0, _.indexOfFirst(['a','b','c','a','b','c'], 'a'));
+        d.check( 1, _.indexOfFirst(['a','b','c','a','b','c'], 'b'));
+        d.check( 2, _.indexOfFirst(['a','b','c','a','b','c'], 'c'));
+
+        d.check( 0, _.indexOfFirst(['a','b','c','a','b','c'], 'a', 0));
+        d.check( 3, _.indexOfFirst(['a','b','c','a','b','c'], 'a', 1));
+        d.check( 1, _.indexOfFirst(['a','b','c','a','b','c'], 'b', 1));
+        d.check( 4, _.indexOfFirst(['a','b','c','a','b','c'], 'b', 2));
+        d.check( 2, _.indexOfFirst(['a','b','c','a','b','c'], 'c', 2));
+        d.check( 5, _.indexOfFirst(['a','b','c','a','b','c'], 'c', 3));
+
+        d.check(-1, _.indexOfFirst(['a','b','c','a','b','c'], 'a', -1));
+        d.check( 3, _.indexOfFirst(['a','b','c','a','b','c'], 'a', -3));
+        d.check(-1, _.indexOfFirst(['a','b','c','a','b','c'], 'b', -1));
+        d.check( 4, _.indexOfFirst(['a','b','c','a','b','c'], 'b', -2));
+        d.check( 5, _.indexOfFirst(['a','b','c','a','b','c'], 'c', -1));
+        d.check( 2, _.indexOfFirst(['a','b','c','a','b','c'], 'c', -4));
       };
 
-      _.test_arrayIndexOfArray = function ()
-      {
+
+      _.indexOfLast = function (array, search, startIndex) {
+
+        d.assert(Array.isArray(array));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        d.assert(t.isInt(startIndex));
+
+        {
+          if (array.length === 0) {
+            return -1;
+          }
+          if (startIndex < 0) {
+            startIndex += array.length;
+          };
+
+          for (var i = startIndex; 0 <= i; i -= 1) {
+            if (array[i] === search) {
+              return i;
+            }
+          }
+          return -1;
+        }
+        //上記ブロックはWSH以外なら下記で書ける
+        //return array.lastIndexOf(search, startIndex);
+      }; 
+
+      _.test_indexOfLast = function () {
+
+        d.check(-1, _.indexOfLast(['a','b','c'], 'd'));
+        d.check( 0, _.indexOfLast(['a','b','c'], 'a'));
+        d.check( 1, _.indexOfLast(['a','b','c'], 'b'), '03');
+        d.check( 2, _.indexOfLast(['a','b','c'], 'c'));
+        d.check(-1, _.indexOfLast(['a','b','c'], ''));
+        d.check( 3, _.indexOfLast(['a','b','c','a','b','c'], 'a'));
+        d.check( 4, _.indexOfLast(['a','b','c','a','b','c'], 'b'));
+        d.check( 5, _.indexOfLast(['a','b','c','a','b','c'], 'c'));
+
+        d.check( 0, _.indexOfLast(['a','b','c','a','b','c'], 'a', 1));
+        d.check( 3, _.indexOfLast(['a','b','c','a','b','c'], 'a', 3));
+        d.check( 1, _.indexOfLast(['a','b','c','a','b','c'], 'b', 1));
+        d.check( 4, _.indexOfLast(['a','b','c','a','b','c'], 'b', 4));
+        d.check( 2, _.indexOfLast(['a','b','c','a','b','c'], 'c', 2));
+        d.check( 5, _.indexOfLast(['a','b','c','a','b','c'], 'c', 5));
+
+        d.check( 3, _.indexOfLast(['a','b','c','a','b','c'], 'a', -1));
+        d.check( 0, _.indexOfLast(['a','b','c','a','b','c'], 'a', -4));
+        d.check( 0, _.indexOfLast(['a','b','c','a','b','c'], 'a', -6));
+        d.check(-1, _.indexOfLast(['a','b','c','a','b','c'], 'a', -7));
+        d.check( 4, _.indexOfLast(['a','b','c','a','b','c'], 'b', -1));
+        d.check( 1, _.indexOfLast(['a','b','c','a','b','c'], 'b', -3));
+        d.check( 1, _.indexOfLast(['a','b','c','a','b','c'], 'b', -5));
+        d.check(-1, _.indexOfLast(['a','b','c','a','b','c'], 'b', -6));
+        d.check( 5, _.indexOfLast(['a','b','c','a','b','c'], 'c', -1));
+        d.check( 2, _.indexOfLast(['a','b','c','a','b','c'], 'c', -2));
+        d.check( 2, _.indexOfLast(['a','b','c','a','b','c'], 'c', -4));
+        d.check(-1, _.indexOfLast(['a','b','c','a','b','c'], 'c', -5));
+      };
+
+      //----------------------------------------
+      //◇配列内配列の場合に値の内容で見つけるためのindexOf
+      //----------------------------------------
+      _.indexOfArrayFirst = function (array, search, startIndex) {
+
+        d.assert(Array.isArray(array));
+        d.assert(Array.isArray(search));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        d.assert(t.isInt(startIndex));
+
+        {
+          if (array.length === 0) {
+            return -1;
+          }
+          if (startIndex < 0) {
+            startIndex += array.length;
+          };
+
+          for (var i = startIndex, max = array.length; i < max; i += 1) {
+            if (_.equal(array[i], search)) {
+              return i;
+            }
+          }
+          return -1;
+        }
+      };
+
+      _.test_indexOfArrayFirst = function () {
 
         var arrayList = [];
         arrayList.push([1,1,1]);
         arrayList.push([2,2,2]);
         arrayList.push([3,3,3]);
+        arrayList.push([1,1,1]);
+        arrayList.push([2,2,2]);
+        arrayList.push([3,3,3]);
 
         var a1 = [1, 2, 3];
-        d.check(-1, _.arrayIndexOfArray(arrayList, a1));
+        d.check(-1, _.indexOfArrayFirst(arrayList, a1));
 
-        a1 = [1, 1, 1];
-        d.check(0, _.arrayIndexOfArray(arrayList, a1));
-        a1 = [2, 2, 2];
-        d.check(1, _.arrayIndexOfArray(arrayList, a1));
-        a1 = [3, 3, 3];
-        d.check(2, _.arrayIndexOfArray(arrayList, a1));
+        d.check(0, _.indexOfArrayFirst(arrayList, [1, 1, 1]));
+        d.check(1, _.indexOfArrayFirst(arrayList, [2, 2, 2]));
+        d.check(2, _.indexOfArrayFirst(arrayList, [3, 3, 3]));
+        d.check(3, _.indexOfArrayFirst(arrayList, [1, 1, 1], 1));
+        d.check(4, _.indexOfArrayFirst(arrayList, [2, 2, 2], 2));
+        d.check(5, _.indexOfArrayFirst(arrayList, [3, 3, 3], 3));
       };
 
-      //----------------------------------------
-      //◇配列文字列変換
-      //----------------------------------------
+      _.indexOfArrayLast = function (array, search, startIndex) {
 
-      _.arrayToString = function (arrayValue, delimiter) {
-        var undefined;
-        if (arrayValue[0] === undefined) { return ''; }
-        if (delimiter === undefined) {delimiter = ''; }
-        var result = arrayValue[0];
-        var i = 1;
-        while(arrayValue[i] !== undefined) {
-          result += delimiter + arrayValue[i];
-          i++;
+        d.assert(Array.isArray(array));
+        d.assert(Array.isArray(search));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        d.assert(t.isInt(startIndex));
+
+        {
+          if (array.length === 0) {
+            return -1;
+          }
+          if (startIndex < 0) {
+            startIndex += array.length;
+          };
+
+          for (var i = startIndex; 0 <= i; i -= 1) {
+            if (_.equal(array[i], search)) {
+              return i;
+            }
+          }
+          return -1;
         }
-        return result;
       };
 
-      _.test_arrayToString = function (){
+      _.test_indexOfArrayLast = function () {
 
-        var array01 = new Array();
-        array01[0] = 'abc';
-        array01[1] = 'def';
-        d.check('abc-def', _.arrayToString(array01, '-'));
+        var arrayList = [];
+        arrayList.push([1,1,1]);
+        arrayList.push([2,2,2]);
+        arrayList.push([3,3,3]);
+        arrayList.push([1,1,1]);
+        arrayList.push([2,2,2]);
+        arrayList.push([3,3,3]);
 
-        var array02 = new Array('123', '456');
-        d.check('123_456', _.arrayToString(array02, '_'));
-      };
+        var a1 = [1, 2, 3];
+        d.check(-1, _.indexOfArrayLast(arrayList, a1));
 
-      _.stringToArray = function (value, delimiter) {
-        return value.split(delimiter);
-      };
-
-      _.test_stringToArray = function (){
-
-        var array03 = _.stringToArray('ABC/DEF', '/');
-        d.check('ABC', array03[0]);
-        d.check('DEF', array03[1]);
+        d.check( 3, _.indexOfArrayLast(arrayList, [1, 1, 1]));
+        d.check( 4, _.indexOfArrayLast(arrayList, [2, 2, 2]));
+        d.check( 5, _.indexOfArrayLast(arrayList, [3, 3, 3]));
+        d.check( 3, _.indexOfArrayLast(arrayList, [1, 1, 1], -1));
+        d.check( 3, _.indexOfArrayLast(arrayList, [1, 1, 1], -3));
+        d.check( 0, _.indexOfArrayLast(arrayList, [1, 1, 1], -4));
+        d.check( 0, _.indexOfArrayLast(arrayList, [1, 1, 1], -6));
+        d.check(-1, _.indexOfArrayLast(arrayList, [1, 1, 1], -7));
+        d.check( 4, _.indexOfArrayLast(arrayList, [2, 2, 2], -1));
+        d.check( 4, _.indexOfArrayLast(arrayList, [2, 2, 2], -2));
+        d.check( 1, _.indexOfArrayLast(arrayList, [2, 2, 2], -3));
+        d.check( 1, _.indexOfArrayLast(arrayList, [2, 2, 2], -5));
+        d.check(-1, _.indexOfArrayLast(arrayList, [2, 2, 2], -6));
+        d.check( 5, _.indexOfArrayLast(arrayList, [3, 3, 3], -1));
+        d.check( 2, _.indexOfArrayLast(arrayList, [3, 3, 3], -2));
+        d.check( 2, _.indexOfArrayLast(arrayList, [3, 3, 3], -4));
+        d.check(-1, _.indexOfArrayLast(arrayList, [3, 3, 3], -5));
       };
 
     }());
+    var a = lib.array; //ショートカット呼び出し
 
     //----------------------------------------
     //◆文字列処理
@@ -1016,6 +1320,36 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //◇Delete
+      //----------------------------------------
+
+      _.deleteIndex = function (str, startIndex, endIndex) {
+        return a.deleteIndex(str.split(''), startIndex, endIndex).join('');
+      };
+
+      _.test_deleteIndex = function () {
+        d.check('abde',   _.deleteIndex('abcde', 2, 2));
+        d.check('abe',    _.deleteIndex('abcde', 2, 3));
+        d.check('de',     _.deleteIndex('abcde', 0, 2));
+        d.check('ae',     _.deleteIndex('abcde', 1, 3));
+        d.check('ab',     _.deleteIndex('abcde', 2));
+      };
+
+
+      _.deleteLength = function (str, startIndex, length) {
+        return a.deleteLength(str.split(''), startIndex, length).join('');
+      };
+
+      _.test_deleteLength = function () {
+        d.check('abde',   _.deleteLength('abcde', 2, 1));
+        d.check('abe',    _.deleteLength('abcde', 2, 2));
+        d.check('de',     _.deleteLength('abcde', 0, 3));
+        d.check('ae',     _.deleteLength('abcde', 1, 3));
+        d.check('ab',     _.deleteLength('abcde', 2));
+      };
+
+
+      //----------------------------------------
       //◇Include
       //----------------------------------------
 
@@ -1092,9 +1426,8 @@ if (typeof module === 'undefined') {
       _.indexOfFirst = function (str, search, startIndex) {
 
         if (search === '') { return -1; }
-        if (t.isNullOrUndefined(startIndex)) {
-          startIndex = 0;
-        }
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+
         return str.indexOf(search, startIndex);
       };
 
@@ -2855,6 +3188,10 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //◇Array
+      //----------------------------------------
+
+      //----------------------------------------
       //・Array.isArray
       //----------------------------------------
       //  ・Array.isArray が存在しない環境(WSHなど)
@@ -2931,12 +3268,15 @@ if (typeof module === 'undefined') {
         t.test_isBoolean();
         t.test_isNumber();
         t.test_isInt();
+        t.test_ifNullOrUndefinedValue();
 
         var n = stsLib.number;
         n.test_round();
         n.test_nearEqual();
         n.test_formatDigitComma();
 
+        s.test_deleteIndex();
+        s.test_deleteLength();
         s.test_isInclude();
         s.test_includeCount();
         s.test_isIncludeAll();
@@ -2991,15 +3331,13 @@ if (typeof module === 'undefined') {
 
         var a = stsLib.array;
         a.test_equal();
-        a.test_arrayToString();
-        a.test_stringToArray();
-
-        a.test_equal();
-        a.test_arrayIndexOfArray();
-
-        //  test_TagDelete();
-        //  test_deleteFirstTagInner();
-        //  test_deleteFirstTagOuter();
+        a.test_insert();
+        a.test_deleteIndex();
+        a.test_deleteLength();
+        a.test_indexOfFirst();
+        a.test_indexOfLast();
+        a.test_indexOfArrayFirst();
+        a.test_indexOfArrayLast();
 
         var angle = stsLib.angle;
         angle.test_angleRelative();

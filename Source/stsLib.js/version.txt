@@ -209,3 +209,8 @@
 ・  var t = / var d = / var s = などを
     関数ごとに定義するのではなく、ライブラリ内で統一した
 ・  ifNullOrUndefinedValue 追加
+・  arrayToString 廃止。joinで行える。
+・  stringToArray 廃止。splitで行える。
+・  arrayIndexOfArray>>indexOfValueFirstに名前変更
+・  array.deleteIndex/deleteLength
+    string.deleteIndex/deleteLength 追加
