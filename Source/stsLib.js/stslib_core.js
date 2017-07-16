@@ -551,6 +551,24 @@ if (typeof module === 'undefined') {
           });
       };
 
+      //----------------------------------------
+      //◇Null Undefined 
+      //----------------------------------------
+
+      //----------------------------------------
+      //・値が NullOrUndefined なら特定の値を返す
+      //----------------------------------------
+      //  ・引数のデフォルト値として使える
+      //----------------------------------------
+      _.ifNullOrUndefinedValue = function (value, undefinedValue) {
+        if (_.isNullOrUndefined(value)) {
+          return undefinedValue;
+        } else {
+          return value;
+        }
+      };
+
+
     }());
     var t = lib.type;  //ショートカット呼び出し
 

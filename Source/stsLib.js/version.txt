@@ -208,3 +208,4 @@
     複数引数対応にした。
 ・  var t = / var d = / var s = などを
     関数ごとに定義するのではなく、ライブラリ内で統一した
+・  ifNullOrUndefinedValue 追加
