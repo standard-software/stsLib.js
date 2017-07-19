@@ -214,3 +214,6 @@
 ・  arrayIndexOfArray>>indexOfValueFirstに名前変更
 ・  array.deleteIndex/deleteLength
     string.deleteIndex/deleteLength 追加
+◇  ver 2017/07/20
+・  isNull/isUndefined/isBoolean/isNumber/isInt/isString を
+    高速化した。

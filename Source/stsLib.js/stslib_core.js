@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/07/16
+Version:        2017/07/20
 //----------------------------------------*/
 
 //----------------------------------------
@@ -319,76 +319,103 @@ if (typeof module === 'undefined') {
       };
 
       _.isUndefined = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value === 'undefined');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element === 'undefined');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value !== 'undefined') {
+            return false;
+          }
+        }
+        return true;
       };
-      //下記のようにも書けるがより現代的なArary.prototype.everyを使う
+      //下記のようにも書けるが
+      //Arary.prototype.everyはかなり低速なので不採用
       // _.isUndefined = function () {
-      //   for (var i = 0; i <= arguments.length - 1; i += 1) {
-      //     if (typeof arguments[i] !== 'undefined') {
-      //       return false;
-      //     }
-      //   }
-      //   return true;
+      //   return (Array.prototype.slice.call(arguments)).every(
+      //     function (element, index, array) {
+      //       return (typeof element !== 'undefined');
+      //     });
       // };
 
       _.isNotUndefined = function () {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value !== 'undefined');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element !== 'undefined');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value === 'undefined') {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNull = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (value === null);
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (element === null);
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (value !== null) {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNotNull = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (value !== null);
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (element !== null);
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (value === null) {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNullOrUndefined = function (value) {
-        if (arguments.length === 1) {
-          return (_.isNull(value)
-            || _.isUndefined(value));
+        var isNullOrUndefinedFunc = function (value) {
+          return _.isNull(value)
+            || _.isUndefined(value);
+        };
+        var l = arguments.length;
+        if (l === 1) {
+          return isNullOrUndefinedFunc(value);
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (_.isNull(element)
-              || _.isUndefined(element));
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (!isNullOrUndefinedFunc(value)) {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNotNullOrUndefined = function (value) {
-        if (arguments.length === 1) {
-          return (_.isNull(value)
+        var isNotNullOrUndefinedFunc = function (value) {
+          return !(_.isNull(value)
             || _.isUndefined(value));
+        };
+        var l = arguments.length;
+        if (l === 1) {
+          return isNotNullOrUndefinedFunc(value);
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return !(_.isNull(element)
-              || _.isUndefined(element));
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (!isNotNullOrUndefinedFunc(value)) {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.test_isNullOrUndefined = function () {
@@ -416,7 +443,7 @@ if (typeof module === 'undefined') {
         d.check(false,  _.isUndefined(u1, n2));
         d.check(false,  _.isUndefined(u1, v2));
 
-        d.check(false,  _.isNull(n1, u2));
+        d.check(false,  _.isNull(n1, u2), '01');
         d.check(true,   _.isNull(n1, n2));
         d.check(false,  _.isNull(n1, v2));
 
@@ -427,26 +454,42 @@ if (typeof module === 'undefined') {
         d.check(true,   _.isNullOrUndefined(n1, n2));
         d.check(false,  _.isNullOrUndefined(n1, v2));
 
+        d.check(false,  _.isNotNullOrUndefined(u1, u2));
+        d.check(false,  _.isNotNullOrUndefined(u1, n2));
+        d.check(false,  _.isNotNullOrUndefined(u1, v2));
+        d.check(false,  _.isNotNullOrUndefined(n1, u2));
+        d.check(false,  _.isNotNullOrUndefined(n1, n2));
+        d.check(false,  _.isNotNullOrUndefined(n1, v2));
+        d.check(true,   _.isNotNullOrUndefined(v1, v2));
+
       };
 
       _.isBoolean = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value === 'boolean');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element === 'boolean');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value !== 'boolean') {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNotBoolean = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value !== 'boolean');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element !== 'boolean');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value === 'boolean') {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.test_isBoolean = function () {
@@ -469,23 +512,31 @@ if (typeof module === 'undefined') {
       };
 
       _.isNumber = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value === 'number');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element === 'number');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value !== 'number') {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNotNumber = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value !== 'number');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element !== 'number');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value === 'number') {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.test_isNumber = function () {
@@ -512,42 +563,57 @@ if (typeof module === 'undefined') {
         d.check(false,_.isNumber([]));
         d.check(false,_.isNumber({}));
 
-        d.check(true, _.isNumber(1, 2));
-        d.check(true, _.isNumber(3, 4, 5));
-        d.check(true, _.isNumber(10.5, 20.5, 30.5));
-        d.check(false, _.isNumber(1, 2, true));
+        d.check(true,   _.isNumber(1, 2));
+        d.check(true,   _.isNumber(3, 4, 5));
+        d.check(true,   _.isNumber(10.5, 20.5, 30.5));
+        d.check(false,  _.isNumber(1, 2, true));
+
+        d.check(false,  _.isNotNumber(1, 2));
+        d.check(false,  _.isNotNumber(3, 4, 5));
+        d.check(false,  _.isNotNumber(10.5, 20.5, 30.5));
+        d.check(false,  _.isNotNumber(1, 2, true));
+        d.check(true,   _.isNotNumber(false, true));
+        d.check(true,   _.isNotNumber('a', 'b'));
       };
 
       _.isInt = function (value) {
-        if (arguments.length === 1) {
+        var isIntFunc = function (value) {
           if (!_.isNumber(value)) {
-              return false;
-            }
+            return false;
+          }
           return Math.round(value) === value;
+        };
+        var l = arguments.length;
+        if (l === 1) {
+          return isIntFunc(value);
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            if (!_.isNumber(element)) {
-              return false;
-            }
-            return Math.round(element) === element;
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (!isIntFunc(value)) {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNotInt = function (value) {
-        if (arguments.length === 1) {
+        var isNotIntFunc = function (value) {
           if (!_.isNumber(value)) {
-              return false;
-            }
+            return true;
+          }
           return Math.round(value) !== value;
+        };
+        var l = arguments.length;
+        if (l === 1) {
+          return isNotIntFunc(value);
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            if (!_.isNumber(element)) {
-              return false;
-            }
-            return Math.round(element) !== element;
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (!isNotIntFunc(value)) {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.test_isInt = function () {
@@ -573,30 +639,45 @@ if (typeof module === 'undefined') {
         d.check(false,_.isInt([]));
         d.check(false,_.isInt({}));
 
-        d.check(true, _.isInt(1, 2));
-        d.check(true, _.isInt(3, 4, 5));
-        d.check(true, _.isInt(10, 20, 30));
-        d.check(false, _.isInt(1, 2, 3.5));
+        d.check(true,   _.isInt(1, 2));
+        d.check(true,   _.isInt(3, 4, 5));
+        d.check(true,   _.isInt(10, 20, 30));
+        d.check(false,  _.isInt(1, 2, 3.5));
+
+        d.check(false,  _.isNotInt(1, 2));
+        d.check(false,  _.isNotInt(3, 4, 5));
+        d.check(false,  _.isNotInt(10, 20, 30));
+        d.check(false,  _.isNotInt(1, 2, 3.5));
+        d.check(false,  _.isNotInt(1, 2.1, 3.5));
+        d.check(true,   _.isNotInt(1.1, 2.2, 3.5));
       };
 
       _.isString = function (value) {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value === 'string');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element === 'string');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value !== 'string') {
+            return false;
+          }
+        }
+        return true;
       };
 
       _.isNotString = function () {
-        if (arguments.length === 1) {
+        var l = arguments.length;
+        if (l === 1) {
           return (typeof value !== 'string');
         }
-        return argsToArray(arguments).every(
-          function (element, index, array) {
-            return (typeof element !== 'string');
-          });
+        for (var i = 0; i < l; i += 1) {
+          value = arguments[i];
+          if (typeof value === 'string') {
+            return false;
+          }
+        }
+        return true;
       };
 
       //----------------------------------------
@@ -1023,7 +1104,7 @@ if (typeof module === 'undefined') {
           }
           if (startIndex < 0) {
             startIndex += array.length;
-          };
+          }
 
           for (var i = startIndex, max = array.length; i < max; i += 1) {
             if (array[i] === search) {
@@ -1075,7 +1156,7 @@ if (typeof module === 'undefined') {
           }
           if (startIndex < 0) {
             startIndex += array.length;
-          };
+          }
 
           for (var i = startIndex; 0 <= i; i -= 1) {
             if (array[i] === search) {
@@ -1136,7 +1217,7 @@ if (typeof module === 'undefined') {
           }
           if (startIndex < 0) {
             startIndex += array.length;
-          };
+          }
 
           for (var i = startIndex, max = array.length; i < max; i += 1) {
             if (_.equal(array[i], search)) {
@@ -1181,7 +1262,7 @@ if (typeof module === 'undefined') {
           }
           if (startIndex < 0) {
             startIndex += array.length;
-          };
+          }
 
           for (var i = startIndex; 0 <= i; i -= 1) {
             if (_.equal(array[i], search)) {
