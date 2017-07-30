@@ -217,3 +217,12 @@
 ◇  ver 2017/07/20
 ・  isNull/isUndefined/isBoolean/isNumber/isInt/isString を
     高速化した。
+◇  ver 2017/07/29
+・  stslib_win_wsh.js の ADODB.Stream のエンコード誤動作不具合を修正
+◇  ver 2017/07/30
+・  isStringArray 追加
+・  isNull/isUndefined/isBoolean/isNumber/isInt/isString
+    処理修正と共通化
+・  isStringArray/isIntArrayなど作成
+・  indexOfAnyFirst/Last作成
+・  indexOfFuncFirst/Last作成

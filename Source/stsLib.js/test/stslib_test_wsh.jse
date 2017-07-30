@@ -32,7 +32,7 @@ var includeFileName = "..\\stslib_core.js"
 eval( 
 	string_LoadFromFile(
 		fso.BuildPath(basePath, includeFileName), 
-		encodingTypeJpCharCode.UTF8_BOM));
+		encodingTypeJapanese.UTF8_BOM));
 	//UTF-8 Ç≈ÇÃÉtÉ@ÉCÉãì«çû
 //--------------------------------------------------
 

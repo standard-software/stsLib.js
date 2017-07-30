@@ -88,10 +88,11 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.assert = function (value, message) {
 
-        if (t.isNullOrUndefined(message)) {
+        if ((typeof message === 'undefined')
+        || (message === null)) {
           message = '';
         }
-        if (!t.isBoolean(value)) {
+        if (typeof value !== 'boolean') {
           throw new Error('Error:' + message);
         }
         if (!value) {
@@ -296,7 +297,7 @@ if (typeof module === 'undefined') {
       };
 
     }());
-    // var c = lib.compare;  //ショートカット呼び出し
+    var c = lib.compare;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆型 確認/変換 処理
@@ -318,104 +319,83 @@ if (typeof module === 'undefined') {
         return Array.prototype.slice.call(values);
       };
 
-      _.isUndefined = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value === 'undefined');
+      _.isTypeCheck = function (checkFunc, argsArray) {
+        d.assert(1 <= arguments.length);
+        d.assert(typeof checkFunc == 'function');
+        d.assert(Array.isArray(argsArray));
+
+        var l = argsArray.length;
+        if (l === 0) {
+          return false;
         }
         for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value !== 'undefined') {
+          var value = argsArray[i];
+          if (!checkFunc(value)) {
             return false;
           }
         }
         return true;
       };
+
+      _.isUndefined = function (value) {
+        return _.isTypeCheck(function (v) {
+          return (typeof v === 'undefined');
+        }, argsToArray(arguments));
+      };
+      //Arary.prototype.everyを使って
       //下記のようにも書けるが
-      //Arary.prototype.everyはかなり低速なので不採用
+      //かなり低速な様子だったので不採用とする
       // _.isUndefined = function () {
       //   return (Array.prototype.slice.call(arguments)).every(
       //     function (element, index, array) {
       //       return (typeof element !== 'undefined');
       //     });
       // };
+      //また、下記のようにも書ける
+      // _.isUndefined = function (value) {
+      //   var l = arguments.length;
+      //   if (l === 0) {
+      //     return false;
+      //   } else if (l === 1) {
+      //     return (typeof value === 'undefined');
+      //   }
+      //   for (var i = 0; i < l; i += 1) {
+      //     value = arguments[i];
+      //     if (typeof value !== 'undefined') {
+      //       return false;
+      //     }
+      //   }
+      //   return true;
+      // };
 
       _.isNotUndefined = function () {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value !== 'undefined');
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value === 'undefined') {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return (typeof v !== 'undefined');
+        }, argsToArray(arguments));
       };
 
       _.isNull = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (value === null);
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (value !== null) {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return (v === null);
+        }, argsToArray(arguments));
       };
 
       _.isNotNull = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (value !== null);
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (value === null) {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return (v !== null);
+        }, argsToArray(arguments));
       };
 
       _.isNullOrUndefined = function (value) {
-        var isNullOrUndefinedFunc = function (value) {
-          return _.isNull(value)
-            || _.isUndefined(value);
-        };
-        var l = arguments.length;
-        if (l === 1) {
-          return isNullOrUndefinedFunc(value);
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (!isNullOrUndefinedFunc(value)) {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return _.isNull(v) || _.isUndefined(v);
+        }, argsToArray(arguments));
       };
 
       _.isNotNullOrUndefined = function (value) {
-        var isNotNullOrUndefinedFunc = function (value) {
-          return !(_.isNull(value)
-            || _.isUndefined(value));
-        };
-        var l = arguments.length;
-        if (l === 1) {
-          return isNotNullOrUndefinedFunc(value);
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (!isNotNullOrUndefinedFunc(value)) {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return !(_.isNull(v) || _.isUndefined(v));
+        }, argsToArray(arguments));
       };
 
       _.test_isNullOrUndefined = function () {
@@ -464,32 +444,21 @@ if (typeof module === 'undefined') {
 
       };
 
+      //----------------------------------------
+      //◇isBoolean
+      //----------------------------------------
+      //  ・可変引数の全てがBooleanかどうかを確認する
+      //----------------------------------------
       _.isBoolean = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value === 'boolean');
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value !== 'boolean') {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return (typeof v === 'boolean');
+        }, argsToArray(arguments));
       };
 
       _.isNotBoolean = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value !== 'boolean');
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value === 'boolean') {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return (typeof v !== 'boolean');
+        }, argsToArray(arguments));
       };
 
       _.test_isBoolean = function () {
@@ -511,32 +480,28 @@ if (typeof module === 'undefined') {
         d.check(false, _.isBoolean(true, 1, true));
       };
 
+      _.isBooleanArray = function (value) {
+        if (!Array.isArray(value)) { return false; }
+        return _.isBoolean.apply(null, value);
+      };
+
+      //----------------------------------------
+      //◇isNumbers
+      //----------------------------------------
+      //  ・可変引数の全てが有効数値かどうかを確認する
+      //  ・NaNやInfinityは有効数値ではないとしておく
+      //----------------------------------------
+
       _.isNumber = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value === 'number');
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value !== 'number') {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return ((typeof v === 'number') && (isFinite(v)));
+        }, argsToArray(arguments));
       };
 
       _.isNotNumber = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value !== 'number');
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value === 'number') {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return ((typeof v !== 'number') || (!isFinite(v)));
+        }, argsToArray(arguments));
       };
 
       _.test_isNumber = function () {
@@ -550,6 +515,8 @@ if (typeof module === 'undefined') {
         d.check(false,_.isNumber(false));
         d.check(false,_.isNumber(null));
         d.check(false,_.isNumber(undefined));
+        d.check(false,_.isNumber(Infinity));  //InfinityもNumberとして許可しないことにする
+        d.check(false,_.isNumber(NaN));
         d.check(false,_.isNumber(''));
         d.check(false,_.isNumber('ABC'));
         d.check(false,_.isNumber('ABC10'));
@@ -562,6 +529,15 @@ if (typeof module === 'undefined') {
         d.check(false,_.isNumber('-100'));
         d.check(false,_.isNumber([]));
         d.check(false,_.isNumber({}));
+
+        d.check(false,  _.isNotNumber(123));
+        d.check(false,  _.isNotNumber(0));
+        d.check(true,   _.isNotNumber(true));
+        d.check(true,   _.isNotNumber(null));
+        d.check(true,   _.isNotNumber(undefined));
+        d.check(true,   _.isNotNumber(Infinity));
+        d.check(true,   _.isNotNumber(NaN));
+        d.check(true,   _.isNotNumber(''));
 
         d.check(true,   _.isNumber(1, 2));
         d.check(true,   _.isNumber(3, 4, 5));
@@ -576,44 +552,33 @@ if (typeof module === 'undefined') {
         d.check(true,   _.isNotNumber('a', 'b'));
       };
 
+      _.isNumberArray = function (value) {
+        if (!Array.isArray(value)) { return false; }
+        return _.isNumber.apply(null, value);
+      };
+
+      //----------------------------------------
+      //◇isInt
+      //----------------------------------------
+      //  ・可変引数の全てが整数かどうかを確認する
+      //----------------------------------------
+
       _.isInt = function (value) {
-        var isIntFunc = function (value) {
-          if (!_.isNumber(value)) {
+        return _.isTypeCheck(function (v) {
+          if (!_.isNumber(v)) {
             return false;
           }
-          return Math.round(value) === value;
-        };
-        var l = arguments.length;
-        if (l === 1) {
-          return isIntFunc(value);
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (!isIntFunc(value)) {
-            return false;
-          }
-        }
-        return true;
+          return Math.round(v) === v;
+        }, argsToArray(arguments));
       };
 
       _.isNotInt = function (value) {
-        var isNotIntFunc = function (value) {
-          if (!_.isNumber(value)) {
+        return _.isTypeCheck(function (v) {
+          if (!_.isNumber(v)) {
             return true;
           }
-          return Math.round(value) !== value;
-        };
-        var l = arguments.length;
-        if (l === 1) {
-          return isNotIntFunc(value);
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (!isNotIntFunc(value)) {
-            return false;
-          }
-        }
-        return true;
+          return Math.round(v) !== v;
+        }, argsToArray(arguments));
       };
 
       _.test_isInt = function () {
@@ -652,32 +617,88 @@ if (typeof module === 'undefined') {
         d.check(true,   _.isNotInt(1.1, 2.2, 3.5));
       };
 
+      //----------------------------------------
+      //・isIntArray
+      //----------------------------------------
+      //  ・配列の中身を確認する
+      //  ・配列を可変長引数としてisIntに渡している
+      //----------------------------------------
+      _.isIntArray = function (value) {
+        if (!Array.isArray(value)) { return false; }
+        return _.isInt.apply(null, value);
+      };
+
+      _.test_isIntArray = function () {
+        d.check(false,  _.isIntArray([]));
+        d.check(true,   _.isIntArray([1]));
+        d.check(true,   _.isIntArray([1, 2, 3]));
+        d.check(true,   _.isIntArray([1, 2, 0]));
+        d.check(false,  _.isIntArray([1, 2, NaN]));
+        d.check(false,  _.isIntArray([1, 2, null]));
+        d.check(false,  _.isIntArray(['a', 'b', 1]));
+      };
+
+      //----------------------------------------
+      //◇isString
+      //----------------------------------------
+      //  ・可変引数の全てが文字列かどうかを確認する
+      //----------------------------------------
       _.isString = function (value) {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value === 'string');
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value !== 'string') {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return (typeof v === 'string');
+        }, argsToArray(arguments));
       };
 
       _.isNotString = function () {
-        var l = arguments.length;
-        if (l === 1) {
-          return (typeof value !== 'string');
-        }
-        for (var i = 0; i < l; i += 1) {
-          value = arguments[i];
-          if (typeof value === 'string') {
-            return false;
-          }
-        }
-        return true;
+        return _.isTypeCheck(function (v) {
+          return (typeof v !== 'string');
+        }, argsToArray(arguments));
+      };
+
+      //----------------------------------------
+      //・isStringArray
+      //----------------------------------------
+      //  ・配列の中身を確認する
+      //  ・配列を可変長引数としてisStringに渡している
+      //----------------------------------------
+      _.isStringArray = function (value) {
+        if (!Array.isArray(value)) { return false; }
+        return _.isString.apply(null, value);
+      };
+
+      _.test_isStringArray = function () {
+        d.check(false,  _.isStringArray([]));
+        d.check(true,   _.isStringArray(['']));
+        d.check(true,   _.isStringArray(['a']));
+        d.check(true,   _.isStringArray(['a', 'b', 'c']));
+        d.check(true,   _.isStringArray(['a', 'b', '']));
+        d.check(false,  _.isStringArray(['a', 'b', 0]));
+        d.check(false,  _.isStringArray(['a', 'b', 1]));
+        d.check(false,  _.isStringArray(['a', 'b', null]));
+        d.check(false,  _.isStringArray(['a', 'b', undefined]));
+      };
+
+      //----------------------------------------
+      //◇isFunction
+      //----------------------------------------
+      //  ・可変引数の全てが関数かどうかを確認する
+      //----------------------------------------
+
+      _.isFunction = function (value) {
+        return _.isTypeCheck(function (v) {
+          return (typeof v === 'function');
+        }, argsToArray(arguments));
+      };
+
+      _.isNotFunction = function () {
+        return _.isTypeCheck(function (v) {
+          return (typeof v !== 'function');
+        }, argsToArray(arguments));
+      };
+
+      _.isFunctionArray = function (value) {
+        if (!Array.isArray(value)) { return false; }
+        return _.isFunction.apply(null, value);
       };
 
       //----------------------------------------
@@ -1501,14 +1522,15 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //◇indexOf 系
+      //◇indexOf
       //----------------------------------------
 
       _.indexOfFirst = function (str, search, startIndex) {
+        d.assert(t.isString(str, search));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        d.assert(t.isInt(startIndex));
 
         if (search === '') { return -1; }
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
-
         return str.indexOf(search, startIndex);
       };
 
@@ -1532,10 +1554,11 @@ if (typeof module === 'undefined') {
       };
 
       _.indexOfLast = function (str, search, startIndex) {
+        d.assert(t.isString(str, search));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
+        d.assert(t.isInt(startIndex));
+
         if (search === '') { return -1; }
-        if (lib.type.isNullOrUndefined(startIndex)) {
-          startIndex = str.length - 1;
-        }
         return str.lastIndexOf(search, startIndex);
       };
 
@@ -1556,6 +1579,168 @@ if (typeof module === 'undefined') {
         d.check( 1, _.indexOfLast('abcabc', 'b', 3));
         d.check( 5, _.indexOfLast('abcabc', 'c', 5));
         d.check( 2, _.indexOfLast('abcabc', 'c', 4));
+      };
+
+
+      //----------------------------------------
+      //◇indexOfAny
+      //----------------------------------------
+
+      _.indexOfAnyFirst = function (str, searchArray, startIndex) {
+        d.assert(t.isString(str));
+        d.assert(t.isStringArray(searchArray));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        d.assert(t.isInt(startIndex));
+
+        var result = Infinity;
+        var findIndex;
+        for (var i = 0, l = searchArray.length; i < l; i += 1) {
+          findIndex = _.indexOfFirst(str, searchArray[i], startIndex);
+          if (findIndex !== -1) {
+            result = Math.min(findIndex, result);
+          }
+        }
+        return result === Infinity ? -1 : result;
+      };
+
+      _.test_indexOfAnyFirst = function () {
+
+        d.checkResult('ER', null, _.indexOfAnyFirst, 'abc', []);
+        d.check(-1, _.indexOfAnyFirst('abc', ['d', 'e']));
+        d.check( 0, _.indexOfAnyFirst('abc', ['a', 'c']));
+        d.check( 1, _.indexOfAnyFirst('abc', ['b', 'c']));
+        d.check( 2, _.indexOfAnyFirst('abc', ['', 'c']));
+        d.check(-1, _.indexOfAnyFirst('abc', ['', '']));
+
+        d.check( 0, _.indexOfAnyFirst('abcabc', ['a', 'c'], 0));
+        d.check( 2, _.indexOfAnyFirst('abcabc', ['a', 'c'], 1));
+        d.check( 2, _.indexOfAnyFirst('abcabc', ['a', 'c'], 2));
+        d.check( 3, _.indexOfAnyFirst('abcabc', ['a', 'c'], 3));
+        d.check( 1, _.indexOfAnyFirst('abcabc', ['b'], 1));
+        d.check( 4, _.indexOfAnyFirst('abcabc', ['b'], 2));
+      };
+
+      _.indexOfAnyLast = function (str, searchArray, startIndex) {
+        d.assert(t.isString(str));
+        d.assert(t.isStringArray(searchArray));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
+        d.assert(t.isInt(startIndex));
+
+        var result = -1;
+        var findIndex;
+        for (var i = 0, l = searchArray.length; i < l; i += 1) {
+          findIndex = _.indexOfLast(str, searchArray[i], startIndex);
+          if (findIndex !== -1) {
+            result = Math.max(findIndex, result);
+          }
+        }
+        return result;
+      };
+
+      _.test_indexOfAnyLast = function () {
+        d.checkResult('ER', null, _.indexOfAnyLast, 'abc', []);
+        d.check(-1, _.indexOfAnyLast('abc', ['d', 'e']));
+        d.check( 2, _.indexOfAnyLast('abc', ['a', 'c']));
+        d.check( 1, _.indexOfAnyLast('abc', ['b', 'a']));
+        d.check( 2, _.indexOfAnyLast('abc', ['', 'c']));
+        d.check(-1, _.indexOfAnyLast('abc', ['', '']));
+
+        d.check( 5, _.indexOfAnyLast('abcabc', ['a', 'c']));
+        d.check( 5, _.indexOfAnyLast('abcabc', ['a', 'c'], 5));
+        d.check( 3, _.indexOfAnyLast('abcabc', ['a', 'c'], 4));
+        d.check( 3, _.indexOfAnyLast('abcabc', ['a', 'c'], 3));
+        d.check( 2, _.indexOfAnyLast('abcabc', ['a', 'c'], 2));
+      };
+
+      //----------------------------------------
+      //◇indexOfFunc
+      //----------------------------------------
+
+      _.indexOfFuncFirst = function (str, func, startIndex) {
+        d.assert(t.isString(str));
+        d.assert(t.isFunction(func));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        d.assert(t.isInt(startIndex));
+
+        //WSHは文字列をstr[i]の形で扱えないので、その対策
+        str = str.split('');
+        for (var i = startIndex, l = str.length; i < l; i += 1) {
+          //func(char, Index, str)に対してtrueが返れば
+          //それを戻り値として返す
+          if (func(str[i], i, str)) {
+            return i;
+          }
+        }
+        return -1;
+      };
+
+      _.test_indexOfFuncFirst = function () {
+
+        d.check(-1, _.indexOfFuncFirst('abc def ghi abc',
+          function (char, index, str) {
+            return false;
+          }));
+
+        d.check( 4, _.indexOfFuncFirst('abc def ghi abc',
+          function (s, index, str) {
+            return c.orValue(s, 'd', 'g', 'i');
+          }));
+
+        d.check( 8, _.indexOfFuncFirst('abc def ghi abc',
+          function (s, index, str) {
+            return c.orValue(s, 'd', 'g', 'i');
+          }, 5));
+
+        d.check(10, _.indexOfFuncFirst('abc def ghi abc',
+          function (s, index, str) {
+            return c.orValue(s, 'd', 'g', 'i');
+          }, 9));
+
+        d.check( 6, _.indexOfFuncFirst('abcdefGhiAbc',
+          function (s, index, str) {
+            return (s === s.toUpperCase());
+          }));
+      };
+
+      _.indexOfFuncLast = function (str, func, startIndex) {
+        d.assert(t.isString(str));
+        d.assert(t.isFunction(func));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
+        d.assert(t.isInt(startIndex));
+
+        //WSHは文字列をstr[i]の形で扱えないので、その対策
+        str = str.split('');
+        for (var i = startIndex; 0 <= i; i -= 1) {
+          //func(char, Index, str)に対してtrueが返れば
+          //それを戻り値として返す
+          if (func(str[i], i, str)) {
+            return i;
+          }
+        }
+        return -1;
+      };
+
+      _.test_indexOfFuncLast = function () {
+
+        d.check(-1, _.indexOfFuncLast('abc def ghi abc',
+          function (char, index, str) {
+            return false;
+          }));
+
+        d.check(10, _.indexOfFuncLast('abc def ghi abc',
+          function (s, index, str) {
+            return c.orValue(s, 'd', 'g', 'i');
+          }));
+
+        d.check( 4, _.indexOfFuncLast('abc def ghi abc',
+          function (s, index, str) {
+            return c.orValue(s, 'd', 'g', 'i');
+          }, 7));
+
+        d.check( 9, _.indexOfFuncLast('abcdefGhiAbc',
+          function (s, index, str) {
+            return (s === s.toUpperCase());
+          }));
       };
 
       //----------------------------------------
@@ -3349,6 +3534,8 @@ if (typeof module === 'undefined') {
         t.test_isBoolean();
         t.test_isNumber();
         t.test_isInt();
+        t.test_isIntArray();
+        t.test_isStringArray();
         t.test_ifNullOrUndefinedValue();
 
         var n = stsLib.number;
@@ -3363,6 +3550,10 @@ if (typeof module === 'undefined') {
         s.test_isIncludeAll();
         s.test_indexOfFirst();
         s.test_indexOfLast();
+        s.test_indexOfAnyFirst();
+        s.test_indexOfAnyLast();
+        s.test_indexOfFuncFirst();
+        s.test_indexOfFuncLast();
         s.test_substrIndex();
         s.test_substrLength();
         s.test_start();
