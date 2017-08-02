@@ -10,7 +10,7 @@ All Right Reserved:
   Name:         Standard Software
   URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/07/29
+Version:        2017/08/03
 //----------------------------------------*/
 
 //var stsLib = require('stsLib');
@@ -71,39 +71,24 @@ var encodingTypeJapanese = {
 
 function getEncodingTypeName(encodingType) {
   switch (encodingType) {
-  case encodingTypeJapanese.Shift_JIS: 
-    return "SHIFT_JIS";
-
-  case encodingTypeJapanese.UTF16_LE_BOM:
-    return "UNICODEFFFE";
-    //  UNICODE 
-    //  または
-    //  UTF-16
-    //  を指定してもいいが、
-    //  UTF16_BE_BOMとの対なのでこの文字を返す
-  case encodingTypeJapanese.UTF16_LE_BOM_NO:
-    return "UTF-16LE";
-  
-  case encodingTypeJapanese.UTF16_BE_BOM:
-    return "UNICODEFEFF";
-  case encodingTypeJapanese.UTF16_BE_BOM_NO:
-    return "UTF-16BE";
-  
-  case encodingTypeJapanese.UTF8_BOM:
-    return "UTF-8";
-  case encodingTypeJapanese.UTF8_BOM_NO:
-    return "UTF-8N";
-  
-  case encodingTypeJapanese.JIS:
-    return "ISO-2022-JP";
-    
-  case encodingTypeJapanese.EUC_JP:
-    return "EUC-JP";
-  
-  case encodingTypeJapanese.UTF_7:
-    return "UTF-7";
+  case encodingTypeJapanese.Shift_JIS:        return "SHIFT_JIS";
+  case encodingTypeJapanese.UTF8_BOM:         return "UTF-8";
+  case encodingTypeJapanese.UTF8_BOM_NO:      return "UTF-8N";
+  case encodingTypeJapanese.UTF16_LE_BOM:     return "UNICODEFFFE";
+  case encodingTypeJapanese.UTF16_LE_BOM_NO:  return "UTF-16LE";
+  case encodingTypeJapanese.UTF16_BE_BOM:     return "UNICODEFEFF";
+  case encodingTypeJapanese.UTF16_BE_BOM_NO:  return "UTF-16BE";
+  case encodingTypeJapanese.JIS:              return "ISO-2022-JP";
+  case encodingTypeJapanese.EUC_JP:           return "EUC-JP";
+  case encodingTypeJapanese.UTF_7:            return "UTF-7";
+  case encodingTypeJapanese.ASCII:            return "ASCII";
   }
 }
+// UTF16_LE_BOMの指定は、
+// [UNICODEFFFE]だけではなく
+// [UNICODE]や[UTF-16]も同じ動作になるが
+// UTF16_BE_BOMとの対比としてわかりやすいので
+// [UNICODEFFFE]を採用する
 
 var const_ADODB_Stream = {
   adTypeBinary: 1,
@@ -140,8 +125,6 @@ function test_string_LoadFromFile() {
 
   d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\SJIS_File.txt',
     encodingTypeJapanese.Shift_JIS));
-  d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\UTF-7_File.txt',
-    encodingTypeJapanese.UTF_7));
   d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\UTF-8_File.txt',
     encodingTypeJapanese.UTF8_BOM));
   d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\UTF-8N_File.txt',
@@ -154,7 +137,15 @@ function test_string_LoadFromFile() {
     encodingTypeJapanese.UTF16_BE_BOM_NO));
   d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\UTF-16BE_BOM_ON_File.txt',
     encodingTypeJapanese.UTF16_BE_BOM));
-
+  d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\JIS_File.txt',
+    encodingTypeJapanese.JIS));
+  d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\EUC-JP_File.txt',
+    encodingTypeJapanese.EUC_JP));
+  d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\UTF-7_File.txt',
+    encodingTypeJapanese.UTF_7));
+  textTest = stsLib.string.replaceAll(textTest, 'あいうえお', '?????')
+  d.check(textTest, string_LoadFromFile(folderPathTestBase + '\\ASCII_File.txt',
+    encodingTypeJapanese.ASCII));
 }
 
 function string_SaveToFile(str, filePath, encodingType) {
@@ -220,8 +211,6 @@ function test_string_SaveToFile() {
 
   string_SaveToFile(textTest, folderPathTestBase + '\\SJIS_File.txt',
     encodingTypeJapanese.Shift_JIS);
-  string_SaveToFile(textTest, folderPathTestBase + '\\UTF-7_File.txt',
-    encodingTypeJapanese.UTF_7);
   string_SaveToFile(textTest, folderPathTestBase + '\\UTF-8_File.txt',
     encodingTypeJapanese.UTF8_BOM);
   string_SaveToFile(textTest, folderPathTestBase + '\\UTF-8N_File.txt',
@@ -234,6 +223,14 @@ function test_string_SaveToFile() {
     encodingTypeJapanese.UTF16_BE_BOM_NO);
   string_SaveToFile(textTest, folderPathTestBase + '\\UTF-16BE_BOM_ON_File.txt',
     encodingTypeJapanese.UTF16_BE_BOM);
+  string_SaveToFile(textTest, folderPathTestBase + '\\JIS_File.txt',
+    encodingTypeJapanese.JIS);
+  string_SaveToFile(textTest, folderPathTestBase + '\\EUC-JP_File.txt',
+    encodingTypeJapanese.EUC_JP);
+  string_SaveToFile(textTest, folderPathTestBase + '\\UTF-7_File.txt',
+    encodingTypeJapanese.UTF_7);
+  string_SaveToFile(textTest, folderPathTestBase + '\\ASCII_File.txt',
+    encodingTypeJapanese.ASCII);
 }
 
 //----------------------------------------

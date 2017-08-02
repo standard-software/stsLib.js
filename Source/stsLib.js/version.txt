@@ -226,3 +226,5 @@
 ・  isStringArray/isIntArrayなど作成
 ・  indexOfAnyFirst/Last作成
 ・  indexOfFuncFirst/Last作成
+◇  ver 2017/08/03
+・  stslib_win_wsh.js string_SaveToFile/string_LoadFromFile を修正
