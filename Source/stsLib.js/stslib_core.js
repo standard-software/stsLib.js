@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/07/20
+Version:        2017/08/04
 //----------------------------------------*/
 
 //----------------------------------------
@@ -33,10 +33,26 @@ if (typeof module === 'undefined') {
   };
 }
 
+//----------------------------------------
+//■全体を囲う無名関数
+//----------------------------------------
 (function () {
 
   //----------------------------------------
-  //■ライブラリ名前空間
+  //・require実行
+  //----------------------------------------
+  //  ・requireが必要な場合は次のようにして
+  //    実行する
+  //----------------------------------------
+  // if (typeof module === 'undefined') {
+  //   var stsLib = require('stsLib')
+  // } else {
+  //   var stsLib = require('./stsLib_core.js')
+  // }
+  //----------------------------------------
+
+  //----------------------------------------
+  //■stsLib名前空間
   //----------------------------------------
   //  ・名前空間は同じ書き方で別ファイルで
   //    定義し直しても別関数を定義していくことができる
@@ -2449,32 +2465,26 @@ if (typeof module === 'undefined') {
       //・最初の start,end の組み合わせのタグを含まない文字
       //----------------------------------------
       _.tagInnerFirst = function (str, startTag, endTag) {
-
         d.assert((!t.isNullOrUndefined(str)) );
-        d.assert(!_.isEmpty(startTag));
-        d.assert(!_.isEmpty(endTag));
+        d.assert(!_.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
         var indexStartTag = _.indexOfFirst(str, startTag);
-        var indexEndTag = _.indexOfFirst(str, endTag);
-        if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
-          //startTag/endTagは存在する場合
-          if (indexStartTag < indexEndTag) {
+        if (indexStartTag !== -1) {
+          //startTagはある
+          var indexEndTag = _.indexOfFirst(str, endTag, 
+            indexStartTag + startTag.length);
+          if (indexEndTag !== -1) {
+            //endTagはある
             return _.startFirstDelim(
               _.endFirstDelim(str, startTag), endTag);
           } else {
-            //開始終了位置が逆の場合
+            //endTagはない
             return '';
           }
-        } else if (indexStartTag !== -1) {
-          //startTagは存在する場合
-          return _.endFirstDelim(str, startTag);
-        } else if (indexEndTag !== -1) {
-          //endTagは存在する場合
-          return _.startFirstDelim(str, endTag);
         } else {
-          //startTag/endTagどちらも存在しない場合
-          return str;
+          //startTagはない
+          return '';
         }
       };
 
@@ -2482,58 +2492,53 @@ if (typeof module === 'undefined') {
 
         d.check('456',  _.tagInnerFirst('000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('456',  _.tagInnerFirst('<123>456<789>', '<123>', '<789>'), 'test02');
-        d.check('456',  _.tagInnerFirst('000<123>456', '<123>', '<789>'), 'test03');
-        d.check('456',  _.tagInnerFirst('456<789>000', '<123>', '<789>'), 'test04');
-        d.check('456',  _.tagInnerFirst('456', '<123>', '<789>'), 'test05');
+        d.check('',     _.tagInnerFirst('000<123>456', '<123>', '<789>'), 'test03');
+        d.check('',     _.tagInnerFirst('456<789>000', '<123>', '<789>'), 'test04');
+        d.check('',     _.tagInnerFirst('456', '<123>', '<789>'), 'test05');
         d.check('',     _.tagInnerFirst('000<123><789>000', '<123>', '<789>'), 'test06');
-        d.check('',  _.tagInnerFirst('000<123>456<789>000', '<789>', '<123>'), 'test07');
+        d.check('',     _.tagInnerFirst('000<123>456<789>000', '<789>', '<123>'), 'test07');
 
         var Text = '<123>123<789> <123>456<789> <123>789<789>';
         d.check('123',
           _.tagInnerFirst(Text, '<123>', '<789>'), 'test01');
-        d.check('123<789> <123>456<789> <123>789<789>',
+        d.check('',
           _.tagInnerFirst(Text, '<123>', '<456>'), 'test02');
-        d.check('<123>123',
+        d.check('',
           _.tagInnerFirst(Text, '<456>', '<789>'), 'test03');
         d.check('',
           _.tagInnerFirst(Text, '<456>', '<123>'), 'test04');
-        d.check(' <123>456<789> <123>789<789>',
+        d.check('',
           _.tagInnerFirst(Text, '<789>', '<456>'), 'test05');
-        d.check(Text,
+        d.check('',
           _.tagInnerFirst(Text, '<321>', '<456>'), 'test06');
+        d.check('123<789> <123>45',
+          _.tagInnerFirst(Text, '<123>', '6<789>'), 'test07');
       };
 
       //----------------------------------------
       //・最初の start,end の組み合わせのタグを含む文字
       //----------------------------------------
       _.tagOuterFirst = function (str, startTag, endTag) {
-
         d.assert((!t.isNullOrUndefined(str)) );
-        d.assert(!_.isEmpty(startTag));
-        d.assert(!_.isEmpty(endTag));
+        d.assert(!_.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
         var indexStartTag = _.indexOfFirst(str, startTag);
-        var indexEndTag = _.indexOfFirst(str, endTag);
-        if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
-          //startTag/endTagは存在する場合
-          if (indexStartTag < indexEndTag) {
-            return _.startFirstDelim(
-              startTag + _.endFirstDelim(str, startTag),
-              endTag) + endTag;
+        if (indexStartTag !== -1) {
+          //startTagはある
+          var indexEndTag = _.indexOfFirst(str, endTag, 
+            indexStartTag + startTag.length);
+          if (indexEndTag !== -1) {
+            //endTagはある
+            return startTag + _.startFirstDelim(
+              _.endFirstDelim(str, startTag), endTag) + endTag;
           } else {
-            //開始終了位置が逆の場合
+            //endTagはない
             return '';
           }
-        } else if (indexStartTag !== -1) {
-          //startTagは存在する場合
-          return startTag + _.endFirstDelim(str, startTag);
-        } else if (indexEndTag !== -1) {
-          //endTagは存在する場合
-          return _.startFirstDelim(str, endTag) + endTag;
         } else {
-          //startTag/endTagどちらも存在しない場合
-          return str;
+          //startTagはない
+          return '';
         }
       };
 
@@ -2543,11 +2548,11 @@ if (typeof module === 'undefined') {
           '000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('<123>456<789>',  _.tagOuterFirst(
           '<123>456<789>', '<123>', '<789>'), 'test02');
-        d.check('<123>456',       _.tagOuterFirst(
+        d.check('',       _.tagOuterFirst(
           '000<123>456', '<123>', '<789>'), 'test03');
-        d.check('456<789>',       _.tagOuterFirst(
+        d.check('',       _.tagOuterFirst(
           '456<789>000', '<123>', '<789>'), 'test04');
-        d.check('456',            _.tagOuterFirst(
+        d.check('',            _.tagOuterFirst(
           '456', '<123>', '<789>'), 'test05');
         d.check('<123><789>',     _.tagOuterFirst(
           '000<123><789>000', '<123>', '<789>'), 'test06');
@@ -2557,106 +2562,97 @@ if (typeof module === 'undefined') {
         var Text = '<123>123<789> <123>456<789> <123>789<789>';
         d.check('<123>123<789>',
           _.tagOuterFirst(Text, '<123>', '<789>'), 'test01');
-        d.check(Text,
+        d.check('',
           _.tagOuterFirst(Text, '<123>', '<456>'), 'test02');
-        d.check('<123>123<789>',
+        d.check('',
           _.tagOuterFirst(Text, '<456>', '<789>'), 'test03');
-        d.check('<123>',
+        d.check('',
           _.tagOuterFirst(Text, '<456>', '<123>'), 'test04');
-        d.check('<789> <123>456<789> <123>789<789>',
+        d.check('',
           _.tagOuterFirst(Text, '<789>', '<456>'), 'test05');
-        d.check(Text,
+        d.check('',
           _.tagOuterFirst(Text, '<321>', '<456>'), 'test06');
+        d.check('<123>123<789> <123>456<789>',
+          _.tagOuterFirst(Text, '<123>', '6<789>'), 'test07');
       };
 
       //----------------------------------------
       //・最後の start,end の組み合わせのタグを含まない文字
       //----------------------------------------
       _.tagInnerLast = function (str, startTag, endTag) {
-
         d.assert((!t.isNullOrUndefined(str)) );
-        d.assert(!_.isEmpty(startTag));
-        d.assert(!_.isEmpty(endTag));
+        d.assert(!_.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
-        var indexStartTag = _.indexOfLast(str, startTag);
         var indexEndTag = _.indexOfLast(str, endTag);
-        if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
-          //startTag/endTagは存在する場合
-          if (indexStartTag < indexEndTag) {
-            return _.startLastDelim(
-              _.endLastDelim(str, startTag), endTag);
+        if (indexEndTag !== -1) {
+          //endTagはある
+          var indexStartTag = _.indexOfLast(str, startTag,
+            indexEndTag - 1);
+          if (indexStartTag !== -1) {
+            //startTagはある
+            return _.endLastDelim(
+              _.startLastDelim(str, endTag), startTag);
           } else {
-            //開始終了位置が逆の場合
+            //startTagはない
             return '';
-          }
-        } else if (indexStartTag !== -1) {
-          //startTagは存在する場合
-          return _.endLastDelim(str, startTag);
-        } else if (indexEndTag !== -1) {
-          //endTagは存在する場合
-          return _.startLastDelim(str, endTag);
+          } 
         } else {
-          //startTag/endTagどちらも存在しない場合
-          return str;
+          //endTagはない
+          return '';
         }
       };
-      _.test_tagInnerLast = function () {
 
+      _.test_tagInnerLast = function () {
         d.check('456',  _.tagInnerLast('000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('456',  _.tagInnerLast('<123>456<789>', '<123>', '<789>'), 'test02');
-        d.check('456',  _.tagInnerLast('000<123>456', '<123>', '<789>'), 'test03');
-        d.check('456',  _.tagInnerLast('456<789>000', '<123>', '<789>'), 'test04');
-        d.check('456',  _.tagInnerLast('456', '<123>', '<789>'), 'test05');
+        d.check('',     _.tagInnerLast('000<123>456', '<123>', '<789>'), 'test03');
+        d.check('',     _.tagInnerLast('456<789>000', '<123>', '<789>'), 'test04');
+        d.check('',     _.tagInnerLast('456', '<123>', '<789>'), 'test05');
         d.check('',     _.tagInnerLast('000<123><789>000', '<123>', '<789>'), 'test06');
-        d.check('',  _.tagInnerLast('000<123>456<789>000', '<789>', '<123>'), 'test07');
+        d.check('',     _.tagInnerLast('000<123>456<789>000', '<789>', '<123>'), 'test07');
 
-        var Text = '<123>123<789> <123>456<789> <123>789<789>';
-        d.check('789',
+        var Text = '<123>ABC<789> <123>DEF<789> <123>GHI<789>';
+        d.check('GHI',
           _.tagInnerLast(Text, '<123>', '<789>'), 'test01');
-        d.check('789<789>',
+        d.check('',
           _.tagInnerLast(Text, '<123>', '<456>'), 'test02');
-        d.check('<123>123<789> <123>456<789> <123>789',
+        d.check('',
           _.tagInnerLast(Text, '<456>', '<789>'), 'test03');
-        d.check('<123>123<789> <123>456<789> ',
+        d.check('',
           _.tagInnerLast(Text, '<456>', '<123>'), 'test04');
         d.check('',
           _.tagInnerLast(Text, '<789>', '<456>'), 'test05');
-        d.check(Text,
+        d.check('',
           _.tagInnerLast(Text, '<321>', '<456>'), 'test06');
+        d.check('DE',
+          _.tagInnerLast(Text, '<123>', 'F<789>'), 'test07');
       };
 
       //----------------------------------------
       //・最後の start,end の組み合わせのタグを含む文字
       //----------------------------------------
       _.tagOuterLast = function (str, startTag, endTag) {
-
         d.assert((!t.isNullOrUndefined(str)) );
-        d.assert(!_.isEmpty(startTag));
-        d.assert(!_.isEmpty(endTag));
+        d.assert(!_.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
-        var indexStartTag = _.indexOfLast(str, startTag);
         var indexEndTag = _.indexOfLast(str, endTag);
-        if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
-          //startTag/endTagは存在する場合
-          if (indexStartTag < indexEndTag) {
-            return _.startLastDelim(
-              startTag + _.endLastDelim(str, startTag),
-              endTag) + endTag;
+        if (indexEndTag !== -1) {
+          //endTagはある
+          var indexStartTag = _.indexOfLast(str, startTag,
+            indexEndTag - 1);
+          if (indexStartTag !== -1) {
+            //startTagはある
+            return startTag + _.endLastDelim(
+              _.startLastDelim(str, endTag), startTag) + endTag;
           } else {
-            //開始終了位置が逆の場合
+            //startTagはない
             return '';
-          }
-        } else if (indexStartTag !== -1) {
-          //startTagは存在する場合
-          return startTag + _.endLastDelim(str, startTag);
-        } else if (indexEndTag !== -1) {
-          //endTagは存在する場合
-          return _.startLastDelim(str, endTag) + endTag;
+          } 
         } else {
-          //startTag/endTagどちらも存在しない場合
-          return str;
+          //endTagはない
+          return '';
         }
       };
 
@@ -2666,30 +2662,32 @@ if (typeof module === 'undefined') {
           '000<123>456<789>000', '<123>', '<789>'), 'test01');
         d.check('<123>456<789>',  _.tagOuterLast(
           '<123>456<789>', '<123>', '<789>'), 'test02');
-        d.check('<123>456',       _.tagOuterLast(
+        d.check('',       _.tagOuterLast(
           '000<123>456', '<123>', '<789>'), 'test03');
-        d.check('456<789>',       _.tagOuterLast(
+        d.check('',       _.tagOuterLast(
           '456<789>000', '<123>', '<789>'), 'test04');
-        d.check('456',            _.tagOuterLast(
+        d.check('',            _.tagOuterLast(
           '456', '<123>', '<789>'), 'test05');
         d.check('<123><789>',     _.tagOuterLast(
           '000<123><789>000', '<123>', '<789>'), 'test06');
-        d.check('',  _.tagOuterLast(
+        d.check('',            _.tagOuterLast(
           '000<123>456<789>000', '<789>', '<123>'), 'test07');
 
         var Text = '<123>123<789> <123>456<789> <123>789<789>';
         d.check('<123>789<789>',
           _.tagOuterLast(Text, '<123>', '<789>'), 'test01');
-        d.check('<123>789<789>',
+        d.check('',
           _.tagOuterLast(Text, '<123>', '<456>'), 'test02');
-        d.check(Text,
+        d.check('',
           _.tagOuterLast(Text, '<456>', '<789>'), 'test03');
-        d.check('<123>123<789> <123>456<789> <123>',
+        d.check('',
           _.tagOuterLast(Text, '<456>', '<123>'), 'test04');
-        d.check('<789>',
+        d.check('',
           _.tagOuterLast(Text, '<789>', '<456>'), 'test05');
-        d.check(Text,
+        d.check('',
           _.tagOuterLast(Text, '<321>', '<456>'), 'test06');
+        d.check('<123>456<789>',
+          _.tagOuterLast(Text, '<123>', '6<789>'), 'test06');
       };
 
       //----------------------------------------
@@ -3768,7 +3766,7 @@ if (typeof module === 'undefined') {
 
     }()); //_.test
 
-  }(stsLib, this)); //var stsLib
+  }(stsLib, this));   //stsLib
 
   if (typeof module === 'undefined') {
     requireList['stsLib'] = stsLib;

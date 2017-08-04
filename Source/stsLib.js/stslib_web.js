@@ -33,30 +33,33 @@ if (typeof module === 'undefined') {
   };
 }
 
+//----------------------------------------
+//■全体を囲う無名関数
+//----------------------------------------
 (function () {
 
+  //----------------------------------------
+  //・require実行
+  //----------------------------------------
   if (typeof module === 'undefined') {
     var stsLib = require('stsLib')
   } else {
     var stsLib = require('./stsLib_core.js')
   }
 
+  //----------------------------------------
+  //■stsLib名前空間
+  //----------------------------------------
   var stsLib = stsLib || {};
   (function () {
     var _ = stsLib;
 
+    //----------------------------------------
+    //■stsLib.web名前空間
+    //----------------------------------------
     _.web = stsLib.web || {};
     (function () {
       var _ = stsLib.web;
-
-      //----------------------------------------
-      //◆テスト
-      //----------------------------------------
-      _.test_stslib_web = function () {
-        _.test_intervalForToAll();
-        _.test_intervalForDownToAll();
-        alert('finish stslib_web_test テスト終了');
-      }
       
       /*----------------------------------------
         Cookieの書込み読込み処理
@@ -435,9 +438,18 @@ if (typeof module === 'undefined') {
         _.test_intervalForDownTo(_.intervalForDownTo3);
       }
 
+      //----------------------------------------
+      //◆テスト
+      //----------------------------------------
+      _.test_stslib_web = function () {
+        _.test_intervalForToAll();
+        _.test_intervalForDownToAll();
+        alert('finish stslib_web_test テスト終了');
+      }
 
-    }());
-  }());
+    }());   //stsLib.web
+
+  }());   
 
   if (typeof module === 'undefined') {
     requireList['stsLib'] = stsLib;

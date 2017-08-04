@@ -228,3 +228,7 @@
 ・  indexOfFuncFirst/Last作成
 ◇  ver 2017/08/03
 ・  stslib_win_wsh.js string_SaveToFile/string_LoadFromFile を修正
+    stsLib.wsh.textfile.save/load に変更した
+◇  ver 2017/08/04
+・  その他、wsh系ライブラリをすべて、stsLib.wsh名前空間に入れた
+・  tagInnerFirst/Last tagOuterFirst/Last を修正した

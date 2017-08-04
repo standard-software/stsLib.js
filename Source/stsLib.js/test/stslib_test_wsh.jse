@@ -21,23 +21,31 @@ var fso = new ActiveXObject("Scripting.FileSystemObject")
 //--------------------------------------------------
 var basePath = fso.GetParentFolderName(WScript.ScriptFullName);
 //--------------------------------------------------
-var includeFileName = "..\\stslib_win_wsh.js"
-eval( 
-    fso.OpenTextFile(
-        fso.BuildPath(basePath, includeFileName), 1)
-    .ReadAll() );
-	//SHIFT_JIS でのファイル読込
+var loadTextfileSjis = function (path) {
+  return fso.OpenTextFile(path, 1).ReadAll();
+};
+
+var loadTextfileUTF8 = function (path) {
+  var stream = new ActiveXObject('ADODB.Stream');
+  stream.Type = 2;  //StreamTypeEnum.adTypeText = 2
+  stream.Charset = "UTF-8";
+  stream.Open();
+  stream.LoadFromFile(path);
+  result = stream.ReadText();
+  stream.Close();
+  return result;
+};
+
 //--------------------------------------------------
 var includeFileName = "..\\stslib_core.js"
-eval( 
-	string_LoadFromFile(
-		fso.BuildPath(basePath, includeFileName), 
-		encodingTypeJapanese.UTF8_BOM));
-	//UTF-8 でのファイル読込
+eval( loadTextfileUTF8( fso.BuildPath(basePath, includeFileName) ) );
+//--------------------------------------------------
+var includeFileName = "..\\stslib_win_wsh.js"
+eval( loadTextfileSjis( fso.BuildPath(basePath, includeFileName) ) );
 //--------------------------------------------------
 
 
 var stsLib = require('stsLib');
 
 stsLib.test.test_stslib_core();
-test_stslib_win_wsh();
+stsLib.test.test_stslib_wsh();
