@@ -1693,7 +1693,7 @@ if (typeof module === 'undefined') {
       _.test_indexOfFuncFirst = function () {
 
         d.check(-1, _.indexOfFuncFirst('abc def ghi abc',
-          function (char, index, str) {
+          function (s, index, str) {
             return false;
           }));
 
@@ -1739,7 +1739,7 @@ if (typeof module === 'undefined') {
       _.test_indexOfFuncLast = function () {
 
         d.check(-1, _.indexOfFuncLast('abc def ghi abc',
-          function (char, index, str) {
+          function (s, index, str) {
             return false;
           }));
 
