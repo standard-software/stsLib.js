@@ -232,3 +232,8 @@
 ◇  ver 2017/08/04
 ・  その他、wsh系ライブラリをすべて、stsLib.wsh名前空間に入れた
 ・  tagInnerFirst/Last tagOuterFirst/Last を修正した
+◇  ver 2017/08/05
+・  stslib_gas_spreadsheet.js cellIsEmpty を追加
+・  dataLastCol/Row を修正
+・	tagOuterAllArray を追加
+

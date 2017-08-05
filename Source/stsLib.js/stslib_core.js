@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/08/04
+Version:        2017/08/05
 //----------------------------------------*/
 
 //----------------------------------------
@@ -2440,7 +2440,7 @@ if (typeof module === 'undefined') {
       };
 
       //--------------------------------------
-      //◇deleteAllTagInner/TagOut
+      //◇deleteAllTag
       //--------------------------------------
       _.deleteAllTag = function (str, startTag, endTag) {
         var result = str;
@@ -2694,41 +2694,7 @@ if (typeof module === 'undefined') {
       //・タグで囲まれた文字を全て抽出する
       //----------------------------------------
       _.tagOuterAll = function (str, startTag, endTag) {
-
-        var indexStartTag, indexEndTag;
-        var result;
-
-        d.assert((!t.isNullOrUndefined(str)) );
-        d.assert(!_.isEmpty(startTag));
-        d.assert(!_.isEmpty(endTag));
-        if (str === '') { return ''; }
-
-        result = '';
-        while (true) {
-          indexStartTag = _.indexOfFirst(str, startTag);
-          indexEndTag = _.indexOfFirst(str, endTag);
-          if ((indexStartTag !== -1) && (indexEndTag !== -1)) {
-            //startTag/endTagは存在する場合
-            if (indexStartTag < indexEndTag) {
-              result = result + _.startFirstDelim(
-                startTag + _.endFirstDelim(str, startTag),
-                endTag) + endTag;
-            } else {
-              //開始終了位置が逆の場合
-              return '';
-            }
-            str = _.substrIndex(str, indexEndTag + endTag.length);
-          } else if (indexStartTag !== -1) {
-            //startTagのみ存在する場合
-            return result + startTag + _.endFirstDelim(str, startTag);
-          } else if (indexEndTag !== -1) {
-            //endTagのみ存在する場合
-            return result;
-          } else {
-            //startTag/endTagどちらも存在しない場合
-            return result;
-          }
-        }
+        return _.tagOuterAllArray(str, startTag, endTag).join('');
       };
 
       _.test_tagOuterAll = function () {
@@ -2736,6 +2702,41 @@ if (typeof module === 'undefined') {
         d.check('<def>', _.tagOuterAll('abc<def>ghi', '<', '>'));
         d.check('<def><jkl>', _.tagOuterAll('abc<def>ghi<jkl>mn', '<', '>'));
       };
+
+      //----------------------------------------
+      //・タグで囲まれた文字を全て抽出して配列に出力する
+      //----------------------------------------
+      _.tagOuterAllArray = function (str, startTag, endTag) {
+        d.assert((!t.isNullOrUndefined(str)) );
+        d.assert(!_.isEmpty(startTag, endTag));
+        if (str === '') { return ''; }
+
+        var indexStartTag, indexEndTag;
+        var result = [];
+
+        while (true) {
+          indexStartTag = _.indexOfFirst(str, startTag);
+          if (indexStartTag !== -1) {
+            //startTagはある
+            var indexEndTag = _.indexOfFirst(str, endTag, 
+              indexStartTag + startTag.length);
+            if (indexEndTag !== -1) {
+              //endTagはある
+              a.add(result, startTag + _.startFirstDelim(
+                _.endFirstDelim(str, startTag), endTag) + endTag);
+            } else {
+              //endTagはない
+              return result;
+            }
+          } else {
+            //startTagはない
+            return result;
+          }
+
+          str = _.substrIndex(str, indexEndTag + endTag.length);
+        }
+      };
+
 
       //----------------------------------------
       //◇文字列生成
@@ -3774,4 +3775,4 @@ if (typeof module === 'undefined') {
     module.exports = stsLib;
   }
 
-}());
+}());   //(function () {
