@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/08/05
+Version:        2017/08/11
 //----------------------------------------*/
 
 //----------------------------------------
@@ -69,22 +69,22 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //・クラス継承関数
     //----------------------------------------
-    _.inherits = function(childCtor, parentCtor) {
-      function tempCtor() {}
+    _.inherits = function(child, parent) {
+      function temp() {}
       // ES6
       if (Object.setPrototypeOf) {
-        Object.setPrototypeOf(childCtor.prototype, parentCtor.prototype);
+        Object.setPrototypeOf(child.prototype, parent.prototype);
       }
       // ES5
       else if (Object.create) {
-        childCtor.prototype = Object.create(parentCtor.prototype);
+        child.prototype = Object.create(parent.prototype);
       }
       // legacy platform
       else {
-        tempCtor.prototype = parentCtor.prototype;
-        childCtor.superClass_ = parentCtor.prototype;
-        childCtor.prototype = new tempCtor();
-        childCtor.prototype.constructor = childCtor;
+        temp.prototype = parent.prototype;
+        child.superClass_ = parent.prototype;
+        child.prototype = new temp();
+        child.prototype.constructor = child;
       }
     };
 
@@ -125,7 +125,8 @@ if (typeof module === 'undefined') {
         if (a === b) {
           return true;
         }
-        if (lib.type.isNullOrUndefined(message)) {
+        if ((typeof message === 'undefined')
+        || (message === null)) {
           message = '';
         } else {
           message = 'Test:' + message + '\n';
@@ -330,6 +331,7 @@ if (typeof module === 'undefined') {
       //・argumentsのような arraylike なものを配列にする
       //----------------------------------------
       //  ・ES6だと args = Array.from(arguments) とできる
+      //  ・private関数なのでライブラリ内のみ使用可能
       //----------------------------------------
       var argsToArray = function (values) {
         return Array.prototype.slice.call(values);
@@ -343,75 +345,88 @@ if (typeof module === 'undefined') {
         var l = argsArray.length;
         if (l === 0) {
           return false;
-        }
-        for (var i = 0; i < l; i += 1) {
-          var value = argsArray[i];
-          if (!checkFunc(value)) {
-            return false;
+        } else if (l === 1) {
+          return checkFunc(argsArray[0]);
+        } else {
+          for (var i = 0; i < l; i += 1) {
+            if (!checkFunc(argsArray[i])) {
+              return false;
+            }
           }
+          return true;
         }
-        return true;
       };
 
+      //----------------------------------------
+      //◇Undefined/null チェック
+      //----------------------------------------
+      //  ・引数の数が1で配列ではない場合は
+      //    高速化のために単独でチェックする
+      //----------------------------------------
       _.isUndefined = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return (typeof v === 'undefined');
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
-      //Arary.prototype.everyを使って
-      //下記のようにも書けるが
-      //かなり低速な様子だったので不採用とする
-      // _.isUndefined = function () {
-      //   return (Array.prototype.slice.call(arguments)).every(
-      //     function (element, index, array) {
-      //       return (typeof element !== 'undefined');
-      //     });
-      // };
-      //また、下記のようにも書ける
-      // _.isUndefined = function (value) {
-      //   var l = arguments.length;
-      //   if (l === 0) {
-      //     return false;
-      //   } else if (l === 1) {
-      //     return (typeof value === 'undefined');
-      //   }
-      //   for (var i = 0; i < l; i += 1) {
-      //     value = arguments[i];
-      //     if (typeof value !== 'undefined') {
-      //       return false;
-      //     }
-      //   }
-      //   return true;
-      // };
 
-      _.isNotUndefined = function () {
-        return _.isTypeCheck(function (v) {
+      _.isNotUndefined = function (value) {
+        var func = function (v) {
           return (typeof v !== 'undefined');
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.isNull = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return (v === null);
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.isNotNull = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return (v !== null);
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.isNullOrUndefined = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return _.isNull(v) || _.isUndefined(v);
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.isNotNullOrUndefined = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return !(_.isNull(v) || _.isUndefined(v));
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.test_isNullOrUndefined = function () {
@@ -466,15 +481,25 @@ if (typeof module === 'undefined') {
       //  ・可変引数の全てがBooleanかどうかを確認する
       //----------------------------------------
       _.isBoolean = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return (typeof v === 'boolean');
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.isNotBoolean = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return (typeof v !== 'boolean');
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.test_isBoolean = function () {
@@ -496,11 +521,6 @@ if (typeof module === 'undefined') {
         d.check(false, _.isBoolean(true, 1, true));
       };
 
-      _.isBooleanArray = function (value) {
-        if (!Array.isArray(value)) { return false; }
-        return _.isBoolean.apply(null, value);
-      };
-
       //----------------------------------------
       //◇isNumbers
       //----------------------------------------
@@ -509,15 +529,25 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.isNumber = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return ((typeof v === 'number') && (isFinite(v)));
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.isNotNumber = function (value) {
-        return _.isTypeCheck(function (v) {
-          return ((typeof v !== 'number') || (!isFinite(v)));
-        }, argsToArray(arguments));
+        var func = function (v) {
+          return !((typeof v === 'number') && (isFinite(v)));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.test_isNumber = function () {
@@ -568,11 +598,6 @@ if (typeof module === 'undefined') {
         d.check(true,   _.isNotNumber('a', 'b'));
       };
 
-      _.isNumberArray = function (value) {
-        if (!Array.isArray(value)) { return false; }
-        return _.isNumber.apply(null, value);
-      };
-
       //----------------------------------------
       //◇isInt
       //----------------------------------------
@@ -580,21 +605,31 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.isInt = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           if (!_.isNumber(v)) {
             return false;
           }
           return Math.round(v) === v;
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.isNotInt = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           if (!_.isNumber(v)) {
             return true;
           }
           return Math.round(v) !== v;
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       _.test_isInt = function () {
@@ -631,27 +666,14 @@ if (typeof module === 'undefined') {
         d.check(false,  _.isNotInt(1, 2, 3.5));
         d.check(false,  _.isNotInt(1, 2.1, 3.5));
         d.check(true,   _.isNotInt(1.1, 2.2, 3.5));
-      };
 
-      //----------------------------------------
-      //・isIntArray
-      //----------------------------------------
-      //  ・配列の中身を確認する
-      //  ・配列を可変長引数としてisIntに渡している
-      //----------------------------------------
-      _.isIntArray = function (value) {
-        if (!Array.isArray(value)) { return false; }
-        return _.isInt.apply(null, value);
-      };
-
-      _.test_isIntArray = function () {
-        d.check(false,  _.isIntArray([]));
-        d.check(true,   _.isIntArray([1]));
-        d.check(true,   _.isIntArray([1, 2, 3]));
-        d.check(true,   _.isIntArray([1, 2, 0]));
-        d.check(false,  _.isIntArray([1, 2, NaN]));
-        d.check(false,  _.isIntArray([1, 2, null]));
-        d.check(false,  _.isIntArray(['a', 'b', 1]));
+        d.check(false,  _.isInt([]));
+        d.check(true,   _.isInt([1]));
+        d.check(true,   _.isInt([1, 2, 3]));
+        d.check(true,   _.isInt([1, 2, 0]));
+        d.check(false,  _.isInt([1, 2, NaN]));
+        d.check(false,  _.isInt([1, 2, null]));
+        d.check(false,  _.isInt(['a', 'b', 1]));
       };
 
       //----------------------------------------
@@ -660,38 +682,37 @@ if (typeof module === 'undefined') {
       //  ・可変引数の全てが文字列かどうかを確認する
       //----------------------------------------
       _.isString = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return (typeof v === 'string');
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
-      _.isNotString = function () {
-        return _.isTypeCheck(function (v) {
+      _.isNotString = function (value) {
+        var func = function (v) {
           return (typeof v !== 'string');
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
-      //----------------------------------------
-      //・isStringArray
-      //----------------------------------------
-      //  ・配列の中身を確認する
-      //  ・配列を可変長引数としてisStringに渡している
-      //----------------------------------------
-      _.isStringArray = function (value) {
-        if (!Array.isArray(value)) { return false; }
-        return _.isString.apply(null, value);
-      };
-
-      _.test_isStringArray = function () {
-        d.check(false,  _.isStringArray([]));
-        d.check(true,   _.isStringArray(['']));
-        d.check(true,   _.isStringArray(['a']));
-        d.check(true,   _.isStringArray(['a', 'b', 'c']));
-        d.check(true,   _.isStringArray(['a', 'b', '']));
-        d.check(false,  _.isStringArray(['a', 'b', 0]));
-        d.check(false,  _.isStringArray(['a', 'b', 1]));
-        d.check(false,  _.isStringArray(['a', 'b', null]));
-        d.check(false,  _.isStringArray(['a', 'b', undefined]));
+      _.test_isString = function () {
+        d.check(false,  _.isString([]));
+        d.check(true,   _.isString(['']));
+        d.check(true,   _.isString(['a']));
+        d.check(true,   _.isString(['a', 'b', 'c']));
+        d.check(true,   _.isString(['a', 'b', '']));
+        d.check(false,  _.isString(['a', 'b', 0]));
+        d.check(false,  _.isString(['a', 'b', 1]));
+        d.check(false,  _.isString(['a', 'b', null]));
+        d.check(false,  _.isString(['a', 'b', undefined]));
       };
 
       //----------------------------------------
@@ -701,20 +722,25 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.isFunction = function (value) {
-        return _.isTypeCheck(function (v) {
+        var func = function (v) {
           return (typeof v === 'function');
-        }, argsToArray(arguments));
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
-      _.isNotFunction = function () {
-        return _.isTypeCheck(function (v) {
+      _.isNotFunction = function (value) {
+        var func = function (v) {
           return (typeof v !== 'function');
-        }, argsToArray(arguments));
-      };
-
-      _.isFunctionArray = function (value) {
-        if (!Array.isArray(value)) { return false; }
-        return _.isFunction.apply(null, value);
+        };
+        if ((arguments.length === 1) && (!Array.isArray(value))) {
+          return func(value);
+        }
+        return _.isTypeCheck(func,
+          a.multiDimensionExpand(argsToArray(arguments)));
       };
 
       //----------------------------------------
@@ -726,9 +752,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //  ・引数のデフォルト値として使える
       //----------------------------------------
-      _.ifNullOrUndefinedValue = function (value, undefinedValue) {
+      _.ifNullOrUndefinedValue = function (value, defaultValue) {
         if (_.isNullOrUndefined(value)) {
-          return undefinedValue;
+          return defaultValue;
         } else {
           return value;
         }
@@ -1342,6 +1368,71 @@ if (typeof module === 'undefined') {
         d.check(-1, _.indexOfArrayLast(arrayList, [3, 3, 3], -5));
       };
 
+      //----------------------------------------
+      //◇多次元配列
+      //----------------------------------------
+
+      //----------------------------------------
+      //・多次元配列を展開する
+      //----------------------------------------
+      //  ・空配列に対しては何も展開しないので
+      //    [1, [], 2, [[], 3]]は
+      //    [1,2,3]になる
+      //  ・空文字に対しては展開するので
+      //    ['1', [], '2', [[], '3']]は
+      //    ['1','2','3']になり
+      //    ['1', [''], '2', [[''], '3']]は
+      //    ['1','','2','','3']になる
+      //----------------------------------------
+      _.multiDimensionExpand = function (array) {
+        d.assert(Array.isArray(array));
+        var result = [];
+        var f = function (value) {
+          for (var i = 0, l = value.length; i < l; i += 1) {
+            var arrayItem = value[i];
+            if (Array.isArray(arrayItem)) {
+              f(arrayItem);
+            } else {
+              result.push(arrayItem);
+            }
+          }
+        };
+        f(array);
+        return result;
+      };
+
+      _.test_multiDimensionExpand = function () {
+        d.check('1,2,3,4',          _.multiDimensionExpand([1,2,3,4]).join());
+        d.check('1,2,3,4',          _.multiDimensionExpand([[1,2],3,4]).join());
+        d.check('1,2,3,4',          _.multiDimensionExpand([[1,2],[3,4]]).join());
+        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([1,2,3,4,5,6]).join());
+        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[1,2],[3,4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[1,2,3,4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[1,[2,3],4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[[1,[2,3]],4], [5, 6]]).join());
+        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[[[[[1],2],3],4],5],6]).join());
+        d.check('1,2,3,4,5,6,7,8',  _.multiDimensionExpand([[1,[2,3],4], [5, [6, 7], 8]]).join());
+        d.check('', [].join());
+        d.check('', [].join(','));
+        d.check('1', [1].join(','));
+        d.check('1,2', [1,2].join(','));
+        d.check('1,2,3,4,5,6,7,8',  [[1,[2,3],4], [5, [6, 7], 8]].join());
+        d.check('1,,4,5,6,7,8',  [[1,'',4], [5, [6, 7], 8]].join());
+        d.check('',     _.multiDimensionExpand([]).join());
+        d.check('3',    _.multiDimensionExpand([[], [3], []]).join());
+        d.check('3,4',  _.multiDimensionExpand([[], [3,4], []]).join());
+        d.check('3,4',  _.multiDimensionExpand([[], [3],[4], []]).join());
+        d.check('3,4',  _.multiDimensionExpand([[], [[3],[4]], []]).join());
+        d.check(',3,4,',  [[], [[3],[4]], []].join());
+        d.check('1,2,3',  _.multiDimensionExpand([1, [], 2, [[], 3]]).join());
+        d.check(3,        _.multiDimensionExpand([1, [], 2, [[], 3]]).length);
+        d.check('1,2,3',  _.multiDimensionExpand(['1', [], '2', [[], '3']]).join());
+        d.check(3,        _.multiDimensionExpand(['1', [], '2', [[], '3']]).length);
+        d.check('1,,2,,3',_.multiDimensionExpand(['1', [''], '2', [[''], '3']]).join());
+        d.check(5,        _.multiDimensionExpand(['1', [''], '2', [[''], '3']]).length);
+      };
+
+
     }());
     var a = lib.array; //ショートカット呼び出し
 
@@ -1604,7 +1695,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyFirst = function (str, searchArray, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isStringArray(searchArray));
+        d.assert(t.isString(searchArray) && (Array.isArray(searchArray)));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         d.assert(t.isInt(startIndex));
 
@@ -1638,7 +1729,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyLast = function (str, searchArray, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isStringArray(searchArray));
+        d.assert(t.isString(searchArray) && (Array.isArray(searchArray)));
         startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
         d.assert(t.isInt(startIndex));
 
@@ -2718,7 +2809,7 @@ if (typeof module === 'undefined') {
           indexStartTag = _.indexOfFirst(str, startTag);
           if (indexStartTag !== -1) {
             //startTagはある
-            var indexEndTag = _.indexOfFirst(str, endTag, 
+            indexEndTag = _.indexOfFirst(str, endTag, 
               indexStartTag + startTag.length);
             if (indexEndTag !== -1) {
               //endTagはある
@@ -3533,8 +3624,8 @@ if (typeof module === 'undefined') {
         t.test_isBoolean();
         t.test_isNumber();
         t.test_isInt();
-        t.test_isIntArray();
-        t.test_isStringArray();
+        // t.test_isIntArray();
+        t.test_isString();
         t.test_ifNullOrUndefinedValue();
 
         var n = stsLib.number;
@@ -3609,6 +3700,7 @@ if (typeof module === 'undefined') {
         a.test_indexOfLast();
         a.test_indexOfArrayFirst();
         a.test_indexOfArrayLast();
+        a.test_multiDimensionExpand();
 
         var angle = stsLib.angle;
         angle.test_angleRelative();

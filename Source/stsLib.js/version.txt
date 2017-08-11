@@ -236,4 +236,8 @@
 ・  stslib_gas_spreadsheet.js cellIsEmpty を追加
 ・  dataLastCol/Row を修正
 ・	tagOuterAllArray を追加
-
+◇	ver 2017/08/11
+・	check関数をコピペしやすいように改良
+・  Array.multiDimensionExpand作成
+・  isIntなどのタイプチェックに引数の配列を展開するようにしたので
+    isIntArray/isNumberArray/isStringArray/isFunctionArrayなどを廃止
