@@ -235,10 +235,22 @@
 ◇  ver 2017/08/05
 ・  stslib_gas_spreadsheet.js cellIsEmpty を追加
 ・  dataLastCol/Row を修正
-・	tagOuterAllArray を追加
-◇	ver 2017/08/11
-・	check関数をコピペしやすいように改良
+・  tagOuterAllArray を追加
+◇  ver 2017/08/11
+・  check関数をコピペしやすいように改良
 ・  Array.expand2Dimension/expandMultiDimension 作成
 ・  isIntなどのタイプチェックに expand2Dimension を組み込み
     引数の配列を展開するようにしたので
     isIntArray/isNumberArray/isStringArray/isFunctionArrayなどを廃止
+◇  ver 2017/08/12
+・  isObject 追加
+・  stsLib.object.property 名前空間を作成して
+    count/names/values
+    /nameExists/valueExists/getNameFromValue を追加
+・  stsLib.enumType 名前空間を作成して
+    Enum / EnumNameValue コンストラクタを作成
+・  isInt/isStringなどを単純引数チェックにして
+    isInts/isStringsなどを追加した。
+・  argsToArrayをarray.fromArgsに名前変更
+・  array.insert/insertAdd/add にテストコード追加
+・  array.isInclude/contains/include/exclude を追加

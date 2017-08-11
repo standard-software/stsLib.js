@@ -327,16 +327,6 @@ if (typeof module === 'undefined') {
       //◇引数すべてに型をチェックする
       //----------------------------------------
 
-      //----------------------------------------
-      //・argumentsのような arraylike なものを配列にする
-      //----------------------------------------
-      //  ・ES6だと args = Array.from(arguments) とできる
-      //  ・private関数なのでライブラリ内のみ使用可能
-      //----------------------------------------
-      var argsToArray = function (values) {
-        return Array.prototype.slice.call(values);
-      };
-
       _.isTypeCheck = function (checkFunc, argsArray) {
         d.assert(1 <= arguments.length);
         d.assert(typeof checkFunc == 'function');
@@ -360,73 +350,50 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◇Undefined/null チェック
       //----------------------------------------
-      //  ・引数の数が1で配列ではない場合は
-      //    高速化のために単独でチェックする
-      //----------------------------------------
+
       _.isUndefined = function (value) {
-        var func = function (v) {
-          return (typeof v === 'undefined');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
+        return (typeof value === 'undefined');
       };
 
-      _.isNotUndefined = function (value) {
-        var func = function (v) {
-          return (typeof v !== 'undefined');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
+      _.isUndefineds = function (value) {
+        return _.isTypeCheck(_.isUndefined,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotUndefineds = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isUndefined(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
       };
 
       _.isNull = function (value) {
-        var func = function (v) {
-          return (v === null);
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
+        return (value === null);
       };
 
-      _.isNotNull = function (value) {
-        var func = function (v) {
-          return (v !== null);
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
+      _.isNulls = function (value) {
+        return _.isTypeCheck(_.isNull,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotNulls = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isNull(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
       };
 
       _.isNullOrUndefined = function (value) {
-        var func = function (v) {
-          return _.isNull(v) || _.isUndefined(v);
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
+        return (_.isNull(value) || _.isUndefined(value));
       };
 
-      _.isNotNullOrUndefined = function (value) {
-        var func = function (v) {
+      _.isNullOrUndefineds = function (value) {
+        return _.isTypeCheck(_.isNullOrUndefined,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotNullOrUndefineds = function (value) {
+        return _.isTypeCheck(function (v) {
           return !(_.isNull(v) || _.isUndefined(v));
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
       };
 
       _.test_isNullOrUndefined = function () {
@@ -435,316 +402,48 @@ if (typeof module === 'undefined') {
         var n1 = null;
         var v1 = 1;
 
-        d.check(true,   _.isUndefined(u1));
-        d.check(false,  _.isNull(u1));
-        d.check(true,   _.isNullOrUndefined(u1));
+        d.check(true,   _.isUndefineds(u1));
+        d.check(false,  _.isNulls(u1));
+        d.check(true,   _.isNullOrUndefineds(u1));
 
-        d.check(false,  _.isUndefined(n1));
-        d.check(true,   _.isNull(n1));
-        d.check(true,   _.isNullOrUndefined(n1));
+        d.check(false,  _.isUndefineds(n1));
+        d.check(true,   _.isNulls(n1));
+        d.check(true,   _.isNullOrUndefineds(n1));
 
-        d.check(false,  _.isUndefined(v1));
-        d.check(false,  _.isNull(v1));
-        d.check(false,  _.isNullOrUndefined(v1));
+        d.check(false,  _.isUndefineds(v1));
+        d.check(false,  _.isNulls(v1));
+        d.check(false,  _.isNullOrUndefineds(v1));
 
         var u2;
         var n2 = null;
         var v2 = 1;
-        d.check(true,   _.isUndefined(u1, u2));
-        d.check(false,  _.isUndefined(u1, n2));
-        d.check(false,  _.isUndefined(u1, v2));
+        d.check(true,   _.isUndefineds(u1, u2));
+        d.check(false,  _.isUndefineds(u1, n2));
+        d.check(false,  _.isUndefineds(u1, v2));
 
-        d.check(false,  _.isNull(n1, u2), '01');
-        d.check(true,   _.isNull(n1, n2));
-        d.check(false,  _.isNull(n1, v2));
+        d.check(false,  _.isNulls(n1, u2), '01');
+        d.check(true,   _.isNulls(n1, n2));
+        d.check(false,  _.isNulls(n1, v2));
 
-        d.check(true,   _.isNullOrUndefined(u1, u2));
-        d.check(true,   _.isNullOrUndefined(u1, n2));
-        d.check(false,  _.isNullOrUndefined(u1, v2));
-        d.check(true,   _.isNullOrUndefined(n1, u2));
-        d.check(true,   _.isNullOrUndefined(n1, n2));
-        d.check(false,  _.isNullOrUndefined(n1, v2));
+        d.check(true,   _.isNullOrUndefineds(u1, u2));
+        d.check(true,   _.isNullOrUndefineds(u1, n2));
+        d.check(false,  _.isNullOrUndefineds(u1, v2));
+        d.check(true,   _.isNullOrUndefineds(n1, u2));
+        d.check(true,   _.isNullOrUndefineds(n1, n2));
+        d.check(false,  _.isNullOrUndefineds(n1, v2));
 
-        d.check(false,  _.isNotNullOrUndefined(u1, u2));
-        d.check(false,  _.isNotNullOrUndefined(u1, n2));
-        d.check(false,  _.isNotNullOrUndefined(u1, v2));
-        d.check(false,  _.isNotNullOrUndefined(n1, u2));
-        d.check(false,  _.isNotNullOrUndefined(n1, n2));
-        d.check(false,  _.isNotNullOrUndefined(n1, v2));
-        d.check(true,   _.isNotNullOrUndefined(v1, v2));
+        d.check(false,  _.isNotNullOrUndefineds(u1, u2));
+        d.check(false,  _.isNotNullOrUndefineds(u1, n2));
+        d.check(false,  _.isNotNullOrUndefineds(u1, v2));
+        d.check(false,  _.isNotNullOrUndefineds(n1, u2));
+        d.check(false,  _.isNotNullOrUndefineds(n1, n2));
+        d.check(false,  _.isNotNullOrUndefineds(n1, v2));
+        d.check(true,   _.isNotNullOrUndefineds(v1, v2));
 
       };
 
       //----------------------------------------
-      //◇isBoolean
-      //----------------------------------------
-      //  ・可変引数の全てがBooleanかどうかを確認する
-      //----------------------------------------
-      _.isBoolean = function (value) {
-        var func = function (v) {
-          return (typeof v === 'boolean');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.isNotBoolean = function (value) {
-        var func = function (v) {
-          return (typeof v !== 'boolean');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.test_isBoolean = function () {
-
-        d.check(true, _.isBoolean(true));
-        d.check(true, _.isBoolean(false));
-        d.check(false,_.isBoolean(undefined));
-        d.check(false,_.isBoolean(null));
-        d.check(false,_.isBoolean(''));
-        d.check(false,_.isBoolean('true'));
-        d.check(false,_.isBoolean('false'));
-        d.check(false,_.isBoolean(123));
-        d.check(false,_.isBoolean(0));
-        d.check(false,_.isBoolean(-1));
-
-        d.check(true, _.isBoolean(true, true));
-        d.check(true, _.isBoolean(true, true, true));
-        d.check(true, _.isBoolean(true, false, true));
-        d.check(false, _.isBoolean(true, 1, true));
-      };
-
-      //----------------------------------------
-      //◇isNumbers
-      //----------------------------------------
-      //  ・可変引数の全てが有効数値かどうかを確認する
-      //  ・NaNやInfinityは有効数値ではないとしておく
-      //----------------------------------------
-
-      _.isNumber = function (value) {
-        var func = function (v) {
-          return ((typeof v === 'number') && (isFinite(v)));
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.isNotNumber = function (value) {
-        var func = function (v) {
-          return !((typeof v === 'number') && (isFinite(v)));
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.test_isNumber = function () {
-
-        d.check(true, _.isNumber(123));
-        d.check(true, _.isNumber(0));
-        d.check(true, _.isNumber(-1));
-        d.check(true ,_.isNumber(123.4));
-        d.check(true, _.isNumber(123.0));
-        d.check(false,_.isNumber(true));
-        d.check(false,_.isNumber(false));
-        d.check(false,_.isNumber(null));
-        d.check(false,_.isNumber(undefined));
-        d.check(false,_.isNumber(Infinity));  //InfinityもNumberとして許可しないことにする
-        d.check(false,_.isNumber(NaN));
-        d.check(false,_.isNumber(''));
-        d.check(false,_.isNumber('ABC'));
-        d.check(false,_.isNumber('ABC10'));
-        d.check(false,_.isNumber('10ABC'));
-        d.check(false,_.isNumber('0ABC'));
-        d.check(false,_.isNumber('0'));
-        d.check(false,_.isNumber('5'));
-        d.check(false,_.isNumber('-5'));
-        d.check(false,_.isNumber('100'));
-        d.check(false,_.isNumber('-100'));
-        d.check(false,_.isNumber([]));
-        d.check(false,_.isNumber({}));
-
-        d.check(false,  _.isNotNumber(123));
-        d.check(false,  _.isNotNumber(0));
-        d.check(true,   _.isNotNumber(true));
-        d.check(true,   _.isNotNumber(null));
-        d.check(true,   _.isNotNumber(undefined));
-        d.check(true,   _.isNotNumber(Infinity));
-        d.check(true,   _.isNotNumber(NaN));
-        d.check(true,   _.isNotNumber(''));
-
-        d.check(true,   _.isNumber(1, 2));
-        d.check(true,   _.isNumber(3, 4, 5));
-        d.check(true,   _.isNumber(10.5, 20.5, 30.5));
-        d.check(false,  _.isNumber(1, 2, true));
-
-        d.check(false,  _.isNotNumber(1, 2));
-        d.check(false,  _.isNotNumber(3, 4, 5));
-        d.check(false,  _.isNotNumber(10.5, 20.5, 30.5));
-        d.check(false,  _.isNotNumber(1, 2, true));
-        d.check(true,   _.isNotNumber(false, true));
-        d.check(true,   _.isNotNumber('a', 'b'));
-      };
-
-      //----------------------------------------
-      //◇isInt
-      //----------------------------------------
-      //  ・可変引数の全てが整数かどうかを確認する
-      //----------------------------------------
-
-      _.isInt = function (value) {
-        var func = function (v) {
-          if (!_.isNumber(v)) {
-            return false;
-          }
-          return Math.round(v) === v;
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.isNotInt = function (value) {
-        var func = function (v) {
-          if (!_.isNumber(v)) {
-            return true;
-          }
-          return Math.round(v) !== v;
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.test_isInt = function () {
-
-        d.check(true, _.isInt(123));
-        d.check(true, _.isInt(0));
-        d.check(true, _.isInt(-1));
-        d.check(false,_.isInt(123.4));
-        d.check(true, _.isInt(123.0));
-        //.0の場合は整数か小数かは判断できない
-
-        d.check(false,_.isInt(true));
-        d.check(false,_.isInt(false));
-        d.check(false,_.isInt(null));
-        d.check(false,_.isInt(undefined));
-        d.check(false,_.isInt(''));
-        d.check(false,_.isInt('ABC'));
-        d.check(false,_.isInt('0'));
-        d.check(false,_.isInt('5'));
-        d.check(false,_.isInt('-5'));
-        d.check(false,_.isInt('100'));
-        d.check(false,_.isInt('-100'));
-        d.check(false,_.isInt([]));
-        d.check(false,_.isInt({}));
-
-        d.check(true,   _.isInt(1, 2));
-        d.check(true,   _.isInt(3, 4, 5));
-        d.check(true,   _.isInt(10, 20, 30));
-        d.check(false,  _.isInt(1, 2, 3.5));
-
-        d.check(false,  _.isNotInt(1, 2));
-        d.check(false,  _.isNotInt(3, 4, 5));
-        d.check(false,  _.isNotInt(10, 20, 30));
-        d.check(false,  _.isNotInt(1, 2, 3.5));
-        d.check(false,  _.isNotInt(1, 2.1, 3.5));
-        d.check(true,   _.isNotInt(1.1, 2.2, 3.5));
-
-        d.check(false,  _.isInt([]));
-        d.check(true,   _.isInt([1]));
-        d.check(true,   _.isInt([1, 2, 3]));
-        d.check(true,   _.isInt([1, 2, 0]));
-        d.check(false,  _.isInt([1, 2, NaN]));
-        d.check(false,  _.isInt([1, 2, null]));
-        d.check(false,  _.isInt(['a', 'b', 1]));
-      };
-
-      //----------------------------------------
-      //◇isString
-      //----------------------------------------
-      //  ・可変引数の全てが文字列かどうかを確認する
-      //----------------------------------------
-      _.isString = function (value) {
-        var func = function (v) {
-          return (typeof v === 'string');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.isNotString = function (value) {
-        var func = function (v) {
-          return (typeof v !== 'string');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.test_isString = function () {
-        d.check(false,  _.isString([]));
-        d.check(true,   _.isString(['']));
-        d.check(true,   _.isString(['a']));
-        d.check(true,   _.isString(['a', 'b', 'c']));
-        d.check(true,   _.isString(['a', 'b', '']));
-        d.check(false,  _.isString(['a', 'b', 0]));
-        d.check(false,  _.isString(['a', 'b', 1]));
-        d.check(false,  _.isString(['a', 'b', null]));
-        d.check(false,  _.isString(['a', 'b', undefined]));
-      };
-
-      //----------------------------------------
-      //◇isFunction
-      //----------------------------------------
-      //  ・可変引数の全てが関数かどうかを確認する
-      //----------------------------------------
-
-      _.isFunction = function (value) {
-        var func = function (v) {
-          return (typeof v === 'function');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      _.isNotFunction = function (value) {
-        var func = function (v) {
-          return (typeof v !== 'function');
-        };
-        if ((arguments.length === 1) && (!Array.isArray(value))) {
-          return func(value);
-        }
-        return _.isTypeCheck(func,
-          a.expand2Dimension(argsToArray(arguments)));
-      };
-
-      //----------------------------------------
-      //◇Null Undefined 
+      //◇Null Undefined 処理
       //----------------------------------------
 
       //----------------------------------------
@@ -767,6 +466,288 @@ if (typeof module === 'undefined') {
         d.check('', _.ifNullOrUndefinedValue('', 5));
       };
 
+      //----------------------------------------
+      //◇isBoolean
+      //----------------------------------------
+      //  ・isBooleansは
+      //    可変引数の全てがBooleanかどうかを確認する
+      //----------------------------------------
+      _.isBoolean = function (value) {
+        return (typeof value === 'boolean');
+      };
+
+      _.isBooleans = function (value) {
+        return _.isTypeCheck(_.isBoolean,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotBooleans = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isBoolean(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isBoolean = function () {
+
+        d.check(true, _.isBooleans(true));
+        d.check(true, _.isBooleans(false));
+        d.check(false,_.isBooleans(undefined));
+        d.check(false,_.isBooleans(null));
+        d.check(false,_.isBooleans(''));
+        d.check(false,_.isBooleans('true'));
+        d.check(false,_.isBooleans('false'));
+        d.check(false,_.isBooleans(123));
+        d.check(false,_.isBooleans(0));
+        d.check(false,_.isBooleans(-1));
+
+        d.check(true, _.isBooleans(true, true));
+        d.check(true, _.isBooleans(true, true, true));
+        d.check(true, _.isBooleans(true, false, true));
+        d.check(false, _.isBooleans(true, 1, true));
+      };
+
+      //----------------------------------------
+      //◇isNumber
+      //----------------------------------------
+      //  ・isFiniteで判断しているように
+      //    NaNやInfinityは有効数値ではないとしておく
+      //  ・isNumbersは
+      //    可変引数の全てが有効数値かどうかを確認する
+      //----------------------------------------
+      _.isNumber = function (value) {
+        return ((typeof value === 'number') && (isFinite(value)));
+      };
+
+      _.isNumbers = function (value) {
+        return _.isTypeCheck(_.isNumber,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotNumbers = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isNumber(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isNumber = function () {
+
+        d.check(true, _.isNumbers(123));
+        d.check(true, _.isNumbers(0));
+        d.check(true, _.isNumbers(-1));
+        d.check(true ,_.isNumbers(123.4));
+        d.check(true, _.isNumbers(123.0));
+        d.check(false,_.isNumbers(true));
+        d.check(false,_.isNumbers(false));
+        d.check(false,_.isNumbers(null));
+        d.check(false,_.isNumbers(undefined));
+        d.check(false,_.isNumbers(Infinity));  //InfinityもNumberとして許可しないことにする
+        d.check(false,_.isNumbers(NaN));
+        d.check(false,_.isNumbers(''));
+        d.check(false,_.isNumbers('ABC'));
+        d.check(false,_.isNumbers('ABC10'));
+        d.check(false,_.isNumbers('10ABC'));
+        d.check(false,_.isNumbers('0ABC'));
+        d.check(false,_.isNumbers('0'));
+        d.check(false,_.isNumbers('5'));
+        d.check(false,_.isNumbers('-5'));
+        d.check(false,_.isNumbers('100'));
+        d.check(false,_.isNumbers('-100'));
+        d.check(false,_.isNumbers([]));
+        d.check(false,_.isNumbers({}));
+
+        d.check(false,  _.isNotNumbers(123));
+        d.check(false,  _.isNotNumbers(0));
+        d.check(true,   _.isNotNumbers(true));
+        d.check(true,   _.isNotNumbers(null));
+        d.check(true,   _.isNotNumbers(undefined));
+        d.check(true,   _.isNotNumbers(Infinity));
+        d.check(true,   _.isNotNumbers(NaN));
+        d.check(true,   _.isNotNumbers(''));
+
+        d.check(true,   _.isNumbers(1, 2));
+        d.check(true,   _.isNumbers(3, 4, 5));
+        d.check(true,   _.isNumbers(10.5, 20.5, 30.5));
+        d.check(false,  _.isNumbers(1, 2, true));
+
+        d.check(false,  _.isNotNumbers(1, 2));
+        d.check(false,  _.isNotNumbers(3, 4, 5));
+        d.check(false,  _.isNotNumbers(10.5, 20.5, 30.5));
+        d.check(false,  _.isNotNumbers(1, 2, true));
+        d.check(true,   _.isNotNumbers(false, true));
+        d.check(true,   _.isNotNumbers('a', 'b'));
+      };
+
+      //----------------------------------------
+      //◇isInt
+      //----------------------------------------
+      //  ・isIntsは
+      //    可変引数の全てが整数かどうかを確認する
+      //----------------------------------------
+
+      _.isInt = function (value) {
+        if (!_.isNumber(value)) {
+          return false;
+        }
+        return Math.round(value) === value;
+      };
+
+      _.isInts = function (value) {
+        return _.isTypeCheck(_.isInt,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotInt = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isInt(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isInt = function () {
+
+        d.check(true, _.isInts(123));
+        d.check(true, _.isInts(0));
+        d.check(true, _.isInts(-1));
+        d.check(false,_.isInts(123.4));
+        d.check(true, _.isInts(123.0));
+        //.0の場合は整数か小数かは判断できない
+
+        d.check(false,_.isInts(true));
+        d.check(false,_.isInts(false));
+        d.check(false,_.isInts(null));
+        d.check(false,_.isInts(undefined));
+        d.check(false,_.isInts(''));
+        d.check(false,_.isInts('ABC'));
+        d.check(false,_.isInts('0'));
+        d.check(false,_.isInts('5'));
+        d.check(false,_.isInts('-5'));
+        d.check(false,_.isInts('100'));
+        d.check(false,_.isInts('-100'));
+        d.check(false,_.isInts([]));
+        d.check(false,_.isInts({}));
+
+        d.check(true,   _.isInts(1, 2));
+        d.check(true,   _.isInts(3, 4, 5));
+        d.check(true,   _.isInts(10, 20, 30));
+        d.check(false,  _.isInts(1, 2, 3.5));
+
+        d.check(false,  _.isNotInt(1, 2));
+        d.check(false,  _.isNotInt(3, 4, 5));
+        d.check(false,  _.isNotInt(10, 20, 30));
+        d.check(false,  _.isNotInt(1, 2, 3.5));
+        d.check(false,  _.isNotInt(1, 2.1, 3.5));
+        d.check(true,   _.isNotInt(1.1, 2.2, 3.5));
+
+        d.check(false,  _.isInts([]));
+        d.check(true,   _.isInts([1]));
+        d.check(true,   _.isInts([1, 2, 3]));
+        d.check(true,   _.isInts([1, 2, 0]));
+        d.check(false,  _.isInts([1, 2, NaN]));
+        d.check(false,  _.isInts([1, 2, null]));
+        d.check(false,  _.isInts(['a', 'b', 1]));
+      };
+
+      //----------------------------------------
+      //◇isString
+      //----------------------------------------
+      //  ・isStringsは
+      //    可変引数の全てが文字列かどうかを確認する
+      //----------------------------------------
+      _.isString = function (value) {
+        return (typeof value === 'string');
+      };
+
+      _.isStrings = function (value) {
+        return _.isTypeCheck(_.isString,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotStrings = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isString(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isString = function () {
+        d.check(false,  _.isStrings([]));
+        d.check(true,   _.isStrings(['']));
+        d.check(true,   _.isStrings(['a']));
+        d.check(true,   _.isStrings(['a', 'b', 'c']));
+        d.check(true,   _.isStrings(['a', 'b', '']));
+        d.check(false,  _.isStrings(['a', 'b', 0]));
+        d.check(false,  _.isStrings(['a', 'b', 1]));
+        d.check(false,  _.isStrings(['a', 'b', null]));
+        d.check(false,  _.isStrings(['a', 'b', undefined]));
+      };
+
+      //----------------------------------------
+      //◇isFunction
+      //----------------------------------------
+      //  ・isFunctionsは
+      //    可変引数の全てが関数かどうかを確認する
+      //----------------------------------------
+      _.isFunction = function (value) {
+        return (typeof value === 'function');
+      };
+
+      _.isFunctions = function (value) {
+        return _.isTypeCheck(_.isFunction,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotFunction = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isFunction(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      //----------------------------------------
+      //◇isObject
+      //----------------------------------------
+      //  ・WSH JScript の場合のみ
+      //    Object.prototype.toString.call(v) === '[object Object]'
+      //    だけで判断できないので
+      //    isArray / isNull / isUndefined を確認する
+      //  ・isObjectsは
+      //    可変引数の全てがオブジェクトかどうかを確認する
+      //----------------------------------------
+
+      _.isObject = function (value) {
+        if (
+          (Object.prototype.toString.call(value) === '[object Object]') 
+          && (!Array.isArray(value)) 
+          && (value !== null) 
+          && (typeof value !== 'undefined') 
+        ) {
+          return true;
+        }
+        return false;
+      };
+
+      _.isObjects = function (value) {
+        return _.isTypeCheck(_.isObject,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotObjects = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isObject(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isObject = function () {
+        d.check(true,   _.isObjects({}));
+        d.check(true,   _.isObjects({a:0}));
+        d.check(true,   _.isObjects({a:0, b:1}));
+        d.check(true,   _.isObjects([{}, {a:0, b:1}]));
+        d.check(false,  _.isObjects([[], {a:0, b:1}]));
+        d.check(false,  _.isObjects([[{}], {a:0, b:1}]));
+
+        d.check(true,   _.isObjects({a:0, b:1}, {c:0, d:1}));
+
+        d.check(false,  _.isObjects([]));
+        d.check(false,  _.isObjects(null));
+        d.check(false,  _.isObjects(undefined));
+      };
 
     }());
     var t = lib.type;  //ショートカット呼び出し
@@ -1043,6 +1024,14 @@ if (typeof module === 'undefined') {
         d.check(true, _.equal(a1, a2));
       };
 
+      //----------------------------------------
+      //・argumentsのような arraylike なものを配列にする
+      //----------------------------------------
+      //  ・ES6だと args = Array.from(arguments) とできる
+      //----------------------------------------
+      _.fromArgs = function (argsObj) {
+        return Array.prototype.slice.call(argsObj);
+      };
 
       //----------------------------------------
       //◇insert add
@@ -1066,13 +1055,42 @@ if (typeof module === 'undefined') {
         return array;
       };
 
+      _.test_insert = function () {
+        var a1 = [1,2,3];
+        var a2 = _.insert(a1, 0);
+        d.check(true, _.equal([0,1,2,3], a1));
+        d.check(true, _.equal([0,1,2,3], a2));
+
+        a1[0] = 4;
+        d.check(true, _.equal([4,1,2,3], a1));
+        d.check(true, _.equal([4,1,2,3], a2));
+
+        d.check(true, _.equal([4,0,1,2,3], _.insert(a1, 0, 1)));
+        d.check(true, _.equal([4,0,1,2,3,4], _.insert(a1, 4, 5)));
+      };
+
       //----------------------------------------
       //・insertAdd
       //----------------------------------------
       //  ・指定した項目の下の位置にinsertする関数
       //----------------------------------------
       _.insertAdd = function (array, value, index) {
+        d.assert(t.isInt(index));
         return _.insert(array, value, index + 1);
+      };
+
+      _.test_insertAdd = function () {
+        var a1 = [1,2,3];
+        var a2 = _.insertAdd(a1, 0, 0);
+        d.check(true, _.equal([1,0,2,3], a1));
+        d.check(true, _.equal([1,0,2,3], a2));
+
+        a1[0] = 4;
+        d.check(true, _.equal([4,0,2,3], a1));
+        d.check(true, _.equal([4,0,2,3], a2));
+
+        d.check(true, _.equal([4,0,0,2,3], _.insertAdd(a1, 0, 1)));
+        d.check(true, _.equal([4,0,0,2,3,4], _.insertAdd(a1, 4, 4)));
       };
 
       //----------------------------------------
@@ -1086,18 +1104,18 @@ if (typeof module === 'undefined') {
         return array;
       };
 
-      _.test_insert = function () {
+      _.test_add = function () {
         var a1 = [1,2,3];
-        var a2 = _.insert(a1, 0);
-        d.check(true, _.equal([0,1,2,3], a1));
-        d.check(true, _.equal([0,1,2,3], a2));
+        var a2 = _.add(a1, 0);
+        d.check(true, _.equal([1,2,3,0], a1));
+        d.check(true, _.equal([1,2,3,0], a2));
 
         a1[0] = 4;
-        d.check(true, _.equal([4,1,2,3], a1));
-        d.check(true, _.equal([4,1,2,3], a2));
+        d.check(true, _.equal([4,2,3,0], a1));
+        d.check(true, _.equal([4,2,3,0], a2));
 
-        d.check(true, _.equal([4,0,1,2,3], _.insert(a1, 0, 1)));
-        d.check(true, _.equal([4,0,1,2,3,4], _.insert(a1, 4, 5)));
+        d.check(true, _.equal([4,2,3,0,0], _.add(a1, 0)));
+        d.check(true, _.equal([4,2,3,0,0,4], _.add(a1, 4)));
       };
 
       //----------------------------------------
@@ -1150,6 +1168,60 @@ if (typeof module === 'undefined') {
         d.check(true, _.equal([],   _.deleteLength([1,2,3], 0, 3)));
         d.check(true, _.equal([1,5],   _.deleteLength([1,2,3,4,5], 1, 3)));
       };
+
+      //----------------------------------------
+      //◇Include
+      //----------------------------------------
+      _.isInclude = function (array, value) {
+        return (_.indexOfFirst(array, value) !== -1);
+      };
+
+      _.contains = function (str, value) {
+        return _.isInclude(array, value);
+      };
+
+      //----------------------------------------
+      //・ユニークな値として配列にvalueを含ませる
+      //----------------------------------------
+      _.include = function (array, value) {
+        _.exclude(array, value);
+        _.add(array, value);
+        return array;
+      }
+
+      _.test_include = function () {
+        var a1 = [1,2,3];
+        var a2 = _.include(a1, 0);
+        d.check(true, _.equal([1,2,3,0], a1));
+        d.check(true, _.equal([1,2,3,0], a2));
+
+        a1[0] = 0;
+        d.check(true, _.equal([0,2,3,0], a1));
+        d.check(true, _.equal([0,2,3,0], a2));
+
+        var a2 = _.include(a1, 0);
+        d.check(true, _.equal([2,3,0], a1));
+        d.check(true, _.equal([2,3,0], a2));
+
+        var a2 = _.include(a1, 3);
+        d.check(true, _.equal([2,0,3], a1));
+        d.check(true, _.equal([2,0,3], a2));
+
+      }
+
+      //----------------------------------------
+      //・ユニークな値として配列にvalueを含ませる
+      //----------------------------------------
+      _.exclude = function (array, value) {
+        while (true) {
+          var index = _.indexOfFirst(array, value);
+          if (index === -1) {
+            break;
+          }
+          _.deleteLength(array, index, 1);
+        }
+        return array;
+      }
 
       //----------------------------------------
       //◇indexOf
@@ -1372,7 +1444,6 @@ if (typeof module === 'undefined') {
       //◇多次元配列
       //----------------------------------------
 
-
       //----------------------------------------
       //・2次元配列を1次元配列に展開する
       //----------------------------------------
@@ -1445,7 +1516,6 @@ if (typeof module === 'undefined') {
         d.check(4,_.expand2Dimension([['1', [[''], '2']], [[''], '3']]).length);
       };
 
-
       //----------------------------------------
       //・多次元配列を1次元配列に展開する
       //----------------------------------------
@@ -1479,7 +1549,7 @@ if (typeof module === 'undefined') {
         };
         if (array.length !== 0) {
           f(array);
-        };
+        }
         return result;
       };
 
@@ -1808,7 +1878,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyFirst = function (str, searchArray, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isString(searchArray) && (Array.isArray(searchArray)));
+        d.assert(t.isStrings(searchArray) && (Array.isArray(searchArray)));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         d.assert(t.isInt(startIndex));
 
@@ -1842,7 +1912,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyLast = function (str, searchArray, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isString(searchArray) && (Array.isArray(searchArray)));
+        d.assert(t.isStrings(searchArray) && (Array.isArray(searchArray)));
         startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
         d.assert(t.isInt(startIndex));
 
@@ -3358,6 +3428,10 @@ if (typeof module === 'undefined') {
 
     }());
 
+    //----------------------------------------
+    //◆ドキュメント
+    //----------------------------------------
+
     _.Document = lib.Document || function (value) {
       if (!(this instanceof lib.Document)) {
         return new lib.Document(value);
@@ -3640,6 +3714,270 @@ if (typeof module === 'undefined') {
     }());
 
     //----------------------------------------
+    //◆オブジェクト
+    //----------------------------------------
+    _.object = lib.object || {};
+    (function () {
+      var _ = lib.object;
+
+      //----------------------------------------
+      //◆object.property
+      //----------------------------------------
+      _.property = lib.object.property || {};
+      (function () {
+        var _ = lib.object.property;
+
+        //----------------------------------------
+        //◇object.property列挙
+        //----------------------------------------
+        //  ・object.keys や object.getOwnProperyt は
+        //    wsh jscript にはない
+        //----------------------------------------
+
+        //----------------------------------------
+        //・プロパティの個数を返す
+        //----------------------------------------
+        _.count = function (obj) {
+          d.assert(t.isObject(obj));
+          var result = 0;
+          for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+              result += 1;
+            }
+          }
+          return result;
+        };
+
+        _.test_count = function () {
+          d.check(3, _.count({a:0, b:1, c:2}));
+        };
+
+        //----------------------------------------
+        //・プロパティの名前を配列で返す
+        //----------------------------------------
+        _.names = function (obj) {
+          d.assert(t.isObject(obj));
+          var result = [];
+          for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+              result.push(prop);
+            }
+          }
+          return result;
+        };
+
+        _.test_names = function () {
+          d.check('a,b,c', _.names({a:0, b:1, c:2}).join());
+        };
+
+        //----------------------------------------
+        //・プロパティの値を配列で返す
+        //----------------------------------------
+        _.values = function (obj) {
+          d.assert(t.isObject(obj));
+          var result = [];
+          for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+              result.push(obj[prop]);
+            }
+          }
+          return result;
+        };
+
+        _.test_values = function () {
+          d.check('0,1,2', _.values({a:0, b:1, c:2}).join());
+        };
+
+        //----------------------------------------
+        //・プロパティ名の有無を返す
+        //----------------------------------------
+        _.nameExists = function (obj, name) {
+          d.assert(t.isString(name));
+          var names = _.names(obj);
+          return (a.isInclude(names, name));
+        };
+
+        _.test_nameExists = function () {
+          d.check(true,   _.nameExists({a:0, b:1, c:2}, 'a'));
+          d.check(false,  _.nameExists({a:0, b:1, c:2}, 'd'));
+        };
+
+        //----------------------------------------
+        //・プロパティ値の有無を返す
+        //----------------------------------------
+        _.valueExists = function (obj, value) {
+          var values = _.values(obj);
+          return (a.isInclude(values, value));
+        };
+
+        _.test_valueExists = function () {
+          d.check(true,   _.valueExists({a:0, b:1, c:2}, 0));
+          d.check(false,  _.valueExists({a:0, b:1, c:2}, 3));
+        };
+
+        //----------------------------------------
+        //・プロパティ名の有無を返す
+        //----------------------------------------
+        _.getNameFromValue = function (obj, value) {
+          var values = _.values(obj);
+          var index = a.indexOfFirst(values, value);
+          if (index === -1) {
+            return '';
+          } else {
+            return _.names(obj)[index];
+          }
+        };
+
+        _.test_getNameFromValue = function () {
+          d.check('a',  _.getNameFromValue({a:0, b:1, c:2}, 0));
+          d.check('',   _.getNameFromValue({a:0, b:1, c:2}, 3));
+        };
+
+      }());
+
+    }());
+
+    //----------------------------------------
+    //◆列挙型 Enum
+    //----------------------------------------
+    //  ・enum1 = {a: 0, b: 1, c: 2}; 
+    //    と宣言しても作れるが
+    //    enum1 = Enum(a, b, c); や Enum([a, b, c]);
+    //    と呼び出しても作成できる。
+    //  ・enum1 = {a: 'a', b: 'b', c: 'c'}; 
+    //    の代わりに
+    //    enum1 = EnumNameValue(a, b, c); や EnumNameValue([a, b, c]);
+    //    と呼び出しても作成できる。
+    //  ・enumがWSHで予約語だったのでenumTypeにした
+    //----------------------------------------
+    _.enumType = lib.enumType || {};
+    (function () {
+      var _ = lib.enumType;
+
+      //----------------------------------------
+      //◇コンストラクタ
+      //----------------------------------------
+
+      //----------------------------------------
+      //・値が連番のEnumオブジェクトを作成する
+      //----------------------------------------
+      _.Enum = function (values) {
+        if (!(this instanceof lib.enumType.Enum)) {
+          return new lib.enumType.Enum(a.fromArgs(arguments));
+        }
+        values = a.expandMultiDimension(a.fromArgs(arguments));
+        
+        for (var i = 0, l = values.length; i < l; i += 1) {
+          this[values[i]] = i;
+        }
+      };
+
+      _.test_Enum = function () {
+        var e1;
+        e1 = _.Enum('a');
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+
+        e1 = new _.Enum('a');
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+
+        e1 = _.Enum(['a']);
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+
+        e1 = new _.Enum(['a']);
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+
+        e1 = _.Enum(['a', 'b']);
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+
+        e1 = new _.Enum(['a', 'b']);
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+
+        e1 = _.Enum('a', 'b');
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+
+        e1 = new _.Enum('a', 'b');
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+
+      };
+
+      //----------------------------------------
+      //・値が名前文字列のEnumオブジェクトを作成する
+      //----------------------------------------
+      _.EnumNameValue = function (values) {
+        if (!(this instanceof lib.enumType.EnumNameValue)) {
+          return new lib.enumType.EnumNameValue(a.fromArgs(arguments));
+        }
+        values = a.expandMultiDimension(a.fromArgs(arguments));
+        
+        for (var i = 0, l = values.length; i < l; i += 1) {
+          this[values[i]] = values[i];
+        }
+      };
+
+      _.test_EnumNameValue = function () {
+        var e1;
+        e1 = _.EnumNameValue('a');
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+
+        e1 = new _.EnumNameValue('a');
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+
+        e1 = _.EnumNameValue(['a']);
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+
+        e1 = new _.EnumNameValue(['a']);
+        d.check(1,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+
+        e1 = _.EnumNameValue(['a', 'b']);
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+
+        e1 = new _.EnumNameValue(['a', 'b']);
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+
+        e1 = _.EnumNameValue('a', 'b');
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+
+        e1 = new _.EnumNameValue('a', 'b');
+        d.check(2,    lib.object.property.count(e1));
+        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+
+      };  
+
+    }()); //enumType
+
+
+    //----------------------------------------
     //◆グローバル拡張
     //----------------------------------------
     (function () {
@@ -3704,7 +4042,7 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //・Array.some
+      //・Array.forEachｓ
       //----------------------------------------
       //  ・すべての要素に対してfuncを実行する
       //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
@@ -3734,12 +4072,13 @@ if (typeof module === 'undefined') {
         c.test_orValue();
 
         t.test_isNullOrUndefined();
+        t.test_ifNullOrUndefinedValue();
         t.test_isBoolean();
         t.test_isNumber();
         t.test_isInt();
         // t.test_isIntArray();
         t.test_isString();
-        t.test_ifNullOrUndefinedValue();
+        t.test_isObject();
 
         var n = stsLib.number;
         n.test_round();
@@ -3807,8 +4146,11 @@ if (typeof module === 'undefined') {
         var a = stsLib.array;
         a.test_equal();
         a.test_insert();
+        a.test_insertAdd();
+        a.test_add();
         a.test_deleteIndex();
         a.test_deleteLength();
+        a.test_include();
         a.test_indexOfFirst();
         a.test_indexOfLast();
         a.test_indexOfArrayFirst();
@@ -3825,6 +4167,18 @@ if (typeof module === 'undefined') {
 
         var doc = stsLib.Document('');
         doc.test();
+
+        var o = stsLib.object;
+        o.property.test_count();
+        o.property.test_names();
+        o.property.test_values();
+        o.property.test_nameExists();
+        o.property.test_valueExists();
+        o.property.test_getNameFromValue();
+
+        var e = stsLib.enumType;
+        e.test_Enum();
+        e.test_EnumNameValue();
 
         d.check(true,   Array.isArray([]));
         d.check(false,  Array.isArray(123));
