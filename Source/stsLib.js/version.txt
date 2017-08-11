@@ -238,6 +238,7 @@
 ・	tagOuterAllArray を追加
 ◇	ver 2017/08/11
 ・	check関数をコピペしやすいように改良
-・  Array.multiDimensionExpand作成
-・  isIntなどのタイプチェックに引数の配列を展開するようにしたので
+・  Array.expand2Dimension/expandMultiDimension 作成
+・  isIntなどのタイプチェックに expand2Dimension を組み込み
+    引数の配列を展開するようにしたので
     isIntArray/isNumberArray/isStringArray/isFunctionArrayなどを廃止

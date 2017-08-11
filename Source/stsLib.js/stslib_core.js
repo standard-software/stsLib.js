@@ -371,7 +371,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotUndefined = function (value) {
@@ -382,7 +382,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNull = function (value) {
@@ -393,7 +393,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotNull = function (value) {
@@ -404,7 +404,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNullOrUndefined = function (value) {
@@ -415,7 +415,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotNullOrUndefined = function (value) {
@@ -426,7 +426,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.test_isNullOrUndefined = function () {
@@ -488,7 +488,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotBoolean = function (value) {
@@ -499,7 +499,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.test_isBoolean = function () {
@@ -536,7 +536,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotNumber = function (value) {
@@ -547,7 +547,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.test_isNumber = function () {
@@ -615,7 +615,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotInt = function (value) {
@@ -629,7 +629,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.test_isInt = function () {
@@ -689,7 +689,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotString = function (value) {
@@ -700,7 +700,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.test_isString = function () {
@@ -729,7 +729,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       _.isNotFunction = function (value) {
@@ -740,7 +740,7 @@ if (typeof module === 'undefined') {
           return func(value);
         }
         return _.isTypeCheck(func,
-          a.multiDimensionExpand(argsToArray(arguments)));
+          a.expand2Dimension(argsToArray(arguments)));
       };
 
       //----------------------------------------
@@ -1372,64 +1372,177 @@ if (typeof module === 'undefined') {
       //◇多次元配列
       //----------------------------------------
 
+
       //----------------------------------------
-      //・多次元配列を展開する
+      //・2次元配列を1次元配列に展開する
       //----------------------------------------
-      //  ・空配列に対しては何も展開しないので
-      //    [1, [], 2, [[], 3]]は
-      //    [1,2,3]になる
-      //  ・空文字に対しては展開するので
-      //    ['1', [], '2', [[], '3']]は
-      //    ['1','2','3']になり
-      //    ['1', [''], '2', [[''], '3']]は
-      //    ['1','','2','','3']になる
-      //----------------------------------------
-      _.multiDimensionExpand = function (array) {
+      _.expand2Dimension = function (array) {
         d.assert(Array.isArray(array));
         var result = [];
-        var f = function (value) {
-          for (var i = 0, l = value.length; i < l; i += 1) {
-            var arrayItem = value[i];
-            if (Array.isArray(arrayItem)) {
-              f(arrayItem);
+        for (var i1 = 0, l1 = array.length; i1 < l1; i1 += 1) {
+          var arrayItem = array[i1];
+          if (Array.isArray(arrayItem)) {
+            if (arrayItem.length === 0) {
+              result.push(undefined);
             } else {
-              result.push(arrayItem);
+              for (var i2 = 0, l2 = arrayItem.length; i2 < l2; i2 += 1) {
+                result.push(arrayItem[i2]);
+              }
             }
+          } else {
+            result.push(arrayItem);
           }
-        };
-        f(array);
+        }
         return result;
       };
 
-      _.test_multiDimensionExpand = function () {
-        d.check('1,2,3,4',          _.multiDimensionExpand([1,2,3,4]).join());
-        d.check('1,2,3,4',          _.multiDimensionExpand([[1,2],3,4]).join());
-        d.check('1,2,3,4',          _.multiDimensionExpand([[1,2],[3,4]]).join());
-        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([1,2,3,4,5,6]).join());
-        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[1,2],[3,4], 5, 6]).join());
-        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[1,2,3,4], 5, 6]).join());
-        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[1,[2,3],4], 5, 6]).join());
-        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[[1,[2,3]],4], [5, 6]]).join());
-        d.check('1,2,3,4,5,6',      _.multiDimensionExpand([[[[[[1],2],3],4],5],6]).join());
-        d.check('1,2,3,4,5,6,7,8',  _.multiDimensionExpand([[1,[2,3],4], [5, [6, 7], 8]]).join());
+      _.test_expand2Dimension = function () {
+        d.check('1,2,3,4',          _.expand2Dimension([1,2,3,4]).join());
+        d.check('1,2,3,4',          _.expand2Dimension([[1,2],3,4]).join());
+        d.check('1,2,3,4',          _.expand2Dimension([[1,2],[3,4]]).join());
+        d.check('1,2,3,4,5,6',      _.expand2Dimension([1,2,3,4,5,6]).join());
+        d.check('1,2,3,4,5,6',      _.expand2Dimension([[1,2],[3,4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.expand2Dimension([[1,2,3,4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.expand2Dimension([[1,[2,3],4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.expand2Dimension([[[1,[2,3]],4], [5, 6]]).join());
+        d.check('1,2,3,4,5,6',      _.expand2Dimension([[[[[[1],2],3],4],5],6]).join());
+        d.check('1,2,3,4,5,6,7,8',  _.expand2Dimension([[1,[2,3],4], [5, [6, 7], 8]]).join());
         d.check('', [].join());
         d.check('', [].join(','));
         d.check('1', [1].join(','));
         d.check('1,2', [1,2].join(','));
         d.check('1,2,3,4,5,6,7,8',  [[1,[2,3],4], [5, [6, 7], 8]].join());
         d.check('1,,4,5,6,7,8',  [[1,'',4], [5, [6, 7], 8]].join());
-        d.check('',     _.multiDimensionExpand([]).join());
-        d.check('3',    _.multiDimensionExpand([[], [3], []]).join());
-        d.check('3,4',  _.multiDimensionExpand([[], [3,4], []]).join());
-        d.check('3,4',  _.multiDimensionExpand([[], [3],[4], []]).join());
-        d.check('3,4',  _.multiDimensionExpand([[], [[3],[4]], []]).join());
+
+        d.check(0, [].length);
+        d.check(1, [undefined].length);
+        d.check(2, [undefined, undefined].length);
+        d.check(0,      _.expand2Dimension([]).length);
+        d.check(1,      _.expand2Dimension([undefined]).length);
+        d.check(2,      _.expand2Dimension([undefined, undefined]).length);
+        d.check(2,      _.expand2Dimension([[undefined, undefined]]).length);
+
+        d.check(1,      _.expand2Dimension([[]]).length);
+        d.check(2,      _.expand2Dimension([[], []]).length);
+        d.check(3,      _.expand2Dimension([[[], []], []]).length);
+
+        d.check(2,      _.expand2Dimension([[1, 2]]).length);
+
+        d.check('',     _.expand2Dimension([]).join());
+        d.check(0,      _.expand2Dimension([]).length);    //[undefined]を返すので長さが1になる
+        d.check(',3,',    _.expand2Dimension([[], [3], []]).join());
+        d.check(',3,4,',  _.expand2Dimension([[], [3,4], []]).join());
+        d.check(',3,4,',  _.expand2Dimension([[], [3],[4], []]).join());
+        d.check(',3,4,',    _.expand2Dimension([[], [[3],[4]], []]).join());
         d.check(',3,4,',  [[], [[3],[4]], []].join());
-        d.check('1,2,3',  _.multiDimensionExpand([1, [], 2, [[], 3]]).join());
-        d.check(3,        _.multiDimensionExpand([1, [], 2, [[], 3]]).length);
-        d.check('1,2,3',  _.multiDimensionExpand(['1', [], '2', [[], '3']]).join());
-        d.check(3,        _.multiDimensionExpand(['1', [], '2', [[], '3']]).length);
-        d.check('1,,2,,3',_.multiDimensionExpand(['1', [''], '2', [[''], '3']]).join());
-        d.check(5,        _.multiDimensionExpand(['1', [''], '2', [[''], '3']]).length);
+        d.check('1,,2,,3',  _.expand2Dimension([1, [], 2, [[], 3]]).join());
+        d.check(5,        _.expand2Dimension([1, [], 2, [[], 3]]).length);
+        d.check('1,,2,,3',  _.expand2Dimension(['1', [], '2', [[], '3']]).join());
+        d.check(5,        _.expand2Dimension(['1', [], '2', [[], '3']]).length);
+        d.check('1,,2,,3',_.expand2Dimension(['1', [''], '2', [[''], '3']]).join());
+        d.check(5,        _.expand2Dimension(['1', [''], '2', [[''], '3']]).length);
+        d.check('1,,2,,3',_.expand2Dimension([['1', [[''], '2']], [[''], '3']]).join());
+        d.check(4,_.expand2Dimension([['1', [[''], '2']], [[''], '3']]).length);
+      };
+
+
+      //----------------------------------------
+      //・多次元配列を1次元配列に展開する
+      //----------------------------------------
+      //  ・[]は、展開しても、[]になるようにしている。
+      //  ・空配列はundefinedを代入するので
+      //    [[]]は、[undefined]になる。
+      //    [1, [], 2, [[], 3]]は
+      //    [1, undefined, 2, undefined, 3]になる
+      //  ・空文字に対しては展開するので
+      //    ['1', [], '2', [[], '3']]は
+      //    ['1',undefined, '2',undefined, '3']になり
+      //    ['1', [''], '2', [[''], '3']]は
+      //    ['1','','2','','3']になる
+      //----------------------------------------
+      _.expandMultiDimension = function (array) {
+        d.assert(Array.isArray(array));
+        var result = [];
+        var f = function (value) {
+          if (value.length === 0) {
+            result.push(undefined);
+          } else {
+            for (var i = 0, l = value.length; i < l; i += 1) {
+              var arrayItem = value[i];
+              if (Array.isArray(arrayItem)) {
+                f(arrayItem);
+              } else {
+                result.push(arrayItem);
+              }
+            }
+          }
+        };
+        if (array.length !== 0) {
+          f(array);
+        };
+        return result;
+      };
+
+      _.test_expandMultiDimension = function () {
+        d.check('1,2,3,4',          _.expandMultiDimension([1,2,3,4]).join());
+        d.check('1,2,3,4',          _.expandMultiDimension([[1,2],3,4]).join());
+        d.check('1,2,3,4',          _.expandMultiDimension([[1,2],[3,4]]).join());
+        d.check('1,2,3,4,5,6',      _.expandMultiDimension([1,2,3,4,5,6]).join());
+        d.check('1,2,3,4,5,6',      _.expandMultiDimension([[1,2],[3,4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.expandMultiDimension([[1,2,3,4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.expandMultiDimension([[1,[2,3],4], 5, 6]).join());
+        d.check('1,2,3,4,5,6',      _.expandMultiDimension([[[1,[2,3]],4], [5, 6]]).join());
+        d.check('1,2,3,4,5,6',      _.expandMultiDimension([[[[[[1],2],3],4],5],6]).join());
+        d.check('1,2,3,4,5,6,7,8',  _.expandMultiDimension([[1,[2,3],4], [5, [6, 7], 8]]).join());
+        d.check('', [].join());
+        d.check('', [].join(','));
+        d.check('1', [1].join(','));
+        d.check('1,2', [1,2].join(','));
+        d.check('1,2,3,4,5,6,7,8',  [[1,[2,3],4], [5, [6, 7], 8]].join());
+        d.check('1,,4,5,6,7,8',  [[1,'',4], [5, [6, 7], 8]].join());
+
+        //node.js/chromeの場合、最後のカンマは無視されるので
+        //下記のテストは通過するが、
+        //wshの場合はテスト通過しない
+        // d.check(1, [,].length);
+        // d.check(1, [1,].length);  
+        // d.check(2, [1,2].length);
+        // d.check(2, [,,].length);
+        // d.check(2, [1,,].length);
+        // d.check(2, [1,2,].length);
+        // d.check(3, [1,,3].length);
+        // d.check(3, [,,3].length);
+        // d.check(1,        _.expandMultiDimension([,]).length);
+        // d.check(',3',     _.expandMultiDimension([, 3,]).join());  
+        // d.check(2,        _.expandMultiDimension([, 3,]).length);
+        // d.check(',3,',    _.expandMultiDimension([, 3,,]).join());
+        // d.check(3,        _.expandMultiDimension([, 3,,]).length);
+
+        d.check(0, [].length);
+        d.check(1, [undefined].length);
+        d.check(2, [undefined, undefined].length);
+        d.check(0,      _.expandMultiDimension([]).length);
+        d.check(1,      _.expandMultiDimension([undefined]).length);
+        d.check(2,      _.expandMultiDimension([undefined, undefined]).length);
+        d.check(2,      _.expandMultiDimension([[undefined, undefined]]).length);
+
+        d.check(1,      _.expandMultiDimension([[]]).length);
+        d.check(2,      _.expandMultiDimension([[], []]).length);
+        d.check(3,      _.expandMultiDimension([[[], []], []]).length);
+
+        d.check('',     _.expandMultiDimension([]).join());
+        d.check(0,      _.expandMultiDimension([]).length);    //[undefined]を返すので長さが1になる
+        d.check(',3,',    _.expandMultiDimension([[], [3], []]).join());
+        d.check(',3,4,',  _.expandMultiDimension([[], [3,4], []]).join());
+        d.check(',3,4,',  _.expandMultiDimension([[], [3],[4], []]).join());
+        d.check(',3,4,',    _.expandMultiDimension([[], [[3],[4]], []]).join());
+        d.check(',3,4,',  [[], [[3],[4]], []].join());
+        d.check('1,,2,,3',  _.expandMultiDimension([1, [], 2, [[], 3]]).join());
+        d.check(5,        _.expandMultiDimension([1, [], 2, [[], 3]]).length);
+        d.check('1,,2,,3',  _.expandMultiDimension(['1', [], '2', [[], '3']]).join());
+        d.check(5,        _.expandMultiDimension(['1', [], '2', [[], '3']]).length);
+        d.check('1,,2,,3',_.expandMultiDimension(['1', [''], '2', [[''], '3']]).join());
+        d.check(5,        _.expandMultiDimension(['1', [''], '2', [[''], '3']]).length);
       };
 
 
@@ -3700,7 +3813,8 @@ if (typeof module === 'undefined') {
         a.test_indexOfLast();
         a.test_indexOfArrayFirst();
         a.test_indexOfArrayLast();
-        a.test_multiDimensionExpand();
+        a.test_expandMultiDimension();
+        a.test_expand2Dimension();
 
         var angle = stsLib.angle;
         angle.test_angleRelative();
