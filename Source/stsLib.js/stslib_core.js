@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/08/11
+Version:        2017/08/12
 //----------------------------------------*/
 
 //----------------------------------------
@@ -1002,7 +1002,7 @@ if (typeof module === 'undefined') {
       var _ = lib.array;
 
       //----------------------------------------
-      //・配列の値で比較する関数
+      //・配列同士を値で比較する関数
       //----------------------------------------
       _.equal = function (value1, value2) {
 
@@ -1031,6 +1031,22 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.fromArgs = function (argsObj) {
         return Array.prototype.slice.call(argsObj);
+      };
+
+      //----------------------------------------
+      //◇min max
+      //----------------------------------------
+      //  ・apply(null するのは妙だったので
+      //    Math.min/max をラッピングしただけ
+      //----------------------------------------
+      _.min = function (array) {
+        d.assert(Array.isArray(array));
+        return Math.min.apply(null, a);
+      };
+
+      _.max = function (array) {
+        d.assert(Array.isArray(array));
+        return Math.max.apply(null, a);
       };
 
       //----------------------------------------
@@ -1181,17 +1197,23 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //◇集合型として使う setInclude/setExclude
+      //----------------------------------------
+
+      //----------------------------------------
       //・ユニークな値として配列にvalueを含ませる
       //----------------------------------------
-      _.include = function (array, value) {
-        _.exclude(array, value);
+      //  ・配列を集合型として使う場合に使える
+      //----------------------------------------
+      _.setInclude = function (array, value) {
+        _.setExclude(array, value);
         _.add(array, value);
         return array;
       }
 
-      _.test_include = function () {
+      _.test_setInclude = function () {
         var a1 = [1,2,3];
-        var a2 = _.include(a1, 0);
+        var a2 = _.setInclude(a1, 0);
         d.check(true, _.equal([1,2,3,0], a1));
         d.check(true, _.equal([1,2,3,0], a2));
 
@@ -1199,20 +1221,20 @@ if (typeof module === 'undefined') {
         d.check(true, _.equal([0,2,3,0], a1));
         d.check(true, _.equal([0,2,3,0], a2));
 
-        var a2 = _.include(a1, 0);
+        var a2 = _.setInclude(a1, 0);
         d.check(true, _.equal([2,3,0], a1));
         d.check(true, _.equal([2,3,0], a2));
 
-        var a2 = _.include(a1, 3);
+        var a2 = _.setInclude(a1, 3);
         d.check(true, _.equal([2,0,3], a1));
         d.check(true, _.equal([2,0,3], a2));
 
       }
 
       //----------------------------------------
-      //・ユニークな値として配列にvalueを含ませる
+      //・ユニークな値として配列からvalueを取り除く
       //----------------------------------------
-      _.exclude = function (array, value) {
+      _.setExclude = function (array, value) {
         while (true) {
           var index = _.indexOfFirst(array, value);
           if (index === -1) {
@@ -1726,7 +1748,6 @@ if (typeof module === 'undefined') {
         d.check('ae',     _.deleteIndex('abcde', 1, 3));
         d.check('ab',     _.deleteIndex('abcde', 2));
       };
-
 
       _.deleteLength = function (str, startIndex, length) {
         return a.deleteLength(str.split(''), startIndex, length).join('');
@@ -2260,6 +2281,33 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //・先頭から削除
+      //----------------------------------------
+      //  ・lenは0以上にすること
+      //----------------------------------------
+
+      _.deleteStart = function (str, len) {
+        d.assert(t.isString(str));
+        d.assert(t.isInt(len) && (0 <= len));
+
+        if (len === 0) {
+          return str;
+        }
+        // return _.substrIndex(str, len);
+        return str.slice(len);
+      };
+
+      _.test_deleteStart = function () {
+
+        d.check('2345', _.deleteStart('12345', 1));
+        d.check('345',  _.deleteStart('12345', 2));
+        d.check('45',   _.deleteStart('12345', 3));
+        d.check('12345',_.deleteStart('12345', 0));
+        d.check('',     _.deleteStart('12345', 5));
+        d.check('',     _.deleteStart('12345', 6));
+      };
+
+      //----------------------------------------
       //◇End
       //----------------------------------------
 
@@ -2362,6 +2410,36 @@ if (typeof module === 'undefined') {
         d.check('12345',  _.excludeEnd('12345', '34'));
         d.check('  ',     _.excludeEnd('   ', ' '));
         d.check('',       _.excludeEnd(' ', ' '));
+      };
+
+      //----------------------------------------
+      //・終端から削除
+      //----------------------------------------
+      //  ・lenは0以上にすること
+      //----------------------------------------
+      _.deleteEnd = function (str, len) {
+        d.assert(t.isString(str));
+        d.assert(t.isInt(len) && (0 <= len));
+
+        if (len === 0) {
+          return str;
+        }
+        // var deleteIndex = str.length - len - 1;
+        // if (deleteIndex <= 0) {
+        //   return '';
+        // }
+        // return _.substrIndex(str, 0, deleteIndex);
+        return str.slice(0, -1 * len);
+      };
+
+      _.test_deleteEnd = function () {
+
+        d.check('1234', _.deleteEnd('12345', 1));
+        d.check('123',  _.deleteEnd('12345', 2));
+        d.check('12',   _.deleteEnd('12345', 3));
+        d.check('12345',_.deleteEnd('12345', 0));
+        d.check('',     _.deleteEnd('12345', 5));
+        d.check('',     _.deleteEnd('12345', 6));
       };
 
       //----------------------------------------
@@ -2579,6 +2657,8 @@ if (typeof module === 'undefined') {
 
       //--------------------------------------
       //◇Tag deleteFirst/Last
+      //--------------------------------------
+      //  ・検索して見つかった値を削除する
       //--------------------------------------
 
       _.deleteFirst = function (str, search) {
@@ -3791,6 +3871,8 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //・プロパティ名の有無を返す
         //----------------------------------------
+        //  ・in演算子でOKだった
+        //----------------------------------------
         _.nameExists = function (obj, name) {
           d.assert(t.isString(name));
           var names = _.names(obj);
@@ -3800,6 +3882,9 @@ if (typeof module === 'undefined') {
         _.test_nameExists = function () {
           d.check(true,   _.nameExists({a:0, b:1, c:2}, 'a'));
           d.check(false,  _.nameExists({a:0, b:1, c:2}, 'd'));
+
+          d.check(true,   'a' in {a:0, b:1, c:2});
+          d.check(false,  'd' in {a:0, b:1, c:2});
         };
 
         //----------------------------------------
@@ -3816,7 +3901,7 @@ if (typeof module === 'undefined') {
         };
 
         //----------------------------------------
-        //・プロパティ名の有無を返す
+        //・プロパティ名を値から求める
         //----------------------------------------
         _.getNameFromValue = function (obj, value) {
           var values = _.values(obj);
@@ -4102,10 +4187,13 @@ if (typeof module === 'undefined') {
         s.test_isStart();
         s.test_includeStart();
         s.test_excludeStart();
+        s.test_deleteStart();
         s.test_end();
         s.test_isEnd();
         s.test_includeEnd();
         s.test_excludeEnd();
+        s.test_deleteEnd();
+
         s.test_startFirstDelim();
         s.test_startLastDelim();
         s.test_endFirstDelim();
@@ -4150,7 +4238,7 @@ if (typeof module === 'undefined') {
         a.test_add();
         a.test_deleteIndex();
         a.test_deleteLength();
-        a.test_include();
+        a.test_setInclude();
         a.test_indexOfFirst();
         a.test_indexOfLast();
         a.test_indexOfArrayFirst();
