@@ -123,6 +123,7 @@
 ・  名前空間のリファクタリング完了。
 ◇  ver 2017/05/21
 ・  string系のメソッドのstsLib.stringへの移行
+・  stslib_test_web_browserify.html 作成
 ◇  ver 2017/05/23
 ・  日付関係、ファイルパス関係を
     stsLibの名前空間に移動
@@ -146,6 +147,7 @@
 ・  stsLib名前空間でstsLib自体を定義して
     グローバル変数を見に行かないようにした
 ・  .StringExを.Stringのvalueを呼び出すようにした
+・  browserify用の run_browserify.bat 追加
 ◇  ver 2017/05/31
 ・  benchMarkを修正
 ・  checkExcを追加
@@ -256,3 +258,6 @@
 ・  array.isInclude/contains/setInclude/setExclude を追加
 ・  deleteStart/End を追加
 ・  array.min/max を追加
+◇  ver 2017/08/13
+・  stslib_test_web_CDN.html の CDN 指定が誤っていたので
+    最新ファイルを見るように修正

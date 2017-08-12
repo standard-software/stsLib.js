@@ -1,44 +1,41 @@
 ﻿<!DOCTYPE html>
 <html><head>
-    <meta charset="UTF-8"><title>stsLib.js test page</title>
+  <meta charset="UTF-8"><title>stsLib.js test page</title>
 <!--
 RawGit
 http://rawgit.com/
 -->
-    <script src="https://cdn.rawgit.com/standard-software/stsLib.js/e606ad0b/Source/stsLib.js/stslib_core.js"></script>
-    <script src="https://cdn.rawgit.com/standard-software/stsLib.js/e606ad0b/Source/stsLib.js/stslib_web.js"></script>
-    <script>
+  <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_core.js"></script>
+  <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_web.js"></script>
+  <script>
 
 /*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 --------------------------------------
-ModuleName:    Test WEB CDN Module
-FileName:      stslib_test_web_CDN.html
+ModuleName:     Test WEB CDN Module
+FileName:       stslib_test_web_CDN.html
 --------------------------------------
 License:        MIT License
 All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/17
+Version:        2017/08/13
 //----------------------------------------*/
 
 var stsLib = require('stsLib');
 
 function main() {
-
-    stsLib.test.test_stslib_core();
-    stsLib.web.test_stslib_web();
-
+  stsLib.test.test_stslib_core();
+  stsLib.web.test_stslib_web();
 };
 
 document.addEventListener("DOMContentLoaded",function(eve){
-    main();
+  // main();
 },false);
 
-
-    </script>
+  </script>
 
 </head><body>
 
