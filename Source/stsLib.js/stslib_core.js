@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/08/12
+Version:        2017/08/13
 //----------------------------------------*/
 
 //----------------------------------------
@@ -1185,6 +1185,58 @@ if (typeof module === 'undefined') {
         d.check(true, _.equal([1,5],   _.deleteLength([1,2,3,4,5], 1, 3)));
       };
 
+
+      //----------------------------------------
+      //・先頭から削除
+      //----------------------------------------
+      //  ・lenは0以上にすること
+      //----------------------------------------
+
+      _.deleteStart = function (array, len) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isInt(len) && (0 <= len));
+
+        if (len === 0) {
+          return array;
+        }
+        return _.deleteLength(array, 0, len);
+      };
+
+      _.test_deleteStart = function () {
+
+        d.check('2345', _.deleteStart('12345'.split(''), 1).join(''));
+        d.check('345',  _.deleteStart('12345'.split(''), 2).join(''));
+        d.check('45',   _.deleteStart('12345'.split(''), 3).join(''));
+        d.check('12345',_.deleteStart('12345'.split(''), 0).join(''));
+        d.check('',     _.deleteStart('12345'.split(''), 5).join(''));
+        d.check('',     _.deleteStart('12345'.split(''), 6).join(''));
+      };
+
+      //----------------------------------------
+      //・終端から削除
+      //----------------------------------------
+      //  ・lenは0以上にすること
+      //----------------------------------------
+      _.deleteEnd = function (array, len) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isInt(len) && (0 <= len));
+
+        if (len === 0) {
+          return array;
+        }
+        return _.deleteLength(array, Math.max(array.length - len, 0));
+      };
+
+      _.test_deleteEnd = function () {
+
+        d.check('1234', _.deleteEnd('12345'.split(''), 1).join(''));
+        d.check('123',  _.deleteEnd('12345'.split(''), 2).join(''));
+        d.check('12',   _.deleteEnd('12345'.split(''), 3).join(''));
+        d.check('12345',_.deleteEnd('12345'.split(''), 0).join(''));
+        d.check('',     _.deleteEnd('12345'.split(''), 5).join(''));
+        d.check('',     _.deleteEnd('12345'.split(''), 6).join(''));
+      };
+
       //----------------------------------------
       //◇Include
       //----------------------------------------
@@ -1359,7 +1411,7 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //◇配列内配列の場合に値の内容で見つけるためのindexOf
+      //◇indexOfArray 配列内配列で値の内容で見つけるためのindexOf
       //----------------------------------------
       _.indexOfArrayFirst = function (array, search, startIndex) {
 
@@ -1460,6 +1512,82 @@ if (typeof module === 'undefined') {
         d.check( 2, _.indexOfArrayLast(arrayList, [3, 3, 3], -2));
         d.check( 2, _.indexOfArrayLast(arrayList, [3, 3, 3], -4));
         d.check(-1, _.indexOfArrayLast(arrayList, [3, 3, 3], -5));
+      };
+
+      //----------------------------------------
+      //◇indexOfAny
+      //----------------------------------------
+
+      _.indexOfAnyFirst = function (array, searchArray, startIndex) {
+        d.assert(Array.isArray(array));
+        d.assert((Array.isArray(searchArray)) && t.isStrings(searchArray));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        d.assert(t.isInt(startIndex));
+
+        var result = Infinity;
+        var findIndex;
+        for (var i = 0, l = searchArray.length; i < l; i += 1) {
+          findIndex = _.indexOfFirst(array, searchArray[i], startIndex);
+          if (findIndex !== -1) {
+            result = Math.min(findIndex, result);
+          }
+        }
+        return result === Infinity ? -1 : result;
+      }; 
+
+      _.indexOfAnyLast = function (array, searchArray, startIndex) {
+        d.assert(Array.isArray(array));
+        d.assert((Array.isArray(searchArray)) && t.isStrings(searchArray));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        d.assert(t.isInt(startIndex));
+
+        var result = -1;
+        var findIndex;
+        for (var i = 0, l = searchArray.length; i < l; i += 1) {
+          findIndex = _.indexOfLast(array, searchArray[i], startIndex);
+          if (findIndex !== -1) {
+            result = Math.max(findIndex, result);
+          }
+        }
+        return result;
+      };
+
+      //----------------------------------------
+      //◇indexOfFunc
+      //----------------------------------------
+      //  ・funcには function(item, index, array) を渡すようにする
+      //----------------------------------------
+
+      _.indexOfFuncFirst = function (array, func, startIndex) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isFunction(func));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        d.assert(t.isInt(startIndex));
+
+        for (var i = startIndex, l = array.length; i < l; i += 1) {
+          //func(item, index, array)に対してtrueが返れば
+          //その時のindexを戻り値にする
+          if (func(array[i], i, array)) {
+            return i;
+          }
+        }
+        return -1;
+      };
+
+      _.indexOfFuncLast = function (array, func, startIndex) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isFunction(func));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        d.assert(t.isInt(startIndex));
+
+        for (var i = startIndex; 0 <= i; i -= 1) {
+          //func(item, index, array)に対してtrueが返れば
+          //その時のindexを戻り値にする
+          if (func(array[i], i, array)) {
+            return i;
+          }
+        }
+        return -1;
       };
 
       //----------------------------------------
@@ -1899,19 +2027,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyFirst = function (str, searchArray, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isStrings(searchArray) && (Array.isArray(searchArray)));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
-        d.assert(t.isInt(startIndex));
-
-        var result = Infinity;
-        var findIndex;
-        for (var i = 0, l = searchArray.length; i < l; i += 1) {
-          findIndex = _.indexOfFirst(str, searchArray[i], startIndex);
-          if (findIndex !== -1) {
-            result = Math.min(findIndex, result);
-          }
-        }
-        return result === Infinity ? -1 : result;
+        return a.indexOfAnyFirst(str.split(''), searchArray, startIndex);
       };
 
       _.test_indexOfAnyFirst = function () {
@@ -1933,19 +2049,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyLast = function (str, searchArray, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isStrings(searchArray) && (Array.isArray(searchArray)));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
-        d.assert(t.isInt(startIndex));
-
-        var result = -1;
-        var findIndex;
-        for (var i = 0, l = searchArray.length; i < l; i += 1) {
-          findIndex = _.indexOfLast(str, searchArray[i], startIndex);
-          if (findIndex !== -1) {
-            result = Math.max(findIndex, result);
-          }
-        }
-        return result;
+        return a.indexOfAnyLast(str.split(''), searchArray, startIndex);
       };
 
       _.test_indexOfAnyLast = function () {
@@ -1969,20 +2073,11 @@ if (typeof module === 'undefined') {
 
       _.indexOfFuncFirst = function (str, func, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isFunction(func));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
-        d.assert(t.isInt(startIndex));
 
-        //WSHは文字列をstr[i]の形で扱えないので、その対策
-        str = str.split('');
-        for (var i = startIndex, l = str.length; i < l; i += 1) {
-          //func(char, Index, str)に対してtrueが返れば
-          //それを戻り値として返す
-          if (func(str[i], i, str)) {
-            return i;
-          }
-        }
-        return -1;
+        return a.indexOfFuncFirst(str.split(''),
+          function (item, i, array) {
+            return func(item, i, array.join(''));
+          }, startIndex);
       };
 
       _.test_indexOfFuncFirst = function () {
@@ -2015,20 +2110,11 @@ if (typeof module === 'undefined') {
 
       _.indexOfFuncLast = function (str, func, startIndex) {
         d.assert(t.isString(str));
-        d.assert(t.isFunction(func));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
-        d.assert(t.isInt(startIndex));
 
-        //WSHは文字列をstr[i]の形で扱えないので、その対策
-        str = str.split('');
-        for (var i = startIndex; 0 <= i; i -= 1) {
-          //func(char, Index, str)に対してtrueが返れば
-          //それを戻り値として返す
-          if (func(str[i], i, str)) {
-            return i;
-          }
-        }
-        return -1;
+        return a.indexOfFuncLast(str.split(''),
+          function (item, i, array) {
+            return func(item, i, array.join(''));
+          }, startIndex);
       };
 
       _.test_indexOfFuncLast = function () {
@@ -4238,6 +4324,8 @@ if (typeof module === 'undefined') {
         a.test_add();
         a.test_deleteIndex();
         a.test_deleteLength();
+        a.test_deleteStart();
+        a.test_deleteEnd();
         a.test_setInclude();
         a.test_indexOfFirst();
         a.test_indexOfLast();

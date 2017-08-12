@@ -256,8 +256,13 @@
 ・  argsToArrayをarray.fromArgsに名前変更
 ・  array.insert/insertAdd/add にテストコード追加
 ・  array.isInclude/contains/setInclude/setExclude を追加
-・  deleteStart/End を追加
+・  string.deleteStart/End を追加
 ・  array.min/max を追加
 ◇  ver 2017/08/13
 ・  stslib_test_web_CDN.html の CDN 指定が誤っていたので
     最新ファイルを見るように修正
+・  string.indexOfAnyFirst/Last の実装を移し
+    array.indexOfAnyFirst/Last を実装
+・  string.indexOfFuncFirst/Last の実装を移し
+    array.indexOfFuncFirst/Last を実装
+・  array.deleteStart/End を追加
