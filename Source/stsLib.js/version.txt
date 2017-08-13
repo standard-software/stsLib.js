@@ -266,3 +266,15 @@
 ・  string.indexOfFuncFirst/Last の実装を移し
     array.indexOfFuncFirst/Last を実装
 ・  array.deleteStart/End を追加
+・  stslib_web.js 名前空間の軽微な修正
+・  stsLib.String を stsLib.string.String に名前空間の移動
+    StringExも同様
+・  stsLib.string.String に
+    deleteStart/End
+    indexOfAnyFirst/Last
+    indexOfFuncFirst/Last 追加
+・  stslib_graphics.js追加
+    point vector rect など追加
+・  point.move 追加
+・  vector.length/setStart/add
+    /normalize/inverse/normal/moveParallel 追加

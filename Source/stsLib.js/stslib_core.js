@@ -58,9 +58,9 @@ if (typeof module === 'undefined') {
   //    定義し直しても別関数を定義していくことができる
   //----------------------------------------
   var stsLib = stsLib || {};
-  (function (lib, global) {
+  (function (stsLib, global) {
     'use strict';
-    var _ = lib;
+    var _ = stsLib;
 
     //----------------------------------------
     //◆基本的な処理
@@ -91,9 +91,9 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆デバッグ処理
     //----------------------------------------
-    _.debug = lib.debug || {};
+    _.debug = stsLib.debug || {};
     (function () {
-      var _ = lib.debug;
+      var _ = stsLib.debug;
 
       //----------------------------------------
       //・assert関数
@@ -275,14 +275,13 @@ if (typeof module === 'undefined') {
       };
 
     }());
-    var d = lib.debug;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆条件判断
     //----------------------------------------
-    _.compare = lib.compare || {};
+    _.compare = stsLib.compare || {};
     (function () {
-      var _ = lib.compare;
+      var _ = stsLib.compare;
 
       //----------------------------------------
       //・orValue関数
@@ -314,14 +313,13 @@ if (typeof module === 'undefined') {
       };
 
     }());
-    var c = lib.compare;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆型 確認/変換 処理
     //----------------------------------------
-    _.type = lib.type || {};
+    _.type = stsLib.type || {};
     (function () {
-      var _ = lib.type;
+      var _ = stsLib.type;
 
       //----------------------------------------
       //◇引数すべてに型をチェックする
@@ -694,7 +692,7 @@ if (typeof module === 'undefined') {
           a.expand2Dimension(a.fromArgs(arguments)));
       };
 
-      _.isNotFunction = function (value) {
+      _.isNotFunctions = function (value) {
         return _.isTypeCheck(function (v) {
           return !(_.isFunction(v));
         }, a.expand2Dimension(a.fromArgs(arguments)));
@@ -750,14 +748,13 @@ if (typeof module === 'undefined') {
       };
 
     }());
-    var t = lib.type;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆数値
     //----------------------------------------
-    _.number = lib.number || {};
+    _.number = stsLib.number || {};
     (function () {
-      var _ = lib.number;
+      var _ = stsLib.number;
 
       //----------------------------------------
       //・四捨五入する
@@ -929,14 +926,13 @@ if (typeof module === 'undefined') {
       };
 
     }());
-    // var n = lib.number;  //ショートカット呼び出し
 
     //----------------------------------------
     //◆角度
     //----------------------------------------
-    _.angle = lib.angle || {};
+    _.angle = stsLib.angle || {};
     (function () {
-      var _ = lib.angle;
+      var _ = stsLib.angle;
 
       //----------------------------------------
       //・ラジアンと角度相互変換
@@ -997,9 +993,9 @@ if (typeof module === 'undefined') {
     //◆配列処理
     //----------------------------------------
 
-    _.array = lib.array || {};
+    _.array = stsLib.array || {};
     (function () {
-      var _ = lib.array;
+      var _ = stsLib.array;
 
       //----------------------------------------
       //・配列同士を値で比較する関数
@@ -1767,35 +1763,34 @@ if (typeof module === 'undefined') {
 
 
     }());
-    var a = lib.array; //ショートカット呼び出し
 
     //----------------------------------------
     //◆文字列処理
     //----------------------------------------
 
     //文字列処理、名前空間
-    _.string = lib.string || {};
+    _.string = stsLib.string || {};
     (function () {
-      var _ = lib.string;
+      var _ = stsLib.string;
 
       /*----------------------------------------
       //・外部からの呼び出し時は
       //  静的関数的な使い方と拡張メソッドのような使い方ができる
 
-        var d = lib.debug;
+        var d = stsLib.debug;
 
         //・静的関数的な使い方
         //  先頭小文字の string を使う
-        d.check(true, lib.string.isInclude('abc', 'a'));
+        d.check(true, stsLib.string.isInclude('abc', 'a'));
 
         //・拡張メソッド的な使い方
         //  先頭大文字の String を使う
-        var str1 = new lib.String('abc');
+        var str1 = new stsLib.String('abc');
         d.check(true, str1.isInclude('a'));
 
         //・拡張メソッド的な使い方
         //  newしなくても使用できる
-        var str2 = lib.String('abc');
+        var str2 = stsLib.String('abc');
         d.check(true, str2.isInclude('a'));
 
       //・名前空間は何度宣言してもよいので、
@@ -1804,11 +1799,11 @@ if (typeof module === 'undefined') {
 
       var lib = lib || {};
 
-        lib.string = lib.string || {};
+        stsLib.string = stsLib.string || {};
 
-        lib.String = lib.String || function (value) {
+        stsLib.String = stsLib.String || function (value) {
           var self = function () {};
-          self.prototype = lib.String.prototype;
+          self.prototype = stsLib.String.prototype;
           self.prototype.value = value;
           return new self;
         }
@@ -2228,7 +2223,7 @@ if (typeof module === 'undefined') {
           startIndex = str.length + startIndex;
         }
 
-        if (lib.type.isNullOrUndefined(length)) {
+        if (t.isNullOrUndefined(length)) {
           length = str.length;
         }
         var endIndex;
@@ -3321,276 +3316,299 @@ if (typeof module === 'undefined') {
         d.check('',                 _.formatInsertLast('', ',', 3));
       };
 
-    }());
-    var s = lib.string; //ショートカット呼び出し
+      //----------------------------------------
+      //◇文字列拡張メソッド
+      //----------------------------------------
+      //  ・拡張メソッドのように後方にメソッドを接続して
+      //    動作させることができる
+      //      var str = new stsLib.String('abc');
+      //      str.isInclude('a');  //true
+      //  ・new 無しでも動作するようにする仕組みも組み込んでいる
+      //  ・lib.String の名前空間部分だけ記述が下記のように長い
+      //----------------------------------------
 
-    //----------------------------------------
-    //◆文字列拡張メソッド
-    //----------------------------------------
-    //  ・拡張メソッドのように後方にメソッドを接続して
-    //    動作させることができる
-    //      var str = new lib.String('abc');
-    //      str.isInclude('a');  //true
-    //  ・new 無しでも動作するようにする仕組みも組み込んでいる
-    //  ・lib.String の名前空間部分だけ記述が下記のように長い
-    //----------------------------------------
-
-    _.String = lib.String || function (value) {
-      if (!(this instanceof lib.String)) {
-        return new lib.String(value);
-      }
-      this.value = value;
-    };
-    (function () {
-      var _ = lib.String;
-
-      _.prototype.isEmpty = function () {
-        return lib.string.isEmpty(this.value);
+      _.String = stsLib.string.String || function (value) {
+        if (!(this instanceof stsLib.string.String)) {
+          return new stsLib.string.String(value);
+        }
+        this.value = value;
       };
+      (function () {
+        var _ = stsLib.string.String;
 
-      _.prototype.ifEmptyValue = function (emptyValue) {
-        return lib.string.ifEmptyValue(this.value, emptyValue);
+        _.prototype.isEmpty = function () {
+          return stsLib.string.isEmpty(this.value);
+        };
+
+        _.prototype.ifEmptyValue = function (emptyValue) {
+          return stsLib.string.ifEmptyValue(this.value, emptyValue);
+        };
+
+        _.prototype.isInclude = function (search) {
+          return stsLib.string.isInclude(this.value, search);
+        };
+
+        _.prototype.includeCount = function (search) {
+          return stsLib.string.includeCount(this.value, search);
+        };
+
+        _.prototype.indexOfFirst = function (search, startIndex) {
+          return stsLib.string.indexOfFirst(this.value, search, startIndex);
+        };
+
+        _.prototype.indexOfLast = function (search, startIndex) {
+          return stsLib.string.indexOfLast(this.value, search, startIndex);
+        };
+
+        _.prototype.indexOfAnyFirst = function (searchArray, startIndex) {
+          return stsLib.string.indexOfAnyFirst(this.value, searchArray, startIndex);
+        };
+
+        _.prototype.indexOfAnyLast = function (searchArray, startIndex) {
+          return stsLib.string.indexOfAnyLast(this.value, searchArray, startIndex);
+        };
+
+        _.prototype.indexOfFuncFirst = function (func, startIndex) {
+          return stsLib.string.indexOfFuncFirst(this.value, func, startIndex);
+        };
+
+        _.prototype.indexOfFuncLast = function (func, startIndex) {
+          return stsLib.string.indexOfFuncLast(this.value, func, startIndex);
+        };
+
+        _.prototype.substrIndex = function (startIndex, endIndex) {
+          return stsLib.string.substrIndex(this.value, startIndex, endIndex);
+        };
+
+        _.prototype.substrLength = function (startIndex, length) {
+          return stsLib.string.substrLength(this.value, startIndex, length);
+        };
+
+        _.prototype.start = function (length) {
+          return stsLib.string.start(this.value, length);
+        };
+
+        _.prototype.isStart = function (search) {
+          return stsLib.string.isStart(this.value, search);
+        };
+
+        _.prototype.includeStart = function (search) {
+          return stsLib.string.includeStart(this.value, search);
+        };
+
+        _.prototype.excludeStart = function (search) {
+          return stsLib.string.excludeStart(this.value, search);
+        };
+
+        _.prototype.deleteStart = function (len) {
+          return stsLib.string.deleteStart(this.value, len);
+        };
+
+        _.prototype.end = function (length) {
+          return stsLib.string.end(this.value, length);
+        };
+
+        _.prototype.isEnd = function (search) {
+          return stsLib.string.isEnd(this.value, search);
+        };
+
+        _.prototype.includeEnd = function (search) {
+          return stsLib.string.includeEnd(this.value, search);
+        };
+
+        _.prototype.excludeEnd = function (search) {
+          return stsLib.string.excludeEnd(this.value, search);
+        };
+
+        _.prototype.deleteEnd = function (len) {
+          return stsLib.string.deleteEnd(this.value, len);
+        };
+
+        _.prototype.bothEndsWith = function (search) {
+          return stsLib.string.bothEndsWith(this.value, search);
+        };
+
+        _.prototype.includeBothEnds = function (search) {
+          return stsLib.string.includeBothEnds(this.value, search);
+        };
+
+        _.prototype.excludeBothEnds = function (search) {
+          return stsLib.string.excludeBothEnds(this.value, search);
+        };
+
+        _.prototype.startFirstDelim = function (delimiter) {
+          return stsLib.string.startFirstDelim(this.value, delimiter);
+        };
+
+        _.prototype.startLastDelim = function (delimiter) {
+          return stsLib.string.startLastDelim(this.value, delimiter);
+        };
+
+        _.prototype.endFirstDelim = function (delimiter) {
+          return stsLib.string.endFirstDelim(this.value, delimiter);
+        };
+
+        _.prototype.endLastDelim = function (delimiter) {
+          return stsLib.string.endLastDelim(this.value, delimiter);
+        };
+
+        _.prototype.trimStart = function (trimStrArray) {
+          return stsLib.string.trimStart(this.value, trimStrArray);
+        };
+
+        _.prototype.trimEnd = function (trimStrArray) {
+          return stsLib.string.trimEnd(this.value, trimStrArray);
+        };
+
+        _.prototype.trimBothEnds = function (trimStrArray) {
+          return stsLib.string.trimBothEnds(this.value, trimStrArray);
+        };
+
+        _.prototype.trim = function () {
+          return stsLib.string.trim(this.value);
+        };
+
+        _.prototype.deleteFirst = function (search) {
+          return stsLib.string.deleteFirst(this.value, search);
+        };
+
+        _.prototype.deleteLast = function (search) {
+          return stsLib.string.deleteLast(this.value, search);
+        };
+
+        _.prototype.deleteFirstTagInner = function (startTag, endTag) {
+          return stsLib.string.deleteFirstTagInner(this.value, startTag, endTag);
+        };
+
+        _.prototype.deleteFirstTagOuter = function (startTag, endTag) {
+          return stsLib.string.deleteFirstTagOuter(this.value, startTag, endTag);
+        };
+
+        _.prototype.deleteLastTagInner = function (startTag, endTag) {
+          return stsLib.string.deleteLastTagInner(this.value, startTag, endTag);
+        };
+
+        _.prototype.deleteLastTagOuter = function (startTag, endTag) {
+          return stsLib.string.deleteLastTagOuter(this.value, startTag, endTag);
+        };
+
+        _.prototype.deleteAllTag = function (startTag, endTag) {
+          return stsLib.string.deleteAllTag(this.value, startTag, endTag);
+        };
+
+        _.prototype.tagInnerFirst = function (startTag, endTag) {
+          return stsLib.string.tagInnerFirst(this.value, startTag, endTag);
+        };
+
+        _.prototype.tagOuterFirst = function (startTag, endTag) {
+          return stsLib.string.tagOuterFirst(this.value, startTag, endTag);
+        };
+
+        _.prototype.tagInnerLast = function (startTag, endTag) {
+          return stsLib.string.tagInnerLast(this.value, startTag, endTag);
+        };
+
+        _.prototype.tagOuterLast = function (startTag, endTag) {
+          return stsLib.string.tagOuterLast(this.value, startTag, endTag);
+        };
+
+        _.prototype.tagOuterAll = function (startTag, endTag) {
+          return stsLib.string.tagOuterAll(this.value, startTag, endTag);
+        };
+
+        _.prototype.replaceAll = function (before, after) {
+          return stsLib.string.replaceAll(this.value, before, after);
+        };
+
+        _.prototype.test = function () {
+
+          //拡張メソッド的な使い方
+          var str1 = new stsLib.string.String('abc');
+          d.check(true, str1.isInclude('a'));
+          d.check(true, str1.isInclude('b'));
+          d.check(true, str1.isInclude('c'));
+          d.check(false,str1.isInclude('d'));
+
+          //newしなくてもよい
+          var str2 = stsLib.string.String('abc');
+          d.check(true, str2.isInclude('a'));
+          d.check(true, str2.isInclude('b'));
+          d.check(true, str2.isInclude('c'));
+          d.check(false,str2.isInclude('d'));
+        };
+      }());
+
+      //----------------------------------------
+      //◇オブジェクト拡張メソッド継承
+      //----------------------------------------
+      //  ・拡張メソッドの方のオブジェクトは継承して
+      //    次のようなものを作ることができる
+      //  ・StringEx は継承の実装例なので
+      //    ライブラリとして使うためのものではない
+      //----------------------------------------
+
+      _.StringEx = stsLib.string.StringEx || function (value) {
+        if (!(this instanceof stsLib.string.StringEx)) {
+          return new stsLib.string.StringEx(value);
+        }
+        _.String.call(this, value);
       };
+      stsLib.inherits(_.StringEx, _.String);
 
-      _.prototype.isInclude = function (search) {
-        return lib.string.isInclude(this.value, search);
-      };
+      (function () {
+        var _ = stsLib.string.StringEx;
 
-      _.prototype.includeCount = function (search) {
-        return lib.string.includeCount(this.value, search);
-      };
+        _.prototype.isNotInclude = function (search) {
+          return !s.isInclude(this.value, search);
+        };
 
-      _.prototype.indexOfFirst = function (search, startIndex) {
-        return lib.string.indexOfFirst(this.value, search, startIndex);
-      };
+        _.prototype.test = function () {
 
-      _.prototype.indexOfLast = function (search, startIndex) {
-        return lib.string.indexOfLast(this.value, search, startIndex);
-      };
+          //継承しているので継承元のメソッドが使える
+          var str3 = new stsLib.string.StringEx('abc');
+          d.check(false,str3.isNotInclude('a'));
+          d.check(false,str3.isNotInclude('b'));
+          d.check(false,str3.isNotInclude('c'));
+          d.check(true, str3.isNotInclude('d'));
+          d.check(true, str3.isInclude('a'));
+          d.check(true, str3.isInclude('b'));
+          d.check(true, str3.isInclude('c'));
+          d.check(false,str3.isInclude('d'));
 
-      _.prototype.substrIndex = function (startIndex, endIndex) {
-        return lib.string.substrIndex(this.value, startIndex, endIndex);
-      };
+          //継承しても new しなくてもよい
+          var str4 = stsLib.string.StringEx('abc');
+          d.check(false,str4.isNotInclude('a'));
+          d.check(false,str4.isNotInclude('b'));
+          d.check(false,str4.isNotInclude('c'));
+          d.check(true, str4.isNotInclude('d'));
+          d.check(true, str4.isInclude('a'));
+          d.check(true, str4.isInclude('b'));
+          d.check(true, str4.isInclude('c'));
+          d.check(false,str4.isInclude('d'));
 
-      _.prototype.substrLength = function (startIndex, length) {
-        return lib.string.substrLength(this.value, startIndex, length);
-      };
+          var str5 = new stsLib.string.String('abc');
+          //d.check(false,str5.isNotInclude('a'));
+          //str5にはisNotIncludeメソッドはないために
+          //これはエラーになる
 
-      _.prototype.start = function (length) {
-        return lib.string.start(this.value, length);
-      };
+          d.check(true,  str3 instanceof stsLib.string.String);
+          d.check(true,  str3 instanceof stsLib.string.StringEx);
+          d.check(false, str3.constructor === stsLib.string.String);
+          d.check(true,  str3.constructor === stsLib.string.StringEx);
 
-      _.prototype.isStart = function (search) {
-        return lib.string.isStart(this.value, search);
-      };
+          d.check(true,  str4 instanceof stsLib.string.String);
+          d.check(true,  str4 instanceof stsLib.string.StringEx);
+          d.check(false, str4.constructor === stsLib.string.String);
+          d.check(true,  str4.constructor === stsLib.string.StringEx);
 
-      _.prototype.includeStart = function (search) {
-        return lib.string.includeStart(this.value, search);
-      };
+          d.check(true,  str5 instanceof stsLib.string.String);
+          d.check(false, str5 instanceof stsLib.string.StringEx);
+          d.check(true,  str5.constructor === stsLib.string.String);
+          d.check(false, str5.constructor === stsLib.string.StringEx);
 
-      _.prototype.excludeStart = function (search) {
-        return lib.string.excludeStart(this.value, search);
-      };
+        };
 
-      _.prototype.end = function (length) {
-        return lib.string.end(this.value, length);
-      };
-
-      _.prototype.isEnd = function (search) {
-        return lib.string.isEnd(this.value, search);
-      };
-
-      _.prototype.includeEnd = function (search) {
-        return lib.string.includeEnd(this.value, search);
-      };
-
-      _.prototype.excludeEnd = function (search) {
-        return lib.string.excludeEnd(this.value, search);
-      };
-
-      _.prototype.bothEndsWith = function (search) {
-        return lib.string.bothEndsWith(this.value, search);
-      };
-
-      _.prototype.includeBothEnds = function (search) {
-        return lib.string.includeBothEnds(this.value, search);
-      };
-
-      _.prototype.excludeBothEnds = function (search) {
-        return lib.string.excludeBothEnds(this.value, search);
-      };
-
-      _.prototype.startFirstDelim = function (delimiter) {
-        return lib.string.startFirstDelim(this.value, delimiter);
-      };
-
-      _.prototype.startLastDelim = function (delimiter) {
-        return lib.string.startLastDelim(this.value, delimiter);
-      };
-
-      _.prototype.endFirstDelim = function (delimiter) {
-        return lib.string.endFirstDelim(this.value, delimiter);
-      };
-
-      _.prototype.endLastDelim = function (delimiter) {
-        return lib.string.endLastDelim(this.value, delimiter);
-      };
-
-      _.prototype.trimStart = function (trimStrArray) {
-        return lib.string.trimStart(this.value, trimStrArray);
-      };
-
-      _.prototype.trimEnd = function (trimStrArray) {
-        return lib.string.trimEnd(this.value, trimStrArray);
-      };
-
-      _.prototype.trimBothEnds = function (trimStrArray) {
-        return lib.string.trimBothEnds(this.value, trimStrArray);
-      };
-
-      _.prototype.trim = function () {
-        return lib.string.trim(this.value);
-      };
-
-      _.prototype.deleteFirst = function (search) {
-        return lib.string.deleteFirst(this.value, search);
-      };
-
-      _.prototype.deleteLast = function (search) {
-        return lib.string.deleteLast(this.value, search);
-      };
-
-      _.prototype.deleteFirstTagInner = function (startTag, endTag) {
-        return lib.string.deleteFirstTagInner(this.value, startTag, endTag);
-      };
-
-      _.prototype.deleteFirstTagOuter = function (startTag, endTag) {
-        return lib.string.deleteFirstTagOuter(this.value, startTag, endTag);
-      };
-
-      _.prototype.deleteLastTagInner = function (startTag, endTag) {
-        return lib.string.deleteLastTagInner(this.value, startTag, endTag);
-      };
-
-      _.prototype.deleteLastTagOuter = function (startTag, endTag) {
-        return lib.string.deleteLastTagOuter(this.value, startTag, endTag);
-      };
-
-      _.prototype.deleteAllTag = function (startTag, endTag) {
-        return lib.string.deleteAllTag(this.value, startTag, endTag);
-      };
-
-      _.prototype.tagInnerFirst = function (startTag, endTag) {
-        return lib.string.tagInnerFirst(this.value, startTag, endTag);
-      };
-
-      _.prototype.tagOuterFirst = function (startTag, endTag) {
-        return lib.string.tagOuterFirst(this.value, startTag, endTag);
-      };
-
-      _.prototype.tagInnerLast = function (startTag, endTag) {
-        return lib.string.tagInnerLast(this.value, startTag, endTag);
-      };
-
-      _.prototype.tagOuterLast = function (startTag, endTag) {
-        return lib.string.tagOuterLast(this.value, startTag, endTag);
-      };
-
-      _.prototype.tagOuterAll = function (startTag, endTag) {
-        return lib.string.tagOuterAll(this.value, startTag, endTag);
-      };
-
-      _.prototype.replaceAll = function (before, after) {
-        return lib.string.replaceAll(this.value, before, after);
-      };
-
-      _.prototype.test = function () {
-
-        //拡張メソッド的な使い方
-        var str1 = new lib.String('abc');
-        d.check(true, str1.isInclude('a'));
-        d.check(true, str1.isInclude('b'));
-        d.check(true, str1.isInclude('c'));
-        d.check(false,str1.isInclude('d'));
-
-        //newしなくてもよい
-        var str2 = lib.String('abc');
-        d.check(true, str2.isInclude('a'));
-        d.check(true, str2.isInclude('b'));
-        d.check(true, str2.isInclude('c'));
-        d.check(false,str2.isInclude('d'));
-      };
-    }());
-
-    //----------------------------------------
-    //◇オブジェクト拡張メソッド継承
-    //----------------------------------------
-    //  ・拡張メソッドの方のオブジェクトは継承して
-    //    次のようなものを作ることができる
-    //  ・StringEx は継承の実装例なので
-    //    ライブラリとして使うためのものではない
-    //----------------------------------------
-
-    _.StringEx = lib.StringEx || function (value) {
-      if (!(this instanceof lib.StringEx)) {
-        return new lib.StringEx(value);
-      }
-      _.String.call(this, value);
-    };
-    lib.inherits(_.StringEx, _.String);
-
-    (function () {
-      var _ = lib.StringEx;
-
-      _.prototype.isNotInclude = function (search) {
-        return !lib.string.isInclude(this.value, search);
-      };
-
-      _.prototype.test = function () {
-
-        //継承しているので継承元のメソッドが使える
-        var str3 = new lib.StringEx('abc');
-        d.check(false,str3.isNotInclude('a'));
-        d.check(false,str3.isNotInclude('b'));
-        d.check(false,str3.isNotInclude('c'));
-        d.check(true, str3.isNotInclude('d'));
-        d.check(true, str3.isInclude('a'));
-        d.check(true, str3.isInclude('b'));
-        d.check(true, str3.isInclude('c'));
-        d.check(false,str3.isInclude('d'));
-
-        //継承しても new しなくてもよい
-        var str4 = lib.StringEx('abc');
-        d.check(false,str4.isNotInclude('a'));
-        d.check(false,str4.isNotInclude('b'));
-        d.check(false,str4.isNotInclude('c'));
-        d.check(true, str4.isNotInclude('d'));
-        d.check(true, str4.isInclude('a'));
-        d.check(true, str4.isInclude('b'));
-        d.check(true, str4.isInclude('c'));
-        d.check(false,str4.isInclude('d'));
-
-        var str5 = new lib.String('abc');
-        //d.check(false,str5.isNotInclude('a'));
-        //str5にはisNotIncludeメソッドはないために
-        //これはエラーになる
-
-        d.check(true,  str3 instanceof lib.String);
-        d.check(true,  str3 instanceof lib.StringEx);
-        d.check(false, str3.constructor === lib.String);
-        d.check(true,  str3.constructor === lib.StringEx);
-
-        d.check(true,  str4 instanceof lib.String);
-        d.check(true,  str4 instanceof lib.StringEx);
-        d.check(false, str4.constructor === lib.String);
-        d.check(true,  str4.constructor === lib.StringEx);
-
-        d.check(true,  str5 instanceof lib.String);
-        d.check(false, str5 instanceof lib.StringEx);
-        d.check(true,  str5.constructor === lib.String);
-        d.check(false, str5.constructor === lib.StringEx);
-
-      };
+      }());
 
     }());
 
@@ -3598,27 +3616,23 @@ if (typeof module === 'undefined') {
     //◆ドキュメント
     //----------------------------------------
 
-    _.Document = lib.Document || function (value) {
-      if (!(this instanceof lib.Document)) {
-        return new lib.Document(value);
+    _.Document = stsLib.Document || function (value) {
+      if (!(this instanceof stsLib.Document)) {
+        return new stsLib.Document(value);
       }
       this._textArray = [];
       this.setText(value);
     };
     (function () {
-      var _ = lib.Document;
+      var _ = stsLib.Document;
 
       _.prototype.getLine = function (index) {
-
-        var n = stsLib.number;
         d.assert(t.isInt(index));
         d.assert(n.isRange(index, 0, this._textArray.length - 1));
         return this._textArray[index];
       };
 
       _.prototype.setLine = function (index, line) {
-
-        var n = stsLib.number;
         d.assert(t.isInt(index));
         d.assert(n.isRange(index, 0, this._textArray.length));
         if (n.isRange(index, 0, this._textArray.length - 1)) {
@@ -3641,12 +3655,12 @@ if (typeof module === 'undefined') {
 
     }());
     (function () {
-      var _ = lib.Document;
+      var _ = stsLib.Document;
 
       _.prototype.test = function () {
 
         var originalText = '0123\r456\n789\r\n0123\r\r456\n\n789\r\n\r\n0123\n\r\n\r456';
-        var doc = lib.Document(originalText);
+        var doc = stsLib.Document(originalText);
 
         d.check('0123\r',   doc.getLine(0));
         d.check('456\n',    doc.getLine(1));
@@ -3690,9 +3704,9 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆日付時刻処理
     //----------------------------------------
-    _.datetime = lib.datetime || {};
+    _.datetime = stsLib.datetime || {};
     (function () {
-      var _ = lib.datetime;
+      var _ = stsLib.datetime;
 
       //----------------------------------------
       //◆日付時刻処理
@@ -3849,9 +3863,9 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆ファイルフォルダパス処理
     //----------------------------------------
-    _.path = lib.path || {};
+    _.path = stsLib.path || {};
     (function () {
-      var _ = lib.path;
+      var _ = stsLib.path;
 
       _.getFileName = function (fileName) {
         return fileName.substring(fileName.lastIndexOf('/')+1,fileName.length);
@@ -3882,16 +3896,16 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆オブジェクト
     //----------------------------------------
-    _.object = lib.object || {};
+    _.object = stsLib.object || {};
     (function () {
-      var _ = lib.object;
+      var _ = stsLib.object;
 
       //----------------------------------------
       //◆object.property
       //----------------------------------------
-      _.property = lib.object.property || {};
+      _.property = stsLib.object.property || {};
       (function () {
-        var _ = lib.object.property;
+        var _ = stsLib.object.property;
 
         //----------------------------------------
         //◇object.property列挙
@@ -4021,9 +4035,9 @@ if (typeof module === 'undefined') {
     //    と呼び出しても作成できる。
     //  ・enumがWSHで予約語だったのでenumTypeにした
     //----------------------------------------
-    _.enumType = lib.enumType || {};
+    _.enumType = stsLib.enumType || {};
     (function () {
-      var _ = lib.enumType;
+      var _ = stsLib.enumType;
 
       //----------------------------------------
       //◇コンストラクタ
@@ -4033,8 +4047,8 @@ if (typeof module === 'undefined') {
       //・値が連番のEnumオブジェクトを作成する
       //----------------------------------------
       _.Enum = function (values) {
-        if (!(this instanceof lib.enumType.Enum)) {
-          return new lib.enumType.Enum(a.fromArgs(arguments));
+        if (!(this instanceof stsLib.enumType.Enum)) {
+          return new stsLib.enumType.Enum(a.fromArgs(arguments));
         }
         values = a.expandMultiDimension(a.fromArgs(arguments));
         
@@ -4046,44 +4060,44 @@ if (typeof module === 'undefined') {
       _.test_Enum = function () {
         var e1;
         e1 = _.Enum('a');
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
         e1 = new _.Enum('a');
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
         e1 = _.Enum(['a']);
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
         e1 = new _.Enum(['a']);
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('',   lib.object.property.getNameFromValue(e1, 1));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
         e1 = _.Enum(['a', 'b']);
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
 
         e1 = new _.Enum(['a', 'b']);
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
 
         e1 = _.Enum('a', 'b');
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
 
         e1 = new _.Enum('a', 'b');
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 0));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 1));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
 
       };
 
@@ -4091,8 +4105,8 @@ if (typeof module === 'undefined') {
       //・値が名前文字列のEnumオブジェクトを作成する
       //----------------------------------------
       _.EnumNameValue = function (values) {
-        if (!(this instanceof lib.enumType.EnumNameValue)) {
-          return new lib.enumType.EnumNameValue(a.fromArgs(arguments));
+        if (!(this instanceof stsLib.enumType.EnumNameValue)) {
+          return new stsLib.enumType.EnumNameValue(a.fromArgs(arguments));
         }
         values = a.expandMultiDimension(a.fromArgs(arguments));
         
@@ -4104,49 +4118,48 @@ if (typeof module === 'undefined') {
       _.test_EnumNameValue = function () {
         var e1;
         e1 = _.EnumNameValue('a');
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 'b'));
 
         e1 = new _.EnumNameValue('a');
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 'b'));
 
         e1 = _.EnumNameValue(['a']);
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 'b'));
 
         e1 = new _.EnumNameValue(['a']);
-        d.check(1,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('',   lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(1,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('',   stsLib.object.property.getNameFromValue(e1, 'b'));
 
         e1 = _.EnumNameValue(['a', 'b']);
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 'b'));
 
         e1 = new _.EnumNameValue(['a', 'b']);
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 'b'));
 
         e1 = _.EnumNameValue('a', 'b');
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 'b'));
 
         e1 = new _.EnumNameValue('a', 'b');
-        d.check(2,    lib.object.property.count(e1));
-        d.check('a',  lib.object.property.getNameFromValue(e1, 'a'));
-        d.check('b',  lib.object.property.getNameFromValue(e1, 'b'));
+        d.check(2,    stsLib.object.property.count(e1));
+        d.check('a',  stsLib.object.property.getNameFromValue(e1, 'a'));
+        d.check('b',  stsLib.object.property.getNameFromValue(e1, 'b'));
 
       };  
 
     }()); //enumType
-
 
     //----------------------------------------
     //◆グローバル拡張
@@ -4229,9 +4242,9 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆動作確認
     //----------------------------------------
-    _.test = lib.test || {};
+    _.test = stsLib.test || {};
     (function () {
-      var _ = lib.test;
+      var _ = stsLib.test;
 
       _.test_stslib_core = function () {
 
@@ -4285,11 +4298,11 @@ if (typeof module === 'undefined') {
         s.test_endFirstDelim();
         s.test_endLastDelim();
 
-        var str = new stsLib.String('abc');
+        var str = new stsLib.string.String('abc');
         str.test();
 
         //WSH 非対応なので実行させない
-        var strEx = new stsLib.StringEx('123');
+        var strEx = new stsLib.string.StringEx('123');
         strEx.test();
 
         stsLib.test.test_equalOperator();
@@ -4502,6 +4515,16 @@ if (typeof module === 'undefined') {
       };
 
     }()); //_.test
+
+    //----------------------------------------
+    //◆省略呼び出し
+    //----------------------------------------
+    var t = stsLib.type;
+    var d = stsLib.debug;
+    var c = stsLib.compare;
+    var a = stsLib.array;
+    var n = stsLib.number;
+    var s = stsLib.string;
 
   }(stsLib, this));   //stsLib
 

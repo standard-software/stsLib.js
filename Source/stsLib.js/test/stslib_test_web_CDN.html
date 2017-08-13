@@ -6,6 +6,7 @@ RawGit
 http://rawgit.com/
 -->
   <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_core.js"></script>
+  <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_graphics.js"></script>
   <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_web.js"></script>
   <script>
 
@@ -28,6 +29,7 @@ var stsLib = require('stsLib');
 
 function main() {
   stsLib.test.test_stslib_core();
+  stsLib.test.test_stslib_graphics();
   stsLib.web.test_stslib_web();
 };
 
