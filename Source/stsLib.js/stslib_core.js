@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/08/13
+Version:        2017/08/16
 //----------------------------------------*/
 
 //----------------------------------------
@@ -870,7 +870,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・範囲内に値が含まれるかどうか確認
       //----------------------------------------
-      _.isRange = function (value, from, to) {
+      _.inRange = function (value, from, to) {
 
         d.assert(t.isNumber(from));
         d.assert(t.isNumber(to));
@@ -1138,11 +1138,11 @@ if (typeof module === 'undefined') {
       //・Index指定のdelete
       //----------------------------------------
       //  ・indexは負の値などには対応しない
-      //  ・endIndexを省略すると最後まで削除する
+      //  ・endIndexを省略するとstartIndexのところの1項目だけ削除になる
       //----------------------------------------
       _.deleteIndex = function (array, startIndex, endIndex) {
         d.assert(Array.isArray(array));
-        endIndex = t.ifNullOrUndefinedValue(endIndex, array.length - 1);
+        endIndex = t.ifNullOrUndefinedValue(endIndex, startIndex);
         d.assert(t.isInt(startIndex, endIndex));
         d.assert((0 <= startIndex) && (startIndex <= array.length - 1));
         d.assert((0 <= endIndex));
@@ -1153,11 +1153,11 @@ if (typeof module === 'undefined') {
       };
 
       _.test_deleteIndex = function () {
-        d.check(true, _.equal([1,3],_.deleteIndex([1,2,3], 1, 1)));
-        d.check(true, _.equal([1],  _.deleteIndex([1,2,3], 1, 2)));
-        d.check(true, _.equal([],   _.deleteIndex([1,2,3], 0, 3)));
-        d.check(true, _.equal([1,5],   _.deleteIndex([1,2,3,4,5], 1, 3)));
-        d.check(true, _.equal([1,2],   _.deleteIndex([1,2,3,4,5], 2)));
+        d.check(true, _.equal([1,3],      _.deleteIndex([1,2,3], 1, 1)));
+        d.check(true, _.equal([1],        _.deleteIndex([1,2,3], 1, 2)));
+        d.check(true, _.equal([],         _.deleteIndex([1,2,3], 0, 3)));
+        d.check(true, _.equal([1,5],      _.deleteIndex([1,2,3,4,5], 1, 3)));
+        d.check(true, _.equal([1,2,4,5],  _.deleteIndex([1,2,3,4,5], 2)));
       };
 
       //----------------------------------------
@@ -1181,6 +1181,63 @@ if (typeof module === 'undefined') {
         d.check(true, _.equal([1,5],   _.deleteLength([1,2,3,4,5], 1, 3)));
       };
 
+      //----------------------------------------
+      //◇項目削除
+      //----------------------------------------
+
+      //----------------------------------------
+      //・項目削除
+      //----------------------------------------
+      //  ・deleteはWSHでは予約語なのでdeleteFindにした
+      //----------------------------------------
+      _.deleteFind = function (array, search) {
+        d.assert(Array.isArray(array));
+        
+        var index = _.indexOfFirst(array, search);
+        if (index !== -1) {
+          array.splice(index, 1);
+        } 
+        return array;
+      };
+
+      _.test_deleteFind = function () {
+        d.check(true, _.equal([1,3],  _.deleteFind([1,2,3], 2)));
+        d.check(true, _.equal([2,3],  _.deleteFind([1,2,3], 1)));
+        d.check(true, _.equal([1,2,3],_.deleteFind([1,2,3], 0)));
+        d.check(true, _.equal([1,2,4,5],  _.deleteFind([1,2,3,4,5], 3)));
+        d.check(true, _.equal([1,3,1,2,3],  _.deleteFind([1,2,3,1,2,3], 2)));
+        d.check(true, _.equal([2,3,1,2,3],  _.deleteFind([1,2,3,1,2,3], 1)));
+        d.check(true, _.equal([1,2,3,1,2,3],_.deleteFind([1,2,3,1,2,3], 0)));
+        d.check(true, _.equal([1,2,4,5],  _.deleteFind([1,2,3,4,5], 3)));
+      };
+
+      //----------------------------------------
+      //・指定項目全削除
+      //----------------------------------------
+      _.deleteFindAll = function (array, search) {
+        
+        var index;
+        do {
+          index = _.indexOfFirst(array, search);
+          if (index !== -1) {
+            array.splice(index, 1);
+          } else {
+            break;
+          }
+        } while (true);
+        return array;
+      };
+
+      _.test_deleteFindAll = function () {
+        d.check(true, _.equal([1,3],  _.deleteFindAll([1,2,3], 2)));
+        d.check(true, _.equal([2,3],  _.deleteFindAll([1,2,3], 1)));
+        d.check(true, _.equal([1,2,3],_.deleteFindAll([1,2,3], 0)));
+        d.check(true, _.equal([1,2,4,5],  _.deleteFindAll([1,2,3,4,5], 3)));
+        d.check(true, _.equal([1,3,1,3],  _.deleteFindAll([1,2,3,1,2,3], 2)));
+        d.check(true, _.equal([2,3,2,3],  _.deleteFindAll([1,2,3,1,2,3], 1)));
+        d.check(true, _.equal([1,2,3,1,2,3],_.deleteFindAll([1,2,3,1,2,3], 0)));
+        d.check(true, _.equal([1,2,4,5],  _.deleteFindAll([1,2,3,4,5], 3)));
+      };
 
       //----------------------------------------
       //・先頭から削除
@@ -1516,7 +1573,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyFirst = function (array, searchArray, startIndex) {
         d.assert(Array.isArray(array));
-        d.assert((Array.isArray(searchArray)) && t.isStrings(searchArray));
+        d.assert(Array.isArray(searchArray));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         d.assert(t.isInt(startIndex));
 
@@ -1533,7 +1590,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyLast = function (array, searchArray, startIndex) {
         d.assert(Array.isArray(array));
-        d.assert((Array.isArray(searchArray)) && t.isStrings(searchArray));
+        d.assert(Array.isArray(searchArray));
         startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
         d.assert(t.isInt(startIndex));
 
@@ -1552,6 +1609,7 @@ if (typeof module === 'undefined') {
       //◇indexOfFunc
       //----------------------------------------
       //  ・funcには function(item, index, array) を渡すようにする
+      //  ・string.indexOfFunc で動作確認とする
       //----------------------------------------
 
       _.indexOfFuncFirst = function (array, func, startIndex) {
@@ -1585,6 +1643,96 @@ if (typeof module === 'undefined') {
         }
         return -1;
       };
+
+      //----------------------------------------
+      //◇inStart/End outStart/End
+      //----------------------------------------
+      //  ・Que,Stack,FIFO,LIFO として使用できる
+      //  ・push/pop/shift/unshiftでは直感的な名前ではないので
+      //    メソッド名として上書きする感じ
+      //----------------------------------------
+
+      _.inStart = function (array, value) {
+        d.assert(Array.isArray(array));
+        array.unshift(value);
+        return array;
+      };
+
+      _.inEnd = function (array, value) {
+        d.assert(Array.isArray(array));
+        array.push(value);
+        return array;
+      };
+
+      _.outStart = function (array, value) {
+        d.assert(Array.isArray(array));
+        return array.shift(value);
+      };
+
+      _.outEnd = function (array, value) {
+        d.assert(Array.isArray(array));
+        return array.pop(value);
+      };
+
+      //----------------------------------------
+      //◇inStart/EndArray outStart/EndArray
+      //----------------------------------------
+      //  ・Que,Stack,FIFO,LIFO として使用できる
+      //  ・引数配列を展開してそれぞれをInやOutする
+      //----------------------------------------
+
+      _.inStartArray = function (array, values) {
+        d.assert(Array.isArray(array));
+        d.assert(Array.isArray(values));
+        for (var i = 0, l = values.length; i < l; i += 1) {
+          array.unshift(values[i]);
+        }
+        return array;
+      };
+
+      _.inEndArray = function (array, values) {
+        d.assert(Array.isArray(array));
+        d.assert(Array.isArray(values));
+        for (var i = 0, l = values.length; i < l; i += 1) {
+          array.push(values[i]);
+        }
+        return array;
+      };
+
+      _.outStartArray = function (array, count) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isInt(count));
+        var result = [];
+        for (var i = 0; i < count; i += 1) {
+          _.inEnd(result, _.outStart(array));
+        }
+        return result;
+      };
+
+      _.test_outStartArray = function () {
+        d.check(true, _.equal([1],      _.outStartArray([1,2,3,4,5], 1)));
+        d.check(true, _.equal([1,2,3],  _.outStartArray([1,2,3,4,5], 3)));
+        d.check(true, _.equal([1,2,3,4,5],  _.outStartArray([1,2,3,4,5], 5)));
+        d.check(true, _.equal([1,2,3,4,5,null],  _.outStartArray([1,2,3,4,5], 6)));
+      };
+
+      _.outEndArray = function (array, count) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isInt(count));
+        var result = [];
+        for (var i = 0; i < count; i += 1) {
+          _.inStart(result, _.outEnd(array));
+        }
+        return result;
+      };
+
+      _.test_outEndArray = function () {
+        d.check(true, _.equal([5],      _.outEndArray([1,2,3,4,5], 1)));
+        d.check(true, _.equal([3,4,5],  _.outEndArray([1,2,3,4,5], 3)));
+        d.check(true, _.equal([1,2,3,4,5],  _.outEndArray([1,2,3,4,5], 5)));
+        d.check(true, _.equal([null,1,2,3,4,5],  _.outEndArray([1,2,3,4,5], 6)));
+      };
+
 
       //----------------------------------------
       //◇多次元配列
@@ -1869,7 +2017,7 @@ if (typeof module === 'undefined') {
         d.check('abe',    _.deleteIndex('abcde', 2, 3));
         d.check('de',     _.deleteIndex('abcde', 0, 2));
         d.check('ae',     _.deleteIndex('abcde', 1, 3));
-        d.check('ab',     _.deleteIndex('abcde', 2));
+        d.check('abde',   _.deleteIndex('abcde', 2));
       };
 
       _.deleteLength = function (str, startIndex, length) {
@@ -3628,14 +3776,14 @@ if (typeof module === 'undefined') {
 
       _.prototype.getLine = function (index) {
         d.assert(t.isInt(index));
-        d.assert(n.isRange(index, 0, this._textArray.length - 1));
+        d.assert(n.inRange(index, 0, this._textArray.length - 1));
         return this._textArray[index];
       };
 
       _.prototype.setLine = function (index, line) {
         d.assert(t.isInt(index));
-        d.assert(n.isRange(index, 0, this._textArray.length));
-        if (n.isRange(index, 0, this._textArray.length - 1)) {
+        d.assert(n.inRange(index, 0, this._textArray.length));
+        if (n.inRange(index, 0, this._textArray.length - 1)) {
           this._textArray[index] = line;
         } else {
           this._textArray.push(line);
@@ -4337,6 +4485,8 @@ if (typeof module === 'undefined') {
         a.test_add();
         a.test_deleteIndex();
         a.test_deleteLength();
+        a.test_deleteFind();
+        a.test_deleteFindAll();
         a.test_deleteStart();
         a.test_deleteEnd();
         a.test_setInclude();
@@ -4344,8 +4494,10 @@ if (typeof module === 'undefined') {
         a.test_indexOfLast();
         a.test_indexOfArrayFirst();
         a.test_indexOfArrayLast();
-        a.test_expandMultiDimension();
+        a.test_outStartArray();
+        a.test_outEndArray();
         a.test_expand2Dimension();
+        a.test_expandMultiDimension();
 
         var angle = stsLib.angle;
         angle.test_angleRelative();

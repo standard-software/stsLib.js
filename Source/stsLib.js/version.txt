@@ -278,3 +278,12 @@
 ・  point.move 追加
 ・  vector.length/setStart/add
     /normalize/inverse/normal/moveParallel 追加
+◇  ver 2017/08/16
+・  deleteFind/FindAll 追加
+・  array.inStart/End inStart/EndArray 追加
+・  rectとして
+    Rectコンストラクタ、normalize
+    /width/setWidth/height/setHeight
+    /center/move/setTopLeft/inRectを実装
+・  point.inRect 実装
+・  isRange を inRange 名前変更
