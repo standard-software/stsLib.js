@@ -287,3 +287,7 @@
     /center/move/setTopLeft/inRectを実装
 ・  point.inRect 実装
 ・  isRange を inRange 名前変更
+◇	ver 2017/08/26
+・	vector.normalをvector.normalRightに名前変更
+	vector.normalLeftを追加
+・	vector.Vectorを引数1つにも対応

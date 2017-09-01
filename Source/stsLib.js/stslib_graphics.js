@@ -1,4 +1,4 @@
-﻿/*----------------------------------------
+/*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 ----------------------------------------
@@ -213,13 +213,19 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・Vectorコンストラクタ
       //----------------------------------------
-      _.Vector = function (pointStart, pointEnd) {
+      _.Vector = function (point) {
         if (!(this instanceof stsLib.vector.Vector)) {
-          return new stsLib.vector.Vector(pointStart, pointEnd);
+          return new stsLib.vector.Vector(arguments[0], arguments[1]);
         }
-        d.assert(t.isPoints(pointStart, pointEnd));
-        this.start = stsLib.point.Point(pointStart.x, pointStart.y);
-        this.end = stsLib.point.Point(pointEnd.x, pointEnd.y);
+        d.assert(t.isPoint(arguments[0]));
+        if (t.isNullOrUndefined(arguments[1])) {
+          this.start = p.Point(0, 0);
+          this.end = p.Point(point.x, point.y);
+        } else {
+          d.assert(t.isPoint(arguments[1]));
+          this.start = p.Point(point.x, point.y);
+          this.end = p.Point(arguments[1].x, arguments[1].y);
+        }
       };
       (function () {
         var _ = stsLib.vector.Vector;
@@ -237,6 +243,11 @@ if (typeof module === 'undefined') {
           var v1 = v.Vector(p.Point(0,0), p.Point(1,1));
           d.check(Math.pow(2, 0.5), v1.length());
           var v2 = v.Vector(p.Point(0,0), p.Point(3,4));
+          d.check(5, v2.length());
+
+          var v1 = v.Vector(p.Point(1,1));
+          d.check(Math.pow(2, 0.5), v1.length());
+          var v2 = v.Vector(p.Point(3,4));
           d.check(5, v2.length());
         };
 
@@ -348,7 +359,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・右に90度傾いた方向のベクトルになる
         //----------------------------------------
-        _.prototype.normal = function () {
+        _.prototype.normalRight = function () {
           var xDiff = this.end.x - this.start.x;
           var yDiff = this.end.y - this.start.y;
           this.end.x = this.start.x + yDiff;
@@ -356,13 +367,35 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_normal = function () {
+        stsLib.vector.test_vector_normalRight = function () {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
-          v1.normal();
+          v1.normalRight();
           d.check(0, v1.start.x);
           d.check(0, v1.start.y);
           d.check(4, v1.end.x);
           d.check(-3, v1.end.y);
+        };
+
+        //----------------------------------------
+        //・法線ベクトル
+        //----------------------------------------
+        //  ・左に90度傾いた方向のベクトルになる
+        //----------------------------------------
+        _.prototype.normalLeft = function () {
+          var xDiff = this.end.x - this.start.x;
+          var yDiff = this.end.y - this.start.y;
+          this.end.x = this.start.x - yDiff;
+          this.end.y = this.start.y + xDiff;
+          return this;
+        };
+
+        stsLib.vector.test_vector_normalLeft = function () {
+          var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
+          v1.normalLeft();
+          d.check(0, v1.start.x);
+          d.check(0, v1.start.y);
+          d.check(-4, v1.end.x);
+          d.check( 3, v1.end.y);
         };
 
         //----------------------------------------
@@ -376,7 +409,7 @@ if (typeof module === 'undefined') {
             return this;
           }
           var endBuff = stsLib.point.Point(this.end.x, this.end.y);
-          this.normal().normalize(value);
+          this.normalRight().normalize(value);
           var newStart = stsLib.point.Point(this.end.x, this.end.y);
           this.setStart(endBuff);
           var newEnd = stsLib.point.Point(this.end.x, this.end.y);
@@ -627,7 +660,8 @@ if (typeof module === 'undefined') {
         v.test_vector_add();
         v.test_vector_normalize();
         v.test_vector_inverse();
-        v.test_vector_normal();
+        v.test_vector_normalRight();
+        v.test_vector_normalLeft();
         v.test_vector_moveParallels();
 
         r.test_Rect();
