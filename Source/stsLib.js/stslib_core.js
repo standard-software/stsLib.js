@@ -1,4 +1,4 @@
-/*----------------------------------------
+﻿/*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 ----------------------------------------
@@ -967,7 +967,7 @@ if (typeof module === 'undefined') {
         var result = target - base;
         //result は -360～+360になる
         if (180 < result) {
-          result = result -360;
+          result = result - 360;
         } else if (result < -180) {
           result = result + 360;
         }
@@ -1163,6 +1163,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・Length指定のdelete
       //----------------------------------------
+      //  ・indexは負の値などには対応しない
+      //  ・lengthを省略すると最後まで削除する
+      //----------------------------------------
       _.deleteLength = function (array, startIndex, length) {
         d.assert(Array.isArray(array));
         length = t.ifNullOrUndefinedValue(length, array.length - startIndex);
@@ -1179,6 +1182,7 @@ if (typeof module === 'undefined') {
         d.check(true, _.equal([3],  _.deleteLength([1,2,3], 0, 2)));
         d.check(true, _.equal([],   _.deleteLength([1,2,3], 0, 3)));
         d.check(true, _.equal([1,5],   _.deleteLength([1,2,3,4,5], 1, 3)));
+        d.check(true, _.equal([1],   _.deleteLength([1,2,3,4,5], 1)));
       };
 
       //----------------------------------------
@@ -1645,43 +1649,43 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //◇inStart/End outStart/End
+      //◇inputStart/End outputStart/End
       //----------------------------------------
       //  ・Que,Stack,FIFO,LIFO として使用できる
       //  ・push/pop/shift/unshiftでは直感的な名前ではないので
       //    メソッド名として上書きする感じ
       //----------------------------------------
 
-      _.inStart = function (array, value) {
+      _.inputStart = function (array, value) {
         d.assert(Array.isArray(array));
         array.unshift(value);
         return array;
       };
 
-      _.inEnd = function (array, value) {
+      _.inputEnd = function (array, value) {
         d.assert(Array.isArray(array));
         array.push(value);
         return array;
       };
 
-      _.outStart = function (array, value) {
+      _.outputStart = function (array, value) {
         d.assert(Array.isArray(array));
         return array.shift(value);
       };
 
-      _.outEnd = function (array, value) {
+      _.outputEnd = function (array, value) {
         d.assert(Array.isArray(array));
         return array.pop(value);
       };
 
       //----------------------------------------
-      //◇inStart/EndArray outStart/EndArray
+      //◇inputStart/EndArray outputStart/EndArray
       //----------------------------------------
       //  ・Que,Stack,FIFO,LIFO として使用できる
       //  ・引数配列を展開してそれぞれをInやOutする
       //----------------------------------------
 
-      _.inStartArray = function (array, values) {
+      _.inputStartArray = function (array, values) {
         d.assert(Array.isArray(array));
         d.assert(Array.isArray(values));
         for (var i = 0, l = values.length; i < l; i += 1) {
@@ -1690,7 +1694,7 @@ if (typeof module === 'undefined') {
         return array;
       };
 
-      _.inEndArray = function (array, values) {
+      _.inputEndArray = function (array, values) {
         d.assert(Array.isArray(array));
         d.assert(Array.isArray(values));
         for (var i = 0, l = values.length; i < l; i += 1) {
@@ -1699,38 +1703,81 @@ if (typeof module === 'undefined') {
         return array;
       };
 
-      _.outStartArray = function (array, count) {
+      _.outputStartArray = function (array, count) {
         d.assert(Array.isArray(array));
         d.assert(t.isInt(count));
         var result = [];
         for (var i = 0; i < count; i += 1) {
-          _.inEnd(result, _.outStart(array));
+          _.inputEnd(result, _.outputStart(array));
         }
         return result;
       };
 
-      _.test_outStartArray = function () {
-        d.check(true, _.equal([1],      _.outStartArray([1,2,3,4,5], 1)));
-        d.check(true, _.equal([1,2,3],  _.outStartArray([1,2,3,4,5], 3)));
-        d.check(true, _.equal([1,2,3,4,5],  _.outStartArray([1,2,3,4,5], 5)));
-        d.check(true, _.equal([1,2,3,4,5,null],  _.outStartArray([1,2,3,4,5], 6)));
+      _.test_outputStartArray = function () {
+        d.check(true, _.equal([1],      _.outputStartArray([1,2,3,4,5], 1)));
+        d.check(true, _.equal([1,2,3],  _.outputStartArray([1,2,3,4,5], 3)));
+        d.check(true, _.equal([1,2,3,4,5],  _.outputStartArray([1,2,3,4,5], 5)));
+        d.check(true, _.equal([1,2,3,4,5,null],  _.outputStartArray([1,2,3,4,5], 6)));
       };
 
-      _.outEndArray = function (array, count) {
+      _.outputEndArray = function (array, count) {
         d.assert(Array.isArray(array));
         d.assert(t.isInt(count));
         var result = [];
         for (var i = 0; i < count; i += 1) {
-          _.inStart(result, _.outEnd(array));
+          _.inputStart(result, _.outputEnd(array));
         }
         return result;
       };
 
-      _.test_outEndArray = function () {
-        d.check(true, _.equal([5],      _.outEndArray([1,2,3,4,5], 1)));
-        d.check(true, _.equal([3,4,5],  _.outEndArray([1,2,3,4,5], 3)));
-        d.check(true, _.equal([1,2,3,4,5],  _.outEndArray([1,2,3,4,5], 5)));
-        d.check(true, _.equal([null,1,2,3,4,5],  _.outEndArray([1,2,3,4,5], 6)));
+      _.test_outputEndArray = function () {
+        d.check(true, _.equal([5],      _.outputEndArray([1,2,3,4,5], 1)));
+        d.check(true, _.equal([3,4,5],  _.outputEndArray([1,2,3,4,5], 3)));
+        d.check(true, _.equal([1,2,3,4,5],  _.outputEndArray([1,2,3,4,5], 5)));
+        d.check(true, _.equal([null,1,2,3,4,5],  _.outputEndArray([1,2,3,4,5], 6)));
+      };
+
+      //----------------------------------------
+      //◇remainStart/End remainStart/End
+      //----------------------------------------
+      //  ・Que,Stack,FIFO,LIFO として使用する場合に
+      //    いくつのバッファを残すか指定できる関数
+      //----------------------------------------
+    
+      _.remainStart = function (array, count) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isInt(count));
+        d.assert(0 <= count);
+
+        if (count < array.length) {
+          _.deleteLength(array, count);
+        }
+        return array;
+      };
+
+      _.test_remainStart = function () {
+        d.check(true, _.equal([1,2,3], _.remainStart([1,2,3,4,5], 3)));
+        d.check(true, _.equal([], _.remainStart([1,2,3,4,5], 0)));
+        d.check(true, _.equal([1,2,3,4,5], _.remainStart([1,2,3,4,5], 5)));
+        d.check(true, _.equal([1,2,3,4,5], _.remainStart([1,2,3,4,5], 6)));
+      };
+
+      _.remainEnd = function (array, count) {
+        d.assert(Array.isArray(array));
+        d.assert(t.isInt(count));
+        d.assert(0 <= count);
+
+        if (count < array.length) {
+          _.deleteLength(array, 0, array.length - count);
+        }
+        return array;
+      };
+
+      _.test_remainEnd = function () {
+        d.check(true, _.equal([3,4,5], _.remainEnd([1,2,3,4,5], 3)));
+        d.check(true, _.equal([], _.remainEnd([1,2,3,4,5], 0)));
+        d.check(true, _.equal([1,2,3,4,5], _.remainEnd([1,2,3,4,5], 5)));
+        d.check(true, _.equal([1,2,3,4,5], _.remainEnd([1,2,3,4,5], 6)));
       };
 
 
@@ -2039,6 +2086,10 @@ if (typeof module === 'undefined') {
 
       _.isInclude = function (str, search) {
         return (0 <= _.indexOfFirst(str, search));
+      };
+
+      _.includes = function (str, search) {
+        return _.isInclude(str, search);
       };
 
       _.contains = function (str, search) {
@@ -4494,8 +4545,10 @@ if (typeof module === 'undefined') {
         a.test_indexOfLast();
         a.test_indexOfArrayFirst();
         a.test_indexOfArrayLast();
-        a.test_outStartArray();
-        a.test_outEndArray();
+        a.test_outputStartArray();
+        a.test_outputEndArray();
+        a.test_remainStart();
+        a.test_remainEnd();
         a.test_expand2Dimension();
         a.test_expandMultiDimension();
 

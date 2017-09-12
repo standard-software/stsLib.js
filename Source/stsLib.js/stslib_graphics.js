@@ -1,4 +1,4 @@
-/*----------------------------------------
+﻿/*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 ----------------------------------------
@@ -130,23 +130,26 @@ if (typeof module === 'undefined') {
         return (rect instanceof r.Rect);
       };
 
-      // _.isPoints = function (value) {
-      //   return _.isTypeCheck(_.isPoint,
-      //     a.expand2Dimension(a.fromArgs(arguments)));
-      // };
+      _.isRects = function (value) {
+        return _.isTypeCheck(_.isRect,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
 
-      // _.isNotPoints = function (value) {
-      //   return _.isTypeCheck(function (v) {
-      //     return !(_.isPoint(v));
-      //   }, a.expand2Dimension(a.fromArgs(arguments)));
-      // };
+      _.isNotRects = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isRects(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
 
-      // _.test_isPoint = function () {
-      //   d.check(true,   _.isPoint({x:1, y:2}));
-      //   d.check(false,  _.isPoint({x:'1', y:2}));
-      //   d.check(true,   _.isPoints({x:1, y:2}, {x:3, y:4}));
-      //   d.check(false,  _.isPoints({x:1, y:2}, {x:3, y:4}, {}));
-      // };
+      _.test_isRect = function () {
+        var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+        var r2 = r.Rect(p.Point(1,1), p.Point(4,6));
+        d.check(true,   _.isRect(r1));
+        d.check(false,  _.isRect({top:1, left:2, bottom:3, right:4}));
+        d.check(true,   _.isRects(r1,r2));
+        d.check(false,  _.isRects(r1, {top:1, left:2, bottom:3, right:4}));
+        d.check(false,  _.isRects(r1, r2, {}));
+      };
 
     }());
 
@@ -654,6 +657,7 @@ if (typeof module === 'undefined') {
 
         t.test_isPoint();
         t.test_isVector();
+        t.test_isRect();
 
         v.test_vector_length();
         v.test_vector_setStart();

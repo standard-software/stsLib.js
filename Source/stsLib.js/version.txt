@@ -287,7 +287,13 @@
     /center/move/setTopLeft/inRectを実装
 ・  point.inRect 実装
 ・  isRange を inRange 名前変更
-◇	ver 2017/08/26
-・	vector.normalをvector.normalRightに名前変更
-	vector.normalLeftを追加
-・	vector.Vectorを引数1つにも対応
+◇  ver 2017/08/26
+・  vector.normalをvector.normalRightに名前変更
+    vector.normalLeftを追加
+・  vector.Vectorを引数1つにも対応
+◇  ver 2017/09/12
+・  includes を追加。isInclude / contains の別名登録
+・  substrCount を追加。ststrLength の別名登録。
+・  inStart/End outStart/End を inputStart/End outputStart/End に名前変更
+・  remainStart/End 追加
+・	isRects/isNotRects 追加
