@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:       2017/04/17
+Version:        2017/09/21
 //----------------------------------------*/
 
 
@@ -40,9 +40,6 @@ var loadTextfileUTF8 = function (path) {
 var includeFileName = "..\\stslib_core.js"
 eval( loadTextfileUTF8( fso.BuildPath(basePath, includeFileName) ) );
 //--------------------------------------------------
-var includeFileName = "..\\stslib_graphics.js"
-eval( loadTextfileUTF8( fso.BuildPath(basePath, includeFileName) ) );
-//--------------------------------------------------
 var includeFileName = "..\\stslib_win_wsh.js"
 eval( loadTextfileSjis( fso.BuildPath(basePath, includeFileName) ) );
 //--------------------------------------------------
@@ -50,5 +47,4 @@ eval( loadTextfileSjis( fso.BuildPath(basePath, includeFileName) ) );
 var stsLib = require('stsLib');
 
 stsLib.test.test_stslib_core();
-stsLib.test.test_stslib_graphics();
 stsLib.test.test_stslib_wsh();

@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/08/13
+Version:        2017/09/21
 //----------------------------------------*/
 
 //----------------------------------------
@@ -44,8 +44,7 @@ if (typeof module === 'undefined') {
   if (typeof module === 'undefined') {
     var stsLib = require('stsLib')
   } else {
-    // var stsLib = require('./stsLib_core.js')
-    var stsLib = require('./stsLib_graphics.js')
+    var stsLib = require('./stsLib_core.js')
   }
 
   //----------------------------------------

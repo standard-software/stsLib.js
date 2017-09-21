@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="shift-jis" ?>
 <job>
     <script language="JavaScript" src="..\stsLib_core.js"></script>
-    <script language="JavaScript" src="..\stsLib_graphics.js"></script>
     <script language="JavaScript" src="..\stslib_win_wsh.js"></script>
     <script language="JavaScript">
     <![CDATA[
@@ -18,13 +17,12 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:       2017/04/17
+Version:        2017/09/21
 //----------------------------------------*/
 
 var stsLib = require('stsLib');
 
 stsLib.test.test_stslib_core();
-stsLib.test.test_stslib_graphics();
 stsLib.test.test_stslib_wsh();
 
 

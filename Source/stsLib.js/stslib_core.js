@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/09/13
+Version:        2017/09/21
 //----------------------------------------*/
 
 //----------------------------------------
@@ -775,7 +775,7 @@ if (typeof module === 'undefined') {
         d.check(true, _.isArrays([]));
         d.check(true, _.isArrays([1,2,3]));
         d.check(false,_.isArrays(123));
-        d.check(false,_.isArrays("1,2,3"));
+        d.check(false,_.isArrays('1,2,3'));
 
         d.check(true,   _.isArrays([1], [2]));
         d.check(true,   _.isArrays([3], [4], [5]));
@@ -788,6 +788,94 @@ if (typeof module === 'undefined') {
         d.check(false,  _.isNotArrays(10, 20, [30]));
       };
 
+      //----------------------------------------
+      //◇isPoint
+      //----------------------------------------
+      //  ・Pointを継承しているかどうかで判断する
+      //  ・isPointsは
+      //    可変引数の全てが関数かどうかを確認する
+      //----------------------------------------
+      _.isPoint = function (point) {
+        return (point instanceof p.Point);
+      };
+
+      _.isPoints = function (value) {
+        return _.isTypeCheck(_.isPoint,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotPoints = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isPoint(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isPoint = function () {
+        d.check(true,   _.isPoint(p.Point(1,2)));
+        d.check(false,  _.isPoint({x:1, y:2}));
+        d.check(true,   _.isPoints(p.Point(1,2),p.Point(3,4)));
+        d.check(false,  _.isPoints(p.Point(1,2), {x:3, y:4}, {}));
+      };
+
+      //----------------------------------------
+      //◇isVector
+      //----------------------------------------
+      //  ・プロパティ start / end が存在するかどうか
+      //    それぞれが point かどうかで判断する
+      //  ・isVectorsは
+      //    可変引数の全てが関数かどうかを確認する
+      //----------------------------------------
+      _.isVector = function (vector) {
+        return (vector instanceof v.Vector);
+      };
+
+      _.isVectors = function (value) {
+        return _.isTypeCheck(_.isVector,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotVectors = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isVector(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isVector = function () {
+        d.check(true, _.isVector(
+          v.Vector(p.Point(0,0), p.Point(1,1))));
+      };
+
+      //----------------------------------------
+      //◇isRect
+      //----------------------------------------
+      //  ・Rectから継承されているかどうかで判断する
+      //  ・isRectsは
+      //    可変引数の全てが関数かどうかを確認する
+      //----------------------------------------
+      _.isRect = function (rect) {
+        return (rect instanceof r.Rect);
+      };
+
+      _.isRects = function (value) {
+        return _.isTypeCheck(_.isRect,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotRects = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isRects(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isRect = function () {
+        var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+        var r2 = r.Rect(p.Point(1,1), p.Point(4,6));
+        d.check(true,   _.isRect(r1));
+        d.check(false,  _.isRect({top:1, left:2, bottom:3, right:4}));
+        d.check(true,   _.isRects(r1,r2));
+        d.check(false,  _.isRects(r1, {top:1, left:2, bottom:3, right:4}));
+        d.check(false,  _.isRects(r1, r2, {}));
+      };
 
     }());
 
@@ -1345,7 +1433,7 @@ if (typeof module === 'undefined') {
         return (_.indexOfFirst(array, value) !== -1);
       };
 
-      _.contains = function (str, value) {
+      _.contains = function (array, value) {
         return _.isInclude(array, value);
       };
 
@@ -1362,7 +1450,7 @@ if (typeof module === 'undefined') {
         _.setExclude(array, value);
         _.add(array, value);
         return array;
-      }
+      };
 
       _.test_setInclude = function () {
         var a1 = [1,2,3];
@@ -1374,15 +1462,14 @@ if (typeof module === 'undefined') {
         d.check(true, _.equal([0,2,3,0], a1));
         d.check(true, _.equal([0,2,3,0], a2));
 
-        var a2 = _.setInclude(a1, 0);
+        a2 = _.setInclude(a1, 0);
         d.check(true, _.equal([2,3,0], a1));
         d.check(true, _.equal([2,3,0], a2));
 
-        var a2 = _.setInclude(a1, 3);
+        a2 = _.setInclude(a1, 3);
         d.check(true, _.equal([2,0,3], a1));
         d.check(true, _.equal([2,0,3], a2));
-
-      }
+      };
 
       //----------------------------------------
       //・ユニークな値として配列からvalueを取り除く
@@ -1396,7 +1483,7 @@ if (typeof module === 'undefined') {
           _.deleteLength(array, index, 1);
         }
         return array;
-      }
+      };
 
       //----------------------------------------
       //◇indexOf
@@ -2607,18 +2694,18 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・先頭から削除
       //----------------------------------------
-      //  ・lenは0以上にすること
+      //  ・lengthは0以上にすること
       //----------------------------------------
 
-      _.deleteStart = function (str, len) {
+      _.deleteStart = function (str, length) {
         d.assert(t.isString(str));
-        d.assert(t.isInt(len) && (0 <= len));
+        d.assert(t.isInt(length) && (0 <= length));
 
-        if (len === 0) {
+        if (length === 0) {
           return str;
         }
-        // return _.substrIndex(str, len);
-        return str.slice(len);
+        // return _.substrIndex(str, length);
+        return str.slice(length);
       };
 
       _.test_deleteStart = function () {
@@ -2632,11 +2719,44 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //・先頭をゼロやスペースで埋める
+      //----------------------------------------
+      //  ・fillCharのデフォルト値はスペース
+      //  ・digitは0以上
+      //----------------------------------------
+
+      _.fillStart = function (str, digit, fillChar) {
+        fillChar = t.ifNullOrUndefinedValue(fillChar, ' ');
+        d.assert(t.isStrings(str, fillChar));
+        d.assert(1 <= fillChar.length);
+        d.assert(t.isInt(digit) && (0 <= digit));
+
+        if (digit === 0) {
+          return str;
+        }
+        if (digit <= str.length) {
+          return str;
+        }
+        return s.end(s.repeat(fillChar, digit) + str, digit);
+      };
+
+      _.test_fillStart = function () {
+        d.check('123',    _.fillStart('123', 1));
+        d.check('123',    _.fillStart('123', 2));
+        d.check('123',    _.fillStart('123', 3));
+        d.check(' 123',   _.fillStart('123', 4));
+        d.check('  123',  _.fillStart('123', 5));
+        d.check('0123',   _.fillStart('123', 4, '0'));
+        d.check('00123',  _.fillStart('123', 5, '0'));
+      };
+
+
+      //----------------------------------------
       //◇End
       //----------------------------------------
 
       //----------------------------------------
-      //・先頭を切り取るメソッド
+      //・終端を切り取るメソッド
       //----------------------------------------
       _.end = function (str, length) {
         if (str === '') { return ''; }
@@ -2764,6 +2884,38 @@ if (typeof module === 'undefined') {
         d.check('12345',_.deleteEnd('12345', 0));
         d.check('',     _.deleteEnd('12345', 5));
         d.check('',     _.deleteEnd('12345', 6));
+      };
+
+      //----------------------------------------
+      //・終端をゼロやスペースで埋める
+      //----------------------------------------
+      //  ・fillCharのデフォルト値はスペース
+      //  ・digitは0以上
+      //----------------------------------------
+
+      _.fillEnd = function (str, digit, fillChar) {
+        fillChar = t.ifNullOrUndefinedValue(fillChar, ' ');
+        d.assert(t.isStrings(str, fillChar));
+        d.assert(1 <= fillChar.length);
+        d.assert(t.isInt(digit) && (0 <= digit));
+
+        if (digit === 0) {
+          return str;
+        }
+        if (digit <= str.length) {
+          return str;
+        }
+        return s.start(str + s.repeat(fillChar, digit), digit);
+      };
+
+      _.test_fillEnd = function () {
+        d.check('123',    _.fillEnd('123', 1));
+        d.check('123',    _.fillEnd('123', 2));
+        d.check('123',    _.fillEnd('123', 3));
+        d.check('123 ',   _.fillEnd('123', 4));
+        d.check('123  ',  _.fillEnd('123', 5));
+        d.check('1230',   _.fillEnd('123', 4, '0'));
+        d.check('12300',  _.fillEnd('123', 5, '0'));
       };
 
       //----------------------------------------
@@ -4416,6 +4568,493 @@ if (typeof module === 'undefined') {
     }()); //enumType
 
     //----------------------------------------
+    //◆Point
+    //----------------------------------------
+
+    _.point = stsLib.point || {};
+    (function () {
+      var _ = stsLib.point;
+
+      //----------------------------------------
+      //・Pointコンストラクタ
+      //----------------------------------------
+      _.Point = function (x, y) {
+        if (!(this instanceof stsLib.point.Point)) {
+          return new stsLib.point.Point(x, y);
+        }
+        d.assert(t.isNumbers(x,y));
+        this.x = x;
+        this.y = y;
+      };
+      (function () {
+        var _ = stsLib.point.Point;
+
+        //----------------------------------------
+        //・移動
+        //----------------------------------------
+        _.prototype.move = function (moveX, moveY) {
+          this.x += moveX;
+          this.y += moveY;
+          return this;
+        };
+
+        //----------------------------------------
+        //◇範囲チェック
+        //----------------------------------------
+        //  ・parentRectも正規化される
+        //----------------------------------------
+
+        _.prototype.inRect = function (parentRect) {
+          d.assert(t.isRect(parentRect));
+
+          parentRect.normalize();
+          return (
+            n.inRange(this.x, parentRect.left, parentRect.right)
+            && n.inRange(this.y, parentRect.top, parentRect.bottom)
+          );
+        };
+
+      }()); //point.prototype
+    }()); //point
+
+    //----------------------------------------
+    //◆Vector
+    //----------------------------------------
+
+    _.vector = stsLib.vector || {};
+    (function () {
+      var _ = stsLib.vector;
+
+      //----------------------------------------
+      //・Vectorコンストラクタ
+      //----------------------------------------
+      _.Vector = function (point) {
+        if (!(this instanceof stsLib.vector.Vector)) {
+          return new stsLib.vector.Vector(arguments[0], arguments[1]);
+        }
+        d.assert(t.isPoint(arguments[0]));
+        if (t.isNullOrUndefined(arguments[1])) {
+          this.start = p.Point(0, 0);
+          this.end = p.Point(point.x, point.y);
+        } else {
+          d.assert(t.isPoint(arguments[1]));
+          this.start = p.Point(point.x, point.y);
+          this.end = p.Point(arguments[1].x, arguments[1].y);
+        }
+      };
+      (function () {
+        var _ = stsLib.vector.Vector;
+
+        //----------------------------------------
+        //・Vector 長さ
+        //----------------------------------------
+        _.prototype.length = function () {
+          var xDiff = this.end.x - this.start.x;
+          var yDiff = this.end.y - this.start.y;
+          return Math.pow(Math.pow(xDiff, 2) + Math.pow(yDiff, 2), 0.5);
+        };
+
+        stsLib.vector.test_vector_length = function () {
+          var v1 = v.Vector(p.Point(0,0), p.Point(1,1));
+          d.check(Math.pow(2, 0.5), v1.length());
+          var v2 = v.Vector(p.Point(0,0), p.Point(3,4));
+          d.check(5, v2.length());
+
+          v1 = v.Vector(p.Point(1,1));
+          d.check(Math.pow(2, 0.5), v1.length());
+          v2 = v.Vector(p.Point(3,4));
+          d.check(5, v2.length());
+        };
+
+        //----------------------------------------
+        //・開始位置移動
+        //----------------------------------------
+        //  ・vectorの原点が移動して、終点も移動する
+        //    vectorの方向は変わらない
+        //----------------------------------------
+        _.prototype.setStart = function (point) {
+          d.assert(t.isPoint(point));
+          var xDiff = this.end.x - this.start.x;
+          var yDiff = this.end.y - this.start.y;
+          this.start.x = point.x;
+          this.start.y = point.y; 
+          this.end.x = this.start.x + xDiff;
+          this.end.y = this.start.y + yDiff;
+          return this;
+        };
+
+        stsLib.vector.test_vector_setStart = function () {
+          var v1 = v.Vector(p.Point(1,1), p.Point(3,4));
+          v1.setStart(p.Point(0,0));
+          d.check(0, v1.start.x);
+          d.check(0, v1.start.y);
+          d.check(2, v1.end.x);
+          d.check(3, v1.end.y);
+        };
+
+        //----------------------------------------
+        //・Vector加算
+        //----------------------------------------
+        //  ・vectorの終点が加算された結果になる
+        //----------------------------------------
+        _.prototype.add = function (vector) {
+          d.assert(t.isVector(vector));
+          var xDiff = vector.end.x - vector.start.x;
+          var yDiff = vector.end.y - vector.start.y;
+          this.end.x = this.end.x + xDiff;
+          this.end.y = this.end.y + yDiff;
+          return this;
+        };
+
+        stsLib.vector.test_vector_add = function () {
+          var v1 = v.Vector(p.Point(1,1), p.Point(3,4));
+          var v2 = v.Vector(p.Point(2,2), p.Point(5,6));
+          v1.add(v2);
+          d.check(1, v1.start.x);
+          d.check(1, v1.start.y);
+          d.check(6, v1.end.x);
+          d.check(8, v1.end.y);
+
+          d.check(2, v2.start.x);
+          d.check(2, v2.start.y);
+          d.check(5, v2.end.x);
+          d.check(6, v2.end.y); //v2には影響なし
+        };
+
+        //----------------------------------------
+        //・Vector 正規化 (長さを設定する)
+        //----------------------------------------
+        _.prototype.normalize = function (len) {
+          len = t.ifNullOrUndefinedValue(len, 1);
+          var originalLength = this.length();
+          if (originalLength === 0) {
+            return this;
+          }
+          var xDiff = this.end.x - this.start.x;
+          var yDiff = this.end.y - this.start.y;
+          this.end.x = this.start.x + (xDiff * len / originalLength);
+          this.end.y = this.start.y + (yDiff * len / originalLength);
+          return this;
+        };
+
+        stsLib.vector.test_vector_normalize = function () {
+          var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
+          v1.normalize(10);
+          d.check(0, v1.start.x);
+          d.check(0, v1.start.y);
+          d.check(6, v1.end.x);
+          d.check(8, v1.end.y);
+        };
+
+
+        //----------------------------------------
+        //・逆ベクトル
+        //----------------------------------------
+        _.prototype.inverse = function () {
+          var xBuff = this.start.x;
+          var yBuff = this.start.y;
+          this.start.x = this.end.x;
+          this.start.y = this.end.y;
+          this.end.x = xBuff;
+          this.end.y = yBuff;
+          return this;
+        };
+
+        stsLib.vector.test_vector_inverse = function () {
+          var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
+          v1.inverse();
+          d.check(3, v1.start.x);
+          d.check(4, v1.start.y);
+          d.check(0, v1.end.x);
+          d.check(0, v1.end.y);
+        };
+
+        //----------------------------------------
+        //・法線ベクトル
+        //----------------------------------------
+        //  ・右に90度傾いた方向のベクトルになる
+        //----------------------------------------
+        _.prototype.normalRight = function () {
+          var xDiff = this.end.x - this.start.x;
+          var yDiff = this.end.y - this.start.y;
+          this.end.x = this.start.x + yDiff;
+          this.end.y = this.start.y - xDiff;
+          return this;
+        };
+
+        stsLib.vector.test_vector_normalRight = function () {
+          var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
+          v1.normalRight();
+          d.check(0, v1.start.x);
+          d.check(0, v1.start.y);
+          d.check(4, v1.end.x);
+          d.check(-3, v1.end.y);
+        };
+
+        //----------------------------------------
+        //・法線ベクトル
+        //----------------------------------------
+        //  ・左に90度傾いた方向のベクトルになる
+        //----------------------------------------
+        _.prototype.normalLeft = function () {
+          var xDiff = this.end.x - this.start.x;
+          var yDiff = this.end.y - this.start.y;
+          this.end.x = this.start.x - yDiff;
+          this.end.y = this.start.y + xDiff;
+          return this;
+        };
+
+        stsLib.vector.test_vector_normalLeft = function () {
+          var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
+          v1.normalLeft();
+          d.check(0, v1.start.x);
+          d.check(0, v1.start.y);
+          d.check(-4, v1.end.x);
+          d.check( 3, v1.end.y);
+        };
+
+        //----------------------------------------
+        //・平行移動
+        //----------------------------------------
+        //  ・正の値なら法線ベクトル方向(右90度)に
+        //    負の値なら逆法線ベクトル方向に移動
+        //----------------------------------------
+        _.prototype.moveParallel = function (value) {
+          if (t.isNullOrUndefined(value) || (value === 0)) {
+            return this;
+          }
+          var endBuff = stsLib.point.Point(this.end.x, this.end.y);
+          this.normalRight().normalize(value);
+          var newStart = stsLib.point.Point(this.end.x, this.end.y);
+          this.setStart(endBuff);
+          var newEnd = stsLib.point.Point(this.end.x, this.end.y);
+          this.start = newStart;
+          this.end = newEnd;
+          return this;
+        };
+
+        stsLib.vector.test_vector_moveParallels = function () {
+          var v1 = v.Vector(p.Point(1,1), p.Point(4,5));
+          v1.moveParallel(5);
+          d.check(5,  v1.start.x);
+          d.check(-2, v1.start.y);
+          d.check(8,  v1.end.x);
+          d.check(2,  v1.end.y);
+        };
+
+      }()); //vector.prototype
+    }()); //vector
+
+    //----------------------------------------
+    //◆Rect
+    //----------------------------------------
+
+    _.rect = stsLib.rect || {};
+    (function () {
+      var _ = stsLib.rect;
+
+      //----------------------------------------
+      //・Rectコンストラクタ
+      //----------------------------------------
+      _.Rect = function (point1, point2) {
+        if (!(this instanceof stsLib.rect.Rect)) {
+          return new stsLib.rect.Rect(point1, point2);
+        }
+        d.assert(t.isPoints(point1, point2));
+        this.top    = Math.min(point1.y, point2.y);
+        this.left   = Math.min(point1.x, point2.x);
+        this.bottom = Math.max(point1.y, point2.y);
+        this.right  = Math.max(point1.x, point2.x);
+      };
+
+      _.test_Rect = function () {
+        var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+        d.check(2,  r1.top);
+        d.check(2,  r1.left);
+        d.check(6,  r1.bottom);
+        d.check(4,  r1.right);
+      };
+
+      (function () {
+        var _ = stsLib.rect.Rect;
+
+        //----------------------------------------
+        //・正規化
+        //----------------------------------------
+        //  ・left < right と top < bottom を正しくする
+        //----------------------------------------
+        _.prototype.normalize = function () {
+          var val;
+          if (this.bottom < this.top) {
+            val = this.top;
+            this.top = this.bottom;
+            this.bottom = val;
+          }
+          if (this.right < this.left) {
+            val = this.left;
+            this.left = this.right;
+            this.right = val;
+          }
+          return this;
+        };
+
+        //----------------------------------------
+        //◇幅/高さ
+        //----------------------------------------
+        _.prototype.width = function () {
+          return Math.abs(this.right - this.left);
+        };
+
+        _.prototype.setWidth = function (value) {
+          d.assert(t.isNumber(value));
+          this.normalize();
+          if (0 <= value) {
+            this.right = this.left + value;
+          } else {
+            this.right = this.left;
+            this.left = this.right + value;
+          }
+          d.assert(this.left <= this.right);
+          return this;
+        };
+
+        _.prototype.height = function () {
+          return Math.abs(this.bottom - this.top);
+        };
+
+        _.prototype.setHeight = function (value) {
+          d.assert(t.isNumber(value));
+          this.normalize();
+          if (0 <= value) {
+            this.bottom = this.top + value;
+          } else {
+            this.bottom = this.top;
+            this.top = this.bottom + value;
+          }
+          d.assert(this.top <= this.bottom);
+          return this;
+        };
+
+        stsLib.rect.test_rect_width_height = function () {
+          var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+          d.check(2,  r1.width());
+          d.check(4,  r1.height());
+
+          r1.setWidth(10);
+          r1.setHeight(10);
+          d.check(10,  r1.width());
+          d.check(10,  r1.height());
+
+          r1.setWidth(-5);
+          r1.setHeight(-5);
+          d.check(5,  r1.width());
+          d.check(5,  r1.height());
+
+          d.check(-3, r1.top);
+          d.check(-3, r1.left);
+          d.check(2, r1.bottom);
+          d.check(2, r1.right);
+        };
+
+        //----------------------------------------
+        //◇中心
+        //----------------------------------------
+        _.prototype.center = function () {
+          return p.Point(
+            (this.left + this.right) / 2, 
+            (this.top + this.bottom) / 2);
+        };
+
+        stsLib.rect.test_rect_center = function () {
+          var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+          var p1 = r1.center();
+          d.check(3,  p1.x);
+          d.check(4, p1.y);
+        };
+
+        //----------------------------------------
+        //◇移動
+        //----------------------------------------
+
+        //----------------------------------------
+        //・setTopLeft
+        //----------------------------------------
+        _.prototype.move = function (moveX, moveY) {
+          d.assert(t.isNumbers(moveX, moveY));
+          this.top    += moveY;
+          this.left   += moveX;
+          this.bottom += moveY;
+          this.right  += moveX;
+          return this.normalize();
+        };
+
+        stsLib.rect.test_rect_move = function () {
+          var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+          r1.move(10, 10);
+          d.check(12, r1.top);
+          d.check(12, r1.left);
+          d.check(16, r1.bottom);
+          d.check(14, r1.right);
+        };
+
+        //----------------------------------------
+        //・setTopLeft
+        //----------------------------------------
+        //  ・引数2つの場合はtop/left指定
+        //    引数1つの場合は、topleft の Point 指定
+        //----------------------------------------
+        _.prototype.setTopLeft = function (topValue, leftValue) {
+          if (arguments.length === 1) {
+            d.assert(t.isPoint(topValue));
+            leftValue = topValue.x;
+            topValue = topValue.y;
+          } else {
+            d.assert(t.isNumbers(topValue, leftValue));
+          }
+          
+          return this.normalize().move(
+            leftValue - this.left,
+            topValue - this.top
+          );
+        };
+
+        stsLib.rect.test_rect_setTopLeft = function () {
+          var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+          r1.setTopLeft(10, 10);
+          d.check(10, r1.top);
+          d.check(10, r1.left);
+          d.check(14, r1.bottom);
+          d.check(12, r1.right);
+
+          r1 = r.Rect(p.Point(2,2), p.Point(4,6));
+          r1.setTopLeft(p.Point(0,0));
+          d.check(0, r1.top);
+          d.check(0, r1.left);
+          d.check(4, r1.bottom);
+          d.check(2, r1.right);
+        };
+
+        //----------------------------------------
+        //◇範囲チェック
+        //----------------------------------------
+        //  ・parentRectも正規化される
+        //----------------------------------------
+        _.prototype.inRect = function (parentRect) {
+          d.assert(t.isRect(parentRect));
+
+          parentRect.normalize();
+          return (
+            n.inRange(this.left, parentRect.left, parentRect.right)
+            && n.inRange(this.right, parentRect.left, parentRect.right)
+            && n.inRange(this.top, parentRect.top, parentRect.bottom)
+            && n.inRange(this.bottom, parentRect.top, parentRect.bottom)
+          );
+        };
+
+      }()); //vector.prototype
+    }()); //rect
+
+    //----------------------------------------
     //◆グローバル拡張
     //----------------------------------------
     (function () {
@@ -4542,11 +5181,13 @@ if (typeof module === 'undefined') {
         s.test_includeStart();
         s.test_excludeStart();
         s.test_deleteStart();
+        s.test_fillStart();
         s.test_end();
         s.test_isEnd();
         s.test_includeEnd();
         s.test_excludeEnd();
         s.test_deleteEnd();
+        s.test_fillEnd();
 
         s.test_startFirstDelim();
         s.test_startLastDelim();
@@ -4629,6 +5270,25 @@ if (typeof module === 'undefined') {
         var e = stsLib.enumType;
         e.test_Enum();
         e.test_EnumNameValue();
+
+        t.test_isPoint();
+        t.test_isVector();
+        t.test_isRect();
+
+        v.test_vector_length();
+        v.test_vector_setStart();
+        v.test_vector_add();
+        v.test_vector_normalize();
+        v.test_vector_inverse();
+        v.test_vector_normalRight();
+        v.test_vector_normalLeft();
+        v.test_vector_moveParallels();
+
+        r.test_Rect();
+        r.test_rect_width_height();
+        r.test_rect_center();
+        r.test_rect_move();
+        r.test_rect_setTopLeft();
 
         d.check(true,   Array.isArray([]));
         d.check(false,  Array.isArray(123));
@@ -4786,6 +5446,9 @@ if (typeof module === 'undefined') {
     var a = stsLib.array;
     var n = stsLib.number;
     var s = stsLib.string;
+    var p = stsLib.point;
+    var v = stsLib.vector;
+    var r = stsLib.rect;
 
   }(stsLib, this));   //stsLib
 
