@@ -297,3 +297,7 @@
 ・  inStart/End outStart/End を inputStart/End outputStart/End に名前変更
 ・  remainStart/End 追加
 ・	isRects/isNotRects 追加
+◇	ver 2017/09/13
+・	array.insertのindex引数に範囲チェックを追加
+・	string.parseInt/parseNumber 追加
+・	array.indexOfArray追加

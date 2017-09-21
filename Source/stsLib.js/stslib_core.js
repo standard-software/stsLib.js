@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/08/16
+Version:        2017/09/13
 //----------------------------------------*/
 
 //----------------------------------------
@@ -594,7 +594,7 @@ if (typeof module === 'undefined') {
           a.expand2Dimension(a.fromArgs(arguments)));
       };
 
-      _.isNotInt = function (value) {
+      _.isNotInts = function (value) {
         return _.isTypeCheck(function (v) {
           return !(_.isInt(v));
         }, a.expand2Dimension(a.fromArgs(arguments)));
@@ -628,12 +628,12 @@ if (typeof module === 'undefined') {
         d.check(true,   _.isInts(10, 20, 30));
         d.check(false,  _.isInts(1, 2, 3.5));
 
-        d.check(false,  _.isNotInt(1, 2));
-        d.check(false,  _.isNotInt(3, 4, 5));
-        d.check(false,  _.isNotInt(10, 20, 30));
-        d.check(false,  _.isNotInt(1, 2, 3.5));
-        d.check(false,  _.isNotInt(1, 2.1, 3.5));
-        d.check(true,   _.isNotInt(1.1, 2.2, 3.5));
+        d.check(false,  _.isNotInts(1, 2));
+        d.check(false,  _.isNotInts(3, 4, 5));
+        d.check(false,  _.isNotInts(10, 20, 30));
+        d.check(false,  _.isNotInts(1, 2, 3.5));
+        d.check(false,  _.isNotInts(1, 2.1, 3.5));
+        d.check(true,   _.isNotInts(1.1, 2.2, 3.5));
 
         d.check(false,  _.isInts([]));
         d.check(true,   _.isInts([1]));
@@ -746,6 +746,48 @@ if (typeof module === 'undefined') {
         d.check(false,  _.isObjects(null));
         d.check(false,  _.isObjects(undefined));
       };
+
+      //----------------------------------------
+      //◇isArray
+      //----------------------------------------
+      //  ・isArraysは
+      //    可変引数の全てがオブジェクトかどうかを確認する
+      //----------------------------------------
+
+      _.isArray = function (arg) {
+        return Object.prototype.toString.call(arg) === '[object Array]';
+      };
+
+      _.isArrays = function (value) {
+        return _.isTypeCheck(_.isArray,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotArrays = function (value) {
+        return _.isTypeCheck(function (v) {
+          return !(_.isArray(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isArray = function () {
+
+        d.check(true, _.isArrays([123]));
+        d.check(true, _.isArrays([]));
+        d.check(true, _.isArrays([1,2,3]));
+        d.check(false,_.isArrays(123));
+        d.check(false,_.isArrays("1,2,3"));
+
+        d.check(true,   _.isArrays([1], [2]));
+        d.check(true,   _.isArrays([3], [4], [5]));
+        d.check(true,   _.isArrays([10, 20], [30]));
+        d.check(false,  _.isArrays([1, 2], 3));
+
+        d.check(true,   _.isNotArrays(1, 2));
+        d.check(false,  _.isNotArrays([3], [4], 5));
+        d.check(true,   _.isNotArrays(10, 20, 30));
+        d.check(false,  _.isNotArrays(10, 20, [30]));
+      };
+
 
     }());
 
@@ -1056,12 +1098,14 @@ if (typeof module === 'undefined') {
       //  ・戻り値も同じ配列の参照を返す
       //  ・indexはarray.lengthと同じ値の場合は
       //    配列に追加することになる
+      //  ・indexを省略すると先頭に挿入する
       //  ・unshiftやpushはspliceを使えば使わなくてよい
       //----------------------------------------
       _.insert = function (array, value, index) {
         d.assert(Array.isArray(array));
         index = t.ifNullOrUndefinedValue(index, 0);
         d.assert(t.isInt(index));
+        d.assert(n.inRange(index, 0, array.length));
 
         array.splice(index, 0, value);
         return array;
@@ -3516,6 +3560,17 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //◇数値変換
+      //----------------------------------------
+      _.parseNumber = function (str) {
+        return Number(str);
+      };
+
+      _.parseInt = function (str) {
+        return parseInt(str, 10);
+      };
+
+      //----------------------------------------
       //◇文字列拡張メソッド
       //----------------------------------------
       //  ・拡張メソッドのように後方にメソッドを接続して
@@ -4389,7 +4444,7 @@ if (typeof module === 'undefined') {
       //  ・参考:書籍:JavaScriptパターン P51
       //----------------------------------------
       _.Array.isArray = _.Array.isArray || function (arg) {
-        return Object.prototype.toString.call(arg) === '[object Array]';
+        return t.isArray(arg);
       };
 
       //----------------------------------------
@@ -4462,6 +4517,7 @@ if (typeof module === 'undefined') {
         // t.test_isIntArray();
         t.test_isString();
         t.test_isObject();
+        // t.test_isArray();
 
         var n = stsLib.number;
         n.test_round();
