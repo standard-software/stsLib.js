@@ -4759,6 +4759,7 @@ if (typeof module === 'undefined') {
         //・移動
         //----------------------------------------
         _.prototype.move = function(moveX, moveY) {
+          c.assert(t.isInts(moveX, moveY));
           this.x += moveX;
           this.y += moveY;
           return this;
@@ -5014,8 +5015,6 @@ if (typeof module === 'undefined') {
           c.check(8,  v1.end.x);
           c.check(2,  v1.end.y);
         };
-
-        
 
       }()); //vector.prototype
     }()); //vector
