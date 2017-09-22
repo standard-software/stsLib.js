@@ -304,3 +304,10 @@
 ◇  ver 2017/09/21
 ・  string.fillStart/End 追加
 ・  stslib_graphics.js を stslib_core.js に統合
+◇  ver 2017/09/22
+・  stsLib.debug を stsLib.compare に変更
+・  array と string に isIncludeAny/isIncludeFunc を追加
+・  string.parseNumber/parseInt を修正。
+    テストコード追加
+・  point.distance 追加。
+    vector.length も処理を以降。

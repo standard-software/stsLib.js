@@ -225,34 +225,33 @@ if (typeof module === 'undefined') {
         }
 
         _.test_load = function () {
-          var d = stsLib.debug;
 
           var textTest = 'test\r\n123\r456\nÇ†Ç¢Ç§Ç¶Ç®\r\ntest\r\n';
           var folderPathTestBase = lib.wsh.path.scriptFolderPath() + 
             '\\TestData\\FileIoTest';
 
-          d.check(textTest, _.load(folderPathTestBase + '\\SJIS_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\SJIS_File.txt',
             _.encoding.Shift_JIS));
-          d.check(textTest, _.load(folderPathTestBase + '\\UTF-8_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\UTF-8_File.txt',
             _.encoding.UTF8_BOM));
-          d.check(textTest, _.load(folderPathTestBase + '\\UTF-8N_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\UTF-8N_File.txt',
             _.encoding.UTF8_BOM_NO));
-          d.check(textTest, _.load(folderPathTestBase + '\\UTF-16LE_BOM_ON_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\UTF-16LE_BOM_ON_File.txt',
             _.encoding.UTF16_LE_BOM));
-          d.check(textTest, _.load(folderPathTestBase + '\\UTF-16LE_BOM_OFF_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\UTF-16LE_BOM_OFF_File.txt',
             _.encoding.UTF16_LE_BOM_NO));
-          d.check(textTest, _.load(folderPathTestBase + '\\UTF-16BE_BOM_OFF_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\UTF-16BE_BOM_OFF_File.txt',
             _.encoding.UTF16_BE_BOM_NO));
-          d.check(textTest, _.load(folderPathTestBase + '\\UTF-16BE_BOM_ON_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\UTF-16BE_BOM_ON_File.txt',
             _.encoding.UTF16_BE_BOM));
-          d.check(textTest, _.load(folderPathTestBase + '\\JIS_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\JIS_File.txt',
             _.encoding.JIS));
-          d.check(textTest, _.load(folderPathTestBase + '\\EUC-JP_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\EUC-JP_File.txt',
             _.encoding.EUC_JP));
-          d.check(textTest, _.load(folderPathTestBase + '\\UTF-7_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\UTF-7_File.txt',
             _.encoding.UTF_7));
           textTest = stsLib.string.replaceAll(textTest, 'Ç†Ç¢Ç§Ç¶Ç®', '?????')
-          d.check(textTest, _.load(folderPathTestBase + '\\ASCII_File.txt',
+          c.check(textTest, _.load(folderPathTestBase + '\\ASCII_File.txt',
             _.encoding.ASCII));
         }
 
@@ -493,6 +492,18 @@ if (typeof module === 'undefined') {
       }
 
     }());   //stsLib.test
+
+    //----------------------------------------
+    //Åüè»ó™åƒÇ—èoÇµ
+    //----------------------------------------
+    var t = stsLib.type;
+    var c = stsLib.compare;
+    var a = stsLib.array;
+    var n = stsLib.number;
+    var s = stsLib.string;
+    var p = stsLib.point;
+    var v = stsLib.vector;
+    var r = stsLib.rect;
 
   }(stsLib, this));   //stsLib
 

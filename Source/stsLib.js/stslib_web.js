@@ -151,10 +151,9 @@ if (typeof module === 'undefined') {
       _.test_getUrlParameter = function () {
           //….html?a=1&b=2
           //というアドレスで受け取ると次のように動作する
-          var d = stsLib.debug;
           var arg = getUrlParameter();
-          d.check("1", arg.a);
-          d.check("2", arg.b);
+          c.check("1", arg.a);
+          c.check("2", arg.b);
       }
       
       //----------------------------------------
@@ -228,7 +227,6 @@ if (typeof module === 'undefined') {
       
       _.test_intervalForTo = function (intervalForToFunc) {
       
-        var d = stsLib.debug;
         var test01 = '';
         intervalForToFunc(5, 10, 500, function(index) {
       
@@ -237,10 +235,10 @@ if (typeof module === 'undefined') {
       
           if (index === 10) {
             //動作確認
-            d.check('5678910', test01);
+            c.check('5678910', test01);
           }
           if (index === 11) {
-            d.assert('test01');
+            c.assert('test01');
           }
         });
       
@@ -253,10 +251,10 @@ if (typeof module === 'undefined') {
           //7のときだけcontinueしている
       
           if (index === 10) {
-            d.check('5566788991010', test02);
+            c.check('5566788991010', test02);
           }
           if (index === 11) {
-            d.assert('test02');
+            c.assert('test02');
           }
         });
       
@@ -265,14 +263,14 @@ if (typeof module === 'undefined') {
       
           test03 = test03 + index.toString();
           if (index === 8) { 
-            d.check('5566778', test03);
+            c.check('5566778', test03);
             return false; 
           }
           test03 = test03 + index.toString();
           //8でbreakしている
       
           if (index === 9) {
-            d.assert('test03');
+            c.assert('test03');
           }
         });
       
@@ -281,10 +279,10 @@ if (typeof module === 'undefined') {
           test04 = test04 + index.toString();
       
           if (index === 15) {
-            d.check('15', test04);
+            c.check('15', test04);
           }
           if (index === 16) {
-            d.assert('test04');
+            c.assert('test04');
           }
         });
       
@@ -365,7 +363,6 @@ if (typeof module === 'undefined') {
       
       _.test_intervalForDownTo = function (intervalForDownToFunc) {
       
-        var d = stsLib.debug;
         var test01 = '';
         intervalForDownToFunc(10, 5, 500, function(index) {
       
@@ -373,10 +370,10 @@ if (typeof module === 'undefined') {
       
           if (index === 5) {
             //動作確認
-            d.check('1098765', test01);
+            c.check('1098765', test01);
           }
           if (index === 4) {
-            d.assert('test01');
+            c.assert('test01');
           }
         });
       
@@ -389,10 +386,10 @@ if (typeof module === 'undefined') {
           //7のときだけcontinueしている
       
           if (index === 5) {
-            d.check('1010998876655', test02);
+            c.check('1010998876655', test02);
           }
           if (index === 4) {
-            d.assert('test02');
+            c.assert('test02');
           }
         });
       
@@ -401,14 +398,14 @@ if (typeof module === 'undefined') {
       
           test03 = test03 + index.toString();
           if (index === 8) { 
-            d.check('1010998', test03);
+            c.check('1010998', test03);
             return false; 
           }
           test03 = test03 + index.toString();
           //8でbreakしている
       
           if (index === 7) {
-            d.assert('test03');
+            c.assert('test03');
           }
         });
       
@@ -418,10 +415,10 @@ if (typeof module === 'undefined') {
           test04 = test04 + index.toString();
       
           if (index === 15) {
-            d.check('15', test04);
+            c.check('15', test04);
           }
           if (index === 16) {
-            d.assert('test04');
+            c.assert('test04');
           }
         });
       
@@ -449,6 +446,18 @@ if (typeof module === 'undefined') {
       }
 
     }());   //stsLib.web
+
+    //----------------------------------------
+    //◆省略呼び出し
+    //----------------------------------------
+    var t = stsLib.type;
+    var c = stsLib.compare;
+    var a = stsLib.array;
+    var n = stsLib.number;
+    var s = stsLib.string;
+    var p = stsLib.point;
+    var v = stsLib.vector;
+    var r = stsLib.rect;
 
   }(stsLib, this));   //stsLib
 

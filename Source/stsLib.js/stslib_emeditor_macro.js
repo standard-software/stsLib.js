@@ -10,7 +10,7 @@ All Right Reserved:
 	Name:         Standard Software
 	URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/06/22
+Version:        2017/09/22
 //----------------------------------------*/
 
 //----------------------------------------
@@ -66,7 +66,6 @@ if (typeof module === 'undefined') {
       //行がコメントアウトされているかどうかを判断する関数
       _.isLineComment = function (line, commentMark) {
         //alert('isLineComment');
-        var s = stsLib.string;
         commentMark = s.excludeEnd(commentMark, ' ');
         if (s.startsWith(
           s.trimStart(line, [' ', '\t']), commentMark)) {
@@ -80,7 +79,6 @@ if (typeof module === 'undefined') {
 
       //複数行が全てコメントアウトされているかどうか判断する関数
       _.isLinesComment = function (top, bottom, commentMark) {
-        var s = stsLib.string;
         var line;
         for (var i = top; i <= bottom; i += 1) {
           line = document.GetLine(i);
@@ -95,9 +93,7 @@ if (typeof module === 'undefined') {
 
       //1行をコメントアウトする関数
       _.setLineCommentOn = function (line, indentPosition, commentMark) {
-        var s = stsLib.string;
-        var d = stsLib.debug;
-        d.assert(indentPosition < line.length);
+        c.assert(indentPosition < line.length);
         return s.start(line, indentPosition) +
           commentMark +
           s.end(line, line.length - indentPosition);
@@ -105,9 +101,6 @@ if (typeof module === 'undefined') {
 
       //複数行をコメントアウトする関数
       _.setLinesCommentOn = function (top, bottom, commentMark) {
-        var d = stsLib.debug;
-        var c = stsLib.compare;
-        var s = stsLib.string;
         var MAX_INT= 1000;
         var indent = MAX_INT;
         var line;
@@ -193,9 +186,7 @@ if (typeof module === 'undefined') {
       //◇範囲コメントアウト処理
       //----------------------------------------
       _.setRangeCommentOnOff = function (top, bottom, commentBegin, commentEnd) {
-        var s = stsLib.string;
-        var d = stsLib.debug;
-        d.assert(top <= bottom);
+        c.assert(top <= bottom);
 
         if (top === bottom) {
           var line = document.GetLine(top, eeGetLineWithNewLines);
@@ -264,9 +255,7 @@ if (typeof module === 'undefined') {
       //      document.GetLine のためだと思われる
       //----------------------------------------
       _.selectLinesTopToBottom = function (top, bottom) {
-        var d = stsLib.debug;
-        var c = stsLib.compare;
-        d.assert(top <= bottom);
+        c.assert(top <= bottom);
 
         if (bottom !== document.GetLines()) {
           sel.SetActivePoint(eePosLogical, 1, top, false);
@@ -279,9 +268,7 @@ if (typeof module === 'undefined') {
       };
 
       _.selectLinesBottomToTop = function (top, bottom) {
-        var d = stsLib.debug;
-        var c = stsLib.compare;
-        d.assert(top <= bottom);
+        c.assert(top <= bottom);
 
         if (bottom !== document.GetLines()) {
           sel.SetActivePoint(eePosLogical, 1, bottom + 1, false);
@@ -293,8 +280,21 @@ if (typeof module === 'undefined') {
         }
       };
 
-    }());
-  }());
+    }());   //stsLib.EmEditorMacro
+
+    //----------------------------------------
+    //◆省略呼び出し
+    //----------------------------------------
+    var t = stsLib.type;
+    var c = stsLib.compare;
+    var a = stsLib.array;
+    var n = stsLib.number;
+    var s = stsLib.string;
+    var p = stsLib.point;
+    var v = stsLib.vector;
+    var r = stsLib.rect;
+
+  }());   //stsLib
 
   if (typeof module === 'undefined') {
     requireList['stsLib'] = stsLib;
