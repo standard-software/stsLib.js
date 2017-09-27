@@ -4784,10 +4784,12 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //・距離
         //----------------------------------------
-        _.prototype.distance = function(otherPoint) {
+        //  ・他のポイントとの距離を求める
+        //----------------------------------------
+        _.prototype.distance = function(point) {
           return Math.sqrt(
-            Math.pow(otherPoint.x - this.x, 2) +
-            Math.pow(otherPoint.y - this.y, 2) );
+            Math.pow(point.x - this.x, 2) +
+            Math.pow(point.y - this.y, 2) );
         };
 
       }()); //point.prototype
@@ -4810,12 +4812,12 @@ if (typeof module === 'undefined') {
         }
         c.assert(t.isPoint(arguments[0]));
         if (t.isNullOrUndefined(arguments[1])) {
-          this.start = p.Point(0, 0);
-          this.end = p.Point(point.x, point.y);
+          this.from = p.Point(0, 0);
+          this.to = p.Point(point.x, point.y);
         } else {
           c.assert(t.isPoint(arguments[1]));
-          this.start = p.Point(point.x, point.y);
-          this.end = p.Point(arguments[1].x, arguments[1].y);
+          this.from = p.Point(point.x, point.y);
+          this.to = p.Point(arguments[1].x, arguments[1].y);
         }
       };
       (function() {
@@ -4825,7 +4827,7 @@ if (typeof module === 'undefined') {
         //・Vector 長さ
         //----------------------------------------
         _.prototype.length = function() {
-          return this.start.distance(this.end);
+          return this.from.distance(this.to);
         };
 
         stsLib.vector.test_vector_length = function() {
@@ -4846,24 +4848,24 @@ if (typeof module === 'undefined') {
         //  ・vectorの原点が移動して、終点も移動する
         //    vectorの方向は変わらない
         //----------------------------------------
-        _.prototype.setStart = function(point) {
+        _.prototype.setFrom = function(point) {
           c.assert(t.isPoint(point));
-          var xDiff = this.end.x - this.start.x;
-          var yDiff = this.end.y - this.start.y;
-          this.start.x = point.x;
-          this.start.y = point.y; 
-          this.end.x = this.start.x + xDiff;
-          this.end.y = this.start.y + yDiff;
+          var xDiff = this.to.x - this.from.x;
+          var yDiff = this.to.y - this.from.y;
+          this.from.x = point.x;
+          this.from.y = point.y; 
+          this.to.x = this.from.x + xDiff;
+          this.to.y = this.from.y + yDiff;
           return this;
         };
 
-        stsLib.vector.test_vector_setStart = function() {
+        stsLib.vector.test_vector_setFrom = function() {
           var v1 = v.Vector(p.Point(1,1), p.Point(3,4));
-          v1.setStart(p.Point(0,0));
-          c.check(0, v1.start.x);
-          c.check(0, v1.start.y);
-          c.check(2, v1.end.x);
-          c.check(3, v1.end.y);
+          v1.setFrom(p.Point(0,0));
+          c.check(0, v1.from.x);
+          c.check(0, v1.from.y);
+          c.check(2, v1.to.x);
+          c.check(3, v1.to.y);
         };
 
         //----------------------------------------
@@ -4873,10 +4875,10 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         _.prototype.add = function(vector) {
           c.assert(t.isVector(vector));
-          var xDiff = vector.end.x - vector.start.x;
-          var yDiff = vector.end.y - vector.start.y;
-          this.end.x = this.end.x + xDiff;
-          this.end.y = this.end.y + yDiff;
+          var xDiff = vector.to.x - vector.from.x;
+          var yDiff = vector.to.y - vector.from.y;
+          this.to.x = this.to.x + xDiff;
+          this.to.y = this.to.y + yDiff;
           return this;
         };
 
@@ -4884,15 +4886,15 @@ if (typeof module === 'undefined') {
           var v1 = v.Vector(p.Point(1,1), p.Point(3,4));
           var v2 = v.Vector(p.Point(2,2), p.Point(5,6));
           v1.add(v2);
-          c.check(1, v1.start.x);
-          c.check(1, v1.start.y);
-          c.check(6, v1.end.x);
-          c.check(8, v1.end.y);
+          c.check(1, v1.from.x);
+          c.check(1, v1.from.y);
+          c.check(6, v1.to.x);
+          c.check(8, v1.to.y);
 
-          c.check(2, v2.start.x);
-          c.check(2, v2.start.y);
-          c.check(5, v2.end.x);
-          c.check(6, v2.end.y); //v2には影響なし
+          c.check(2, v2.from.x);
+          c.check(2, v2.from.y);
+          c.check(5, v2.to.x);
+          c.check(6, v2.to.y); //v2には影響なし
         };
 
         //----------------------------------------
@@ -4904,20 +4906,20 @@ if (typeof module === 'undefined') {
           if (originalLength === 0) {
             return this;
           }
-          var xDiff = this.end.x - this.start.x;
-          var yDiff = this.end.y - this.start.y;
-          this.end.x = this.start.x + (xDiff * len / originalLength);
-          this.end.y = this.start.y + (yDiff * len / originalLength);
+          var xDiff = this.to.x - this.from.x;
+          var yDiff = this.to.y - this.from.y;
+          this.to.x = this.from.x + (xDiff * len / originalLength);
+          this.to.y = this.from.y + (yDiff * len / originalLength);
           return this;
         };
 
         stsLib.vector.test_vector_normalize = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.normalize(10);
-          c.check(0, v1.start.x);
-          c.check(0, v1.start.y);
-          c.check(6, v1.end.x);
-          c.check(8, v1.end.y);
+          c.check(0, v1.from.x);
+          c.check(0, v1.from.y);
+          c.check(6, v1.to.x);
+          c.check(8, v1.to.y);
         };
 
 
@@ -4925,22 +4927,22 @@ if (typeof module === 'undefined') {
         //・逆ベクトル
         //----------------------------------------
         _.prototype.inverse = function() {
-          var xBuff = this.start.x;
-          var yBuff = this.start.y;
-          this.start.x = this.end.x;
-          this.start.y = this.end.y;
-          this.end.x = xBuff;
-          this.end.y = yBuff;
+          var xBuff = this.from.x;
+          var yBuff = this.from.y;
+          this.from.x = this.to.x;
+          this.from.y = this.to.y;
+          this.to.x = xBuff;
+          this.to.y = yBuff;
           return this;
         };
 
         stsLib.vector.test_vector_inverse = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.inverse();
-          c.check(3, v1.start.x);
-          c.check(4, v1.start.y);
-          c.check(0, v1.end.x);
-          c.check(0, v1.end.y);
+          c.check(3, v1.from.x);
+          c.check(4, v1.from.y);
+          c.check(0, v1.to.x);
+          c.check(0, v1.to.y);
         };
 
         //----------------------------------------
@@ -4949,20 +4951,20 @@ if (typeof module === 'undefined') {
         //  ・右に90度傾いた方向のベクトルになる
         //----------------------------------------
         _.prototype.normalRight = function() {
-          var xDiff = this.end.x - this.start.x;
-          var yDiff = this.end.y - this.start.y;
-          this.end.x = this.start.x + yDiff;
-          this.end.y = this.start.y - xDiff;
+          var xDiff = this.to.x - this.from.x;
+          var yDiff = this.to.y - this.from.y;
+          this.to.x = this.from.x + yDiff;
+          this.to.y = this.from.y - xDiff;
           return this;
         };
 
         stsLib.vector.test_vector_normalRight = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.normalRight();
-          c.check(0, v1.start.x);
-          c.check(0, v1.start.y);
-          c.check(4, v1.end.x);
-          c.check(-3, v1.end.y);
+          c.check(0, v1.from.x);
+          c.check(0, v1.from.y);
+          c.check(4, v1.to.x);
+          c.check(-3, v1.to.y);
         };
 
         //----------------------------------------
@@ -4971,20 +4973,20 @@ if (typeof module === 'undefined') {
         //  ・左に90度傾いた方向のベクトルになる
         //----------------------------------------
         _.prototype.normalLeft = function() {
-          var xDiff = this.end.x - this.start.x;
-          var yDiff = this.end.y - this.start.y;
-          this.end.x = this.start.x - yDiff;
-          this.end.y = this.start.y + xDiff;
+          var xDiff = this.to.x - this.from.x;
+          var yDiff = this.to.y - this.from.y;
+          this.to.x = this.from.x - yDiff;
+          this.to.y = this.from.y + xDiff;
           return this;
         };
 
         stsLib.vector.test_vector_normalLeft = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.normalLeft();
-          c.check(0, v1.start.x);
-          c.check(0, v1.start.y);
-          c.check(-4, v1.end.x);
-          c.check( 3, v1.end.y);
+          c.check(0, v1.from.x);
+          c.check(0, v1.from.y);
+          c.check(-4, v1.to.x);
+          c.check( 3, v1.to.y);
         };
 
         //----------------------------------------
@@ -4997,23 +4999,105 @@ if (typeof module === 'undefined') {
           if (t.isNullOrUndefined(value) || (value === 0)) {
             return this;
           }
-          var endBuff = stsLib.point.Point(this.end.x, this.end.y);
+          var endBuff = stsLib.point.Point(this.to.x, this.to.y);
           this.normalRight().normalize(value);
-          var newStart = stsLib.point.Point(this.end.x, this.end.y);
-          this.setStart(endBuff);
-          var newEnd = stsLib.point.Point(this.end.x, this.end.y);
-          this.start = newStart;
-          this.end = newEnd;
+          var newStart = stsLib.point.Point(this.to.x, this.to.y);
+          this.setFrom(endBuff);
+          var newEnd = stsLib.point.Point(this.to.x, this.to.y);
+          this.from = newStart;
+          this.to = newEnd;
           return this;
         };
 
         stsLib.vector.test_vector_moveParallels = function() {
           var v1 = v.Vector(p.Point(1,1), p.Point(4,5));
           v1.moveParallel(5);
-          c.check(5,  v1.start.x);
-          c.check(-2, v1.start.y);
-          c.check(8,  v1.end.x);
-          c.check(2,  v1.end.y);
+          c.check(5,  v1.from.x);
+          c.check(-2, v1.from.y);
+          c.check(8,  v1.to.x);
+          c.check(2,  v1.to.y);
+        };
+
+        //----------------------------------------
+        //・媒介変数取得
+        //----------------------------------------
+        //  ・ベクトル交点を求めるための媒介変数を取得する
+        //  ・x = (v1ToX - v1FromX) * T + v1FromX
+        //    y = (v1ToY - v1FromY) * T + v1FromY
+        //    この媒介変数[T]についての直線の方程式を
+        //    別のベクトルとの組み合わせから求める
+        //----------------------------------------
+        _.prototype.parameterForVector = function(vector) {
+          return (
+            (vector.from.y - this.from.y) * (vector.from.x - vector.to.x) 
+            - (vector.from.x - this.from.x) * (vector.from.y - vector.to.y)
+          ) / (
+            (this.from.x - this.to.x) * (vector.from.y - vector.to.y)
+            - (this.from.y - this.to.y) * (vector.from.x - vector.to.x)
+          )
+        };
+
+        //----------------------------------------
+        //・媒介変数取得
+        //----------------------------------------
+        //  ・任意の点との最寄り点を求めるための
+        //    媒介変数を取得する
+        //  ・点を通る元ベクトルの法線ベクトルとの交点になる
+        //----------------------------------------
+        _.prototype.parameterForPoint = function(point) {
+          var xDiff = this.to.x - this.from.x;
+          var yDiff = this.to.y - this.from.y;
+          var normalVector = stsLib.vector.Vector(
+            p.Point(this.from.x + yDiff, this.from.y - xDiff));
+          normalVector.setFrom(point);
+          return this.parameterForVector(normalVector);
+        };
+
+        //----------------------------------------
+        //・媒介変数から点を求める
+        //----------------------------------------
+        _.prototype.pointFromParameter = function(parameter) {
+          return p.Point(
+            parameter * (this.to.x - this.from.x) + this.from.x,
+            parameter * (this.to.y - this.from.y) + this.from.y
+          );
+        };
+
+        //----------------------------------------
+        //・他のベクトルとの交点を求める
+        //----------------------------------------
+        //  ・tが0～1なら交点はthisの線分に含まれている
+        //----------------------------------------
+        _.prototype.intersectionPoint = function(vector) {
+          var t = this.parameterForVector(vector);
+          return this.pointFromParameter(t);
+        };
+
+        //----------------------------------------
+        //・直線と点との距離
+        //----------------------------------------
+        //  ・直線から点に対する垂線の距離
+        //----------------------------------------
+        _.prototype.lineDistance = function(point) {
+          var t = this.parameterForPoint(vector);
+          return this.pointFromParameter(t).distance(point);
+        };
+
+        //----------------------------------------
+        //・線分と点との距離
+        //----------------------------------------
+        //  ・線分の範囲にあればlineDistanceと同じで
+        //    範囲外ならば始点か終点との距離
+        //----------------------------------------
+        _.prototype.segmentDistance = function(point) {
+          var t = this.parameterForPoint(vector);
+          if (t <= 0) {
+            return this.from.distance(point);
+          } else if (1 <= t) {
+            return this.to.distance(point);
+          } else {
+            return this.pointFromParameter(t).distance(point);
+          }
         };
 
       }()); //vector.prototype
@@ -5450,7 +5534,7 @@ if (typeof module === 'undefined') {
         t.test_isRect();
 
         v.test_vector_length();
-        v.test_vector_setStart();
+        v.test_vector_setFrom();
         v.test_vector_add();
         v.test_vector_normalize();
         v.test_vector_inverse();

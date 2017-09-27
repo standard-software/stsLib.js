@@ -311,3 +311,6 @@
     テストコード追加
 ・  point.distance 追加。
     vector.length も処理を以降。
+◇  ver 2017/09/25
+・  Vector.parameterForVector/.parameterForPoint/.pointFromParameter
+    /.intersectionPoint/.lineDistance/.segmentDistance 追加
