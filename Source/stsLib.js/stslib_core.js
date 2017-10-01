@@ -746,8 +746,8 @@ if (typeof module === 'undefined') {
       //    可変引数の全てがオブジェクトかどうかを確認する
       //----------------------------------------
 
-      _.isArray = function(arg) {
-        return Object.prototype.toString.call(arg) === '[object Array]';
+      _.isArray = function(value) {
+        return Object.prototype.toString.call(value) === '[object Array]';
       };
 
       _.isArrays = function(value) {
@@ -778,6 +778,44 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isNotArrays([3], [4], 5));
         c.check(true,   _.isNotArrays(10, 20, 30));
         c.check(false,  _.isNotArrays(10, 20, [30]));
+      };
+
+      //----------------------------------------
+      //◇isDate
+      //----------------------------------------
+      _.isDate = function(value) {
+        return Object.prototype.toString.call(value) === '[object Date]';
+      };
+
+      _.isDates = function(value) {
+        return _.isTypeCheck(_.isDate,
+          a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.isNotDates = function(value) {
+        return _.isTypeCheck(function(v) {
+          return !(_.isDate(v));
+        }, a.expand2Dimension(a.fromArgs(arguments)));
+      };
+
+      _.test_isDate = function() {
+        c.check(true,   _.isDate(new Date(2017,1,1)));
+        c.check(true,   _.isDate(new Date("2017/01")));
+        c.check(true,   _.isDate(new Date(2017,1)));
+        c.check(true,   _.isDate(new Date(2017,1)));
+      };
+
+      //日付としての無効値の Invalid Date を判定する
+      _.isInvalidDate = function(value) {
+        return (_.isDate(value)
+          && (isNaN(value.getTime())));
+        // value.toString() === 'Invalid Date' は
+        // WSH環境では動作しなかったので上記実装になる
+      };
+
+      _.test_isInvalidDate = function() {
+        c.check(false,  _.isInvalidDate(new Date(2017,1,1)));
+        c.check(true,   _.isInvalidDate(new Date('abc')));
       };
 
       //----------------------------------------
@@ -868,6 +906,7 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isRects(r1, {top:1, left:2, bottom:3, right:4}));
         c.check(false,  _.isRects(r1, r2, {}));
       };
+
 
     }()); //type
 
@@ -3149,6 +3188,42 @@ if (typeof module === 'undefined') {
       };
 
       //--------------------------------------
+      //◇Tag deleteFirst/Last
+      //--------------------------------------
+      //  ・検索して見つかった値を削除する
+      //--------------------------------------
+
+      _.deleteFirst = function(str, search) {
+        if (_.indexOfFirst(str, search) === -1) {
+          return str;
+        } else {
+          return _.startFirstDelim(str, search) +
+            _.endFirstDelim(str, search);
+        }
+      };
+
+      _.deleteLast = function(str, search) {
+        if (_.indexOfLast(str, search) === -1) {
+          return str;
+        } else {
+          return _.startLastDelim(str, search) +
+            _.endLastDelim(str, search);
+        }
+      };
+
+      _.test_deleteFirstLast = function() {
+
+        c.check('abcdefghi', _.deleteFirst(
+          _.deleteLast('abc<def>ghi', '>'), '<'));
+        c.check('abc><def><ghi', _.deleteFirst(
+          _.deleteLast('a<bc><def><gh>i', '>'), '<'));
+        c.check('abcdefghi', _.deleteFirst(
+          _.deleteLast('abc>def<ghi', '>'), '<'));
+        c.check('abc>def<ghi', _.deleteFirst(
+          _.deleteLast('a<bc>def<gh>i', '>'), '<'));
+      };
+
+      //--------------------------------------
       //◇Trim
       //--------------------------------------
       _.trimStart = function(str, trimStrArray) {
@@ -3225,42 +3300,6 @@ if (typeof module === 'undefined') {
       _.trimCutEnd = function(str, trimStrArray) {
         return _.end(str,
           str.length - _.trimEnd(str, trimStrArray).length);
-      };
-
-      //--------------------------------------
-      //◇Tag deleteFirst/Last
-      //--------------------------------------
-      //  ・検索して見つかった値を削除する
-      //--------------------------------------
-
-      _.deleteFirst = function(str, search) {
-        if (_.indexOfFirst(str, search) === -1) {
-          return str;
-        } else {
-          return _.startFirstDelim(str, search) +
-            _.endFirstDelim(str, search);
-        }
-      };
-
-      _.deleteLast = function(str, search) {
-        if (_.indexOfLast(str, search) === -1) {
-          return str;
-        } else {
-          return _.startLastDelim(str, search) +
-            _.endLastDelim(str, search);
-        }
-      };
-
-      _.test_deleteFirstLast = function() {
-
-        c.check('abcdefghi', _.deleteFirst(
-          _.deleteLast('abc<def>ghi', '>'), '<'));
-        c.check('abc><def><ghi', _.deleteFirst(
-          _.deleteLast('a<bc><def><gh>i', '>'), '<'));
-        c.check('abcdefghi', _.deleteFirst(
-          _.deleteLast('abc>def<ghi', '>'), '<'));
-        c.check('abc>def<ghi', _.deleteFirst(
-          _.deleteLast('a<bc>def<gh>i', '>'), '<'));
       };
 
       //--------------------------------------
@@ -4276,31 +4315,234 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆日付時刻処理
     //----------------------------------------
-    _.datetime = stsLib.datetime || {};
+    _.date = stsLib.date || {};
     (function() {
-      var _ = stsLib.datetime;
+      var _ = stsLib.date;
 
       //----------------------------------------
-      //◆日付時刻処理
+      //・Dateコンストラクタ
+      //----------------------------------------
+      //  ・new stsLib.date.Date でも
+      //    newなしの stsLib.date.Date でも同じくDate型を返す
+      //  ・引数なしなら現在時刻
+      //    それぞれの引数は省略できる
+      //----------------------------------------
+      _.Date = function(year, month, date,
+        hours, minutes, seconds, milliseconds) {
+
+        if (!(this instanceof _.Date)) {
+          return new _.Date(year, month, date,
+            hours, minutes, seconds, milliseconds);
+        }
+
+        var self = new Date(0);
+        self.setMinutes(
+          self.getTimezoneOffset());
+        //これで現地時間の1970 年 1 月 1 日 00:00:00 にリセットされる
+        if (t.isUndefined(year)) { return self; }
+        self.setFullYear(year);
+
+        if (t.isUndefined(month)) { return self; };
+        self.setMonth(month - 1);
+        if (t.isUndefined(date)) { return self; };
+        self.setDate(date);
+        if (t.isUndefined(hours)) { return self; };
+        self.setHours(hours);
+        if (t.isUndefined(minutes)) { return self; };
+        self.setMinutes(minutes);
+        if (t.isUndefined(seconds)) { return self; };
+        self.setSeconds(seconds);
+        if (t.isUndefined(milliseconds)) { return self; };
+        self.setMilliseconds(milliseconds)
+        return self;
+      };
+
+      _.test_Date = function() {
+        var dt;
+        dt = _.Date(2017, 9, 30, 23, 51, 0, 0);
+        c.check('2017/09/30 23:51:00',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+
+        dt = new _.Date(2017, 9, 30, 23, 51, 0, 0);
+        c.check('2017/09/30 23:51:00',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+
+        dt = new _.Date(2017);
+        c.check('2017/01/01 00:00:00',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+
+        dt = new _.Date(2017, 9);
+        c.check('2017/09/01 00:00:00',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+
+        dt = new _.Date(2017, 9, 30);
+        c.check('2017/09/30 00:00:00',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+
+        dt = new _.Date(2017, 9, 30, 5);
+        c.check('2017/09/30 05:00:00',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+
+        dt = new _.Date(2017, 9, 30, 5, 20);
+        c.check('2017/09/30 05:20:00',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+
+        dt = new _.Date(2017, 9, 30, 5, 20, 35);
+        c.check('2017/09/30 05:20:35',
+          _.formatYYYYMMDD(dt, '/') + ' ' +
+          _.formatHHMMSS(dt, ':') );
+      };
+
+      //----------------------------------------
+      //◇日付時刻フォーマット
       //----------------------------------------
 
-      _.format_yyyy_mm_dd = function(value, delimiter){
-
+      _.formatYYYYMMDD = function(value, delimiter){
+        c.assert(t.isDate(value));
+        delimiter = t.ifNullOrUndefinedValue(delimiter, '');
+        c.assert(t.isString(delimiter));
         return value.getFullYear() +
           delimiter +
-          s.end('0' + (value.getMonth()+1), 2) +
+          s.fillStart((value.getMonth() + 1).toString(), 2, '0') +
           delimiter +
-          s.end('0' + value.getDate(), 2);
+          s.fillStart(value.getDate().toString(), 2, '0');
       };
 
-      _.format_hh_mm_dd = function(value, delimiter){
-
-        return value.getHours() +
+      _.formatHHMMSS = function(value, delimiter){
+        c.assert(t.isDate(value));
+        delimiter = t.ifNullOrUndefinedValue(delimiter, '');
+        c.assert(t.isString(delimiter));
+        return s.fillStart(value.getHours().toString(), 2, '0') +
           delimiter +
-          s.end('0' + value.getMinutes(), 2) +
+          s.fillStart(value.getMinutes().toString(), 2, '0') +
           delimiter +
-          s.end('0' + value.getSeconds(), 2);
+          s.fillStart(value.getSeconds().toString(), 2, '0');
       };
+
+      //----------------------------------------
+      //◇比較
+      //----------------------------------------
+      _.equalYear = function(date1, date2) {
+        c.assert(t.isDates(date1, date2));
+        return (date1.getFullYear() === date2.getFullYear());
+      };
+
+      _.equalMonth = function(date1, date2) {
+        if ((_.equalYear(date1, date2))
+        && (date1.getMonth() === date2.getMonth())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      _.equalDate = function(date1, date2) {
+        if ((_.equalMonth(date1, date2))
+        && (date1.getDate() === date2.getDate())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      _.equalDateHours = function(date1, date2) {
+        if ((_.equalDate(date1, date2))
+        && (date1.getHours() === date2.getHours())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      _.equalDateMinuites = function(date1, date2) {
+        if ((_.equalDateHours(date1, date2))
+        && (date1.getMinutes() === date2.getMinutes())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      _.equalDateSeconds = function(date1, date2) {
+        if ((_.equalDateMinuites(date1, date2))
+        && (date1.getSeconds() === date2.getSeconds())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      _.equalDateMilliseconds = function(date1, date2) {
+        return (date1.getTime() === date2.getTime());
+      };
+
+      _.test_equalDate = function() {
+        var dt1 = new _.Date(2017, 9, 30, 5, 20, 35);
+        var dt2 = new _.Date(2017, 9, 30, 5, 20, 35);
+        c.check(true, _.equalDateSeconds(dt1, dt2));
+
+        var dt3 = new _.Date(2017, 9, 30, 5, 20, 30);
+        var dt4 = new _.Date(2017, 9, 30, 5, 20, 35);
+        c.check(false,_.equalDateSeconds(dt3, dt4));
+        c.check(true, _.equalDateMinuites(dt3, dt4));
+      };
+
+      //----------------------------------------
+      //◇曜日
+      //----------------------------------------
+
+      //----------------------------------------
+      //・配列を指定して曜日文字列を出力する
+      //----------------------------------------
+      //  ・配列指定ない場合は date.getDay() (日=0～土=6)を返す
+      //----------------------------------------
+      _.dayOfWeek = function(date, dayOfWeekNames) {
+        c.assert(t.isDate(date));
+        if (t.isNullOrUndefined(dayOfWeekNames)) {
+          return date.getDay();
+        }
+        c.assert(t.isArray(dayOfWeekNames));
+        c.assert(dayOfWeekNames.length === 7);
+        return dayOfWeekNames[date.getDay()];
+      };
+
+      _.dayOfWeekEn = function(date) {
+        return _.dayOfWeek(date,
+          ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
+      };
+
+      _.dayOfWeekEnglish = function(date) {
+        return _.dayOfWeek(date,
+          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 
+           'Thursday', 'Friday', 'Saturday']);
+      };
+
+      _.dayOfWeekJp = function(date) {
+        return _.dayOfWeek(date,
+          ['日', '月', '火', '水', '木', '金', '土']);
+      };
+
+      _.dayOfWeekJapanese = function(date) {
+        return _.dayOfWeekJp(date) + '曜日';
+      };
+
+      _.test_dayOfWeek = function() {
+        c.check('日曜日', _.dayOfWeekJapanese(
+          _.Date(2017, 10, 1)));
+        c.check('Mon', _.dayOfWeekEn(
+          _.Date(2017, 10, 2)));
+      };
+
+      //----------------------------------------
+      //◇年齢計算
+      //----------------------------------------
 
       //年齢
       _.getAgeYearMonthDay = function(todayDate, birthDate) {
@@ -4463,7 +4705,7 @@ if (typeof module === 'undefined') {
         return result;
       };
 
-    }());
+    }()); //path
 
     //----------------------------------------
     //◆オブジェクト
@@ -4592,7 +4834,7 @@ if (typeof module === 'undefined') {
 
       }());
 
-    }());
+    }()); //object
 
     //----------------------------------------
     //◆列挙型 Enum
@@ -4753,12 +4995,11 @@ if (typeof module === 'undefined') {
         this.y = y;
       };
       (function() {
-        var _ = stsLib.point.Point;
 
         //----------------------------------------
         //・移動
         //----------------------------------------
-        _.prototype.move = function(moveX, moveY) {
+        _.Point.prototype.move = function(moveX, moveY) {
           c.assert(t.isInts(moveX, moveY));
           this.x += moveX;
           this.y += moveY;
@@ -4771,7 +5012,7 @@ if (typeof module === 'undefined') {
         //  ・parentRectも正規化される
         //----------------------------------------
 
-        _.prototype.inRect = function(parentRect) {
+        _.Point.prototype.inRect = function(parentRect) {
           c.assert(t.isRect(parentRect));
 
           parentRect.normalize();
@@ -4786,7 +5027,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・他のポイントとの距離を求める
         //----------------------------------------
-        _.prototype.distance = function(point) {
+        _.Point.prototype.distance = function(point) {
           return Math.sqrt(
             Math.pow(point.x - this.x, 2) +
             Math.pow(point.y - this.y, 2) );
@@ -4821,12 +5062,11 @@ if (typeof module === 'undefined') {
         }
       };
       (function() {
-        var _ = stsLib.vector.Vector;
 
         //----------------------------------------
         //・Vector 長さ
         //----------------------------------------
-        _.prototype.length = function() {
+        _.Vector.prototype.length = function() {
           return this.from.distance(this.to);
         };
 
@@ -4848,7 +5088,7 @@ if (typeof module === 'undefined') {
         //  ・vectorの原点が移動して、終点も移動する
         //    vectorの方向は変わらない
         //----------------------------------------
-        _.prototype.setFrom = function(point) {
+        _.Vector.prototype.setFrom = function(point) {
           c.assert(t.isPoint(point));
           var xDiff = this.to.x - this.from.x;
           var yDiff = this.to.y - this.from.y;
@@ -4859,7 +5099,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_setFrom = function() {
+        _.test_vector_setFrom = function() {
           var v1 = v.Vector(p.Point(1,1), p.Point(3,4));
           v1.setFrom(p.Point(0,0));
           c.check(0, v1.from.x);
@@ -4873,7 +5113,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・vectorの終点が加算された結果になる
         //----------------------------------------
-        _.prototype.add = function(vector) {
+        _.Vector.prototype.add = function(vector) {
           c.assert(t.isVector(vector));
           var xDiff = vector.to.x - vector.from.x;
           var yDiff = vector.to.y - vector.from.y;
@@ -4882,7 +5122,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_add = function() {
+        _.test_vector_add = function() {
           var v1 = v.Vector(p.Point(1,1), p.Point(3,4));
           var v2 = v.Vector(p.Point(2,2), p.Point(5,6));
           v1.add(v2);
@@ -4900,7 +5140,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //・Vector 正規化 (長さを設定する)
         //----------------------------------------
-        _.prototype.normalize = function(len) {
+        _.Vector.prototype.normalize = function(len) {
           len = t.ifNullOrUndefinedValue(len, 1);
           var originalLength = this.length();
           if (originalLength === 0) {
@@ -4913,7 +5153,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_normalize = function() {
+        _.test_vector_normalize = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.normalize(10);
           c.check(0, v1.from.x);
@@ -4926,7 +5166,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //・逆ベクトル
         //----------------------------------------
-        _.prototype.inverse = function() {
+        _.Vector.prototype.inverse = function() {
           var xBuff = this.from.x;
           var yBuff = this.from.y;
           this.from.x = this.to.x;
@@ -4936,7 +5176,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_inverse = function() {
+        _.test_vector_inverse = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.inverse();
           c.check(3, v1.from.x);
@@ -4950,7 +5190,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・右に90度傾いた方向のベクトルになる
         //----------------------------------------
-        _.prototype.normalRight = function() {
+        _.Vector.prototype.normalRight = function() {
           var xDiff = this.to.x - this.from.x;
           var yDiff = this.to.y - this.from.y;
           this.to.x = this.from.x + yDiff;
@@ -4958,7 +5198,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_normalRight = function() {
+        _.test_vector_normalRight = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.normalRight();
           c.check(0, v1.from.x);
@@ -4972,7 +5212,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・左に90度傾いた方向のベクトルになる
         //----------------------------------------
-        _.prototype.normalLeft = function() {
+        _.Vector.prototype.normalLeft = function() {
           var xDiff = this.to.x - this.from.x;
           var yDiff = this.to.y - this.from.y;
           this.to.x = this.from.x - yDiff;
@@ -4980,7 +5220,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_normalLeft = function() {
+        _.test_vector_normalLeft = function() {
           var v1 = v.Vector(p.Point(0,0), p.Point(3,4));
           v1.normalLeft();
           c.check(0, v1.from.x);
@@ -4995,7 +5235,7 @@ if (typeof module === 'undefined') {
         //  ・正の値なら法線ベクトル方向(右90度)に
         //    負の値なら逆法線ベクトル方向に移動
         //----------------------------------------
-        _.prototype.moveParallel = function(value) {
+        _.Vector.prototype.moveParallel = function(value) {
           if (t.isNullOrUndefined(value) || (value === 0)) {
             return this;
           }
@@ -5009,7 +5249,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.vector.test_vector_moveParallels = function() {
+        _.test_vector_moveParallels = function() {
           var v1 = v.Vector(p.Point(1,1), p.Point(4,5));
           v1.moveParallel(5);
           c.check(5,  v1.from.x);
@@ -5027,7 +5267,7 @@ if (typeof module === 'undefined') {
         //    この媒介変数[T]についての直線の方程式を
         //    別のベクトルとの組み合わせから求める
         //----------------------------------------
-        _.prototype.parameterForVector = function(vector) {
+        _.Vector.prototype.parameterForVector = function(vector) {
           return (
             (vector.from.y - this.from.y) * (vector.from.x - vector.to.x) 
             - (vector.from.x - this.from.x) * (vector.from.y - vector.to.y)
@@ -5044,7 +5284,7 @@ if (typeof module === 'undefined') {
         //    媒介変数を取得する
         //  ・点を通る元ベクトルの法線ベクトルとの交点になる
         //----------------------------------------
-        _.prototype.parameterForPoint = function(point) {
+        _.Vector.prototype.parameterForPoint = function(point) {
           var xDiff = this.to.x - this.from.x;
           var yDiff = this.to.y - this.from.y;
           var normalVector = stsLib.vector.Vector(
@@ -5056,7 +5296,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //・媒介変数から点を求める
         //----------------------------------------
-        _.prototype.pointFromParameter = function(parameter) {
+        _.Vector.prototype.pointFromParameter = function(parameter) {
           return p.Point(
             parameter * (this.to.x - this.from.x) + this.from.x,
             parameter * (this.to.y - this.from.y) + this.from.y
@@ -5068,7 +5308,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・tが0～1なら交点はthisの線分に含まれている
         //----------------------------------------
-        _.prototype.intersectionPoint = function(vector) {
+        _.Vector.prototype.intersectionPoint = function(vector) {
           var t = this.parameterForVector(vector);
           return this.pointFromParameter(t);
         };
@@ -5078,7 +5318,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・直線から点に対する垂線の距離
         //----------------------------------------
-        _.prototype.lineDistance = function(point) {
+        _.Vector.prototype.lineDistance = function(point) {
           var t = this.parameterForPoint(vector);
           return this.pointFromParameter(t).distance(point);
         };
@@ -5089,7 +5329,7 @@ if (typeof module === 'undefined') {
         //  ・線分の範囲にあればlineDistanceと同じで
         //    範囲外ならば始点か終点との距離
         //----------------------------------------
-        _.prototype.segmentDistance = function(point) {
+        _.Vector.prototype.segmentDistance = function(point) {
           var t = this.parameterForPoint(vector);
           if (t <= 0) {
             return this.from.distance(point);
@@ -5134,14 +5374,13 @@ if (typeof module === 'undefined') {
       };
 
       (function() {
-        var _ = stsLib.rect.Rect;
 
         //----------------------------------------
         //・正規化
         //----------------------------------------
         //  ・left < right と top < bottom を正しくする
         //----------------------------------------
-        _.prototype.normalize = function() {
+        _.Rect.prototype.normalize = function() {
           var val;
           if (this.bottom < this.top) {
             val = this.top;
@@ -5159,11 +5398,11 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //◇幅/高さ
         //----------------------------------------
-        _.prototype.width = function() {
+        _.Rect.prototype.width = function() {
           return Math.abs(this.right - this.left);
         };
 
-        _.prototype.setWidth = function(value) {
+        _.Rect.prototype.setWidth = function(value) {
           c.assert(t.isNumber(value));
           this.normalize();
           if (0 <= value) {
@@ -5176,11 +5415,11 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        _.prototype.height = function() {
+        _.Rect.prototype.height = function() {
           return Math.abs(this.bottom - this.top);
         };
 
-        _.prototype.setHeight = function(value) {
+        _.Rect.prototype.setHeight = function(value) {
           c.assert(t.isNumber(value));
           this.normalize();
           if (0 <= value) {
@@ -5193,7 +5432,7 @@ if (typeof module === 'undefined') {
           return this;
         };
 
-        stsLib.rect.test_rect_width_height = function() {
+        _.test_rect_width_height = function() {
           var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
           c.check(2,  r1.width());
           c.check(4,  r1.height());
@@ -5217,13 +5456,13 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //◇中心
         //----------------------------------------
-        _.prototype.center = function() {
+        _.Rect.prototype.center = function() {
           return p.Point(
             (this.left + this.right) / 2, 
             (this.top + this.bottom) / 2);
         };
 
-        stsLib.rect.test_rect_center = function() {
+        _.test_rect_center = function() {
           var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
           var p1 = r1.center();
           c.check(3,  p1.x);
@@ -5237,7 +5476,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //・setTopLeft
         //----------------------------------------
-        _.prototype.move = function(moveX, moveY) {
+        _.Rect.prototype.move = function(moveX, moveY) {
           c.assert(t.isNumbers(moveX, moveY));
           this.top    += moveY;
           this.left   += moveX;
@@ -5246,7 +5485,7 @@ if (typeof module === 'undefined') {
           return this.normalize();
         };
 
-        stsLib.rect.test_rect_move = function() {
+        _.test_rect_move = function() {
           var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
           r1.move(10, 10);
           c.check(12, r1.top);
@@ -5261,7 +5500,7 @@ if (typeof module === 'undefined') {
         //  ・引数2つの場合はtop/left指定
         //    引数1つの場合は、topleft の Point 指定
         //----------------------------------------
-        _.prototype.setTopLeft = function(topValue, leftValue) {
+        _.Rect.prototype.setTopLeft = function(topValue, leftValue) {
           if (arguments.length === 1) {
             c.assert(t.isPoint(topValue));
             leftValue = topValue.x;
@@ -5276,7 +5515,7 @@ if (typeof module === 'undefined') {
           );
         };
 
-        stsLib.rect.test_rect_setTopLeft = function() {
+        _.test_rect_setTopLeft = function() {
           var r1 = r.Rect(p.Point(2,2), p.Point(4,6));
           r1.setTopLeft(10, 10);
           c.check(10, r1.top);
@@ -5297,7 +5536,7 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         //  ・parentRectも正規化される
         //----------------------------------------
-        _.prototype.inRect = function(parentRect) {
+        _.Rect.prototype.inRect = function(parentRect) {
           c.assert(t.isRect(parentRect));
 
           parentRect.normalize();
@@ -5311,6 +5550,20 @@ if (typeof module === 'undefined') {
 
       }()); //vector.prototype
     }()); //rect
+
+    //----------------------------------------
+    //◆システム
+    //----------------------------------------
+    _.system = stsLib.system || {};
+    (function() {
+      var _ = stsLib.system;
+
+      _.consoleLogComment = function(str) { 
+        var result = (new Function('return ' + str + ';'))()
+        return 'console.log(' + str + ');  //' + result;
+      };
+
+    }());
 
     //----------------------------------------
     //◆グローバル拡張
@@ -5528,6 +5781,13 @@ if (typeof module === 'undefined') {
         var e = stsLib.enumType;
         e.test_Enum();
         e.test_EnumNameValue();
+
+        t.test_isDate();
+        t.test_isInvalidDate();
+        var date = stsLib.date;
+        date.test_Date();
+        date.test_equalDate();
+        date.test_dayOfWeek();
 
         t.test_isPoint();
         t.test_isVector();

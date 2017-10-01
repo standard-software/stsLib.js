@@ -314,3 +314,14 @@
 ◇  ver 2017/09/25
 ・  Vector.parameterForVector/.parameterForPoint/.pointFromParameter
     /.intersectionPoint/.lineDistance/.segmentDistance 追加
+◇  ver 2017/09/28
+・  getUrlParameterを日本語対応に変更
+・	Vector/Point/Rectの内部を若干修正
+◇  ver 2017/09/30
+・  stsLib.system.consoleLogComment 追加。
+・  stsLib.datetimeをstsLib.dateに変更
+◇  ver 2017/10/01
+・  stsLib.date.Date を作成
+・  date.equalYear～equalDateMilliseconds 作成
+・  dayOfWeek 作成
+

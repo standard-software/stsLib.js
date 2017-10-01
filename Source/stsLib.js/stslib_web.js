@@ -139,13 +139,13 @@ if (typeof module === 'undefined') {
       //◆URLパラメータの受取
       //----------------------------------------
       _.getUrlParameter = function () {
-          var arg = new Object;
-          var pair=location.search.substring(1).split('&');
-          for(var i=0;pair[i];i++) {
-              var kv = pair[i].split('=');
-              arg[kv[0]]=kv[1];
+          var result = {};
+          var params=location.search.substring(1).split('&');
+          for(var i = 0, l = params.length; i < l; i += 1) {
+              var keyValue = params[i].split('=');
+              result[keyValue[0]] = decodeURIComponent(keyValue[1]);
           }
-          return arg;
+          return result;
       }
       
       _.test_getUrlParameter = function () {
