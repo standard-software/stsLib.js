@@ -324,4 +324,7 @@
 ・  stsLib.date.Date を作成
 ・  date.equalYear～equalDateMilliseconds 作成
 ・  dayOfWeek 作成
-
+・  parseNumber/parseInt廃止
+    convertToNumber/convertToInt/convertToString追加
+・	checkFormat 追加
+・	array.sum/average/median/diffMinMax 追加

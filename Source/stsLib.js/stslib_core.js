@@ -907,6 +907,159 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isRects(r1, r2, {}));
       };
 
+      //----------------------------------------
+      //◇変換
+      //----------------------------------------
+
+      //----------------------------------------
+      //・数値(小数点値)
+      //----------------------------------------
+      //  ・変換できない場合はnullを返す
+      //  ・10進数のみ
+      //----------------------------------------
+      _.convertToNumber = function(str) {
+        c.assert(t.isString(str));
+
+        var result;
+        c.assert(s.checkFormat(str, 'float'))
+        result = Number(str);
+        return t.isNumber(result) ? result : null;
+      };
+
+      _.test_convertToNumber = function() {
+        c.check('ER', c.checkException(123, _.convertToNumber, 123));
+
+        c.check('OK', c.checkException(123, _.convertToNumber, '123'));
+        c.check('OK', c.checkException(123, _.convertToNumber, '0123'));
+        c.check('OK', c.checkException(123, _.convertToNumber, '+123'));
+        c.check('OK', c.checkException(-123, _.convertToNumber, '-0123'));
+        c.check('ER', c.checkException(123, _.convertToNumber, ' 123'));
+        c.check('ER', c.checkException(123, _.convertToNumber, '123 '));
+        c.check('ER', c.checkException(123, _.convertToNumber, ' 123 '));
+        c.check('ER', c.checkException(123, _.convertToNumber, '123 0'));
+        c.check('ER', c.checkException(123, _.convertToNumber, '0 123'));
+        c.check('ER', c.checkException(123, _.convertToNumber, '1 123'));
+
+        c.check('ER', c.checkException(123, _.convertToNumber, '123a'));
+        c.check('ER', c.checkException(123, _.convertToNumber, 'a123'));
+
+        c.check('OK', c.checkException(123.4, _.convertToNumber, '123.4'));
+        c.check('OK', c.checkException(123.4, _.convertToNumber, '0123.4'));
+        c.check('OK', c.checkException(123.4, _.convertToNumber, '+123.4'));
+        c.check('OK', c.checkException(-123.4, _.convertToNumber, '-0123.4'));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, ' 123.4'));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, '123.4 '));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, ' 123.4 '));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, '123.4 0'));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, '0 123.4'));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, '1 123.4'));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, '123 .4'));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, '123. 4'));
+
+        c.check('ER', c.checkException(123.4, _.convertToNumber, '123.4a'));
+        c.check('ER', c.checkException(123.4, _.convertToNumber, 'a123.4'));
+
+        c.check('OK', c.checkException(123.45, _.convertToNumber, '123.45'));
+        c.check('ER', c.checkException(123.45, _.convertToNumber, '123.4.5'));
+      };
+
+      //----------------------------------------
+      //・整数値
+      //----------------------------------------
+      //  ・変換できない場合はnullを返す
+      //  ・radixで進数指定、省略時は10進数
+      //  ・2進数/8進数/16進数は負の値なし
+      //----------------------------------------
+      _.convertToInt = function(str, radix) {
+        c.assert(t.isString(str));
+        radix = t.ifNullOrUndefinedValue(radix, 10);
+        c.assert(c.orValue(radix, 10, 2, 8, 16));
+
+        var result;
+        switch (radix) {
+        case 10:
+          c.assert(s.checkFormat(str, 'integer'))
+          result = Number(str);
+          return t.isInt(result) ? result : null;
+        case 2:
+          c.assert(s.checkFormat(str, 'binary'))
+          result = parseInt(str, 2);
+          return t.isInt(result) ? result : null;
+        case 8:
+          c.assert(s.checkFormat(str, 'octal'))
+          result = parseInt(str, 8);
+          return t.isInt(result) ? result : null;
+        case 16:
+          c.assert(s.checkFormat(str, 'hex'))
+          result = parseInt(str, 16);
+          return t.isInt(result) ? result : null;
+        }
+      };
+
+      _.test_convertToInt = function() {
+        c.check('ER', c.checkException(123, _.convertToInt, 123));
+
+        c.check('OK', c.checkException(123, _.convertToInt, '123'));
+        c.check('OK', c.checkException(123, _.convertToInt, '0123'));
+        c.check('OK', c.checkException(123, _.convertToInt, '+123'));
+        c.check('OK', c.checkException(-123, _.convertToInt, '-0123'));
+        c.check('ER', c.checkException(123, _.convertToInt, ' 123'));
+        c.check('ER', c.checkException(123, _.convertToInt, '123 '));
+        c.check('ER', c.checkException(123, _.convertToInt, ' 123 '));
+        c.check('ER', c.checkException(123, _.convertToInt, '123 0'));
+        c.check('ER', c.checkException(123, _.convertToInt, '0 123'));
+        c.check('ER', c.checkException(123, _.convertToInt, '1 123'));
+
+        c.check('ER', c.checkException(123, _.convertToInt, '123a'));
+        c.check('ER', c.checkException(123, _.convertToInt, 'a123'));
+
+        c.check('ER', c.checkException(null, _.convertToInt, '123.4'));
+        c.check('ER', c.checkException(null, _.convertToInt, '0123.4'));
+        c.check('ER', c.checkException(123.4, _.convertToInt, '+123.4'));
+        c.check('ER', c.checkException(-123.4, _.convertToInt, '-0123.4'));
+        c.check('ER', c.checkException(null, _.convertToInt, ' 123.4'));
+        c.check('ER', c.checkException(null, _.convertToInt, '123.4 '));
+        c.check('ER', c.checkException(null, _.convertToInt, ' 123.4 '));
+        c.check('ER', c.checkException(null, _.convertToInt, '123.4 0'));
+        c.check('ER', c.checkException(null, _.convertToInt, '0 123.4'));
+        c.check('ER', c.checkException(null, _.convertToInt, '1 123.4'));
+        c.check('ER', c.checkException(null, _.convertToInt, '123 .4'));
+        c.check('ER', c.checkException(null, _.convertToInt, '123. 4'));
+
+        c.check('ER', c.checkException(null, _.convertToInt, '123.4a'));
+        c.check('ER', c.checkException(null, _.convertToInt, 'a123.4'));
+
+        c.check('ER', c.checkException(123.45, _.convertToInt, '123.4.5'));
+
+        c.check('OK', c.checkException(5, _.convertToInt, '0101', 2));
+        c.check('OK', c.checkException(7, _.convertToInt, '0111', 2));
+        c.check('OK', c.checkException(15, _.convertToInt, '1111', 2));
+        c.check('ER', c.checkException(15, _.convertToInt, '1 111', 2));
+
+        c.check('OK', c.checkException(16, _.convertToInt, '020', 8));
+        c.check('ER', c.checkException(15, _.convertToInt, '0 20', 8));
+
+        c.check('OK', c.checkException(255, _.convertToInt, 'FF', 16));
+        c.check('OK', c.checkException(0, _.convertToInt, '00', 16));
+        c.check('ER', c.checkException(255, _.convertToInt, 'FF FF', 16));
+      };
+
+      _.convertToString = function(number, radix) {
+        c.assert(t.isNumber(number));
+        c.assert(c.orValue(radix, 10, 2, 8, 16));
+        return number.toString(radix);
+      };
+
+      _.test_convertToString = function() {
+        c.check('ff', _.convertToString(255, 16));
+        c.check('b', _.convertToString(11, 16));
+
+        c.check('177', _.convertToString(127, 8));
+        c.check('12', _.convertToString(10, 8));
+
+        c.check('11', _.convertToString(3, 2));
+        c.check('1111', _.convertToString(15, 2));
+      };
 
     }()); //type
 
@@ -1198,13 +1351,65 @@ if (typeof module === 'undefined') {
       //    Math.min/max をラッピングしただけ
       //----------------------------------------
       _.min = function(array) {
-        c.assert(Array.isArray(array));
-        return Math.min.apply(null, a);
+        c.assert(t.isArray(array));
+        return Math.min.apply(null, array);
       };
 
       _.max = function(array) {
-        c.assert(Array.isArray(array));
-        return Math.max.apply(null, a);
+        c.assert(t.isArray(array));
+        return Math.max.apply(null, array);
+      };
+
+      //----------------------------------------
+      //◇sum average
+      //----------------------------------------
+
+      _.sum =  function(array) {
+        c.assert(t.isArray(array));
+        var result = 0;
+        var value;
+        for (var i = 0, l = array.length; i < l; i += 1) {
+          value = array[i];
+          c.assert(t.isNumber(value));
+          result += value;
+        };
+        return result;
+      };
+
+      _.average =  function(array) {
+        return _.sum(array) / array.length;
+      };
+
+      _.test_average = function() {
+        c.check(71, _.average([52,52,70,72,80,100]));
+        c.check(22, _.average([6,9,9,10,10,10,100]));
+      };
+
+      //・中央値
+      _.median = function(array) {
+        if (array.length % 2 === 0) {
+          //偶数個
+          return (
+            array[array.length/2 - 1] +
+            array[array.length/2]
+          ) / 2;
+        } else {
+          //奇数個
+          return array[(array.length-1)/2];
+        }
+      };
+
+      _.test_median = function() {
+        c.check(71, _.median([52,52,70,72,80,100]));
+        c.check(10, _.median([6,9,9,10,10,10,100]));
+      };
+
+      _.diffMinMax = function(array) {
+        return (_.max(array) - _.min(array));
+      };
+
+      _.test_diffMinMax = function() {
+        c.check(48, _.diffMinMax([52,52,70,72,80,100]));
       };
 
       //----------------------------------------
@@ -1995,7 +2200,6 @@ if (typeof module === 'undefined') {
         c.check(true, _.equal([1,2,3,4,5], _.remainEnd([1,2,3,4,5], 5)));
         c.check(true, _.equal([1,2,3,4,5], _.remainEnd([1,2,3,4,5], 6)));
       };
-
 
       //----------------------------------------
       //◇多次元配列
@@ -3847,84 +4051,53 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //◇数値変換
+      //◇文字列の形式チェック
       //----------------------------------------
-      //  ・数値変換できない場合はnullを返す
-      //  ・途中に文字列が含まれている場合は変換できないとみなす
-      //    通常のparseIntと違う
-      //----------------------------------------
-      _.parseNumber = function(str) {
-        c.assert(t.isString(str));
-        var result = Number(str);
-        return t.isNumber(result) ? result : null;
-      };
-
-      _.test_parseNumber = function() {
-        c.check('ER', c.checkException(123, _.parseNumber, 123));
-
-        c.check('OK', c.checkException(123, _.parseNumber, '123'));
-        c.check('OK', c.checkException(123, _.parseNumber, '0123'));
-        c.check('OK', c.checkException(123, _.parseNumber, ' 123'));
-        c.check('OK', c.checkException(123, _.parseNumber, '123 '));
-        c.check('OK', c.checkException(123, _.parseNumber, ' 123 '));
-        c.check('NG', c.checkException(123, _.parseNumber, '123 0'));
-        c.check('NG', c.checkException(123, _.parseNumber, '0 123'));
-        c.check('NG', c.checkException(123, _.parseNumber, '1 123'));
-
-        c.check('NG', c.checkException(123, _.parseNumber, '123a'));
-        c.check('NG', c.checkException(123, _.parseNumber, 'a123'));
-
-        c.check('OK', c.checkException(123.4, _.parseNumber, '123.4'));
-        c.check('OK', c.checkException(123.4, _.parseNumber, '0123.4'));
-        c.check('OK', c.checkException(123.4, _.parseNumber, ' 123.4'));
-        c.check('OK', c.checkException(123.4, _.parseNumber, '123.4 '));
-        c.check('OK', c.checkException(123.4, _.parseNumber, ' 123.4 '));
-        c.check('NG', c.checkException(123.4, _.parseNumber, '123.4 0'));
-        c.check('NG', c.checkException(123.4, _.parseNumber, '0 123.4'));
-        c.check('NG', c.checkException(123.4, _.parseNumber, '1 123.4'));
-        c.check('NG', c.checkException(123.4, _.parseNumber, '123 .4'));
-        c.check('NG', c.checkException(123.4, _.parseNumber, '123. 4'));
-
-        c.check('NG', c.checkException(123.4, _.parseNumber, '123.4a'));
-        c.check('NG', c.checkException(123.4, _.parseNumber, 'a123.4'));
-
-      };
-
-      _.parseInt = function(str) {
-        c.assert(t.isString(str));
-        var result = Number(str);
-        return t.isInt(result) ? result : null;
-      };
-
-      _.test_parseInt = function() {
-        c.check('ER', c.checkException(123, _.parseInt, 123));
-
-        c.check('OK', c.checkException(123, _.parseInt, '123'));
-        c.check('OK', c.checkException(123, _.parseInt, '0123'));
-        c.check('OK', c.checkException(123, _.parseInt, ' 123'));
-        c.check('OK', c.checkException(123, _.parseInt, '123 '));
-        c.check('OK', c.checkException(123, _.parseInt, ' 123 '));
-        c.check('NG', c.checkException(123, _.parseInt, '123 0'));
-        c.check('NG', c.checkException(123, _.parseInt, '0 123'));
-        c.check('NG', c.checkException(123, _.parseInt, '1 123'));
-
-        c.check('NG', c.checkException(123, _.parseInt, '123a'));
-        c.check('NG', c.checkException(123, _.parseInt, 'a123'));
-
-        c.check('OK', c.checkException(null, _.parseInt, '123.4'));
-        c.check('OK', c.checkException(null, _.parseInt, '0123.4'));
-        c.check('OK', c.checkException(null, _.parseInt, ' 123.4'));
-        c.check('OK', c.checkException(null, _.parseInt, '123.4 '));
-        c.check('OK', c.checkException(null, _.parseInt, ' 123.4 '));
-        c.check('OK', c.checkException(null, _.parseInt, '123.4 0'));
-        c.check('OK', c.checkException(null, _.parseInt, '0 123.4'));
-        c.check('OK', c.checkException(null, _.parseInt, '1 123.4'));
-        c.check('OK', c.checkException(null, _.parseInt, '123 .4'));
-        c.check('OK', c.checkException(null, _.parseInt, '123. 4'));
-
-        c.check('OK', c.checkException(null, _.parseInt, '123.4a'));
-        c.check('OK', c.checkException(null, _.parseInt, 'a123.4'));
-
+      _.checkFormat = function(str, formatName) {
+        switch (formatName) {
+        case 'zenkaku':
+          // 全角文字
+          return (str.match(/^[^\x01-\x7E\xA1-\xDF]+$/)) ? true : false;
+        case 'hiragana':
+          // 全角ひらがな
+          return (str.match(/^[\u3041-\u3096]+$/)) ? true : false;
+        case 'katakana':
+          // 全角カタカナ
+          return (str.match(/^[\u30a1-\u30f6]+$/)) ? true : false;
+        case 'alphabet-number':
+          // 半角英数字（大文字・小文字）
+          return (str.match(/^[0-9a-zA-Z]+$/)) ? true : false;
+        case 'number':
+          // 半角数字
+          return (str.match(/^[0-9]+$/)) ? true : false;
+        case 'alphabet':
+          // 半角英字（大文字・小文字）
+          return (str.match(/^[a-zA-Z]+$/)) ? true : false;
+        case 'upper-alphabet':
+          // 半角英字（大文字のみ）
+          return (str.match(/^[A-Z]+$/)) ? true : false;
+        case 'lower-alphabet':
+          // 半角英字（小文字のみ）
+          return (str.match(/^[a-z]+$/)) ? true : false;
+        case 'integer':
+          // 整数値
+          return (str.match(/^[+|-]?[0-9]+$/)) ? true : false;
+        case 'float-only':
+          // 小数点を含むあ値
+          return (str.match(/^[-|+]?[0-9]*\.[0-9]+$/)) ? true : false;
+        case 'float':
+          // 整数値か小数値
+          return (str.match(/^[-|+]?[0-9]*\.[0-9]+$|^[+|-]?[0-9]+$/)) ? true : false;
+        case 'binary':
+          // 2進数
+          return (str.match(/^[01]+$/)) ? true : false;
+        case 'octal':
+          // 8進数
+          return (str.match(/^[0-7]+$/)) ? true : false;
+        case 'hex':
+          // 16進数
+          return (str.match(/^[0-9A-F]+$|^[0-9a-f]+$/)) ? true : false;
+        }
       };
 
       //----------------------------------------
@@ -4461,7 +4634,7 @@ if (typeof module === 'undefined') {
         }
       };
 
-      _.equalDateMinuites = function(date1, date2) {
+      _.equalDateMinutes = function(date1, date2) {
         if ((_.equalDateHours(date1, date2))
         && (date1.getMinutes() === date2.getMinutes())) {
           return true;
@@ -4471,7 +4644,7 @@ if (typeof module === 'undefined') {
       };
 
       _.equalDateSeconds = function(date1, date2) {
-        if ((_.equalDateMinuites(date1, date2))
+        if ((_.equalDateMinutes(date1, date2))
         && (date1.getSeconds() === date2.getSeconds())) {
           return true;
         } else {
@@ -4491,7 +4664,7 @@ if (typeof module === 'undefined') {
         var dt3 = new _.Date(2017, 9, 30, 5, 20, 30);
         var dt4 = new _.Date(2017, 9, 30, 5, 20, 35);
         c.check(false,_.equalDateSeconds(dt3, dt4));
-        c.check(true, _.equalDateMinuites(dt3, dt4));
+        c.check(true, _.equalDateMinutes(dt3, dt4));
       };
 
       //----------------------------------------
@@ -5666,7 +5839,11 @@ if (typeof module === 'undefined') {
         // t.test_isIntArray();
         t.test_isString();
         t.test_isObject();
-        // t.test_isArray();
+        // t.test_isArray()
+
+        t.test_convertToNumber();
+        t.test_convertToInt();
+        t.test_convertToString();
 
         n.test_round();
         n.test_nearEqual();
@@ -5734,9 +5911,11 @@ if (typeof module === 'undefined') {
 
         s.test_formatInsertFirst();
         s.test_formatInsertLast();
-        s.test_parseNumber();
 
         a.test_equal();
+        a.test_average();
+        a.test_median();
+        a.test_diffMinMax();
         a.test_insert();
         a.test_insertAdd();
         a.test_add();
