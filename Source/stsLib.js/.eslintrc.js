@@ -45,6 +45,9 @@ module.exports = {
         ],
         "no-undef": [
             "error",
+        ],
+        "no-control-regex": [
+            "off",
         ]
     }
 };

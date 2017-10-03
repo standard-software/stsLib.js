@@ -450,11 +450,13 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆省略呼び出し
     //----------------------------------------
+    var x = stsLib.syntax;
     var t = stsLib.type;
     var c = stsLib.compare;
     var a = stsLib.array;
     var n = stsLib.number;
     var s = stsLib.string;
+    var d = stsLib.date;
     var p = stsLib.point;
     var v = stsLib.vector;
     var r = stsLib.rect;

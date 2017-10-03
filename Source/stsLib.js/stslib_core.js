@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/09/21
+Version:        2017/10/03
 //----------------------------------------*/
 
 //----------------------------------------
@@ -87,6 +87,75 @@ if (typeof module === 'undefined') {
         child.prototype.constructor = child;
       }
     };
+
+    //----------------------------------------
+    //◆制御構文
+    //----------------------------------------
+    _.syntax = stsLib.syntax || {};
+    (function() {
+      var _ = stsLib.syntax;
+
+      _.forLoop = function(start, end,
+        funcAll, funcFirst, funcMiddle, funcLast) {
+
+        c.assert(t.isInts(start, end));
+        var funcEmpty = function() { return; };
+        funcAll = t.ifNullOrUndefinedValue(funcAll, funcEmpty);
+        funcFirst = t.ifNullOrUndefinedValue(funcFirst, funcEmpty);
+        funcMiddle = t.ifNullOrUndefinedValue(funcMiddle, funcEmpty);
+        funcLast = t.ifNullOrUndefinedValue(funcLast, funcEmpty);
+        for (var i = start; i <= end; i += 1) {
+          funcAll(i);
+          if (i === start) {
+            funcFirst(i);
+          } else if (i !== end) {
+            funcMiddle(i);
+          }
+          if (i === end) {
+            funcLast(i);
+          }
+        }
+      };
+
+      _.test_forLoop = function() {
+        var forLoopTestFunc = function() {
+          return _.forLoop(0, array.length - 1,
+            function(index) { str += 'all:' + array[index] + ' '; },
+            function(index) { str += 'first:' + array[index] + ' '; },
+            function(index) { str += 'middle:' + array[index] + ' '; },
+            function(index) { str += 'last:' + array[index] + ' '; }
+          );
+        };
+        var str;
+        var array;
+        str = '';
+        array = [];
+        forLoopTestFunc();
+        c.check('', str);
+
+        str = '';
+        array = ['a'];
+        forLoopTestFunc();
+        c.check('all:a first:a last:a ', str);
+
+        str = '';
+        array = ['a', 'b'];
+        forLoopTestFunc();
+        c.check('all:a first:a all:b last:b ', str);
+
+        str = '';
+        array = ['a', 'b', 'c'];
+        forLoopTestFunc();
+        c.check('all:a first:a all:b middle:b all:c last:c ', str);
+
+        str = '';
+        array = ['a', 'b', 'c', 'd'];
+        forLoopTestFunc();
+        c.check('all:a first:a all:b middle:b all:c middle:c all:d last:d ', str);
+
+      };
+
+    }()); //syntax
 
     //----------------------------------------
     //◆条件判断
@@ -800,22 +869,9 @@ if (typeof module === 'undefined') {
 
       _.test_isDate = function() {
         c.check(true,   _.isDate(new Date(2017,1,1)));
-        c.check(true,   _.isDate(new Date("2017/01")));
+        c.check(true,   _.isDate(new Date('2017/01')));
         c.check(true,   _.isDate(new Date(2017,1)));
         c.check(true,   _.isDate(new Date(2017,1)));
-      };
-
-      //日付としての無効値の Invalid Date を判定する
-      _.isInvalidDate = function(value) {
-        return (_.isDate(value)
-          && (isNaN(value.getTime())));
-        // value.toString() === 'Invalid Date' は
-        // WSH環境では動作しなかったので上記実装になる
-      };
-
-      _.test_isInvalidDate = function() {
-        c.check(false,  _.isInvalidDate(new Date(2017,1,1)));
-        c.check(true,   _.isInvalidDate(new Date('abc')));
       };
 
       //----------------------------------------
@@ -921,7 +977,7 @@ if (typeof module === 'undefined') {
         c.assert(t.isString(str));
 
         var result;
-        c.assert(s.checkFormat(str, 'float'))
+        if (!s.checkFormat(str, 'float')) { return null; }
         result = Number(str);
         return t.isNumber(result) ? result : null;
       };
@@ -933,34 +989,34 @@ if (typeof module === 'undefined') {
         c.check('OK', c.checkException(123, _.convertToNumber, '0123'));
         c.check('OK', c.checkException(123, _.convertToNumber, '+123'));
         c.check('OK', c.checkException(-123, _.convertToNumber, '-0123'));
-        c.check('ER', c.checkException(123, _.convertToNumber, ' 123'));
-        c.check('ER', c.checkException(123, _.convertToNumber, '123 '));
-        c.check('ER', c.checkException(123, _.convertToNumber, ' 123 '));
-        c.check('ER', c.checkException(123, _.convertToNumber, '123 0'));
-        c.check('ER', c.checkException(123, _.convertToNumber, '0 123'));
-        c.check('ER', c.checkException(123, _.convertToNumber, '1 123'));
+        c.check('NG', c.checkException(123, _.convertToNumber, ' 123'));
+        c.check('NG', c.checkException(123, _.convertToNumber, '123 '));
+        c.check('NG', c.checkException(123, _.convertToNumber, ' 123 '));
+        c.check('NG', c.checkException(123, _.convertToNumber, '123 0'));
+        c.check('NG', c.checkException(123, _.convertToNumber, '0 123'));
+        c.check('NG', c.checkException(123, _.convertToNumber, '1 123'));
 
-        c.check('ER', c.checkException(123, _.convertToNumber, '123a'));
-        c.check('ER', c.checkException(123, _.convertToNumber, 'a123'));
+        c.check('NG', c.checkException(123, _.convertToNumber, '123a'));
+        c.check('NG', c.checkException(123, _.convertToNumber, 'a123'));
 
         c.check('OK', c.checkException(123.4, _.convertToNumber, '123.4'));
         c.check('OK', c.checkException(123.4, _.convertToNumber, '0123.4'));
         c.check('OK', c.checkException(123.4, _.convertToNumber, '+123.4'));
         c.check('OK', c.checkException(-123.4, _.convertToNumber, '-0123.4'));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, ' 123.4'));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, '123.4 '));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, ' 123.4 '));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, '123.4 0'));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, '0 123.4'));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, '1 123.4'));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, '123 .4'));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, '123. 4'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, ' 123.4'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, '123.4 '));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, ' 123.4 '));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, '123.4 0'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, '0 123.4'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, '1 123.4'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, '123 .4'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, '123. 4'));
 
-        c.check('ER', c.checkException(123.4, _.convertToNumber, '123.4a'));
-        c.check('ER', c.checkException(123.4, _.convertToNumber, 'a123.4'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, '123.4a'));
+        c.check('NG', c.checkException(123.4, _.convertToNumber, 'a123.4'));
 
         c.check('OK', c.checkException(123.45, _.convertToNumber, '123.45'));
-        c.check('ER', c.checkException(123.45, _.convertToNumber, '123.4.5'));
+        c.check('NG', c.checkException(123.45, _.convertToNumber, '123.4.5'));
       };
 
       //----------------------------------------
@@ -978,19 +1034,19 @@ if (typeof module === 'undefined') {
         var result;
         switch (radix) {
         case 10:
-          c.assert(s.checkFormat(str, 'integer'))
+          if (!s.checkFormat(str, 'integer')) { return null; }
           result = Number(str);
           return t.isInt(result) ? result : null;
         case 2:
-          c.assert(s.checkFormat(str, 'binary'))
+          if (!s.checkFormat(str, 'binary')) { return null; }
           result = parseInt(str, 2);
           return t.isInt(result) ? result : null;
         case 8:
-          c.assert(s.checkFormat(str, 'octal'))
+          if (!s.checkFormat(str, 'octal')) { return null; }
           result = parseInt(str, 8);
           return t.isInt(result) ? result : null;
         case 16:
-          c.assert(s.checkFormat(str, 'hex'))
+          if (!s.checkFormat(str, 'hex')) { return null; }
           result = parseInt(str, 16);
           return t.isInt(result) ? result : null;
         }
@@ -999,58 +1055,64 @@ if (typeof module === 'undefined') {
       _.test_convertToInt = function() {
         c.check('ER', c.checkException(123, _.convertToInt, 123));
 
-        c.check('OK', c.checkException(123, _.convertToInt, '123'));
-        c.check('OK', c.checkException(123, _.convertToInt, '0123'));
-        c.check('OK', c.checkException(123, _.convertToInt, '+123'));
-        c.check('OK', c.checkException(-123, _.convertToInt, '-0123'));
-        c.check('ER', c.checkException(123, _.convertToInt, ' 123'));
-        c.check('ER', c.checkException(123, _.convertToInt, '123 '));
-        c.check('ER', c.checkException(123, _.convertToInt, ' 123 '));
-        c.check('ER', c.checkException(123, _.convertToInt, '123 0'));
-        c.check('ER', c.checkException(123, _.convertToInt, '0 123'));
-        c.check('ER', c.checkException(123, _.convertToInt, '1 123'));
+        c.check('OK', c.checkException(123,   _.convertToInt, '123'));
+        c.check('OK', c.checkException(123,   _.convertToInt, '0123'));
+        c.check('OK', c.checkException(123,   _.convertToInt, '+123'));
+        c.check('OK', c.checkException(-123,  _.convertToInt, '-0123'));
+        c.check('NG', c.checkException(123,   _.convertToInt, ' 123'));
+        c.check('NG', c.checkException(123,   _.convertToInt, '123 '));
+        c.check('NG', c.checkException(123,   _.convertToInt, ' 123 '));
+        c.check('NG', c.checkException(123,   _.convertToInt, '123 0'));
+        c.check('NG', c.checkException(123,   _.convertToInt, '0 123'));
+        c.check('NG', c.checkException(123,   _.convertToInt, '1 123'));
 
-        c.check('ER', c.checkException(123, _.convertToInt, '123a'));
-        c.check('ER', c.checkException(123, _.convertToInt, 'a123'));
+        c.check('NG', c.checkException(123, _.convertToInt, '123a'));
+        c.check('NG', c.checkException(123, _.convertToInt, 'a123'));
 
-        c.check('ER', c.checkException(null, _.convertToInt, '123.4'));
-        c.check('ER', c.checkException(null, _.convertToInt, '0123.4'));
-        c.check('ER', c.checkException(123.4, _.convertToInt, '+123.4'));
-        c.check('ER', c.checkException(-123.4, _.convertToInt, '-0123.4'));
-        c.check('ER', c.checkException(null, _.convertToInt, ' 123.4'));
-        c.check('ER', c.checkException(null, _.convertToInt, '123.4 '));
-        c.check('ER', c.checkException(null, _.convertToInt, ' 123.4 '));
-        c.check('ER', c.checkException(null, _.convertToInt, '123.4 0'));
-        c.check('ER', c.checkException(null, _.convertToInt, '0 123.4'));
-        c.check('ER', c.checkException(null, _.convertToInt, '1 123.4'));
-        c.check('ER', c.checkException(null, _.convertToInt, '123 .4'));
-        c.check('ER', c.checkException(null, _.convertToInt, '123. 4'));
+        c.check('OK', c.checkException(null, _.convertToInt, '123.4'));
+        c.check('OK', c.checkException(null, _.convertToInt, '0123.4'));
+        c.check('NG', c.checkException(123.4, _.convertToInt, '+123.4'));
+        c.check('NG', c.checkException(-123.4, _.convertToInt, '-0123.4'));
+        c.check('OK', c.checkException(null, _.convertToInt, ' 123.4'));
+        c.check('OK', c.checkException(null, _.convertToInt, '123.4 '));
+        c.check('OK', c.checkException(null, _.convertToInt, ' 123.4 '));
+        c.check('OK', c.checkException(null, _.convertToInt, '123.4 0'));
+        c.check('OK', c.checkException(null, _.convertToInt, '0 123.4'));
+        c.check('OK', c.checkException(null, _.convertToInt, '1 123.4'));
+        c.check('OK', c.checkException(null, _.convertToInt, '123 .4'));
+        c.check('OK', c.checkException(null, _.convertToInt, '123. 4'));
 
-        c.check('ER', c.checkException(null, _.convertToInt, '123.4a'));
-        c.check('ER', c.checkException(null, _.convertToInt, 'a123.4'));
+        c.check('OK', c.checkException(null, _.convertToInt, '123.4a'));
+        c.check('OK', c.checkException(null, _.convertToInt, 'a123.4'));
 
-        c.check('ER', c.checkException(123.45, _.convertToInt, '123.4.5'));
+        c.check('NG', c.checkException(123.45, _.convertToInt, '123.4.5'));
 
         c.check('OK', c.checkException(5, _.convertToInt, '0101', 2));
         c.check('OK', c.checkException(7, _.convertToInt, '0111', 2));
         c.check('OK', c.checkException(15, _.convertToInt, '1111', 2));
-        c.check('ER', c.checkException(15, _.convertToInt, '1 111', 2));
+        c.check('NG', c.checkException(15, _.convertToInt, '1 111', 2));
 
         c.check('OK', c.checkException(16, _.convertToInt, '020', 8));
-        c.check('ER', c.checkException(15, _.convertToInt, '0 20', 8));
+        c.check('NG', c.checkException(15, _.convertToInt, '0 20', 8));
 
         c.check('OK', c.checkException(255, _.convertToInt, 'FF', 16));
         c.check('OK', c.checkException(0, _.convertToInt, '00', 16));
-        c.check('ER', c.checkException(255, _.convertToInt, 'FF FF', 16));
+        c.check('NG', c.checkException(255, _.convertToInt, 'FF FF', 16));
       };
 
       _.convertToString = function(number, radix) {
         c.assert(t.isNumber(number));
+        radix = t.ifNullOrUndefinedValue(radix, 10);
         c.assert(c.orValue(radix, 10, 2, 8, 16));
         return number.toString(radix);
       };
 
       _.test_convertToString = function() {
+        c.check('255', _.convertToString(255));
+        c.check('11', _.convertToString(11));
+        c.check('255', _.convertToString(0xFF));
+        //c.check('16', _.convertToString(0o20)); //node.js chrome などのみ
+
         c.check('ff', _.convertToString(255, 16));
         c.check('b', _.convertToString(11, 16));
 
@@ -1372,7 +1434,7 @@ if (typeof module === 'undefined') {
           value = array[i];
           c.assert(t.isNumber(value));
           result += value;
-        };
+        }
         return result;
       };
 
@@ -1689,7 +1751,7 @@ if (typeof module === 'undefined') {
       //・配列で指定したものがいずれかが含まれている
       //----------------------------------------
       _.isIncludeAny = function(array, searchArray) {
-        return (_.indexOfAnyFirst(array, searchArray) !== -1)
+        return (_.indexOfAnyFirst(array, searchArray) !== -1);
       };
 
       _.test_isIncludeAny = function() {
@@ -1697,8 +1759,8 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isIncludeAny([1,2,3], [4,5]));
         c.check(true,   _.isIncludeAny([1,2,3], [1,3]));
         c.check(true,   _.isIncludeAny([1,2,3], [2,3]));
-        c.check(true,   _.isIncludeAny([1,2,3], [, 3]));
-        c.check(false,  _.isIncludeAny([1,2,3], [,]));
+        c.check(true,   _.isIncludeAny([1,2,3], [null,3]));
+        c.check(false,  _.isIncludeAny([1,2,3], [null,null]));
       };
 
       //----------------------------------------
@@ -2536,7 +2598,7 @@ if (typeof module === 'undefined') {
       //・配列で指定したものがいずれかが含まれている
       //----------------------------------------
       _.isIncludeAny = function(str, searchArray) {
-        return (_.indexOfAnyFirst(str, searchArray) !== -1)
+        return (_.indexOfAnyFirst(str, searchArray) !== -1);
       };
 
       _.test_isIncludeAny = function() {
@@ -3392,42 +3454,6 @@ if (typeof module === 'undefined') {
       };
 
       //--------------------------------------
-      //◇Tag deleteFirst/Last
-      //--------------------------------------
-      //  ・検索して見つかった値を削除する
-      //--------------------------------------
-
-      _.deleteFirst = function(str, search) {
-        if (_.indexOfFirst(str, search) === -1) {
-          return str;
-        } else {
-          return _.startFirstDelim(str, search) +
-            _.endFirstDelim(str, search);
-        }
-      };
-
-      _.deleteLast = function(str, search) {
-        if (_.indexOfLast(str, search) === -1) {
-          return str;
-        } else {
-          return _.startLastDelim(str, search) +
-            _.endLastDelim(str, search);
-        }
-      };
-
-      _.test_deleteFirstLast = function() {
-
-        c.check('abcdefghi', _.deleteFirst(
-          _.deleteLast('abc<def>ghi', '>'), '<'));
-        c.check('abc><def><ghi', _.deleteFirst(
-          _.deleteLast('a<bc><def><gh>i', '>'), '<'));
-        c.check('abcdefghi', _.deleteFirst(
-          _.deleteLast('abc>def<ghi', '>'), '<'));
-        c.check('abc>def<ghi', _.deleteFirst(
-          _.deleteLast('a<bc>def<gh>i', '>'), '<'));
-      };
-
-      //--------------------------------------
       //◇Trim
       //--------------------------------------
       _.trimStart = function(str, trimStrArray) {
@@ -3504,6 +3530,42 @@ if (typeof module === 'undefined') {
       _.trimCutEnd = function(str, trimStrArray) {
         return _.end(str,
           str.length - _.trimEnd(str, trimStrArray).length);
+      };
+
+      //--------------------------------------
+      //◇Tag deleteFirst/Last
+      //--------------------------------------
+      //  ・検索して見つかった値を削除する
+      //--------------------------------------
+
+      _.deleteFirst = function(str, search) {
+        if (_.indexOfFirst(str, search) === -1) {
+          return str;
+        } else {
+          return _.startFirstDelim(str, search) +
+            _.endFirstDelim(str, search);
+        }
+      };
+
+      _.deleteLast = function(str, search) {
+        if (_.indexOfLast(str, search) === -1) {
+          return str;
+        } else {
+          return _.startLastDelim(str, search) +
+            _.endLastDelim(str, search);
+        }
+      };
+
+      _.test_deleteFirstLast = function() {
+
+        c.check('abcdefghi', _.deleteFirst(
+          _.deleteLast('abc<def>ghi', '>'), '<'));
+        c.check('abc><def><ghi', _.deleteFirst(
+          _.deleteLast('a<bc><def><gh>i', '>'), '<'));
+        c.check('abcdefghi', _.deleteFirst(
+          _.deleteLast('abc>def<ghi', '>'), '<'));
+        c.check('abc>def<ghi', _.deleteFirst(
+          _.deleteLast('a<bc>def<gh>i', '>'), '<'));
       };
 
       //--------------------------------------
@@ -4515,18 +4577,18 @@ if (typeof module === 'undefined') {
         if (t.isUndefined(year)) { return self; }
         self.setFullYear(year);
 
-        if (t.isUndefined(month)) { return self; };
+        if (t.isUndefined(month)) { return self; }
         self.setMonth(month - 1);
-        if (t.isUndefined(date)) { return self; };
+        if (t.isUndefined(date)) { return self; }
         self.setDate(date);
-        if (t.isUndefined(hours)) { return self; };
+        if (t.isUndefined(hours)) { return self; }
         self.setHours(hours);
-        if (t.isUndefined(minutes)) { return self; };
+        if (t.isUndefined(minutes)) { return self; }
         self.setMinutes(minutes);
-        if (t.isUndefined(seconds)) { return self; };
+        if (t.isUndefined(seconds)) { return self; }
         self.setSeconds(seconds);
-        if (t.isUndefined(milliseconds)) { return self; };
-        self.setMilliseconds(milliseconds)
+        if (t.isUndefined(milliseconds)) { return self; }
+        self.setMilliseconds(milliseconds);
         return self;
       };
 
@@ -4571,6 +4633,22 @@ if (typeof module === 'undefined') {
         c.check('2017/09/30 05:20:35',
           _.formatYYYYMMDD(dt, '/') + ' ' +
           _.formatHHMMSS(dt, ':') );
+      };
+
+      //----------------------------------------
+      //◇無効値 判定
+      //----------------------------------------
+
+      _.isInvalidDate = function(value) {
+        return (t.isDate(value)
+          && (isNaN(value.getTime())));
+        // value.toString() === 'Invalid Date' は
+        // WSH環境では動作しなかったので上記実装になる
+      };
+
+      _.test_isInvalidDate = function() {
+        c.check(false,  _.isInvalidDate(new Date(2017,1,1)));
+        c.check(true,   _.isInvalidDate(new Date('abc')));
       };
 
       //----------------------------------------
@@ -4692,9 +4770,10 @@ if (typeof module === 'undefined') {
       };
 
       _.dayOfWeekEnglish = function(date) {
-        return _.dayOfWeek(date,
-          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 
-           'Thursday', 'Friday', 'Saturday']);
+        return _.dayOfWeek(date,[
+          'Sunday', 'Monday', 'Tuesday', 'Wednesday', 
+          'Thursday', 'Friday', 'Saturday'
+        ]);
       };
 
       _.dayOfWeekJp = function(date) {
@@ -5263,12 +5342,12 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         _.Vector.prototype.setFrom = function(point) {
           c.assert(t.isPoint(point));
-          var xDiff = this.to.x - this.from.x;
-          var yDiff = this.to.y - this.from.y;
+          var dx = this.to.x - this.from.x;
+          var dy = this.to.y - this.from.y;
           this.from.x = point.x;
           this.from.y = point.y; 
-          this.to.x = this.from.x + xDiff;
-          this.to.y = this.from.y + yDiff;
+          this.to.x = this.from.x + dx;
+          this.to.y = this.from.y + dy;
           return this;
         };
 
@@ -5288,10 +5367,10 @@ if (typeof module === 'undefined') {
         //----------------------------------------
         _.Vector.prototype.add = function(vector) {
           c.assert(t.isVector(vector));
-          var xDiff = vector.to.x - vector.from.x;
-          var yDiff = vector.to.y - vector.from.y;
-          this.to.x = this.to.x + xDiff;
-          this.to.y = this.to.y + yDiff;
+          var dx = vector.to.x - vector.from.x;
+          var dy = vector.to.y - vector.from.y;
+          this.to.x = this.to.x + dx;
+          this.to.y = this.to.y + dy;
           return this;
         };
 
@@ -5319,10 +5398,10 @@ if (typeof module === 'undefined') {
           if (originalLength === 0) {
             return this;
           }
-          var xDiff = this.to.x - this.from.x;
-          var yDiff = this.to.y - this.from.y;
-          this.to.x = this.from.x + (xDiff * len / originalLength);
-          this.to.y = this.from.y + (yDiff * len / originalLength);
+          var dx = this.to.x - this.from.x;
+          var dy = this.to.y - this.from.y;
+          this.to.x = this.from.x + (dx * len / originalLength);
+          this.to.y = this.from.y + (dy * len / originalLength);
           return this;
         };
 
@@ -5364,10 +5443,10 @@ if (typeof module === 'undefined') {
         //  ・右に90度傾いた方向のベクトルになる
         //----------------------------------------
         _.Vector.prototype.normalRight = function() {
-          var xDiff = this.to.x - this.from.x;
-          var yDiff = this.to.y - this.from.y;
-          this.to.x = this.from.x + yDiff;
-          this.to.y = this.from.y - xDiff;
+          var dx = this.to.x - this.from.x;
+          var dy = this.to.y - this.from.y;
+          this.to.x = this.from.x + dy;
+          this.to.y = this.from.y - dx;
           return this;
         };
 
@@ -5386,10 +5465,10 @@ if (typeof module === 'undefined') {
         //  ・左に90度傾いた方向のベクトルになる
         //----------------------------------------
         _.Vector.prototype.normalLeft = function() {
-          var xDiff = this.to.x - this.from.x;
-          var yDiff = this.to.y - this.from.y;
-          this.to.x = this.from.x - yDiff;
-          this.to.y = this.from.y + xDiff;
+          var dx = this.to.x - this.from.x;
+          var dy = this.to.y - this.from.y;
+          this.to.x = this.from.x - dy;
+          this.to.y = this.from.y + dx;
           return this;
         };
 
@@ -5447,7 +5526,7 @@ if (typeof module === 'undefined') {
           ) / (
             (this.from.x - this.to.x) * (vector.from.y - vector.to.y)
             - (this.from.y - this.to.y) * (vector.from.x - vector.to.x)
-          )
+          );
         };
 
         //----------------------------------------
@@ -5458,10 +5537,10 @@ if (typeof module === 'undefined') {
         //  ・点を通る元ベクトルの法線ベクトルとの交点になる
         //----------------------------------------
         _.Vector.prototype.parameterForPoint = function(point) {
-          var xDiff = this.to.x - this.from.x;
-          var yDiff = this.to.y - this.from.y;
+          var dx = this.to.x - this.from.x;
+          var dy = this.to.y - this.from.y;
           var normalVector = stsLib.vector.Vector(
-            p.Point(this.from.x + yDiff, this.from.y - xDiff));
+            p.Point(this.from.x + dy, this.from.y - dx));
           normalVector.setFrom(point);
           return this.parameterForVector(normalVector);
         };
@@ -5492,7 +5571,7 @@ if (typeof module === 'undefined') {
         //  ・直線から点に対する垂線の距離
         //----------------------------------------
         _.Vector.prototype.lineDistance = function(point) {
-          var t = this.parameterForPoint(vector);
+          var t = this.parameterForPoint(point);
           return this.pointFromParameter(t).distance(point);
         };
 
@@ -5503,7 +5582,7 @@ if (typeof module === 'undefined') {
         //    範囲外ならば始点か終点との距離
         //----------------------------------------
         _.Vector.prototype.segmentDistance = function(point) {
-          var t = this.parameterForPoint(vector);
+          var t = this.parameterForPoint(point);
           if (t <= 0) {
             return this.from.distance(point);
           } else if (1 <= t) {
@@ -5732,7 +5811,7 @@ if (typeof module === 'undefined') {
       var _ = stsLib.system;
 
       _.consoleLogComment = function(str) { 
-        var result = (new Function('return ' + str + ';'))()
+        var result = (new Function('return ' + str + ';'))();
         return 'console.log(' + str + ');  //' + result;
       };
 
@@ -5824,6 +5903,8 @@ if (typeof module === 'undefined') {
       var _ = stsLib.test;
 
       _.test_stslib_core = function() {
+
+        x.test_forLoop();
 
         c.test_check();
         c.test_checkException();
@@ -5962,11 +6043,10 @@ if (typeof module === 'undefined') {
         e.test_EnumNameValue();
 
         t.test_isDate();
-        t.test_isInvalidDate();
-        var date = stsLib.date;
-        date.test_Date();
-        date.test_equalDate();
-        date.test_dayOfWeek();
+        d.test_isInvalidDate();
+        d.test_Date();
+        d.test_equalDate();
+        d.test_dayOfWeek();
 
         t.test_isPoint();
         t.test_isVector();
@@ -6137,11 +6217,13 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆省略呼び出し
     //----------------------------------------
+    var x = stsLib.syntax;
     var t = stsLib.type;
     var c = stsLib.compare;
     var a = stsLib.array;
     var n = stsLib.number;
     var s = stsLib.string;
+    var d = stsLib.date;
     var p = stsLib.point;
     var v = stsLib.vector;
     var r = stsLib.rect;

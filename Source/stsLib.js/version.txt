@@ -310,7 +310,7 @@
 ・  string.parseNumber/parseInt を修正。
     テストコード追加
 ・  point.distance 追加。
-    vector.length も処理を以降。
+    vector.length から処理を移行。
 ◇  ver 2017/09/25
 ・  Vector.parameterForVector/.parameterForPoint/.pointFromParameter
     /.intersectionPoint/.lineDistance/.segmentDistance 追加
@@ -321,10 +321,18 @@
 ・  stsLib.system.consoleLogComment 追加。
 ・  stsLib.datetimeをstsLib.dateに変更
 ◇  ver 2017/10/01
+・  type.isDate 作成。
 ・  stsLib.date.Date を作成
 ・  date.equalYear～equalDateMilliseconds 作成
 ・  dayOfWeek 作成
 ・  parseNumber/parseInt廃止
     convertToNumber/convertToInt/convertToString追加
-・	checkFormat 追加
-・	array.sum/average/median/diffMinMax 追加
+・  checkFormat 追加
+・  array.sum/average/median/diffMinMax 追加
+◇  ver 2017/10/03
+・  convertToNumber/convertToInt 修正。
+    無効の場合は例外ではなくnull を返す。
+・  syntax.forLoop 作成。
+・  isInvalidDate を stsLib.type から stsLib.date に移動。
+・  stsLib.date を d で省略可能にした。
+
