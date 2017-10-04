@@ -1100,6 +1100,9 @@ if (typeof module === 'undefined') {
         c.check('NG', c.checkException(255, _.convertToInt, 'FF FF', 16));
       };
 
+      //----------------------------------------
+      //・数値から文字列
+      //----------------------------------------
       _.convertToString = function(number, radix) {
         c.assert(t.isNumber(number));
         radix = t.ifNullOrUndefinedValue(radix, 10);
@@ -1123,6 +1126,103 @@ if (typeof module === 'undefined') {
         c.check('1111', _.convertToString(15, 2));
       };
 
+      //----------------------------------------
+      //・日付型
+      //----------------------------------------
+      //  ・y/m/d
+      //    y/m/d h:n
+      //    y/m/d h:n:s
+      //    y/m/d h:n:s.ms
+      //    これらの形式の文字列の場合のみ変換する
+      //----------------------------------------
+
+      _.convertToDate = function(str) {
+        c.assert(t.isString(str));
+        var result = d.Date();
+        var strs;
+        var dateSplitToDate = function(date, str) {
+          var strs = str.split('/');
+          date.setFullYear(_.convertToInt(strs[0]));
+          date.setMonth(_.convertToInt(strs[1]) - 1);
+          date.setDate(_.convertToInt(strs[2]));
+        };
+        var dateSplitToTime = function(date, str) {
+          var strs = str.split(':');
+          date.setHours(_.convertToInt(strs[0]));
+          date.setMinutes(_.convertToInt(strs[1]));
+          if (3 === strs.length) {
+            var sec = _.convertToNumber(strs[2]);
+            if (t.isInt(sec)) {
+              date.setSeconds(sec);
+            } else {
+              date.setSeconds(Math.floor(sec));
+              date.setMilliseconds(n.round((sec - Math.floor(sec)) * 1000, -1));
+            }
+          }
+        };
+        if (s.checkFormat(str, 'date')) {
+          dateSplitToDate(result, str);
+          return result;
+        } else if (s.checkFormat(str, 'date-minutes')) {
+          strs = str.split(' ');
+          dateSplitToDate(result, strs[0]);
+          dateSplitToTime(result, strs[1]);
+          return result;
+        } else if (s.checkFormat(str, 'date-seconds')) {
+          strs = str.split(' ');
+          dateSplitToDate(result, strs[0]);
+          dateSplitToTime(result, strs[1]);
+          return result;
+        } else if (s.checkFormat(str, 'date-milliseconds')) {
+          strs = str.split(' ');
+          dateSplitToDate(result, strs[0]);
+          dateSplitToTime(result, strs[1]);
+          return result;
+        }
+        return null;
+      };
+
+      _.test_convertToDate = function() {
+        var str;
+        str = '2017/10/04';
+        c.check('2017/10/04', d.formatYYYYMMDD(_.convertToDate(str), '/'));
+        c.check('00:00:00', d.formatHHMMSS(_.convertToDate(str), ':'));
+
+        str = '2017/9/4';
+        c.check('2017/09/04', d.formatYYYYMMDD(_.convertToDate(str), '/'));
+        c.check('00:00:00', d.formatHHMMSS(_.convertToDate(str), ':'));
+
+        c.check(null, _.convertToDate('2017/10/041'));
+        c.check(null, _.convertToDate('2017//04'));
+        c.check(null, _.convertToDate('2017/10/04 '));
+
+        str = '2017/10/04 12:34';
+        c.check('2017/10/04', d.formatYYYYMMDD(_.convertToDate(str), '/'));
+        c.check('12:34:00', d.formatHHMMSS(_.convertToDate(str), ':'));
+
+        c.check(null, _.convertToDate('2017/10/04 12:341'));
+        c.check(null, _.convertToDate('2017/10/04 12:'));
+        c.check(null, _.convertToDate('2017/10/04 12:34 '));
+
+        str = '2017/10/4 14:3:6';
+        c.check('2017/10/04', d.formatYYYYMMDD(_.convertToDate(str), '/'));
+        c.check('14:03:06', d.formatHHMMSS(_.convertToDate(str), ':'));
+
+        c.check(null, _.convertToDate('2017/10/4 14:3:061'));
+        c.check(null, _.convertToDate('2017/10/4 14::6'));
+        c.check(null, _.convertToDate('2017/10/4 14:3:6 '));
+
+        str = '2017/10/4 14:3:6.02';
+        c.check('2017/10/04', d.formatYYYYMMDD(_.convertToDate(str), '/'));
+        c.check('14:03:06', d.formatHHMMSS(_.convertToDate(str), ':'));
+        c.check(20, _.convertToDate(str).getMilliseconds());
+
+        c.check(null, _.convertToDate('2017/10/4 14:3:6.0201'));
+        c.check(null, _.convertToDate('2017/10/4 14:3:.020'));
+        c.check(null, _.convertToDate('2017/10/4 14::6.020'));
+        c.check(null, _.convertToDate('2017/10/4 14:3:6.02 '));
+      };
+
     }()); //type
 
     //----------------------------------------
@@ -1136,12 +1236,12 @@ if (typeof module === 'undefined') {
       //・四捨五入する
       //----------------------------------------
       //  ・digitは桁数
+      //    四捨五入して、その位までの値になる
       //      0なら1の位
       //      1なら小数点1位
       //      2なら小数点2位
       //      -1なら10の位
       //      -2なら100の位
-      //      四捨五入して、その位にする
       //----------------------------------------
       _.round = function(value, digit) {
 
@@ -4159,6 +4259,23 @@ if (typeof module === 'undefined') {
         case 'hex':
           // 16進数
           return (str.match(/^[0-9A-F]+$|^[0-9a-f]+$/)) ? true : false;
+        case 'date':
+          // y/m/d
+          return (str.match(/^\d{1,4}\/\d{1,2}\/\d{1,2}$/)) ? true : false;
+        case 'date-minutes':
+          // y/m/d h:n
+          return (str.match(
+            /^\d{1,4}\/\d{1,2}\/\d{1,2}\s\d{1,2}:\d{1,2}$/)) ? true : false;
+        case 'date-seconds':
+          // y/m/d h:n:s
+          return (str.match(
+            /^\d{1,4}\/\d{1,2}\/\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}$/))
+            ? true : false;
+        case 'date-milliseconds':
+          // y/m/d h:n:s.ms
+          return (str.match(
+            /^\d{1,4}\/\d{1,2}\/\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\.\d{1,3}$/))
+            ? true : false;
         }
       };
 
@@ -4559,8 +4676,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //  ・new stsLib.date.Date でも
       //    newなしの stsLib.date.Date でも同じくDate型を返す
-      //  ・引数なしなら現在時刻
-      //    それぞれの引数は省略できる
+      //  ・引数なしなら
+      //    現地時間の1970 年 1 月 1 日 00:00:00 を返す
+      //  ・それぞれの引数は省略できる
       //----------------------------------------
       _.Date = function(year, month, date,
         hours, minutes, seconds, milliseconds) {
@@ -4571,12 +4689,11 @@ if (typeof module === 'undefined') {
         }
 
         var self = new Date(0);
-        self.setMinutes(
-          self.getTimezoneOffset());
-        //これで現地時間の1970 年 1 月 1 日 00:00:00 にリセットされる
+        self.setMinutes(self.getTimezoneOffset());
+        //現地時間の1970 年 1 月 1 日 00:00:00
+
         if (t.isUndefined(year)) { return self; }
         self.setFullYear(year);
-
         if (t.isUndefined(month)) { return self; }
         self.setMonth(month - 1);
         if (t.isUndefined(date)) { return self; }
@@ -5925,6 +6042,7 @@ if (typeof module === 'undefined') {
         t.test_convertToNumber();
         t.test_convertToInt();
         t.test_convertToString();
+        t.test_convertToDate();
 
         n.test_round();
         n.test_nearEqual();

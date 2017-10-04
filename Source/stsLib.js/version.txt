@@ -335,4 +335,6 @@
 ・  syntax.forLoop 作成。
 ・  isInvalidDate を stsLib.type から stsLib.date に移動。
 ・  stsLib.date を d で省略可能にした。
-
+◇ ver 2017/10/05
+・  convertToDate を作成。
+・  date.Date の引数無しの挙動修正
