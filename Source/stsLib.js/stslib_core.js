@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/03
+Version:        2017/10/05
 //----------------------------------------*/
 
 //----------------------------------------
@@ -1601,7 +1601,8 @@ if (typeof module === 'undefined') {
       //・最頻値
       _.mode = function(array) {
         var countArray = [];
-        for (var i = 0, l = array.length; i < l; i += 1) {
+        var i, l;
+        for (i = 0, l = array.length; i < l; i += 1) {
           if (t.isUndefined(countArray[array[i]])) {
             countArray[array[i]] = 1;
           } else {
@@ -1613,7 +1614,7 @@ if (typeof module === 'undefined') {
           //重複無し
           return null;
         }
-        for (var i = 0, l = countArray.length; i < l; i += 1) {
+        for (i = 0, l = countArray.length; i < l; i += 1) {
           if (countArray[i] === maxValue) {
             return i;
           }
@@ -6174,7 +6175,7 @@ if (typeof module === 'undefined') {
         a.test_equal();
         a.test_average();
         a.test_median();
-        a.test_mode()
+        a.test_mode();
         a.test_diffMinMax();
         a.test_insert();
         a.test_insertAdd();
