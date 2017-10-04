@@ -1475,6 +1475,13 @@ if (typeof module === 'undefined') {
       var _ = stsLib.array;
 
       //----------------------------------------
+      //・配列のコピー
+      //----------------------------------------
+      _.clone = function(array) {
+        return array.concat();
+      };
+
+      //----------------------------------------
       //・配列同士を値で比較する関数
       //----------------------------------------
       _.equal = function(value1, value2) {
@@ -1511,15 +1518,36 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //  ・apply(null するのは妙だったので
       //    Math.min/max をラッピングしただけ
+      //  ・return Math.max.apply(null, array);
+      //    あるいは
+      //    return Math.min.apply(null, array);
+      //    この記述だとarrayに飛び飛びの値が入っている時に
+      //    動かない様子
       //----------------------------------------
       _.min = function(array) {
         c.assert(t.isArray(array));
-        return Math.min.apply(null, array);
+        
+        if (array.length === 0) { return null; }
+        var result = Infinity;
+        for (var i = 0, l = array.length; i < l; i += 1) {
+          if (array[i] < result) {
+            result = array[i];
+          }
+        }
+        return result;
       };
 
       _.max = function(array) {
         c.assert(t.isArray(array));
-        return Math.max.apply(null, array);
+        
+        if (array.length === 0) { return null; }
+        var result = -1 * Infinity;
+        for (var i = 0, l = array.length; i < l; i += 1) {
+          if (result < array[i]) {
+            result = array[i];
+          }
+        }
+        return result;
       };
 
       //----------------------------------------
@@ -1549,23 +1577,55 @@ if (typeof module === 'undefined') {
 
       //・中央値
       _.median = function(array) {
-        if (array.length % 2 === 0) {
+        var arrayValue = _.clone(array);
+        arrayValue.sort(function(a, b) {
+          return a - b;
+        });
+        if (arrayValue.length % 2 === 0) {
           //偶数個
           return (
-            array[array.length/2 - 1] +
-            array[array.length/2]
+            arrayValue[arrayValue.length/2 - 1] +
+            arrayValue[arrayValue.length/2]
           ) / 2;
         } else {
           //奇数個
-          return array[(array.length-1)/2];
+          return arrayValue[(arrayValue.length-1)/2];
         }
       };
 
       _.test_median = function() {
-        c.check(71, _.median([52,52,70,72,80,100]));
+        c.check(71, _.median([52,70,72,80,100,52]));
         c.check(10, _.median([6,9,9,10,10,10,100]));
       };
 
+      //・最頻値
+      _.mode = function(array) {
+        var countArray = [];
+        for (var i = 0, l = array.length; i < l; i += 1) {
+          if (t.isUndefined(countArray[array[i]])) {
+            countArray[array[i]] = 1;
+          } else {
+            countArray[array[i]] += 1;
+          }
+        }
+        var maxValue = _.max(countArray);
+        if (maxValue === 1) {
+          //重複無し
+          return null;
+        }
+        for (var i = 0, l = countArray.length; i < l; i += 1) {
+          if (countArray[i] === maxValue) {
+            return i;
+          }
+        }
+      };
+
+      _.test_mode = function() {
+        c.check(52, _.mode([70,72,52,80,100,52]));
+        c.check(10, _.mode([6,9,9,10,10,10,100]));
+      };
+
+      //・MinMax差分
       _.diffMinMax = function(array) {
         return (_.max(array) - _.min(array));
       };
@@ -6114,6 +6174,7 @@ if (typeof module === 'undefined') {
         a.test_equal();
         a.test_average();
         a.test_median();
+        a.test_mode()
         a.test_diffMinMax();
         a.test_insert();
         a.test_insertAdd();

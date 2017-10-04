@@ -338,3 +338,8 @@
 ◇ ver 2017/10/05
 ・  convertToDate を作成。
 ・  date.Date の引数無しの挙動修正
+・  array.clone 作成。
+・  array.min / max 修正。
+・  array.median 修正。内部でソートするようにした。
+・  array.mode 作成。
+
