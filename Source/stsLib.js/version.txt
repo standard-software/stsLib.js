@@ -335,11 +335,17 @@
 ・  syntax.forLoop 作成。
 ・  isInvalidDate を stsLib.type から stsLib.date に移動。
 ・  stsLib.date を d で省略可能にした。
-◇ ver 2017/10/05
+◇  ver 2017/10/05
 ・  convertToDate を作成。
 ・  date.Date の引数無しの挙動修正
 ・  array.clone 作成。
 ・  array.min / max 修正。
 ・  array.median 修正。内部でソートするようにした。
 ・  array.mode 作成。
-
+◇  ver 2017/10/06
+・  Point.clone 作成
+・  Vector.clone 作成
+・  Rect.clone 作成
+・  Vector.arrowHeadVectors 作成
+・  number.isMultiples/isEven/isOdd 作成。
+・  date.formatToString 作成。
