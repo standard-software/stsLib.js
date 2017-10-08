@@ -358,3 +358,5 @@
 ・  string.replaceAllAny 実装。
 ・  date.formatToString を実装。
 ・  objectCreate 作成。
+◇  ver 2017/10/09
+・  spreadsheetモジュールを名前空間対応にした。
