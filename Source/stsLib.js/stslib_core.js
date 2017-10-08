@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/06
+Version:        2017/10/08
 //----------------------------------------*/
 
 //----------------------------------------
