@@ -2479,8 +2479,10 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //  ・ascending:  昇順
       //    descending: 降順
-      //  ・lengthは、文字列や配列に使用
-      //  ・dictionaryは、文字列や数値の場合に使う
+      //  ・指定できるパターン
+      //    number:     数値として扱う
+      //    length:     文字列や配列に使用してlengthでソート
+      //  ・dictionary: 文字列や数値の場合にtoStringした値で判定する
       //----------------------------------------
 
       _.sortPattern = function(array, patternName, ordering) {
