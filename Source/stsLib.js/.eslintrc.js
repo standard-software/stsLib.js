@@ -48,6 +48,9 @@ module.exports = {
         ],
         "no-control-regex": [
             "off",
+        ],
+        "quotes": [
+            "warn", "single", { "avoidEscape": true }
         ]
     }
 };

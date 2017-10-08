@@ -349,3 +349,12 @@
 ・  Vector.arrowHeadVectors 作成
 ・  number.isMultiples/isEven/isOdd 作成。
 ・  date.formatToString 作成。
+◇  ver 2017/10/08
+・  array.outputStart/End 修正。
+・  array.indexOfAnyFirst/Lastの戻り値を修正。
+・  string.indexOfAnyFirst/Lastを修正。
+・  array.sortPattern を実装。
+・  string.includeBothEnds/excludeBothEnds 修正。
+・  string.replaceAllAny 実装。
+・  date.formatToString を実装。
+・  objectCreate 作成。

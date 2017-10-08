@@ -63,7 +63,7 @@ if (typeof module === 'undefined') {
     var _ = stsLib;
 
     //----------------------------------------
-    //◆基本的な処理
+    //◆継承
     //----------------------------------------
 
     //----------------------------------------
@@ -86,6 +86,15 @@ if (typeof module === 'undefined') {
         child.prototype = new temp();
         child.prototype.constructor = child;
       }
+    };
+
+    //----------------------------------------
+    //・プロトタイプ継承のためのObject.create代替処理
+    //----------------------------------------
+    _.objectCreate = function(parent) {
+      function F() {}
+      F.prototype = parent;
+      return new F();
     };
 
     //----------------------------------------
@@ -1935,7 +1944,7 @@ if (typeof module === 'undefined') {
       //・配列で指定したものがいずれかが含まれている
       //----------------------------------------
       _.isIncludeAny = function(array, searchArray) {
-        return (_.indexOfAnyFirst(array, searchArray) !== -1);
+        return (_.indexOfAnyFirst(array, searchArray).index !== -1);
       };
 
       _.test_isIncludeAny = function() {
@@ -2241,6 +2250,10 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◇indexOfAny
       //----------------------------------------
+      //  ・戻り値はオブジェクトで
+      //    indexが見つかった位置
+      //    indexAnyがsearchArrayの中の該当したものの位置
+      //----------------------------------------
 
       _.indexOfAnyFirst = function(array, searchArray, startIndex) {
         c.assert(Array.isArray(array));
@@ -2250,13 +2263,20 @@ if (typeof module === 'undefined') {
 
         var result = Infinity;
         var findIndex;
+        var indexAny = -1;
         for (var i = 0, l = searchArray.length; i < l; i += 1) {
           findIndex = _.indexOfFirst(array, searchArray[i], startIndex);
           if (findIndex !== -1) {
-            result = Math.min(findIndex, result);
+            if (findIndex < result) {
+              result = findIndex;
+              indexAny = i;
+            }
           }
         }
-        return result === Infinity ? -1 : result;
+        return {
+          index: result === Infinity ? -1 : result,
+          indexAny: indexAny
+        };
       };
 
       _.indexOfAnyLast = function(array, searchArray, startIndex) {
@@ -2267,13 +2287,20 @@ if (typeof module === 'undefined') {
 
         var result = -1;
         var findIndex;
+        var indexAny = -1;
         for (var i = 0, l = searchArray.length; i < l; i += 1) {
           findIndex = _.indexOfLast(array, searchArray[i], startIndex);
           if (findIndex !== -1) {
-            result = Math.max(findIndex, result);
+            if (result < findIndex) {
+              result = findIndex;
+              indexAny = i;
+            }
           }
         }
-        return result;
+        return {
+          index: result,
+          indexAny: indexAny
+        };
       };
 
       //----------------------------------------
@@ -2335,14 +2362,14 @@ if (typeof module === 'undefined') {
         return array;
       };
 
-      _.outputStart = function(array, value) {
+      _.outputStart = function(array) {
         c.assert(Array.isArray(array));
-        return array.shift(value);
+        return array.shift();
       };
 
-      _.outputEnd = function(array, value) {
+      _.outputEnd = function(array) {
         c.assert(Array.isArray(array));
-        return array.pop(value);
+        return array.pop();
       };
 
       //----------------------------------------
@@ -2445,6 +2472,53 @@ if (typeof module === 'undefined') {
         c.check(true, _.equal([], _.remainEnd([1,2,3,4,5], 0)));
         c.check(true, _.equal([1,2,3,4,5], _.remainEnd([1,2,3,4,5], 5)));
         c.check(true, _.equal([1,2,3,4,5], _.remainEnd([1,2,3,4,5], 6)));
+      };
+
+      //----------------------------------------
+      //◇ソート
+      //----------------------------------------
+      //  ・ascending:  昇順
+      //    descending: 降順
+      //  ・lengthは、文字列や配列に使用
+      //  ・dictionaryは、文字列や数値の場合に使う
+      //----------------------------------------
+
+      _.sortPattern = function(array, patternName, ordering) {
+        c.assert(t.isArray(array));
+        c.assert(c.orValue(ordering, 'ascending', 'descending'));
+        var orderAscending = ordering === 'ascending';
+        switch (patternName) {
+        case 'number':
+          if (orderAscending) {
+            array.sort(function(a,b) { return (a - b); });
+          } else {
+            array.sort(function(a,b) { return (b - a); });
+          }
+          break;
+        case 'length':
+          if (orderAscending) {
+            array.sort(function(a,b) { return (a.length - b.length); });
+          } else {
+            array.sort(function(a,b) { return (b.length - a.length); });
+          }
+          break;
+        case 'dictionary':
+          if (orderAscending) {
+            array.sort(function(a,b) {
+              return (a.toString().toLowerCase() - b.toString().toLowerCase());
+            });
+          } else {
+            array.sort(function(a,b) {
+              return (b.toString().toLowerCase() - a.toString().toLowerCase());
+            });
+          }
+          break;
+        default:
+          c.assert(false,
+            'Error:stsLib.array.sortPattern:It is not exist pattern ' + 
+            patternName + '.');
+          break;
+        }
       };
 
       //----------------------------------------
@@ -2782,7 +2856,7 @@ if (typeof module === 'undefined') {
       //・配列で指定したものがいずれかが含まれている
       //----------------------------------------
       _.isIncludeAny = function(str, searchArray) {
-        return (_.indexOfAnyFirst(str, searchArray) !== -1);
+        return (_.indexOfAnyFirst(str, searchArray).index !== -1);
       };
 
       _.test_isIncludeAny = function() {
@@ -2879,7 +2953,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.indexOfFirst = function(str, search, startIndex) {
-        c.assert(t.isString(str, search));
+        c.assert(t.isStrings(str, search));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
@@ -2907,7 +2981,7 @@ if (typeof module === 'undefined') {
       };
 
       _.indexOfLast = function(str, search, startIndex) {
-        c.assert(t.isString(str, search));
+        c.assert(t.isStrings(str, search));
         startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
         c.assert(t.isInt(startIndex));
 
@@ -2941,44 +3015,91 @@ if (typeof module === 'undefined') {
 
       _.indexOfAnyFirst = function(str, searchArray, startIndex) {
         c.assert(t.isString(str));
-        return a.indexOfAnyFirst(str.split(''), searchArray, startIndex);
+        c.assert(t.isArray(searchArray));
+        c.assert(t.isStrings(searchArray));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        c.assert(t.isInt(startIndex));
+        
+        var result = Infinity;
+        var findIndex;
+        var indexAny = -1;
+        for (var i = 0, l = searchArray.length; i < l; i += 1) {
+          findIndex = _.indexOfFirst(str, searchArray[i], startIndex);
+          if (findIndex !== -1) {
+            if (findIndex < result) {
+              result = findIndex;
+              indexAny = i;
+            }
+          }
+        }
+        return {
+          index: result === Infinity ? -1 : result,
+          indexAny: indexAny
+        };
       };
 
       _.test_indexOfAnyFirst = function() {
 
+        c.checkResult('ER', null, _.indexOfAnyFirst, 'abc', 'ab');
         c.checkResult('ER', null, _.indexOfAnyFirst, 'abc', []);
-        c.check(-1, _.indexOfAnyFirst('abc', ['d', 'e']));
-        c.check( 0, _.indexOfAnyFirst('abc', ['a', 'c']));
-        c.check( 1, _.indexOfAnyFirst('abc', ['b', 'c']));
-        c.check( 2, _.indexOfAnyFirst('abc', ['', 'c']));
-        c.check(-1, _.indexOfAnyFirst('abc', ['', '']));
+        c.checkResult('ER', null, _.indexOfAnyFirst, 'abc', [123]);
 
-        c.check( 0, _.indexOfAnyFirst('abcabc', ['a', 'c'], 0));
-        c.check( 2, _.indexOfAnyFirst('abcabc', ['a', 'c'], 1));
-        c.check( 2, _.indexOfAnyFirst('abcabc', ['a', 'c'], 2));
-        c.check( 3, _.indexOfAnyFirst('abcabc', ['a', 'c'], 3));
-        c.check( 1, _.indexOfAnyFirst('abcabc', ['b'], 1));
-        c.check( 4, _.indexOfAnyFirst('abcabc', ['b'], 2));
+        c.check(-1, _.indexOfAnyFirst('abc', ['d', 'e']).index);
+        c.check( 0, _.indexOfAnyFirst('abc', ['a', 'c']).index);
+        c.check( 1, _.indexOfAnyFirst('abc', ['b', 'c']).index);
+        c.check( 2, _.indexOfAnyFirst('abc', ['', 'c']).index);
+        c.check(-1, _.indexOfAnyFirst('abc', ['', '']).index);
+
+        c.check( 0, _.indexOfAnyFirst('abcabc', ['a', 'c'], 0).index);
+        c.check( 2, _.indexOfAnyFirst('abcabc', ['a', 'c'], 1).index);
+        c.check( 2, _.indexOfAnyFirst('abcabc', ['a', 'c'], 2).index);
+        c.check( 3, _.indexOfAnyFirst('abcabc', ['a', 'c'], 3).index);
+        c.check( 1, _.indexOfAnyFirst('abcabc', ['b'], 1).index);
+        c.check( 4, _.indexOfAnyFirst('abcabc', ['b'], 2).index);
       };
 
       _.indexOfAnyLast = function(str, searchArray, startIndex) {
         c.assert(t.isString(str));
-        return a.indexOfAnyLast(str.split(''), searchArray, startIndex);
+        c.assert(t.isArray(searchArray));
+        c.assert(t.isStrings(searchArray));
+        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
+        c.assert(t.isInt(startIndex));
+
+        var result = -1;
+        var findIndex;
+        var indexAny = -1;
+        for (var i = 0, l = searchArray.length; i < l; i += 1) {
+          findIndex = s.indexOfLast(str, searchArray[i], startIndex);
+          if (findIndex !== -1) {
+            if (result < findIndex) {
+              result = findIndex;
+              indexAny = i;
+            }
+          }
+        }
+        return {
+          index: result,
+          indexAny: indexAny
+        };
       };
 
       _.test_indexOfAnyLast = function() {
-        c.checkResult('ER', null, _.indexOfAnyLast, 'abc', []);
-        c.check(-1, _.indexOfAnyLast('abc', ['d', 'e']));
-        c.check( 2, _.indexOfAnyLast('abc', ['a', 'c']));
-        c.check( 1, _.indexOfAnyLast('abc', ['b', 'a']));
-        c.check( 2, _.indexOfAnyLast('abc', ['', 'c']));
-        c.check(-1, _.indexOfAnyLast('abc', ['', '']));
 
-        c.check( 5, _.indexOfAnyLast('abcabc', ['a', 'c']));
-        c.check( 5, _.indexOfAnyLast('abcabc', ['a', 'c'], 5));
-        c.check( 3, _.indexOfAnyLast('abcabc', ['a', 'c'], 4));
-        c.check( 3, _.indexOfAnyLast('abcabc', ['a', 'c'], 3));
-        c.check( 2, _.indexOfAnyLast('abcabc', ['a', 'c'], 2));
+        c.checkResult('ER', null, _.indexOfAnyLast, 'abc', 'ab');
+        c.checkResult('ER', null, _.indexOfAnyLast, 'abc', []);
+        c.checkResult('ER', null, _.indexOfAnyLast, 'abc', [123]);
+
+        c.check(-1, _.indexOfAnyLast('abc', ['d', 'e']).index);
+        c.check( 2, _.indexOfAnyLast('abc', ['a', 'c']).index);
+        c.check( 1, _.indexOfAnyLast('abc', ['b', 'a']).index);
+        c.check( 2, _.indexOfAnyLast('abc', ['', 'c']).index);
+        c.check(-1, _.indexOfAnyLast('abc', ['', '']).index);
+
+        c.check( 5, _.indexOfAnyLast('abcabc', ['a', 'c']).index);
+        c.check( 5, _.indexOfAnyLast('abcabc', ['a', 'c'], 5).index);
+        c.check( 3, _.indexOfAnyLast('abcabc', ['a', 'c'], 4).index);
+        c.check( 3, _.indexOfAnyLast('abcabc', ['a', 'c'], 3).index);
+        c.check( 2, _.indexOfAnyLast('abcabc', ['a', 'c'], 2).index);
       };
 
       //----------------------------------------
@@ -3066,6 +3187,7 @@ if (typeof module === 'undefined') {
       //    endIndexの位置で切り取り
       //  ・負の値のIndexに対応
       //    -1は最後の文字になる
+      //  ・endIndex未指定なら、文字列の最後まで切り取り
       //----------------------------------------
       _.substrIndex = function(str, startIndex, endIndex) {
 
@@ -3133,6 +3255,7 @@ if (typeof module === 'undefined') {
       //    -1は最後の文字になる
       //  ・lengthは1を指定しても-1を指定しても同じ
       //    -2を指定すると前方文字を取得する
+      //  ・length未指定なら、文字列の最後まで切り取り
       //----------------------------------------
       _.substrLength = function(str, startIndex, length) {
         if (length === 0) { return ''; }
@@ -3187,12 +3310,10 @@ if (typeof module === 'undefined') {
       //・先頭を切り取るメソッド
       //----------------------------------------
       _.start = function(str, length) {
-
         c.assert(t.isString(str));
         c.assert(t.isInt(length));
         if (str === '') { return ''; }
         if (length <= 0) { return ''; }
-
         return _.substrLength(str, 0, length);
       };
 
@@ -3211,6 +3332,7 @@ if (typeof module === 'undefined') {
       //・先頭の一致を調べる
       //----------------------------------------
       _.isStart = function(str, search) {
+        c.assert(t.isStrings(str, search));
         if (search === '') { return false; }
         if (str === '') { return false; }
         if (str.length < search.length) { return false; }
@@ -3348,6 +3470,8 @@ if (typeof module === 'undefined') {
       //・終端を切り取るメソッド
       //----------------------------------------
       _.end = function(str, length) {
+        c.assert(t.isString(str));
+        c.assert(t.isInt(length));
         if (str === '') { return ''; }
         if (length <= 0) { return ''; }
         return _.substrLength(str,
@@ -3369,6 +3493,7 @@ if (typeof module === 'undefined') {
       //・終端の一致を調べる
       //----------------------------------------
       _.isEnd = function(str, search) {
+        c.assert(t.isStrings(str, search));
         if (search === '') { return false; }
         if (str === '') { return false; }
         if (str.length < search.length) { return false; }
@@ -3517,12 +3642,12 @@ if (typeof module === 'undefined') {
 
       _.includeBothEnds = function(str, search) {
         return _.includeStart(
-          _.includeEnd(str, search));
+          _.includeEnd(str, search), search);
       };
 
       _.excludeBothEnds = function(str, search) {
         return _.excludeStart(
-          _.excludeEnd(str, search));
+          _.excludeEnd(str, search), search);
       };
 
       //----------------------------------------
@@ -4188,6 +4313,7 @@ if (typeof module === 'undefined') {
       //  ・文字列の繰り返し置換
       //----------------------------------------
       _.replaceAll = function(str, before, after) {
+        c.assert(t.isStrings(str, before, after));
         return str.split(before).join(after);
       };
 
@@ -4196,6 +4322,65 @@ if (typeof module === 'undefined') {
         c.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
         c.check('AAAABBBBBBBAAAA',
           _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
+      };
+
+      //----------------------------------------
+      //・replaceAllAny
+      //----------------------------------------
+      //  ・配列内容に従って一斉に置き換え
+      //  ・ab の文字を aをb に bをa に同時置き換えできる
+      //  ・一致して置き換えを行うため
+      //    AAA >> B | AA >> C のように検索文字を長いもの順に
+      //    しておかないと誤動作する
+      //----------------------------------------
+      _.replaceAllAny = function(str, replaceArray) {
+        c.assert(t.isString(str));
+        c.assert(t.isArray(replaceArray));
+
+        var keys = [];
+        for (var i = 0, l = replaceArray.length; i < l; i += 1) {
+          c.assert(replaceArray[i].length === 2);
+          c.assert(t.isStrings(replaceArray[i][0], replaceArray[i][1]));
+          keys.push(replaceArray[i][0]);
+        }
+        var start = 0;
+        var result = '';
+        var searchResult = null;
+        while (true) {
+          searchResult = s.indexOfAnyFirst(str, keys, start);
+          if (searchResult.index === -1) {
+            //検索文字が見つからなかった場合
+            //ループから抜ける
+            result += s.substrIndex(str, start);
+            break;
+          }
+
+          if (start < searchResult.index) {
+            result += s.substrIndex(str, start, searchResult.index - 1);
+            start = searchResult.index;
+          }
+          result += replaceArray[searchResult.indexAny][1];
+          start += keys[searchResult.indexAny].length;
+        }
+        return result;
+      };
+
+      _.test_replaceAllAny = function() {
+        c.check('ba', _.replaceAllAny('ab', [
+          ['a', 'b'],
+          ['b', 'a']
+        ]));
+        c.check('bababa', _.replaceAllAny('ababab', [
+          ['ab', 'ba']
+        ]));
+        c.check('baabb', _.replaceAllAny('abbab', [
+          ['ab', 'ba'],
+          ['ba', 'ab']
+        ]));
+        c.check('cd', _.replaceAllAny('cd', [
+          ['a', 'b'],
+          ['b', 'a']
+        ]));
       };
 
       //----------------------------------------
@@ -4364,6 +4549,9 @@ if (typeof module === 'undefined') {
           return (str.match(
             /^\d{1,4}\/\d{1,2}\/\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2}\.\d{1,3}$/))
             ? true : false;
+        default:
+          c.assert(false);
+          break;
         }
       };
 
@@ -4861,79 +5049,110 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.formatYYYYMMDD = function(date, delimiter){
-        // c.assert(t.isDate(date));
-        // delimiter = t.ifNullOrUndefinedValue(delimiter, '');
-        // c.assert(t.isString(delimiter));
-        // return date.getFullYear() +
-        //   delimiter +
-        //   s.fillStart((date.getMonth() + 1).toString(), 2, '0') +
-        //   delimiter +
-        //   s.fillStart(date.getDate().toString(), 2, '0');
-        return _.formatToString(date,
-          'yyyy' + delimiter + 'MM' + delimiter + 'dd');
+        c.assert(t.isDate(date));
+        delimiter = t.ifNullOrUndefinedValue(delimiter, '');
+        c.assert(t.isString(delimiter));
+        return date.getFullYear() +
+          delimiter +
+          s.fillStart((date.getMonth() + 1).toString(), 2, '0') +
+          delimiter +
+          s.fillStart(date.getDate().toString(), 2, '0');
+        //下記のようにも記載できるが
+        //コピペのために上記を採用する
+        // return _.formatToString(date,
+        //   'yyyy' + delimiter + 'MM' + delimiter + 'dd');
       };
 
       _.formatHHMMSS = function(date, delimiter){
-        // c.assert(t.isDate(date));
-        // delimiter = t.ifNullOrUndefinedValue(delimiter, '');
-        // c.assert(t.isString(delimiter));
-        // return s.fillStart(date.getHours().toString(), 2, '0') +
-        //   delimiter +
-        //   s.fillStart(date.getMinutes().toString(), 2, '0') +
-        //   delimiter +
-        //   s.fillStart(date.getSeconds().toString(), 2, '0');
-        return _.formatToString(date,
-          'HH' + delimiter + 'mm' + delimiter + 'ss');
+        c.assert(t.isDate(date));
+        delimiter = t.ifNullOrUndefinedValue(delimiter, '');
+        c.assert(t.isString(delimiter));
+        return s.fillStart(date.getHours().toString(), 2, '0') +
+          delimiter +
+          s.fillStart(date.getMinutes().toString(), 2, '0') +
+          delimiter +
+          s.fillStart(date.getSeconds().toString(), 2, '0');
+        //下記のようにも記載できるが
+        //コピペのために上記を採用する
+        // return _.formatToString(date,
+        //   'HH' + delimiter + 'mm' + delimiter + 'ss');
       };
 
       _.formatToString = function(date, format, rule) {
         c.assert(t.isDate(date));
         c.assert(t.isString(format));
         rule = t.ifNullOrUndefinedValue(rule, _.formatRuleDefault);
-        if (t.isNullOrUndefined(rule)) {}
+        if (t.isNullOrUndefined(rule)) {
+          rule = _.formatRuleDefault;
+        }
         c.assert(t.isObject(rule));
         var singleQuoteIndex = s.indexOfFirst(format, "'");
         var doubleQuoteIndex = s.indexOfFirst(format, '"');
         c.assert(!(
           (singleQuoteIndex !== -1) && (doubleQuoteIndex !== -1)
           //書式には[']と["]の混在は許可しない
-        ));
+        ), 'Error:stsLib.date.formatToString:Quote Exists ["]and[\'].');
+        
 
-        var keys = stsLib.object.property.names(rule);
+        //置き換え配列を作成する
+        var keys = a.clone(rule.order);
+        a.sortPattern(keys, 'length', 'descending');
+        var replaceArray = [];
+        for (var i = 0, l = keys.length; i < l; i += 1) {
+          replaceArray.push([
+            keys[i], rule[keys[i]](date)
+          ]);
+        }
+        
         var quoteChar;
-        //TODO: keyは文字列長で逆順ソートしたい
-        //      yyyyとyy の変換がかぶるとまずいから
         if ((singleQuoteIndex === -1) && (doubleQuoteIndex === -1)) {
-          for (var i = 0, l = keys.length; i < l; i += 1) {
-            format = s.replaceAll(format, keys[i], rule[keys[i]](date));
-          }
-          return format;
+
+          //クウォート記号がないのならば
+          //通常通り要素に変換をかける
+          return s.replaceAllAny(format, replaceArray);
+
         } else if (singleQuoteIndex === -1) {
           quoteChar = '"';
         } else if (doubleQuoteIndex === -1) {
           quoteChar = "'";
         }
-        c.assert(n.isEven(s.includeCount(format, quoteChar)));
-        //クウォートは偶数であること
+        c.assert(n.isEven(s.includeCount(format, quoteChar)),
+          'Error:stsLib.date.formatToString:Quote Count is not Even.');
+        //クウォートの個数は偶数であること
 
         var formatStrs = format.split(quoteChar);
         for (var i2 = 0, l2 = formatStrs.length; i2 < l2; i2 += 2) {
-          for (var i1 = 0, l1 = keys.length; i1 < l1; i1 += 1) {
-            formatStrs[i2] = s.replaceAll(
-              formatStrs[i2], keys[i1], rule[keys[i1]](date));
-          }
+          formatStrs[i2] = s.replaceAllAny(formatStrs[i2], replaceArray);
         }
         return formatStrs.join('');
       };
 
       _.formatRuleDefault = {
+        order: [
+          'yyyy', 'yyy', 'yy', 'y',
+          'MM', 'M',
+          'dd', 'd',
+          'HH', 'H', 'hh', 'h',
+          'mm', 'm',
+          'ss', 's',
+          'fff', 'ff', 'f',
+          'tt', 't',
+          'dddd', 'ddd'
+        ],
         yyyy: function(date) {
+          //西暦4桁先頭ゼロ埋め
           return s.fillStart(date.getFullYear().toString(), 4, '0');
         },
+        yyy:  function(date) {
+          //西暦数値
+          return date.getFullYear().toString();
+        },
         yy:   function(date) {
+          //西暦下2桁先頭ゼロ埋め
           return s.end(s.fillStart(date.getFullYear().toString(), 4, '0'), 2);
         },
         y:    function(date) {
+          //西暦下2桁数値
           return t.convertToInt(
             s.end(s.fillStart(date.getFullYear().toString(), 4, '0'), 2)
           ).toString();
@@ -4985,19 +5204,31 @@ if (typeof module === 'undefined') {
           return s.start(
             s.fillStart(date.getMilliseconds().toString(), 3, '0'), 2);
         },
-        f:   function(date) {
+        f:    function(date) {
           return s.start(
             s.fillStart(date.getMilliseconds().toString(), 3, '0'), 1);
+        },
+        tt:   function(date) {
+          return date.getHours() < 12 ? 'AM' : 'PM';
+        },
+        t:    function(date) {
+          return date.getHours() < 12 ? 'A' : 'P';
+        },
+        ddd:  function(date) {
+          return d.dayOfWeekEn(date);
+        },
+        dddd:  function(date) {
+          return d.dayOfWeekEnglish(date);
         }
       };
 
       _.test_formatToString = function() {
         var d1 = d.Date(2007,1,6,21,5,3,123); //2017/10/6 21:5:3.123
         var s1;
-        s1 = d.formatToString(d1, 'yyyy-MM-dd', d.formatRuleDefault);
-        c.check('2007-01-06', s1);
-        s1 = d.formatToString(d1, 'yy-M-d', d.formatRuleDefault);
-        c.check('07-1-6', s1);
+        s1 = d.formatToString(d1, 'yyyy"-"MM-dd ddd', d.formatRuleDefault);
+        c.check('2007-01-06 Sat', s1);
+        s1 = d.formatToString(d1, 'yy-M-d dddd', d.formatRuleDefault);
+        c.check('07-1-6 Saturday', s1);
         s1 = d.formatToString(d1, 'y-M-d', d.formatRuleDefault);
         c.check('7-1-6', s1);
 
@@ -5013,6 +5244,31 @@ if (typeof module === 'undefined') {
         c.check('7-1-6 yyyy 9:5:3.1', s1);
         s1 = d.formatToString(d1, 'y-M-d "yyyy" h:m:"s"s.f', d.formatRuleDefault);
         c.check('7-1-6 yyyy 9:5:s3.1', s1);
+
+        var d2 = d.Date(101,1,1,13,1,1,1);
+        s1 = d.formatToString(d2, 'yyyy-MM-dd HH:mm:ss.fff tt', d.formatRuleDefault);
+        c.check('0101-01-01 13:01:01.001 PM', s1);
+        s1 = d.formatToString(d2, 'yyy-M-d H:m:s.ff t', d.formatRuleDefault);
+        c.check('101-1-1 13:1:1.00 P', s1);
+        s1 = d.formatToString(d2, 'yy-M-d hh:m:s.f', d.formatRuleDefault);
+        c.check('01-1-1 01:1:1.0', s1);
+        s1 = d.formatToString(d2, 'y-M-d h:m:s', d.formatRuleDefault);
+        c.check('1-1-1 1:1:1', s1);
+
+        var formatRule = stsLib.objectCreate(d.formatRuleDefault);
+        //ES5 では次のようにもかける
+        //var formatRule = Object.create(d.formatRuleDefault);
+        formatRule.ddd = function(date) {
+          return d.dayOfWeekJp(date);
+        };
+        formatRule.dddd = function(date) {
+          return d.dayOfWeekJapanese(date);
+        };
+        s1 = d.formatToString(d1, 'yyyy"-"MM-dd ddd', formatRule);
+        c.check('2007-01-06 土', s1);
+        s1 = d.formatToString(d1, 'yy-M-d dddd', formatRule);
+        c.check('07-1-6 土曜日', s1);
+
       };
 
       //----------------------------------------
@@ -6017,11 +6273,11 @@ if (typeof module === 'undefined') {
           var arrowNormalRight = arrowHead.clone();
           arrowNormalRight.normalRight();
           arrowNormalRight.normalize(arrowHeadHeight * arrowWidthRatio);
-          var arrowEdgeRight = _Vector(arrowHead.to, arrowNormalRight.to);
+          var arrowEdgeRight = _.Vector(arrowHead.to, arrowNormalRight.to);
           var arrowNormalLeft = arrowHead.clone();
           arrowNormalLeft.normalLeft();
           arrowNormalLeft.normalize(arrowHeadHeight * arrowWidthRatio);
-          var arrowEdgeLeft = _Vector(arrowHead.to, arrowNormalLeft.to);
+          var arrowEdgeLeft = _.Vector(arrowHead.to, arrowNormalLeft.to);
           return {
             arrowHead: arrowHead,               //矢印高さベクトル
             arrowEdgeRight: arrowEdgeRight,     //矢印右斜辺
@@ -6452,6 +6708,7 @@ if (typeof module === 'undefined') {
 
         s.test_repeat();
         s.test_replaceAll();
+        s.test_replaceAllAny();
         s.test_reverse();
 
         s.test_formatInsertFirst();
