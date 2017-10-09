@@ -360,3 +360,5 @@
 ・  objectCreate 作成。
 ◇  ver 2017/10/09
 ・  spreadsheetモジュールを名前空間対応にした。
+◇  ver 2017/10/10
+・  spreadsheet.rowByTitle/columnByTitle を追加。

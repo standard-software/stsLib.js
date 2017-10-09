@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/09
+Version:        2017/10/10
 //----------------------------------------*/
 
 //----------------------------------------
@@ -61,8 +61,6 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・シート名一覧
       //----------------------------------------
-      //  ・getValueとgetFormulaでチェックする
-      //----------------------------------------
       _.sheetNames = function() {
         var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
         var result = [];
@@ -71,7 +69,6 @@ if (typeof module === 'undefined') {
         }
         return result;
       }
-
 
       //----------------------------------------
       //・セルが空白かどうか調べる
@@ -113,6 +110,48 @@ if (typeof module === 'undefined') {
       	return 1;
       }
 
+      //----------------------------------------
+      //・行を名前から見つける
+      //----------------------------------------
+      //  ・colTitle: 名前の列
+      //    title:    名前
+      //    rowStart: 検索開始する行
+      //  ・見つからなければ -1 を返す
+      //----------------------------------------
+      _.rowByTitle = function(sheet, colTitle, title, rowStart) {
+        stsLib.compare.assert(stsLib.type.isInts(colTitle, rowStart));
+        stsLib.compare.assert(stsLib.type.isString(title));
+
+        var rowLast = stsLib.spreadsheet.dataLastRow(sheet, colTitle);
+        for (var i = rowStart; i <= rowLast; i += 1) {
+          if (sheet.getRange(i, colTitle).getValue().toString() === title) {
+            return i;
+          }
+        }
+        return -1;
+      }
+
+      //----------------------------------------
+      //・列を名前から見つける
+      //----------------------------------------
+      //  ・rowTitle: 名前の行
+      //    title:    名前
+      //    colStart: 検索開始する列
+      //  ・見つからなければ -1 を返す
+      //----------------------------------------
+      _.columnByTitle = function(sheet, rowTitle, title, colStart) {
+        stsLib.compare.assert(stsLib.type.isInts(rowTitle, colStart));
+        stsLib.compare.assert(stsLib.type.isString(title));
+
+        var colLast = stsLib.spreadsheet.dataLastCol(sheet, rowTitle);
+        for (var i = colStart; i <= colLast; i += 1) {
+          if (sheet.getRange(rowTitle, i).getValue().toString() === title) {
+            return i;
+          }
+        }
+        return -1;
+      }
+
     }());   //stsLib.gas
 
     //----------------------------------------
@@ -138,4 +177,3 @@ if (typeof module === 'undefined') {
   }
 
 }());   //(function () {
-
