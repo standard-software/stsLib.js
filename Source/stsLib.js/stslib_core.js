@@ -96,7 +96,7 @@ if (typeof module === 'undefined') {
       F.prototype = parent;
       return new F();
     };
-
+    
     //----------------------------------------
     //◆制御構文
     //----------------------------------------
@@ -5096,7 +5096,7 @@ if (typeof module === 'undefined') {
         ), 'Error:stsLib.date.formatToString:Quote Exists ["]and[\'].');
         
 
-        //置き換え配列を作成する
+        //置き換え配列を作成する。長いもの順にする。
         var keys = a.clone(rule.order);
         a.sortPattern(keys, 'length', 'descending');
         var replaceArray = [];
@@ -5112,7 +5112,6 @@ if (typeof module === 'undefined') {
           //クウォート記号がないのならば
           //通常通り要素に変換をかける
           return s.replaceAllAny(format, replaceArray);
-
         } else if (singleQuoteIndex === -1) {
           quoteChar = '"';
         } else if (doubleQuoteIndex === -1) {
@@ -5139,8 +5138,10 @@ if (typeof module === 'undefined') {
           'ss', 's',
           'fff', 'ff', 'f',
           'tt', 't',
-          'dddd', 'ddd'
+          'dddd', 'ddd',
+          'MMMM', 'MMM'
         ],
+          
         yyyy: function(date) {
           //西暦4桁先頭ゼロ埋め
           return s.fillStart(date.getFullYear().toString(), 4, '0');
@@ -5200,13 +5201,16 @@ if (typeof module === 'undefined') {
           return date.getSeconds().toString();
         },
         fff:  function(date) {
+          //  1/1000秒
           return s.fillStart(date.getMilliseconds().toString(), 3, '0');
         },
         ff:   function(date) {
+          //  1/100秒
           return s.start(
             s.fillStart(date.getMilliseconds().toString(), 3, '0'), 2);
         },
         f:    function(date) {
+          //  1/10秒
           return s.start(
             s.fillStart(date.getMilliseconds().toString(), 3, '0'), 1);
         },
@@ -5219,8 +5223,14 @@ if (typeof module === 'undefined') {
         ddd:  function(date) {
           return d.dayOfWeekEn(date);
         },
-        dddd:  function(date) {
+        dddd: function(date) {
           return d.dayOfWeekEnglish(date);
+        },
+        MMM:  function(date) {
+          return d.nameOfMonthEn(date);
+        },
+        MMMM: function(date) {
+          return d.nameOfMonthEnglish(date);
         }
       };
 
@@ -5361,6 +5371,31 @@ if (typeof module === 'undefined') {
         var dt4 = new _.Date(2017, 9, 30, 5, 20, 35);
         c.check(false,_.equalDateSeconds(dt3, dt4));
         c.check(true, _.equalDateMinutes(dt3, dt4));
+      };
+      
+      //----------------------------------------
+      //◇月の名前
+      //----------------------------------------
+
+      _.nameOfMonth = function(date, monthNames) {
+        c.assert(t.isDate(date));
+        c.assert(t.isArray(monthNames));
+        c.assert(monthNames.length === 12);
+        return monthNames[date.getMonth()];
+      };
+      
+      _.nameOfMonthEn = function(date) {
+        return _.nameOfMonth(date, [
+          'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May' , 'June',
+          'July', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'
+        ]);
+      };
+      
+      _.nameOfMonthEnglish = function(date) {
+        return _.nameOfMonth(date, [
+          'January', 'February', 'March', 'April', 'May' , 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ]);
       };
 
       //----------------------------------------
@@ -5701,16 +5736,8 @@ if (typeof module === 'undefined') {
     }()); //object
 
     //----------------------------------------
-    //◆列挙型 Enum
+    //◆列挙型
     //----------------------------------------
-    //  ・enum1 = {a: 0, b: 1, c: 2};
-    //    と宣言しても作れるが
-    //    enum1 = Enum(a, b, c); や Enum([a, b, c]);
-    //    と呼び出しても作成できる。
-    //  ・enum1 = {a: 'a', b: 'b', c: 'c'};
-    //    の代わりに
-    //    enum1 = EnumNameValue(a, b, c); や EnumNameValue([a, b, c]);
-    //    と呼び出しても作成できる。
     //  ・enumがWSHで予約語だったのでenumTypeにした
     //----------------------------------------
     _.enumType = stsLib.enumType || {};
@@ -5718,15 +5745,16 @@ if (typeof module === 'undefined') {
       var _ = stsLib.enumType;
 
       //----------------------------------------
-      //◇コンストラクタ
-      //----------------------------------------
-
-      //----------------------------------------
       //・値が連番のEnumオブジェクトを作成する
       //----------------------------------------
-      _.Enum = function(values) {
-        if (!(this instanceof stsLib.enumType.Enum)) {
-          return new stsLib.enumType.Enum(a.fromArgs(arguments));
+      //  ・enum1 = {a: 0, b: 1, c: 2};
+      //    と宣言しても作れるが
+      //    enum1 = EnumNumber(a, b, c); や EnumNumber([a, b, c]);
+      //    と呼び出しても作成できる。      
+      //----------------------------------------
+      _.EnumNumber = function(values) {
+        if (!(this instanceof stsLib.enumType.EnumNumber)) {
+          return new stsLib.enumType.EnumNumber(a.fromArgs(arguments));
         }
         values = a.expandMultiDimension(a.fromArgs(arguments));
 
@@ -5737,42 +5765,42 @@ if (typeof module === 'undefined') {
 
       _.test_Enum = function() {
         var e1;
-        e1 = _.Enum('a');
+        e1 = _.EnumNumber('a');
         c.check(1,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
-        e1 = new _.Enum('a');
+        e1 = new _.EnumNumber('a');
         c.check(1,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
-        e1 = _.Enum(['a']);
+        e1 = _.EnumNumber(['a']);
         c.check(1,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
-        e1 = new _.Enum(['a']);
+        e1 = new _.EnumNumber(['a']);
         c.check(1,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('',   stsLib.object.property.getNameFromValue(e1, 1));
 
-        e1 = _.Enum(['a', 'b']);
+        e1 = _.EnumNumber(['a', 'b']);
         c.check(2,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
 
-        e1 = new _.Enum(['a', 'b']);
+        e1 = new _.EnumNumber(['a', 'b']);
         c.check(2,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
 
-        e1 = _.Enum('a', 'b');
+        e1 = _.EnumNumber('a', 'b');
         c.check(2,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
 
-        e1 = new _.Enum('a', 'b');
+        e1 = new _.EnumNumber('a', 'b');
         c.check(2,    stsLib.object.property.count(e1));
         c.check('a',  stsLib.object.property.getNameFromValue(e1, 0));
         c.check('b',  stsLib.object.property.getNameFromValue(e1, 1));
@@ -5781,6 +5809,12 @@ if (typeof module === 'undefined') {
 
       //----------------------------------------
       //・値が名前文字列のEnumオブジェクトを作成する
+      //----------------------------------------
+      //  ・enum1 = {a: 'a', b: 'b', c: 'c'};
+      //    の代わりに
+      //    enum1 = EnumNameValue('a', 'b', 'c'); や
+      //    enum1 = EnumNameValue(['a', 'b', 'c']);
+      //    と呼び出しても作成できる。
       //----------------------------------------
       _.EnumNameValue = function(values) {
         if (!(this instanceof stsLib.enumType.EnumNameValue)) {
@@ -6958,6 +6992,12 @@ if (typeof module === 'undefined') {
     var p = stsLib.point;
     var v = stsLib.vector;
     var r = stsLib.rect;
+    
+    //----------------------------------------
+    //◆列挙型定義
+    //----------------------------------------
+    _.caseType = stsLib.enumType.EnumNameValue('sensitive', 'ignore');
+    
 
   }(stsLib, this));   //stsLib
 

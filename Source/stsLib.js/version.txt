@@ -362,3 +362,8 @@
 ・  spreadsheetモジュールを名前空間対応にした。
 ◇  ver 2017/10/10
 ・  spreadsheet.rowByTitle/columnByTitle を追加。
+◇  ver 2017/10/12
+・  enumType.Enum を EnumNumber に名前変更
+・  date.nameOfMonth を作成。
+・  date.formatToStrin の formatRuleDefault に
+    MMM/MMMM で月の名前が出力できるようにした。
