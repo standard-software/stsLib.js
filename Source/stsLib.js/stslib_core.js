@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/08
+Version:        2017/10/19
 //----------------------------------------*/
 
 //----------------------------------------
@@ -96,7 +96,7 @@ if (typeof module === 'undefined') {
       F.prototype = parent;
       return new F();
     };
-    
+
     //----------------------------------------
     //◆制御構文
     //----------------------------------------
@@ -2517,7 +2517,7 @@ if (typeof module === 'undefined') {
           break;
         default:
           c.assert(false,
-            'Error:stsLib.array.sortPattern:It is not exist pattern ' + 
+            'Error:stsLib.array.sortPattern:It is not exist pattern ' +
             patternName + '.');
           break;
         }
@@ -3021,7 +3021,7 @@ if (typeof module === 'undefined') {
         c.assert(t.isStrings(searchArray));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
-        
+
         var result = Infinity;
         var findIndex;
         var indexAny = -1;
@@ -5083,10 +5083,7 @@ if (typeof module === 'undefined') {
       _.formatToString = function(date, format, rule) {
         c.assert(t.isDate(date));
         c.assert(t.isString(format));
-        rule = t.ifNullOrUndefinedValue(rule, _.formatRuleDefault);
-        if (t.isNullOrUndefined(rule)) {
-          rule = _.formatRuleDefault;
-        }
+        rule = t.ifNullOrUndefinedValue(rule, _.formatRuleDefault());
         c.assert(t.isObject(rule));
         var singleQuoteIndex = s.indexOfFirst(format, "'");
         var doubleQuoteIndex = s.indexOfFirst(format, '"');
@@ -5094,10 +5091,10 @@ if (typeof module === 'undefined') {
           (singleQuoteIndex !== -1) && (doubleQuoteIndex !== -1)
           //書式には[']と["]の混在は許可しない
         ), 'Error:stsLib.date.formatToString:Quote Exists ["]and[\'].');
-        
+
 
         //置き換え配列を作成する。長いもの順にする。
-        var keys = a.clone(rule.order);
+        var keys = stsLib.object.property.names(rule);
         a.sortPattern(keys, 'length', 'descending');
         var replaceArray = [];
         for (var i = 0, l = keys.length; i < l; i += 1) {
@@ -5105,7 +5102,7 @@ if (typeof module === 'undefined') {
             keys[i], rule[keys[i]](date)
           ]);
         }
-        
+
         var quoteChar;
         if ((singleQuoteIndex === -1) && (doubleQuoteIndex === -1)) {
 
@@ -5128,159 +5125,176 @@ if (typeof module === 'undefined') {
         return formatStrs.join('');
       };
 
-      _.formatRuleDefault = {
-        order: [
-          'yyyy', 'yyy', 'yy', 'y',
-          'MM', 'M',
-          'dd', 'd',
-          'HH', 'H', 'hh', 'h',
-          'mm', 'm',
-          'ss', 's',
-          'fff', 'ff', 'f',
-          'tt', 't',
-          'dddd', 'ddd',
-          'MMMM', 'MMM'
-        ],
-          
-        yyyy: function(date) {
+      _.formatRuleDefault = function() {
+        var formatRule = {};
+        formatRule.yyyy = function(date) {
           //西暦4桁先頭ゼロ埋め
           return s.fillStart(date.getFullYear().toString(), 4, '0');
-        },
-        yyy:  function(date) {
+        };
+        formatRule.yyy = function(date) {
           //西暦数値
           return date.getFullYear().toString();
-        },
-        yy:   function(date) {
+        };
+        formatRule.yy = function(date) {
           //西暦下2桁先頭ゼロ埋め
           return s.end(s.fillStart(date.getFullYear().toString(), 4, '0'), 2);
-        },
-        y:    function(date) {
+        };
+        formatRule.y = function(date) {
           //西暦下2桁数値
           return t.convertToInt(
             s.end(s.fillStart(date.getFullYear().toString(), 4, '0'), 2)
           ).toString();
-        },
-        MM:   function(date) {
+        };
+        formatRule.MM = function(date) {
           return s.fillStart((date.getMonth() + 1).toString(), 2, '0');
-        },
-        M:    function(date) {
+        };
+        formatRule.M = function(date) {
           return (date.getMonth() + 1).toString();
-        },
-        dd:   function(date) {
+        };
+        formatRule.dd = function(date) {
           return s.fillStart(date.getDate().toString(), 2, '0');
-        },
-        d:    function(date) {
+        };
+        formatRule.d = function(date) {
           return date.getDate().toString();
-        },
-        hh:   function(date) {
+        };
+        formatRule.hh = function(date) {
           //00～12
           return s.fillStart((date.getHours() % 12).toString(), 2, '0');
-        },
-        h:    function(date) {
+        };
+        formatRule.h = function(date) {
           //0～12
           return (date.getHours() % 12).toString();
-        },
-        HH:   function(date) {
+        };
+        formatRule.HH = function(date) {
           //00～23
           return s.fillStart(date.getHours().toString(), 2, '0');
-        },
-        H:    function(date) {
+        };
+        formatRule.H = function(date) {
           //0～23
           return date.getHours().toString();
-        },
-        mm:   function(date) {
+        };
+        formatRule.mm = function(date) {
           return s.fillStart(date.getMinutes().toString(), 2, '0');
-        },
-        m:    function(date) {
+        };
+        formatRule.m = function(date) {
           return date.getMinutes().toString();
-        },
-        ss:   function(date) {
+        };
+        formatRule.ss = function(date) {
           return s.fillStart(date.getSeconds().toString(), 2, '0');
-        },
-        s:    function(date) {
+        };
+        formatRule.s = function(date) {
           return date.getSeconds().toString();
-        },
-        fff:  function(date) {
+        };
+        formatRule.fff = function(date) {
           //  1/1000秒
           return s.fillStart(date.getMilliseconds().toString(), 3, '0');
-        },
-        ff:   function(date) {
+        };
+        formatRule.ff = function(date) {
           //  1/100秒
           return s.start(
             s.fillStart(date.getMilliseconds().toString(), 3, '0'), 2);
-        },
-        f:    function(date) {
+        };
+        formatRule.f = function(date) {
           //  1/10秒
           return s.start(
             s.fillStart(date.getMilliseconds().toString(), 3, '0'), 1);
-        },
-        tt:   function(date) {
+        };
+        formatRule.tt = function(date) {
           return date.getHours() < 12 ? 'AM' : 'PM';
-        },
-        t:    function(date) {
+        };
+        formatRule.t = function(date) {
           return date.getHours() < 12 ? 'A' : 'P';
-        },
-        ddd:  function(date) {
+        };
+        formatRule.ddd = function(date) {
           return d.dayOfWeekEn(date);
-        },
-        dddd: function(date) {
+        };
+        formatRule.dddd = function(date) {
           return d.dayOfWeekEnglish(date);
-        },
-        MMM:  function(date) {
+        };
+        formatRule.MMM = function(date) {
           return d.nameOfMonthEn(date);
-        },
-        MMMM: function(date) {
+        };
+        formatRule.MMMM = function(date) {
           return d.nameOfMonthEnglish(date);
-        }
+        };
+        return formatRule;
+      };
+
+      _.formatRuleDefaultJp = function() {
+        var formatRule = _.formatRuleDefault();
+        formatRule.DDD = function(date) {
+          return d.dayOfWeekJp(date);
+        };
+        formatRule.DDDD = function(date) {
+          return d.dayOfWeekJapanese(date);
+        };
+        formatRule.TTTT = function(date) {
+          return date.getHours() < 12 ? '午前' : '午後';
+        };
+        formatRule.gg = function(date) {
+          //平
+          return s.start(date.toLocaleDateString(
+            'ja-JP-u-ca-japanese', {year: 'numeric'}), 1);
+        };
+        formatRule.gggg = function(date) {
+          //平成
+          return s.start(date.toLocaleDateString(
+            'ja-JP-u-ca-japanese', {year: 'numeric'}), 2);
+        };
+        formatRule.Y = function(date) {
+          //数値1桁
+          return s.replaceAll(s.substrIndex(date.toLocaleDateString(
+            'ja-JP-u-ca-japanese', {year: 'numeric'}), 2), '年', '');
+        };
+        formatRule.YY = function(date) {
+          //数値2桁
+          return s.replaceAll(s.substrIndex(date.toLocaleDateString(
+            'ja-JP-u-ca-japanese', {year: '2-digit'}), 2), '年', '');
+        };
+        return formatRule;
       };
 
       _.test_formatToString = function() {
         var d1 = d.Date(2007,1,6,21,5,3,123); //2017/10/6 21:5:3.123
         var s1;
-        s1 = d.formatToString(d1, 'yyyy"-"MM-dd ddd', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'yyyy"-"MM-dd ddd');
         c.check('2007-01-06 Sat', s1);
-        s1 = d.formatToString(d1, 'yy-M-d dddd', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'yy-M-d dddd');
         c.check('07-1-6 Saturday', s1);
-        s1 = d.formatToString(d1, 'y-M-d', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'y-M-d');
         c.check('7-1-6', s1);
 
-        s1 = d.formatToString(d1, 'y-M-d HH:mm:ss.fff', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'y-M-d HH:mm:ss.fff');
         c.check('7-1-6 21:05:03.123', s1);
 
-        s1 = d.formatToString(d1, 'y-M-d h:m:s.ff', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'y-M-d h:m:s.ff');
         c.check('7-1-6 9:5:3.12', s1);
-        s1 = d.formatToString(d1, 'y-M-d h:m:s.f', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'y-M-d h:m:s.f');
         c.check('7-1-6 9:5:3.1', s1);
 
-        s1 = d.formatToString(d1, 'y-M-d "yyyy" h:m:s.f', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'y-M-d "yyyy" h:m:s.f');
         c.check('7-1-6 yyyy 9:5:3.1', s1);
-        s1 = d.formatToString(d1, 'y-M-d "yyyy" h:m:"s"s.f', d.formatRuleDefault);
+        s1 = d.formatToString(d1, 'y-M-d "yyyy" h:m:"s"s.f');
         c.check('7-1-6 yyyy 9:5:s3.1', s1);
 
         var d2 = d.Date(101,1,1,13,1,1,1);
-        s1 = d.formatToString(d2, 'yyyy-MM-dd HH:mm:ss.fff tt', d.formatRuleDefault);
+        s1 = d.formatToString(d2, 'yyyy-MM-dd HH:mm:ss.fff tt');
         c.check('0101-01-01 13:01:01.001 PM', s1);
-        s1 = d.formatToString(d2, 'yyy-M-d H:m:s.ff t', d.formatRuleDefault);
+        s1 = d.formatToString(d2, 'yyy-M-d H:m:s.ff t');
         c.check('101-1-1 13:1:1.00 P', s1);
-        s1 = d.formatToString(d2, 'yy-M-d hh:m:s.f', d.formatRuleDefault);
+        s1 = d.formatToString(d2, 'yy-M-d hh:m:s.f');
         c.check('01-1-1 01:1:1.0', s1);
-        s1 = d.formatToString(d2, 'y-M-d h:m:s', d.formatRuleDefault);
+        s1 = d.formatToString(d2, 'y-M-d h:m:s');
         c.check('1-1-1 1:1:1', s1);
 
-        var formatRule = stsLib.objectCreate(d.formatRuleDefault);
-        //ES5 では次のようにもかける
-        //var formatRule = Object.create(d.formatRuleDefault);
-        formatRule.ddd = function(date) {
-          return d.dayOfWeekJp(date);
-        };
-        formatRule.dddd = function(date) {
-          return d.dayOfWeekJapanese(date);
-        };
-        s1 = d.formatToString(d1, 'yyyy"-"MM-dd ddd', formatRule);
-        c.check('2007-01-06 土', s1);
-        s1 = d.formatToString(d1, 'yy-M-d dddd', formatRule);
-        c.check('07-1-6 土曜日', s1);
+        s1 = d.formatToString(d1, 'yyyy"-"MM-dd DDD TTTT', _.formatRuleDefaultJp());
+        c.check('2007-01-06 土 午後', s1);
+        s1 = d.formatToString(d1, 'yy-M-d DDDD gg', _.formatRuleDefaultJp());
+        c.check('07-1-6 土曜日 平', s1);
 
+        var d2 = d.Date(1995,1,6,21,5,3,123); //2017/10/6 21:5:3.123
+        s1 = d.formatToString(d2, 'ggY ggggYY yyyy', _.formatRuleDefaultJp());
+        c.check('平7 平成07 1995', s1);
       };
 
       //----------------------------------------
@@ -5372,7 +5386,7 @@ if (typeof module === 'undefined') {
         c.check(false,_.equalDateSeconds(dt3, dt4));
         c.check(true, _.equalDateMinutes(dt3, dt4));
       };
-      
+
       //----------------------------------------
       //◇月の名前
       //----------------------------------------
@@ -5383,19 +5397,27 @@ if (typeof module === 'undefined') {
         c.assert(monthNames.length === 12);
         return monthNames[date.getMonth()];
       };
-      
+
       _.nameOfMonthEn = function(date) {
-        return _.nameOfMonth(date, [
+        return _.nameOfMonth(date, _.monthNamesEn());
+      };
+
+      _.nameOfMonthEnglish = function(date) {
+        return _.nameOfMonth(date, _.monthNamesEnglish());
+      };
+
+      _.monthNamesEn = function() {
+        return [
           'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May' , 'June',
           'July', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'
-        ]);
+        ];
       };
-      
-      _.nameOfMonthEnglish = function(date) {
-        return _.nameOfMonth(date, [
+
+      _.monthNamesEnglish = function() {
+        return [
           'January', 'February', 'March', 'April', 'May' , 'June',
           'July', 'August', 'September', 'October', 'November', 'December'
-        ]);
+        ];
       };
 
       //----------------------------------------
@@ -5418,24 +5440,46 @@ if (typeof module === 'undefined') {
       };
 
       _.dayOfWeekEn = function(date) {
-        return _.dayOfWeek(date,
-          ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
+        return _.dayOfWeek(date, _.dayOfWeekNamesEn());
       };
 
       _.dayOfWeekEnglish = function(date) {
-        return _.dayOfWeek(date,[
-          'Sunday', 'Monday', 'Tuesday', 'Wednesday',
-          'Thursday', 'Friday', 'Saturday'
-        ]);
+        return _.dayOfWeek(date, _.dayOfWeekNamesEnglish());
       };
 
       _.dayOfWeekJp = function(date) {
-        return _.dayOfWeek(date,
-          ['日', '月', '火', '水', '木', '金', '土']);
+        return _.dayOfWeek(date, _.dayOfWeekNamesJp());
       };
 
       _.dayOfWeekJapanese = function(date) {
-        return _.dayOfWeekJp(date) + '曜日';
+        return _.dayOfWeek(date, _.dayOfWeekNamesJapanese());
+      };
+
+      _.dayOfWeekNamesEn = function() {
+        return [
+          'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+        ];
+      };
+
+      _.dayOfWeekNamesEnglish = function() {
+        return [
+          'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+          'Thursday', 'Friday', 'Saturday'
+        ];
+      };
+
+      _.dayOfWeekNamesJp = function() {
+        return [
+          '日', '月', '火', '水', '木', '金', '土'
+        ];
+      };
+
+      _.dayOfWeekNamesJapanese = function() {
+        var result = _.dayOfWeekNamesJp();
+        for (var i = 0, iMax = result.length; i < iMax; i += 1) {
+          result[i] = result[i] + '曜日';
+        }
+        return result;
       };
 
       _.test_dayOfWeek = function() {
@@ -5750,7 +5794,7 @@ if (typeof module === 'undefined') {
       //  ・enum1 = {a: 0, b: 1, c: 2};
       //    と宣言しても作れるが
       //    enum1 = EnumNumber(a, b, c); や EnumNumber([a, b, c]);
-      //    と呼び出しても作成できる。      
+      //    と呼び出しても作成できる。
       //----------------------------------------
       _.EnumNumber = function(values) {
         if (!(this instanceof stsLib.enumType.EnumNumber)) {
@@ -6565,9 +6609,23 @@ if (typeof module === 'undefined') {
     (function() {
       var _ = stsLib.system;
 
-      _.consoleLogComment = function(str) {
-        var result = (new Function('return ' + str + ';'))();
-        return 'console.log(' + str + ');  //' + result;
+      _.consoleLogCommentOutput = function(str) {
+        console.log(consoleLogComment(str));
+      };
+
+      _.test_consoleLogComment = function() {
+        var testFunc = function(value) {
+          return value + value;
+        };
+
+        var formula = 'testFunc(1)';
+        var result = eval(formula);
+        c.check('console.log(testFunc(1));  //2',
+          _.consoleLogComment(formula, result));
+      };
+
+      _.consoleLogComment = function(formula, comment) {
+        return 'console.log(' + formula + ');  //' + comment;
       };
 
     }());
@@ -6832,6 +6890,8 @@ if (typeof module === 'undefined') {
         r.test_rect_move();
         r.test_rect_setTopLeft();
 
+        stsLib.system.test_consoleLogComment();
+
         c.check(true,   Array.isArray([]));
         c.check(false,  Array.isArray(123));
         c.check(false,  Array.isArray('abc'));
@@ -6992,12 +7052,12 @@ if (typeof module === 'undefined') {
     var p = stsLib.point;
     var v = stsLib.vector;
     var r = stsLib.rect;
-    
+
     //----------------------------------------
     //◆列挙型定義
     //----------------------------------------
     _.caseType = stsLib.enumType.EnumNameValue('sensitive', 'ignore');
-    
+
 
   }(stsLib, this));   //stsLib
 

@@ -20,7 +20,7 @@
 ◇  ver 2015/07/02
     replaceAll
 ◇  ver 2014/07/18 stslib_web.js
-・  作成 
+・  作成
     setCookie
     getCookie
     encodeURIComponentArrayToString
@@ -89,7 +89,7 @@
     stslib_core.jsに移動
 ・  assert 追加
 ・  arrayEqualArray/arrayIndexOfArray 追加
-◇  ver 2017/04/17 
+◇  ver 2017/04/17
 ・  ファイル名変更
     stslib_web.js
     /stslib_win_wsh.js
@@ -367,3 +367,10 @@
 ・  date.nameOfMonth を作成。
 ・  date.formatToStrin の formatRuleDefault に
     MMM/MMMM で月の名前が出力できるようにした。
+◇  ver 2017/10/15
+・  consoleLogCommentをevalで実装した。
+◇  ver 2017/10/19
+・  date.formatRuleDefaultJp追加。
+・  date.formatToString() の修正。
+・  date.dayOfWeekNames** を修正。
+・  date.nameOfMonth** を修正。
