@@ -374,3 +374,6 @@
 ・  date.formatToString() の修正。
 ・  date.dayOfWeekNames** を修正。
 ・  date.nameOfMonth** を修正。
+◇  ver 2017/10/22
+・  date.formatToString の和暦元号対応修正
+
