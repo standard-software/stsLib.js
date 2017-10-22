@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/19
+Version:        2017/10/22
 //----------------------------------------*/
 
 //----------------------------------------
@@ -5128,7 +5128,7 @@ if (typeof module === 'undefined') {
       _.formatRuleDefault = function() {
         var formatRule = {};
         formatRule.yyyy = function(date) {
-          //西暦4桁先頭ゼロ埋め
+          //西暦4桁以下、4桁に先頭ゼロ埋め
           return s.fillStart(date.getFullYear().toString(), 4, '0');
         };
         formatRule.yyy = function(date) {
@@ -5136,11 +5136,11 @@ if (typeof module === 'undefined') {
           return date.getFullYear().toString();
         };
         formatRule.yy = function(date) {
-          //西暦下2桁先頭ゼロ埋め
+          //西暦下2桁固定、先頭ゼロ埋め
           return s.end(s.fillStart(date.getFullYear().toString(), 4, '0'), 2);
         };
         formatRule.y = function(date) {
-          //西暦下2桁数値
+          //西暦下2桁切取、1桁か2桁
           return t.convertToInt(
             s.end(s.fillStart(date.getFullYear().toString(), 4, '0'), 2)
           ).toString();
@@ -5231,31 +5231,53 @@ if (typeof module === 'undefined') {
         formatRule.TTTT = function(date) {
           return date.getHours() < 12 ? '午前' : '午後';
         };
-        formatRule.gg = function(date) {
-          //平
-          return s.start(date.toLocaleDateString(
-            'ja-JP-u-ca-japanese', {year: 'numeric'}), 1);
-        };
+
+        var japaneseCalenderYear = function(date) {
+          var result = {};
+          var heiseiStart = _.Date(1989,  1,  8);
+          var shouwaStart = _.Date(1926, 12, 25);
+          var taishoStart = _.Date(1912,  7, 30);
+          var meijiStart  = _.Date(1868,  9,  8);
+          if (heiseiStart <= date) {
+            result.gengo = '平成';
+            result.year = (formatRule.yyyy(date) - heiseiStart.getFullYear() + 1);
+          } else if (shouwaStart <= date) {
+            result.gengo = '昭和';
+            result.year = (formatRule.yyyy(date) - shouwaStart.getFullYear() + 1);
+          } else if (taishoStart <= date) {
+            result.gengo = '大正';
+            result.year = (formatRule.yyyy(date) - taishoStart.getFullYear() + 1);
+          } else if (meijiStart <= date) {
+            result.gengo = '明治';
+            result.year = (formatRule.yyyy(date) - meijiStart.getFullYear() + 1);
+          } else {
+            result.gengo = '';
+            result.year = formatRule.yyyy(date);
+          }
+          return result;
+        }
+
         formatRule.gggg = function(date) {
           //平成
-          return s.start(date.toLocaleDateString(
-            'ja-JP-u-ca-japanese', {year: 'numeric'}), 2);
+          return japaneseCalenderYear(date).gengo;
+        };
+        formatRule.gg = function(date) {
+          //平
+          return s.start(japaneseCalenderYear(date).gengo, 1);
         };
         formatRule.Y = function(date) {
-          //数値1桁
-          return s.replaceAll(s.substrIndex(date.toLocaleDateString(
-            'ja-JP-u-ca-japanese', {year: 'numeric'}), 2), '年', '');
+          //和暦年数値
+          return japaneseCalenderYear(date).year.toString();
         };
         formatRule.YY = function(date) {
-          //数値2桁
-          return s.replaceAll(s.substrIndex(date.toLocaleDateString(
-            'ja-JP-u-ca-japanese', {year: '2-digit'}), 2), '年', '');
+          //和暦年2桁固定
+          return s.end(s.fillStart(formatRule.Y(date), 2, '0'), 2);
         };
         return formatRule;
       };
 
       _.test_formatToString = function() {
-        var d1 = d.Date(2007,1,6,21,5,3,123); //2017/10/6 21:5:3.123
+        var d1 = d.Date(2007,1,6,21,5,3,123);
         var s1;
         s1 = d.formatToString(d1, 'yyyy"-"MM-dd ddd');
         c.check('2007-01-06 Sat', s1);
@@ -5292,9 +5314,30 @@ if (typeof module === 'undefined') {
         s1 = d.formatToString(d1, 'yy-M-d DDDD gg', _.formatRuleDefaultJp());
         c.check('07-1-6 土曜日 平', s1);
 
-        var d2 = d.Date(1995,1,6,21,5,3,123); //2017/10/6 21:5:3.123
+        var d2 = d.Date(1995,1,6,21,5,3,123);
         s1 = d.formatToString(d2, 'ggY ggggYY yyyy', _.formatRuleDefaultJp());
         c.check('平7 平成07 1995', s1);
+
+        var rule = _.formatRuleDefaultJp();
+        var d3 = d.Date(1989,  1,  8);
+        c.check('平成1年1月8日', d.formatToString(d3, 'ggggY年M月d日', rule));
+        var d4 = d.Date(1989,  1,  7);
+        c.check('昭和64年1月7日', d.formatToString(d4, 'ggggY年M月d日', rule));
+        var d5 = d.Date(1926, 12, 25);
+        c.check('昭01/12/25', d.formatToString(d5, 'ggYY/MM/dd', rule));
+        var d6 = d.Date(1926, 12, 24);
+        c.check('大15/12/24', d.formatToString(d6, 'ggYY/MM/dd', rule));
+        var d7 = d.Date(1912,  7, 30);
+        c.check('大正01/07/30', d.formatToString(d7, 'ggggYY/MM/dd', rule));
+        var d8 = d.Date(1912,  7, 29);
+        c.check('明治45/07/29', d.formatToString(d8, 'ggggYY/MM/dd', rule));
+        var d10 = d.Date(1868, 9, 8);
+        c.check('明治1/9/8', d.formatToString(d10, 'ggggY/M/d', rule));
+        c.check('明治01/09/08', d.formatToString(d10, 'ggggYY/MM/dd', rule));
+        var d11 = d.Date(1868, 9, 7);
+        c.check('1868/9/7', d.formatToString(d11, 'ggggY/M/d', rule));
+        c.check('68/09/07', d.formatToString(d11, 'ggggYY/MM/dd', rule));
+
       };
 
       //----------------------------------------
