@@ -5212,9 +5212,12 @@ if (typeof module === 'undefined') {
           return d.dayOfWeekEnglish(date);
         };
         formatRule.MMM = function(date) {
-          return d.nameOfMonthEn(date);
+          return d.nameOfMonthEn3Char(date);
         };
         formatRule.MMMM = function(date) {
+          return d.nameOfMonthEn4Char(date);
+        };
+        formatRule.MMMMM = function(date) {
           return d.nameOfMonthEnglish(date);
         };
         return formatRule;
@@ -5279,25 +5282,17 @@ if (typeof module === 'undefined') {
       _.test_formatToString = function() {
         var d1 = d.Date(2007,1,6,21,5,3,123);
         var s1;
-        s1 = d.formatToString(d1, 'yyyy"-"MM-dd ddd');
-        c.check('2007-01-06 Sat', s1);
-        s1 = d.formatToString(d1, 'yy-M-d dddd');
-        c.check('07-1-6 Saturday', s1);
-        s1 = d.formatToString(d1, 'y-M-d');
-        c.check('7-1-6', s1);
+        s1 = d.formatToString(d1, 'yyyy/MM/dd ddd HH:mm:ss.fff');
+        c.check('2007/01/06 Sat 21:05:03.123', s1);
+        s1 = d.formatToString(d1, 'yy/M/d dddd tt h:m:s.ff');
+        c.check('07/1/6 Saturday PM 9:5:3.12', s1);
+        s1 = d.formatToString(d1, 'y-MMMMM-d h:m:s.f');
+        c.check('7-January-6 9:5:3.1', s1);
 
-        s1 = d.formatToString(d1, 'y-M-d HH:mm:ss.fff');
-        c.check('7-1-6 21:05:03.123', s1);
-
-        s1 = d.formatToString(d1, 'y-M-d h:m:s.ff');
-        c.check('7-1-6 9:5:3.12', s1);
-        s1 = d.formatToString(d1, 'y-M-d h:m:s.f');
-        c.check('7-1-6 9:5:3.1', s1);
-
-        s1 = d.formatToString(d1, 'y-M-d "yyyy" h:m:s.f');
-        c.check('7-1-6 yyyy 9:5:3.1', s1);
-        s1 = d.formatToString(d1, 'y-M-d "yyyy" h:m:"s"s.f');
-        c.check('7-1-6 yyyy 9:5:s3.1', s1);
+        s1 = d.formatToString(d1, 'y-MMM-d "yyyy" h:m:s.f');
+        c.check('7-Jan-6 yyyy 9:5:3.1', s1);
+        s1 = d.formatToString(d1, 'y-MMMM-d "yyyy" h:m:"s"s.f');
+        c.check('7-Jan.-6 yyyy 9:5:s3.1', s1);
 
         var d2 = d.Date(101,1,1,13,1,1,1);
         s1 = d.formatToString(d2, 'yyyy-MM-dd HH:mm:ss.fff tt');
@@ -5441,15 +5436,26 @@ if (typeof module === 'undefined') {
         return monthNames[date.getMonth()];
       };
 
-      _.nameOfMonthEn = function(date) {
-        return _.nameOfMonth(date, _.monthNamesEn());
+      _.nameOfMonthEn3Char = function(date) {
+        return _.nameOfMonth(date, _.monthNamesEn3Char());
+      };
+
+      _.nameOfMonthEn4Char = function(date) {
+        return _.nameOfMonth(date, _.monthNamesEn4Char());
       };
 
       _.nameOfMonthEnglish = function(date) {
         return _.nameOfMonth(date, _.monthNamesEnglish());
       };
 
-      _.monthNamesEn = function() {
+      _.monthNamesEn3Char = function() {
+        return [
+          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+      };
+
+      _.monthNamesEn4Char = function() {
         return [
           'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May' , 'June',
           'July', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'
