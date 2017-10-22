@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/22
+Version:        2017/10/23
 //----------------------------------------*/
 
 //----------------------------------------
@@ -5304,18 +5304,18 @@ if (typeof module === 'undefined') {
         s1 = d.formatToString(d2, 'y-M-d h:m:s');
         c.check('1-1-1 1:1:1', s1);
 
-        s1 = d.formatToString(d1, 'yyyy"-"MM-dd DDD TTTT', _.formatRuleDefaultJp());
+        var rule = _.formatRuleDefaultJp();
+        s1 = d.formatToString(d1, 'yyyy"-"MM-dd DDD TTTT', rule);
         c.check('2007-01-06 土 午後', s1);
-        s1 = d.formatToString(d1, 'yy-M-d DDDD gg', _.formatRuleDefaultJp());
+        s1 = d.formatToString(d1, 'yy-M-d DDDD gg', rule);
         c.check('07-1-6 土曜日 平', s1);
 
         var d2 = d.Date(1995,1,6,21,5,3,123);
-        s1 = d.formatToString(d2, 'ggY ggggYY yyyy', _.formatRuleDefaultJp());
+        s1 = d.formatToString(d2, 'ggY ggggYY yyyy', rule);
         c.check('平7 平成07 1995', s1);
 
-        var rule = _.formatRuleDefaultJp();
         var d3 = d.Date(1989,  1,  8);
-        c.check('平成1年1月8日', d.formatToString(d3, 'ggggY年M月d日', rule));
+        c.check('平成1年1月8日', d.formatToString(d3, 'ggggY年M月d日()', rule));
         var d4 = d.Date(1989,  1,  7);
         c.check('昭和64年1月7日', d.formatToString(d4, 'ggggY年M月d日', rule));
         var d5 = d.Date(1926, 12, 25);
