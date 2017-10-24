@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/23
+Version:        2017/10/24
 //----------------------------------------*/
 
 //----------------------------------------
@@ -1445,20 +1445,20 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・ラジアンと角度相互変換
       //----------------------------------------
-      _.degreeToRadian = function(value) {
-        return value * Math.PI / 180;
+      _.degToRad = function(degree) {
+        return degree * Math.PI / 180;
       };
 
-      _.radianToDegree = function(value) {
-        return value * 180 / Math.PI;
+      _.radToDeg = function(radian) {
+        return radian * 180 / Math.PI;
       };
 
-      _.test_degreeToRadian = function() {
+      _.test_degToRad = function() {
 
-        c.check(0, _.degreeToRadian(0));
-        c.check(Math.PI / 6, _.degreeToRadian(30));
-        c.check(0, _.radianToDegree(0));
-        c.check(30, Math.round(_.radianToDegree(Math.PI / 6)));
+        c.check(0, _.degToRad(0));
+        c.check(Math.PI / 6, _.degToRad(30));
+        c.check(0, _.radToDeg(0));
+        c.check(30, Math.round(_.radToDeg(Math.PI / 6)));
       };
 
       //----------------------------------------
@@ -1469,7 +1469,7 @@ if (typeof module === 'undefined') {
       //      それ以上それ以下でも0-360に丸め込まれる
       //  ・戻り値は -180～+180 になる
       //----------------------------------------
-      _.angleRelative = function(base, target) {
+      _.relative = function(base, target) {
         base = base % 360;
         target = target % 360;
         var result = target - base;
@@ -1482,18 +1482,46 @@ if (typeof module === 'undefined') {
         return result;
       };
 
-      _.test_angleRelative = function() {
+      _.test_relative = function() {
 
-        c.check(10, _.angleRelative(5, 15));
-        c.check(-10, _.angleRelative(15, 5));
+        c.check(10, _.relative(5, 15));
+        c.check(-10, _.relative(15, 5));
 
-        c.check(90, _.angleRelative(90, 180));
-        c.check(180, _.angleRelative(90, 270));
-        c.check(180, _.angleRelative(0, 180));
+        c.check(90, _.relative(90, 180));
+        c.check(180, _.relative(90, 270));
+        c.check(180, _.relative(0, 180));
 
-        c.check(-179, _.angleRelative(0, 181));
-        c.check(179, _.angleRelative(181, 0));
-        c.check(-179, _.angleRelative(179, 0));
+        c.check(-179, _.relative(0, 181));
+        c.check(179, _.relative(181, 0));
+        c.check(-179, _.relative(179, 0));
+      };
+
+      //----------------------------------------
+      //◇角度(degree)ベースのsin/cos/tan
+      //----------------------------------------
+
+      _.sin = function(degree) {
+        return Math.sin(_.degToRad(degree));
+      };
+
+      _.cos = function(degree) {
+        return Math.cos(_.degToRad(degree));
+      };
+
+      _.tan = function(degree) {
+        return Math.tan(_.degToRad(degree));
+      };
+
+      _.asin = function(x) {
+        return _.radToDeg(Math.asin(x));
+      };
+
+      _.acos = function(x) {
+        return _.radToDeg(Math.acos(x));
+      };
+
+      _.atan = function(x) {
+        return _.radToDeg(Math.atan(x));
       };
 
     }()); //angle
@@ -5258,7 +5286,7 @@ if (typeof module === 'undefined') {
             result.year = formatRule.yyyy(date);
           }
           return result;
-        }
+        };
 
         formatRule.gggg = function(date) {
           //平成
@@ -5310,12 +5338,12 @@ if (typeof module === 'undefined') {
         s1 = d.formatToString(d1, 'yy-M-d DDDD gg', rule);
         c.check('07-1-6 土曜日 平', s1);
 
-        var d2 = d.Date(1995,1,6,21,5,3,123);
+        d2 = d.Date(1995,1,6,21,5,3,123);
         s1 = d.formatToString(d2, 'ggY ggggYY yyyy', rule);
         c.check('平7 平成07 1995', s1);
 
         var d3 = d.Date(1989,  1,  8);
-        c.check('平成1年1月8日', d.formatToString(d3, 'ggggY年M月d日()', rule));
+        c.check('平成1年1月8日', d.formatToString(d3, 'ggggY年M月d日', rule));
         var d4 = d.Date(1989,  1,  7);
         c.check('昭和64年1月7日', d.formatToString(d4, 'ggggY年M月d日', rule));
         var d5 = d.Date(1926, 12, 25);
@@ -6071,6 +6099,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //・Vectorコンストラクタ
       //----------------------------------------
+      //  ・1つの引数の場合は始点(0,0)からのベクトル
+      //  ・2つの引数の場合は始点,終点の順番に指定する
+      //----------------------------------------
       _.Vector = function(point) {
         if (!(this instanceof stsLib.vector.Vector)) {
           return new stsLib.vector.Vector(arguments[0], arguments[1]);
@@ -6278,6 +6309,45 @@ if (typeof module === 'undefined') {
           c.check(0, v1.from.y);
           c.check(-4, v1.to.x);
           c.check( 3, v1.to.y);
+        };
+
+        //----------------------------------------
+        //・回転
+        //----------------------------------------
+        //  ・fromを中心にして回転する
+        //  ・時計周りの場合はプラス
+        //    反時計周りはマイナスを指定する
+        //----------------------------------------
+        _.Vector.prototype.rotate = function(degree) {
+          var angle = stsLib.angle;
+          var dx = this.dx();
+          var dy = this.dy();
+          this.to.x = this.from.x +
+            angle.cos(degree) * dx + angle.sin(degree) * dy;
+          this.to.y = this.from.y +
+            - angle.sin(degree) * dx + angle.cos(degree) * dy;
+          return this;
+        };
+
+        //----------------------------------------
+        //・角度
+        //----------------------------------------
+        //  ・他のベクトルとの角度を求める
+        //----------------------------------------
+        _.Vector.prototype.angle = function(vector) {
+          var angle = stsLib.angle;
+
+          var selfDxDy = _.Vector(
+            p.Point(this.dx(), this.dy())
+          ).normalize();
+          var vectorDxDy = _.Vector(
+            p.Point(vector.dx(), vector.dy())
+          ).normalize();
+          //方向ベクトルにして長さ1で正規化する
+
+          return angle.acos(
+            selfDxDy.to.x * vectorDxDy.to.x +
+            selfDxDy.to.y * vectorDxDy.to.y);
         };
 
         //----------------------------------------
@@ -6658,10 +6728,6 @@ if (typeof module === 'undefined') {
     (function() {
       var _ = stsLib.system;
 
-      _.consoleLogCommentOutput = function(str) {
-        console.log(consoleLogComment(str));
-      };
-
       _.test_consoleLogComment = function() {
         var testFunc = function(value) {
           return value + value;
@@ -6675,6 +6741,10 @@ if (typeof module === 'undefined') {
 
       _.consoleLogComment = function(formula, comment) {
         return 'console.log(' + formula + ');  //' + comment;
+      };
+
+      _.consoleLogCommentOutput = function(str) {
+        console.log(_.consoleLogComment(str));
       };
 
     }());
@@ -6886,8 +6956,8 @@ if (typeof module === 'undefined') {
         a.test_expandMultiDimension();
 
         var angle = stsLib.angle;
-        angle.test_angleRelative();
-        angle.test_degreeToRadian();
+        angle.test_relative();
+        angle.test_degToRad();
 
         var path = stsLib.path;
         path.test_getFileName();

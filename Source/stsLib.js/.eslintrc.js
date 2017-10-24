@@ -34,10 +34,10 @@ module.exports = {
         "no-unused-vars": [
             "warn",
             {
-              "vars": "all", "args": "after-used", 
+              "vars": "all", "args": "after-used",
               "ignoreRestSiblings": false ,
               "argsIgnorePattern": "global|compares|array|index|value|str|s",
-              "varsIgnorePattern": "varend|require",
+              "varsIgnorePattern": "varend|require|testFunc",
             },
         ],
         "no-console": [

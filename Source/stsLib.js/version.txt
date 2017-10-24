@@ -374,7 +374,11 @@
 ・  date.formatToString() の修正。
 ・  date.dayOfWeekNames** を修正。
 ・  date.nameOfMonth** を修正。
-◇  ver 2017/10/22
+◇  ver 2017/10/23
 ・  date.formatToString の
     和暦元号対応修正
     英語月名の3文字/4文字指定に対応
+◇  ver 2017/10/24
+・  angle.sin/cos/tan/asin/acos/atan を
+    ラジアンではなく角度単位にしたものを作成
+・  Vector.angle/Vector.rotateを実装。
