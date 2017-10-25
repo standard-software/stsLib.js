@@ -384,3 +384,4 @@
 ・  Vector.angle/Vector.rotateを実装。
 ◇  ver 2017/10/26
 ・  replaceAllAnyからreplaceAllArrayに名前変更
+・  consoleLogCommentOutput 修正

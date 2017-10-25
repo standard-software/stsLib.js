@@ -6743,8 +6743,8 @@ if (typeof module === 'undefined') {
         return 'console.log(' + formula + ');  //' + comment;
       };
 
-      _.consoleLogCommentOutput = function(str) {
-        console.log(_.consoleLogComment(str));
+      _.consoleLogCommentOutput = function(formula, comment) {
+        console.log(_.consoleLogComment(formula, comment));
       };
 
     }());
