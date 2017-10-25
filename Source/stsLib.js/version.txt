@@ -382,3 +382,5 @@
 ・  angle.sin/cos/tan/asin/acos/atan を
     ラジアンではなく角度単位にしたものを作成
 ・  Vector.angle/Vector.rotateを実装。
+◇  ver 2017/10/26
+・  replaceAllAnyからreplaceAllArrayに名前変更

@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/24
+Version:        2017/10/26
 //----------------------------------------*/
 
 //----------------------------------------
@@ -4355,7 +4355,7 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //・replaceAllAny
+      //・replaceAllArray
       //----------------------------------------
       //  ・配列内容に従って一斉に置き換え
       //  ・ab の文字を aをb に bをa に同時置き換えできる
@@ -4363,7 +4363,7 @@ if (typeof module === 'undefined') {
       //    AAA >> B | AA >> C のように検索文字を長いもの順に
       //    しておかないと誤動作する
       //----------------------------------------
-      _.replaceAllAny = function(str, replaceArray) {
+      _.replaceAllArray = function(str, replaceArray) {
         c.assert(t.isString(str));
         c.assert(t.isArray(replaceArray));
 
@@ -4395,19 +4395,19 @@ if (typeof module === 'undefined') {
         return result;
       };
 
-      _.test_replaceAllAny = function() {
-        c.check('ba', _.replaceAllAny('ab', [
+      _.test_replaceAllArray = function() {
+        c.check('ba', _.replaceAllArray('ab', [
           ['a', 'b'],
           ['b', 'a']
         ]));
-        c.check('bababa', _.replaceAllAny('ababab', [
+        c.check('bababa', _.replaceAllArray('ababab', [
           ['ab', 'ba']
         ]));
-        c.check('baabb', _.replaceAllAny('abbab', [
+        c.check('baabb', _.replaceAllArray('abbab', [
           ['ab', 'ba'],
           ['ba', 'ab']
         ]));
-        c.check('cd', _.replaceAllAny('cd', [
+        c.check('cd', _.replaceAllArray('cd', [
           ['a', 'b'],
           ['b', 'a']
         ]));
@@ -5136,7 +5136,7 @@ if (typeof module === 'undefined') {
 
           //クウォート記号がないのならば
           //通常通り要素に変換をかける
-          return s.replaceAllAny(format, replaceArray);
+          return s.replaceAllArray(format, replaceArray);
         } else if (singleQuoteIndex === -1) {
           quoteChar = '"';
         } else if (doubleQuoteIndex === -1) {
@@ -5148,7 +5148,7 @@ if (typeof module === 'undefined') {
 
         var formatStrs = format.split(quoteChar);
         for (var i2 = 0, l2 = formatStrs.length; i2 < l2; i2 += 2) {
-          formatStrs[i2] = s.replaceAllAny(formatStrs[i2], replaceArray);
+          formatStrs[i2] = s.replaceAllArray(formatStrs[i2], replaceArray);
         }
         return formatStrs.join('');
       };
@@ -6921,7 +6921,7 @@ if (typeof module === 'undefined') {
 
         s.test_repeat();
         s.test_replaceAll();
-        s.test_replaceAllAny();
+        s.test_replaceAllArray();
         s.test_reverse();
 
         s.test_formatInsertFirst();
