@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/26
+Version:        2017/11/04
 //----------------------------------------*/
 
 //----------------------------------------
@@ -3876,7 +3876,7 @@ if (typeof module === 'undefined') {
       };
 
       //--------------------------------------
-      //◇Tag deleteFirst/Last
+      //◇deleteFirst/Last
       //--------------------------------------
       //  ・検索して見つかった値を削除する
       //--------------------------------------
@@ -3912,7 +3912,7 @@ if (typeof module === 'undefined') {
       };
 
       //--------------------------------------
-      //◇Tag deleteFirstTagInner/Outer
+      //◇deleteFirstTagInner/Outer
       //--------------------------------------
       _.deleteFirstTagInner = function(str, startTag, endTag) {
 
@@ -3922,20 +3922,35 @@ if (typeof module === 'undefined') {
         if (str === '') { return ''; }
 
         var indexStartTag = _.indexOfFirst(str, startTag);
-        var indexEndTag = _.indexOfFirst(str, endTag);
-        if ((indexStartTag !== -1)
-        && (indexEndTag !== -1)
-        && (indexStartTag < indexEndTag)) {
-          str = _.startFirstDelim(str, startTag) + startTag +
-            endTag + _.endFirstDelim(str, endTag);
+        if (indexStartTag !== -1) {
+          //startTagはある
+          var indexEndTag = _.indexOfFirst(str, endTag,
+            indexStartTag + startTag.length);
+          if (indexEndTag !== -1) {
+            //endTagはある
+            return _.deleteIndex(str,
+              indexStartTag + startTag.length,
+              indexEndTag - 1);
+          } else {
+            //endTagはない
+            //タグで囲まれていないので削除は行わない
+            return str;
+          }
+        } else {
+          //startTagはない
+          //タグで囲まれていないので削除は行わない
+          return str;
         }
-        return str;
       };
 
       _.test_deleteFirstTagInner = function() {
 
         c.check('abc<>ghi', _.deleteFirstTagInner('abc<def>ghi', '<', '>'));
         c.check('abc<>ghi<jkl>mn', _.deleteFirstTagInner('abc<def>ghi<jkl>mn', '<', '>'));
+        c.check('abc<def>ghi<j>mn', _.deleteFirstTagInner('abc<def>ghi<jkl>mn', '<j', '>'));
+
+        c.check('Date: abc\r\nTo: \r\nFrom: ghi\r\n',
+          _.deleteFirstTagInner('Date: abc\r\nTo: def\r\nFrom: ghi\r\n', 'To: ', '\r\n'));
       };
 
       _.deleteFirstTagOuter = function(str, startTag, endTag) {
@@ -3946,24 +3961,39 @@ if (typeof module === 'undefined') {
         if (str === '') { return ''; }
 
         var indexStartTag = str.indexOf(startTag);
-        var indexEndTag = str.indexOf(endTag);
-        if ((indexStartTag !== -1)
-        && (indexEndTag !== -1)
-        && (indexStartTag < indexEndTag)) {
-          str = _.startFirstDelim(str, startTag) +
-            _.endFirstDelim(str, endTag);
+        if (indexStartTag !== -1) {
+          //startTagはある
+          var indexEndTag = _.indexOfFirst(str, endTag,
+            indexStartTag + startTag.length);
+          if (indexEndTag !== -1) {
+            //endTagはある
+            return _.deleteIndex(str,
+              indexStartTag,
+              indexEndTag + endTag.length - 1);
+          } else {
+            //endTagはない
+            //タグで囲まれていないので削除は行わない
+            return str;
+          }
+        } else {
+          //startTagはない
+          //タグで囲まれていないので削除は行わない
+          return str;
         }
-        return str;
       };
 
       _.test_deleteFirstTagOuter = function() {
 
         c.check('abcghi', _.deleteFirstTagOuter('abc<def>ghi', '<', '>'));
         c.check('abcghi<jkl>mn', _.deleteFirstTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
+        c.check('abc<def>ghimn', _.deleteFirstTagOuter('abc<def>ghi<jkl>mn', '<j', '>'));
+
+        c.check('Date: abc\r\nFrom: ghi\r\n',
+          _.deleteFirstTagOuter('Date: abc\r\nTo: def\r\nFrom: ghi\r\n', 'To: ', '\r\n'));
       };
 
       //--------------------------------------
-      //◇Tag deleteLastTagInner/Outer
+      //◇deleteLastTagInner/Outer
       //--------------------------------------
       _.deleteLastTagInner = function(str, startTag, endTag) {
 
@@ -3972,21 +4002,36 @@ if (typeof module === 'undefined') {
         c.assert(!_.isEmpty(endTag));
         if (str === '') { return ''; }
 
-        var indexStartTag = _.indexOfLast(str, startTag);
         var indexEndTag = _.indexOfLast(str, endTag);
-        if ((indexStartTag !== -1)
-        && (indexEndTag !== -1)
-        && (indexStartTag < indexEndTag)) {
-          str = _.startLastDelim(str, startTag) + startTag +
-            endTag + _.endLastDelim(str, endTag);
+        if (indexEndTag !== -1) {
+          //endTagはある
+          var indexStartTag = _.indexOfLast(str, startTag,
+            indexEndTag - 1);
+          if (indexStartTag !== -1) {
+            //startTagはある
+            return _.deleteIndex(str,
+              indexStartTag + startTag.length,
+              indexEndTag - 1);
+          } else {
+            //startTagはない
+            //タグで囲まれていないので削除は行わない
+            return str;
+          }
+        } else {
+          //endTagはない
+          //タグで囲まれていないので削除は行わない
+          return str;
         }
-        return str;
       };
 
       _.test_deleteLastTagInner = function() {
 
         c.check('abc<>ghi', _.deleteLastTagInner('abc<def>ghi', '<', '>'));
         c.check('abc<def>ghi<>mn', _.deleteLastTagInner('abc<def>ghi<jkl>mn', '<', '>'));
+        c.check('abc<f>ghi<jkl>mn', _.deleteLastTagInner('abc<def>ghi<jkl>mn', '<', 'f>'));
+
+        c.check('Date: abc\r\nTo: \r\n',
+          _.deleteLastTagInner('Date: abc\r\nTo: def\r\nFrom: ghi\r\n', 'To: ', '\r\n'));
       };
 
       _.deleteLastTagOuter = function(str, startTag, endTag) {
@@ -3996,21 +4041,36 @@ if (typeof module === 'undefined') {
         c.assert(!_.isEmpty(endTag));
         if (str === '') { return ''; }
 
-        var indexStartTag = _.indexOfLast(str, startTag);
         var indexEndTag = _.indexOfLast(str, endTag);
-        if ((indexStartTag !== -1)
-        && (indexEndTag !== -1)
-        && (indexStartTag < indexEndTag)) {
-          str = _.startLastDelim(str, startTag) +
-            _.endLastDelim(str, endTag);
+        if (indexEndTag !== -1) {
+          //endTagはある
+          var indexStartTag = _.indexOfLast(str, startTag,
+            indexEndTag - 1);
+          if (indexStartTag !== -1) {
+            //startTagはある
+            return _.deleteIndex(str,
+              indexStartTag,
+              indexEndTag + endTag.length - 1);
+          } else {
+            //startTagはない
+            //タグで囲まれていないので削除は行わない
+            return str;
+          }
+        } else {
+          //endTagはない
+          //タグで囲まれていないので削除は行わない
+          return str;
         }
-        return str;
       };
 
       _.test_deleteLastTagOuter = function() {
 
         c.check('abcghi', _.deleteLastTagOuter('abc<def>ghi', '<', '>'));
         c.check('abc<def>ghimn', _.deleteLastTagOuter('abc<def>ghi<jkl>mn', '<', '>'));
+        c.check('abcghi<jkl>mn', _.deleteLastTagOuter('abc<def>ghi<jkl>mn', '<', 'f>'));
+
+        c.check('Date: abc\r\n',
+          _.deleteLastTagOuter('Date: abc\r\nTo: def\r\nFrom: ghi\r\n', 'To: ', '\r\n'));
       };
 
       //--------------------------------------
@@ -4352,6 +4412,9 @@ if (typeof module === 'undefined') {
         c.check('AAABBBAAA', _.replaceAll('123BBB123', '123', 'AAA'));
         c.check('AAAABBBBBBBAAAA',
           _.replaceAll('AAAAAAABBBBBBBAAAAAAA', 'AA', 'A'));
+
+        c.check('',
+          _.replaceAll('', 'AA', 'A'));
       };
 
       //----------------------------------------
@@ -6814,7 +6877,7 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //・Array.forEachｓ
+      //・Array.forEach
       //----------------------------------------
       //  ・すべての要素に対してfuncを実行する
       //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる

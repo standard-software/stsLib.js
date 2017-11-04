@@ -385,3 +385,6 @@
 ◇  ver 2017/10/26
 ・  replaceAllAnyからreplaceAllArrayに名前変更
 ・  consoleLogCommentOutput 修正
+◇  ver 2017/11/04
+・  string.deleteFirstTagInner/deleteFirstTagOuter
+    /deleteLastTagInner/deleteLastTagOuterを修正
