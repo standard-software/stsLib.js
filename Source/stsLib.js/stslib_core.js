@@ -5426,95 +5426,6 @@ if (typeof module === 'undefined') {
 
       };
 
-      //----------------------------------------
-      //◇比較
-      //----------------------------------------
-
-      //----------------------------------------
-      //・年
-      //----------------------------------------
-      _.equalYear = function(date1, date2) {
-        c.assert(t.isDates(date1, date2));
-        return (date1.getFullYear() === date2.getFullYear());
-      };
-
-      //----------------------------------------
-      //・年月
-      //----------------------------------------
-      _.equalMonth = function(date1, date2) {
-        if ((_.equalYear(date1, date2))
-        && (date1.getMonth() === date2.getMonth())) {
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-      //----------------------------------------
-      //・年月日
-      //----------------------------------------
-      _.equalDate = function(date1, date2) {
-        if ((_.equalMonth(date1, date2))
-        && (date1.getDate() === date2.getDate())) {
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-      //----------------------------------------
-      //・年月日時間
-      //----------------------------------------
-      _.equalDateHours = function(date1, date2) {
-        if ((_.equalDate(date1, date2))
-        && (date1.getHours() === date2.getHours())) {
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-      //----------------------------------------
-      //・年月日時分
-      //----------------------------------------
-      _.equalDateMinutes = function(date1, date2) {
-        if ((_.equalDateHours(date1, date2))
-        && (date1.getMinutes() === date2.getMinutes())) {
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-      //----------------------------------------
-      //・年月日時分秒
-      //----------------------------------------
-      _.equalDateSeconds = function(date1, date2) {
-        if ((_.equalDateMinutes(date1, date2))
-        && (date1.getSeconds() === date2.getSeconds())) {
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-      //----------------------------------------
-      //・年月日時分秒ミリ秒
-      //----------------------------------------
-      _.equalDateMilliseconds = function(date1, date2) {
-        return (date1.getTime() === date2.getTime());
-      };
-
-      _.test_equalDate = function() {
-        var dt1 = new _.Date(2017, 9, 30, 5, 20, 35);
-        var dt2 = new _.Date(2017, 9, 30, 5, 20, 35);
-        c.check(true, _.equalDateSeconds(dt1, dt2));
-
-        var dt3 = new _.Date(2017, 9, 30, 5, 20, 30);
-        var dt4 = new _.Date(2017, 9, 30, 5, 20, 35);
-        c.check(false,_.equalDateSeconds(dt3, dt4));
-        c.check(true, _.equalDateMinutes(dt3, dt4));
-      };
 
       //----------------------------------------
       //◇月の名前
@@ -5630,6 +5541,148 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
+      //◇比較
+      //----------------------------------------
+
+      //----------------------------------------
+      //・年
+      //----------------------------------------
+      _.equalYear = function(date1, date2) {
+        c.assert(t.isDates(date1, date2));
+        return (date1.getFullYear() === date2.getFullYear());
+      };
+
+      //----------------------------------------
+      //・年月
+      //----------------------------------------
+      _.equalMonth = function(date1, date2) {
+        if ((_.equalYear(date1, date2))
+        && (date1.getMonth() === date2.getMonth())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      //----------------------------------------
+      //・年月日
+      //----------------------------------------
+      _.equalDate = function(date1, date2) {
+        if ((_.equalMonth(date1, date2))
+        && (date1.getDate() === date2.getDate())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      //----------------------------------------
+      //・年月日時間
+      //----------------------------------------
+      _.equalDateHours = function(date1, date2) {
+        if ((_.equalDate(date1, date2))
+        && (date1.getHours() === date2.getHours())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      //----------------------------------------
+      //・年月日時分
+      //----------------------------------------
+      _.equalDateMinutes = function(date1, date2) {
+        if ((_.equalDateHours(date1, date2))
+        && (date1.getMinutes() === date2.getMinutes())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      //----------------------------------------
+      //・年月日時分秒
+      //----------------------------------------
+      _.equalDateSeconds = function(date1, date2) {
+        if ((_.equalDateMinutes(date1, date2))
+        && (date1.getSeconds() === date2.getSeconds())) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      //----------------------------------------
+      //・年月日時分秒ミリ秒
+      //----------------------------------------
+      _.equalDateMilliseconds = function(date1, date2) {
+        return (date1.getTime() === date2.getTime());
+      };
+
+      _.test_equalDate = function() {
+        var dt1 = new _.Date(2017, 9, 30, 5, 20, 35);
+        var dt2 = new _.Date(2017, 9, 30, 5, 20, 35);
+        c.check(true, _.equalDateSeconds(dt1, dt2));
+
+        var dt3 = new _.Date(2017, 9, 30, 5, 20, 30);
+        var dt4 = new _.Date(2017, 9, 30, 5, 20, 35);
+        c.check(false,_.equalDateSeconds(dt3, dt4));
+        c.check(true, _.equalDateMinutes(dt3, dt4));
+      };
+
+      //----------------------------------------
+      //◇定数 ミリ秒
+      //----------------------------------------
+      _.SECOND_MILLISECONDS = 1000;
+      _.MINUTE_MILLISECONDS =  60 * _.SECOND_MILLISECONDS;
+      _.HOUR_MILLISECONDS   =  60 * _.MINUTE_MILLISECONDS;
+      _.DAY_MILLISECONDS    =  24 * _.HOUR_MILLISECONDS;
+      _.WEEK_MILLISECONDS   =   7 * _.DAY_MILLISECONDS;
+      _.YEAR_MILLISECONDS   = 365 * _.DAY_MILLISECONDS;
+
+
+      //----------------------------------------
+      //◇時間の差
+      //----------------------------------------
+      //  ・戻り値は小数点値で取得できる
+      //----------------------------------------
+
+      _.millisecondsInterval = function(date1, date2) {
+        c.assert(t.isDates(date1, date2));
+        return date2.getTime() - date1.getTime();
+      };
+
+      _.secondsInterval = function(date1, date2) {
+        return _.millisecondsInterval(date1, date2)
+          / _.SECOND_MILLISECONDS;
+      };
+
+      _.minutesInterval = function(date1, date2) {
+        return _.millisecondsInterval(date1, date2)
+          / _.MINUTE_MILLISECONDS;
+      };
+
+      _.hoursInterval = function(date1, date2) {
+        return _.millisecondsInterval(date1, date2)
+          / _.HOUR_MILLISECONDS;
+      };
+
+      _.daysInterval = function(date1, date2) {
+        return _.millisecondsInterval(date1, date2)
+          / _.DAY_MILLISECONDS;
+      };
+
+      _.weeksInterval = function(date1, date2) {
+        return _.millisecondsInterval(date1, date2)
+          / _.WEEK_MILLISECONDS;
+      };
+
+      _.yearsInterval = function(date1, date2) {
+        return _.millisecondsInterval(date1, date2)
+          / _.YEAR_MILLISECONDS;
+      };
+
+      //----------------------------------------
       //◇年齢計算
       //----------------------------------------
 
@@ -5718,30 +5771,6 @@ if (typeof module === 'undefined') {
         var diffDay = date2 - date1;
         diffDay = diffDay / ( 24 * 60 * 60 * 1000);
         return {'day': diffDay};
-      };
-
-      _.dayCount = function(todayDate, birthDate) {
-        var diff = todayDate - birthDate;
-        diff = diff / ( 24 * 60 * 60 * 1000);
-        return Math.floor(diff);
-      };
-
-      _.hoursCount = function(todayDate, birthDate) {
-        var diff = todayDate - birthDate;
-        diff = diff / ( 60 * 60 * 1000);
-        return Math.floor(diff);
-      };
-
-      _.minutesCount = function(todayDate, birthDate) {
-        var diff = todayDate - birthDate;
-        diff = diff / ( 60 * 1000);
-        return Math.floor(diff);
-      };
-
-      _.secondsCount = function(todayDate, birthDate) {
-        var diff = todayDate - birthDate;
-        diff = diff / (1000);
-        return Math.floor(diff);
       };
 
       //----------------------------------------

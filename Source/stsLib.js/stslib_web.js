@@ -61,109 +61,68 @@ if (typeof module === 'undefined') {
     _.web = stsLib.web || {};
     (function () {
       var _ = stsLib.web;
-      
-      /*----------------------------------------
-        Cookieの書込み読込み処理
-      機能：  
-      備考：  
-      履歴：  
-      2014/07/16(水)
-      ・  作成
-      //----------------------------------------*/
-      
-      //配列を渡すとnameValueに指定した値で保存する
-      _.setCookie = function (nameValue, arrayValue){
-          exp=new Date();
-          exp.setTime(exp.getTime()+1000*60*60*24*31);
-      
-      //  alert('setCookie:\n' + arrayToString(arrayValue, "%00"));
-      //window.status = encodeURIComponentArrayToString(arrayValue);
-      
-          document.cookie = 
-              nameValue + "=" + encodeURIComponentArrayToString(arrayValue) + "; " + 
-              "expires=" + exp.toGMTString();
-      }
-      
-      //nameValueで指定した値があれば配列を返す
-      _.getCookie = function (nameValue){
-          //alert('getCookie:\n'+document.cookie);
-          //alert(nameValue);
-      
-          var cookieArray = document.cookie.split("; ");
-          var cookieString = "";
-          i = 0;
-          while (cookieArray[i]){
-              if (cookieArray[i].substr(0,nameValue.length+1) === (nameValue + "=")){
-                  cookieString = cookieArray[i].substr(nameValue.length+1,cookieArray[i].length);
-                  break;
-              }
-              i++;
-          }
-      
-          //alert('getCookie:\n'+cookieString);
-          return decodeURIComponentStringToArray(cookieString);
+
+      //----------------------------------------
+      //◆Cookie
+      //----------------------------------------
+
+      //----------------------------------------
+      //・setCookie
+      //----------------------------------------
+      //  ・period はミリ秒で指定すること
+      //----------------------------------------
+      _.setCookie = function(name, value, period) {
+        c.assert(t.isStrings(name, value));
+        c.assert(t.isInt(period));
+        var date = new Date();
+        date.setTime(date.getTime() + period);
+        document.cookie = name + '=' + encodeURIComponent(value)
+          + ';expires=' + date.toUTCString();
       };
-      //----------------------------------------*/
-      
-      //配列内文字列をencodeURIComponentでエンコードしてから
-      //接続文字列%00で接続して文字列にする関数
-      _.encodeURIComponentArrayToString = function (arrayValue) {
-          var undefined;
-          if (arrayValue[0] === undefined) { return ""; };
-          var delimiter = "%00";
-          var result = encodeURIComponent(arrayValue[0]);
-          var i = 1;
-          while(arrayValue[i] !== undefined) {
-              result += delimiter + encodeURIComponent(arrayValue[i]);
-              i++;
+
+      _.getCookie = function(name) {
+        if (document.cookie) {
+          //cookieは[name=value; name=value; name=value; ]の形式
+          var nameValues = document.cookie.split("; ");
+          for (var i = 0, il = nameValues.length; i < il; i += 1) {
+            var nameValue = nameValues[i].split("=");
+            if (nameValue[0] === name) {
+              return decodeURIComponent(nameValue[1]);
+            }
           }
-          return result;
-      }
-      
-      _.decodeURIComponentStringToArray = function (value) {
-          //alert('getCookie:\n'+cookieString);
-          if (value === "") { return ""; }
-          var resultArray = value.split("%00");
-      
-          var undefined;
-          resultArray[0] = decodeURIComponent(resultArray[0]);
-          var i = 1;
-          while(resultArray[i] !== undefined) {
-              resultArray[i] = decodeURIComponent(resultArray[i]);
-              i++;
-          }
-          return resultArray;
-      }
-      
+        }
+        return '';
+      };
+
       //----------------------------------------
       //◆URLパラメータの受取
       //----------------------------------------
       _.getUrlParameter = function () {
-          var result = {};
-          var params=location.search.substring(1).split('&');
-          for(var i = 0, l = params.length; i < l; i += 1) {
-              var keyValue = params[i].split('=');
-              result[keyValue[0]] = decodeURIComponent(keyValue[1]);
-          }
-          return result;
-      }
-      
+        var result = {};
+        var params=location.search.substring(1).split('&');
+        for(var i = 0, l = params.length; i < l; i += 1) {
+          var keyValue = params[i].split('=');
+          result[keyValue[0]] = decodeURIComponent(keyValue[1]);
+        }
+        return result;
+      };
+
       _.test_getUrlParameter = function () {
-          //….html?a=1&b=2
-          //というアドレスで受け取ると次のように動作する
-          var arg = getUrlParameter();
-          c.check("1", arg.a);
-          c.check("2", arg.b);
-      }
-      
+        //….html?a=1&b=2
+        //というアドレスで受け取ると次のように動作する
+        var arg = getUrlParameter();
+        c.check("1", arg.a);
+        c.check("2", arg.b);
+      };
+
       //----------------------------------------
       //◆ループ制御
       //----------------------------------------
-      
+
       //----------------------------------------
       //・遅延ループ
       //----------------------------------------
-      
+
       //初回は即時実行
       _.intervalForTo1 = function (startIndex,endIndex, interval, func) {
         if (!(startIndex <= endIndex)) { return; }
@@ -180,7 +139,7 @@ if (typeof module === 'undefined') {
         }
         loopFunc();
       }
-      
+
       //初回からinterval後の実行
       _.intervalForTo2 = function (startIndex,endIndex, interval, func) {
         if (!(startIndex <= endIndex)) { return; }
@@ -197,7 +156,7 @@ if (typeof module === 'undefined') {
           i++;
         },interval);
       }
-      
+
       //初回は即時実行
       _.intervalForTo3 = function (startIndex,endIndex, interval, func) {
         if (!(startIndex <= endIndex)) { return; }
@@ -217,22 +176,22 @@ if (typeof module === 'undefined') {
           }
         },interval);
       }
-      
+
       _.intervalForTo = function (startIndex, endIndex,
         interval, func) {
         return _.intervalForTo1(startIndex, endIndex, interval, func);
         //return intervalForTo2(startIndex, endIndex, interval, func);
         //return intervalForTo3(startIndex, endIndex, interval, func);
       }
-      
+
       _.test_intervalForTo = function (intervalForToFunc) {
-      
+
         var test01 = '';
         intervalForToFunc(5, 10, 500, function(index) {
-      
+
           test01 = test01 + index.toString();
           //5,6,7,8,9,10 とindexに入ってきてループする
-      
+
           if (index === 10) {
             //動作確認
             c.check('5678910', test01);
@@ -241,15 +200,15 @@ if (typeof module === 'undefined') {
             c.assert('test01');
           }
         });
-      
+
         var test02 = '';
         intervalForToFunc(5, 10, 500, function(index) {
-      
+
           test02 = test02 + index.toString();
           if (index === 7) { return true; }
           test02 = test02 + index.toString();
           //7のときだけcontinueしている
-      
+
           if (index === 10) {
             c.check('5566788991010', test02);
           }
@@ -257,27 +216,27 @@ if (typeof module === 'undefined') {
             c.assert('test02');
           }
         });
-      
+
         var test03 = '';
         intervalForToFunc(5, 10, 500, function(index) {
-      
+
           test03 = test03 + index.toString();
-          if (index === 8) { 
+          if (index === 8) {
             c.check('5566778', test03);
-            return false; 
+            return false;
           }
           test03 = test03 + index.toString();
           //8でbreakしている
-      
+
           if (index === 9) {
             c.assert('test03');
           }
         });
-      
+
         var test04 = '';
         intervalForToFunc(15, 15, 500, function(index) {
           test04 = test04 + index.toString();
-      
+
           if (index === 15) {
             c.check('15', test04);
           }
@@ -285,22 +244,22 @@ if (typeof module === 'undefined') {
             c.assert('test04');
           }
         });
-      
+
         intervalForToFunc(20, 19, 500, function(index) {
-      
+
           alert('test05');
-      
+
           //呼び出されない
         });
       }
-      
+
       _.test_intervalForToAll = function () {
         _.test_intervalForTo(_.intervalForTo1);
         _.test_intervalForTo(_.intervalForTo2);
         _.test_intervalForTo(_.intervalForTo3);
       }
-      
-      
+
+
       //初回は即時実行
       _.intervalForDownTo1 = function (startIndex,endIndex, interval, func) {
         if (!(endIndex <= startIndex)) { return; }
@@ -317,7 +276,7 @@ if (typeof module === 'undefined') {
         }
         loopFunc();
       }
-      
+
       //初回からinterval後の実行
       _.intervalForDownTo2 = function (startIndex,endIndex, interval, func) {
         if (!(endIndex <= startIndex)) { return; }
@@ -334,7 +293,7 @@ if (typeof module === 'undefined') {
           i--;
         },interval);
       }
-      
+
       //初回は即時実行
       _.intervalForDownTo3 = function (startIndex,endIndex, interval, func) {
         if (!(endIndex <= startIndex)) { return; }
@@ -354,20 +313,20 @@ if (typeof module === 'undefined') {
           }
         },interval);
       }
-      
+
       _.intervalForDonwTo = function (startIndex,endIndex, interval, func) {
         return _.intervalForDownTo1(startIndex, endIndex, interval, func);
         //return _.intervalForDownTo2(startIndex, endIndex, interval, func);
         //return _.intervalForDownTo3(startIndex, endIndex, interval, func);
       }
-      
+
       _.test_intervalForDownTo = function (intervalForDownToFunc) {
-      
+
         var test01 = '';
         intervalForDownToFunc(10, 5, 500, function(index) {
-      
+
           test01 = test01 + index.toString();
-      
+
           if (index === 5) {
             //動作確認
             c.check('1098765', test01);
@@ -376,15 +335,15 @@ if (typeof module === 'undefined') {
             c.assert('test01');
           }
         });
-      
+
         var test02 = '';
         intervalForDownToFunc(10, 5, 500, function(index) {
-      
+
           test02 = test02 + index.toString();
           if (index === 7) { return true; }
           test02 = test02 + index.toString();
           //7のときだけcontinueしている
-      
+
           if (index === 5) {
             c.check('1010998876655', test02);
           }
@@ -392,28 +351,28 @@ if (typeof module === 'undefined') {
             c.assert('test02');
           }
         });
-      
+
         var test03 = '';
         intervalForDownToFunc(10, 5, 500, function(index) {
-      
+
           test03 = test03 + index.toString();
-          if (index === 8) { 
+          if (index === 8) {
             c.check('1010998', test03);
-            return false; 
+            return false;
           }
           test03 = test03 + index.toString();
           //8でbreakしている
-      
+
           if (index === 7) {
             c.assert('test03');
           }
         });
-      
+
         var test04 = '';
         intervalForDownToFunc(15, 15, 500, function(index) {
-      
+
           test04 = test04 + index.toString();
-      
+
           if (index === 15) {
             c.check('15', test04);
           }
@@ -421,15 +380,15 @@ if (typeof module === 'undefined') {
             c.assert('test04');
           }
         });
-      
+
         intervalForDownToFunc(20, 21, 500, function(index) {
-      
+
           alert('test05');
-      
+
           //呼び出されない
         });
       }
-      
+
       _.test_intervalForDownToAll = function () {
         _.test_intervalForDownTo(_.intervalForDownTo1);
         _.test_intervalForDownTo(_.intervalForDownTo2);
