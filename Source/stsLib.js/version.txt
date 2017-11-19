@@ -395,3 +395,5 @@
 ・  date.SECOND_MILLISECONDS などの定数定義
 ・  date.millisecondsInterval などの時間差関数を追加
     dayCountなどは廃止
+◇  ver 2017/11/19
+・  web.enableLocalStorage/enableSessionStorage 追加

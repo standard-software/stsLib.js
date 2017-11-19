@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/09/21
+Version:        2017/11/19
 //----------------------------------------*/
 
 //----------------------------------------
@@ -93,6 +93,41 @@ if (typeof module === 'undefined') {
         }
         return '';
       };
+
+      //----------------------------------------
+      //◆localStorage / sessionStrage
+      //----------------------------------------
+
+      _.enableLocalStorage = function() {
+        return (
+          ('localStorage' in window)
+          && (window.localStorage !== null)
+        );
+      };
+
+      //localStorageは次のように使う
+      //・保存
+      //  localStorage.setItem(name, value);
+      //  localStorage.name = value;
+      //・取得 値がなければnullが戻る
+      //  value = localStorage.getItem(name);
+      //  value = localStorage.name;
+      //・削除
+      //  localStorage.removeItem(name);
+      //・初期化
+      //  localStorage.clear();
+
+      _.enableSessionStorage = function() {
+        return (
+          ('sessionStorage' in window)
+          && (window.sessionStorage !== null)
+        );
+      };
+
+      //sessionStorageはlocalStorageとほぼ同じ使い方
+      //localStrageは永続的にデータをローカル環境に保存し
+      //sessionStorageは1セッション中
+      //(つまりタブを開いている間)にデータをローカル環境に保存する
 
       //----------------------------------------
       //◆URLパラメータの受取
