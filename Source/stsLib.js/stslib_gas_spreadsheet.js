@@ -52,7 +52,7 @@ if (typeof module === 'undefined') {
     var _ = stsLib;
 
     //----------------------------------------
-    //¡stsLib.web–¼‘O‹óŠÔ
+    //¡stsLib.spreadsheet–¼‘O‹óŠÔ
     //----------------------------------------
     _.spreadsheet = stsLib.spreadsheet || {};
     (function () {
