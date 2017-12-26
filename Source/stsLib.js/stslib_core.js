@@ -1994,18 +1994,28 @@ if (typeof module === 'undefined') {
       _.test_isIncludeFunc = function() {
 
         c.check(false,  _.isIncludeFunc('abc def ghi abc'.split(''),
-          function(s, index, str) {
+          function(element, index, array) {
             return false;
           }));
 
         c.check(false,  _.isIncludeFunc('abc def ghi abc'.split(''),
-          function(s, index, str) {
-            return c.orValue(s, 'x', 'y', 'z');
+          function(element, index, array) {
+            return c.orValue(element, 'x', 'y', 'z');
           }));
 
         c.check(true,   _.isIncludeFunc('abc def ghi abc'.split(''),
-          function(s, index, str) {
-            return c.orValue(s, 'd', 'g', 'i');
+          function(element, index, array) {
+            return c.orValue(element, 'd', 'g', 'i');
+          }));
+
+        c.check(true,   _.isIncludeFunc('abc def ghi abc'.split(''),
+          function(element, index, array) {
+            return c.orValue(element, 'd', 'y', 'z');
+          }));
+
+        c.check(true,   _.isIncludeFunc('abc def ghi abc'.split(''),
+          function(element, index, array) {
+            return c.orValue(element, 'x', 'y', 'i');
           }));
 
       };

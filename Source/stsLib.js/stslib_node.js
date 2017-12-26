@@ -16,7 +16,9 @@ Version:        2017/12/17
 //----------------------------------------
 //・require関数
 //----------------------------------------
-//  ・  node.js には require は必ずあるので除外
+//  ・  node.js には require は必ずあるので
+//      意味のないコードになる
+//      他のモジュールと共通化するために残す
 //----------------------------------------
 if (typeof module === 'undefined') {
 
@@ -41,6 +43,10 @@ if (typeof module === 'undefined') {
   //----------------------------------------
   //・require実行
   //----------------------------------------
+  //  ・  node.js には require は必ずあるので
+  //      意味のないコードになる
+  //      他のモジュールと共通化するために残す
+  //----------------------------------------
   if (typeof module === 'undefined') {
     var stsLib = require('stsLib')
   } else {
@@ -49,6 +55,7 @@ if (typeof module === 'undefined') {
 
   //外部から呼び出して使用する
   const fs = require('fs');
+  const path = require('path');
 
   //----------------------------------------
   //■stsLib名前空間
@@ -70,122 +77,218 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       //----------------------------------------
-      //・トップフォルダのみのファイル列挙
+      //・トップフォルダのみのファイルアイテム列挙
       //----------------------------------------
-      //  ・err時に処理を止めたい場合は
-      //    errorFunc内で throw err; をするとよい
+      //  ・同期
+      //  ・戻り値にはフォルダフルパスが入る
+      //  ・戻り値以外は fs.readdir とほぼ同じ
       //----------------------------------------
-      _.searchFolder = function(folderPath, errorFunc, fileItemFunc, finishFunc) {
+      _.readTopDirSync = (folderPath) => {
+        const result = fs.readdirSync(folderPath);
+        return result.map((itemName) => {
+          return path.join(folderPath, itemName);
+        });
+      };
+
+      _.test_readTopDirSync = () => {
+        const folderPath = process.cwd();
+
+        const items = _.readTopDirSync(folderPath);
+        items.forEach((itemPath) => {
+          //console.log(itemPath);
+        });
+
+        c.check(true, a.isIncludeFunc(items,
+          function(element, index, array) {
+            return s.isEnd(element, 'stslib_test_nodejs.js');
+          })
+        );
+      };
+
+      //----------------------------------------
+      //・サブフォルダ下位すべてのファイルアイテム列挙
+      //----------------------------------------
+      //  ・同期
+      //  ・戻り値にはフォルダフルパスが入る
+      //----------------------------------------
+      _.readSubDirSync = (folderPath) => {
+        let result = [];
+        const readTopDirSync = ((folderPath) => {
+          let items = fs.readdirSync(folderPath);
+          items = items.map((itemName) => {
+            return path.join(folderPath, itemName);
+          });
+          items.forEach((itemPath) => {
+            result.push(itemPath);
+            if (fs.statSync(itemPath).isDirectory()) {
+              readTopDirSync(itemPath);
+              //再帰処理
+            }
+          });
+        });
+        readTopDirSync(folderPath);
+        return result;
+      };
+
+      _.test_readSubDirSync = () => {
+        const folderPath = process.cwd();
+
+        const items = _.readSubDirSync(folderPath);
+        items.forEach((item) => {
+          // console.log(item);
+        });
+
+        c.check(true, a.isIncludeFunc(items,
+          (element, index, array) => {
+            return s.isEnd(element, 'stslib_test_nodejs.js');
+          })
+        );
+      };
+
+      //----------------------------------------
+      //・トップフォルダのみのファイルアイテム列挙
+      //----------------------------------------
+      //  ・非同期
+      //  ・errorFunc:  エラー時の処理
+      //  ・itemFunc:   ファイル/ディレクトリ列挙時の処理
+      //  ・finishFunc: 処理終了時に一覧を取得する時の処理
+      //----------------------------------------
+      _.readTopDir = (folderPath, errorFunc, itemFunc, finishFunc) => {
         c.assert(t.isString(folderPath));
+        //関数指定がないか、もしくは、関数かを判定
         c.assert(t.isNullOrUndefined(errorFunc) || t.isFunction(errorFunc));
-        c.assert(t.isNullOrUndefined(fileItemFunc) || t.isFunction(fileItemFunc));
+        c.assert(t.isNullOrUndefined(itemFunc) || t.isFunction(itemFunc));
         c.assert(t.isNullOrUndefined(finishFunc) || t.isFunction(finishFunc));
-        fs.readdir(folderPath, function(err, files) {
+
+        fs.readdir(folderPath, (err, items) => {
           if (err) {
             if (errorFunc) {
               errorFunc(err);
             }
-            return;
           }
-          if (fileItemFunc) {
-            files.forEach(function(fileName) {
-              fileItemFunc(
-                s.excludeEnd(folderPath, '\\') +
-                '\\' +
-                s.excludeStart(fileName, '\\')
-              );
+
+          items = items.map((itemName) => {
+            return path.join(folderPath, itemName);
+          });
+
+          if (itemFunc) {
+            items.forEach((itemPath) => {
+              itemFunc(itemPath);
             });
           }
+
           if (finishFunc) {
-            finishFunc(files);
+            finishFunc(items);
           }
+
         });
       };
 
-      _.test_searchFolder = function() {
-        var folderPath = process.cwd();
-        _.searchFolder(folderPath,
-          function(err) {
-            console.log('err:' + err)
-          },
-          function(filePath) {
-            //console.log(filePath);
+      _.test_readTopDir = () => {
+        const folderPath = process.cwd();
+
+        //第三引数省略
+        _.readTopDir(folderPath,
+          (err) => { throw err },
+          (itemPath) => {
+            // console.log(itemPath);
           }
         );
 
-        _.searchFolder(folderPath,
-          function(err) {
-            console.log('err:' + err)
-          },
+        //第二引数省略
+        _.readTopDir(folderPath,
+          (err) => { throw err },
           undefined,
-          function(files) {
-            c.check(true, a.isInclude(files,
-              'stslib_test_nodejs.js'));
+          (items) => {
+            items.forEach((itemPath) => {
+              // console.log(itemPath);
+            });
+
+            c.check(true, a.isIncludeFunc(items,
+              (element, index, array) => {
+                return s.isEnd(element, 'stslib_test_nodejs.js');
+              })
+            );
           }
         );
       };
 
       //----------------------------------------
-      //・サブフォルダ含めたファイル列挙
+      //・サブフォルダ下位すべてのファイルアイテム列挙
       //----------------------------------------
-      //  ・err時に処理を止めたい場合は
-      //    errorFunc内で throw err; をするとよい
+      //  ・非同期
+      //  ・errorFunc:  エラー時の処理
+      //  ・itemFunc:   ファイル/ディレクトリ列挙時の処理
+      //  ・finishFunc: 処理終了時に一覧を取得する時の処理
       //----------------------------------------
-      _.searchSubFolder = function(folderPath, errorFunc, fileItemFunc, finishFunc) {
+      _.readSubDir = (folderPath, errorFunc, itemFunc, finishFunc) => {
         c.assert(t.isString(folderPath));
+        //関数指定がないか、もしくは、関数かを判定
         c.assert(t.isNullOrUndefined(errorFunc) || t.isFunction(errorFunc));
-        c.assert(t.isNullOrUndefined(fileItemFunc) || t.isFunction(fileItemFunc));
+        c.assert(t.isNullOrUndefined(itemFunc) || t.isFunction(itemFunc));
         c.assert(t.isNullOrUndefined(finishFunc) || t.isFunction(finishFunc));
-        const searchFolder = function(folderPath) {
-          fs.readdir(folderPath, function(err, files) {
+
+        let result = [];
+        let execCounter = 0;
+        const readTopDir = (folderPath) => {
+          execCounter += 1;
+          fs.readdir(folderPath, function(err, items) {
             if (err) {
               if (errorFunc) {
                 errorFunc(err);
               }
-              return;
             }
-            if (fileItemFunc) {
-              files.forEach(function(fileName) {
-                const filePath =
-                  s.excludeEnd(folderPath, '\\') +
-                  '\\' +
-                  s.excludeStart(fileName, '\\');
-                if (fs.statSync(filePath).isDirectory()) {
-                  //フォルダなら再帰呼び出し
-                  searchFolder(filePath);
-                } else {
-                  fileItemFunc(filePath);
-                }
-              });
+
+            items = items.map((itemName) => {
+              return path.join(folderPath, itemName);
+            });
+
+            items.forEach((itemPath) => {
+              result.push(itemPath);
+              if (itemFunc) {
+                itemFunc(itemPath);
+              }
+              if (fs.statSync(itemPath).isDirectory()) {
+                //フォルダなら再帰呼び出し
+                readTopDir(itemPath);
+              }
+            });
+            execCounter -= 1;
+            if (execCounter === 0) {
+              if (finishFunc) {
+                finishFunc(result);
+              }
             }
-            if (finishFunc) {
-              finishFunc(files);
-            }
-            return;
           });
-        };
-        searchFolder(folderPath);
+        }
+        readTopDir(folderPath);
       };
 
-      _.test_searchSubFolder = function() {
-        var folderPath = process.cwd();
-        _.searchSubFolder(folderPath,
-          function(err) {
-            console.log('err:' + err)
-          },
-          function(filePath) {
-            // console.log(filePath);
+      _.test_readSubDir = function() {
+        const folderPath = process.cwd();
+
+        //第三引数省略
+        _.readSubDir(folderPath,
+          (err) => { throw err },
+          (itemPath) => {
+            // console.log(itemPath);
           }
         );
 
-        _.searchSubFolder(folderPath,
-          function(err) {
-            console.log('err:' + err)
-          },
+        //第二引数省略
+        _.readSubDir(folderPath,
+          (err) => { throw err },
           undefined,
-          function(files) {
-            c.check(true, a.isInclude(files,
-              'stslib_test_nodejs.js'));
+          (items) => {
+            items.forEach((itemPath) => {
+              // console.log(itemPath);
+            });
+
+            c.check(true, a.isIncludeFunc(items,
+              (element, index, array) => {
+                return s.isEnd(element, 'stslib_test_nodejs.js');
+              })
+            );
           }
         );
       };
