@@ -405,4 +405,7 @@
     同期処理:readTopDirSync/readSubDirSync
     非同期処理:readSubDir/readSubDir 作成
 ・  test_isIncludeFunc 引数名の修正とテスト追加
-
+◇  ver 2018/01/11
+・  日付系の変換処理
+    dateToString/stringToDate
+    /dateToMilliseconds/millisecondsToDate 追加

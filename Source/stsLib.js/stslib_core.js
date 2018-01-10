@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/11/04
+Version:        2018/01/11
 //----------------------------------------*/
 
 //----------------------------------------
@@ -1136,7 +1136,11 @@ if (typeof module === 'undefined') {
       };
 
       //----------------------------------------
-      //・日付型
+      //◇日付変換
+      //----------------------------------------
+
+      //----------------------------------------
+      //・日付型の文字列からの変換
       //----------------------------------------
       //  ・y/m/d
       //    y/m/d h:n
@@ -1230,6 +1234,104 @@ if (typeof module === 'undefined') {
         c.check(null, _.convertToDate('2017/10/4 14:3:.020'));
         c.check(null, _.convertToDate('2017/10/4 14::6.020'));
         c.check(null, _.convertToDate('2017/10/4 14:3:6.02 '));
+      };
+
+
+      //----------------------------------------
+      //・日付型から文字列への標準的な変換 dateToString
+      //----------------------------------------
+      _.dateToString = function(date) {
+        c.assert(t.isDate(date));
+        return date.toString();
+      };
+
+      _.test_dateToString = function() {
+        var str;
+        str = '2018/01/10 23:41:10.001';
+
+        c.check(true, c.orValue(t.dateToString(_.convertToDate(str)),
+          'Wed Jan 10 2018 23:41:10 GMT+0900 (東京 (標準時))',
+          'Wed Jan 10 23:41:10 UTC+0900 2018'));
+        //上はchrome/node.js
+        //下はWSH JScript
+      };
+
+      //----------------------------------------
+      //・文字列から日付型への標準的な変換 stringToDate
+      //----------------------------------------
+      //  ・変換できない文字列の場合は
+      //    Invalid Date 値が返る
+      //----------------------------------------
+      _.stringToDate = function(str) {
+        c.assert(t.isString(str));
+        return new Date(str);
+      };
+
+      _.test_stringToDate = function() {
+        var str;
+
+        c.check('2018/01/10 23:41:10',
+          d.formatToString(
+            t.stringToDate('Wed Jan 10 2018 23:41:10 GMT+0900 (東京 (標準時))'),
+            'yyyy/MM/dd HH:mm:ss'));
+
+        c.check('2018/01/10 23:41:10',
+          d.formatToString(
+            t.stringToDate('Wed Jan 10 23:41:10 UTC+0900 2018'),
+            'yyyy/MM/dd HH:mm:ss'));
+
+        //chrome/node.js
+        //WSH JScript
+        //どの環境でも上記文字列形式を認識して日付に変換してくれる
+
+        str = t.dateToString(
+            t.stringToDate('Wed Feb 50 2018 23:41:10 GMT+0900 (東京 (標準時))'));
+        c.check(true,
+          c.orValue(str, 'Invalid Date',
+            'Thu Mar 22 23:41:10 UTC+0900 2018'));
+        str = t.dateToString(
+            t.stringToDate('Wed Feb 50 23:41:10 UTC+0900 2018'));
+        c.check(true,
+          c.orValue(str, 'Invalid Date',
+            'Thu Mar 22 23:41:10 UTC+0900 2018'));
+        //chrome/node.js はInvalid Date を返すけど
+        //WSH JScript は無理やり日時を解釈する
+      };
+
+
+      //----------------------------------------
+      //・日付型からミリ秒数値変換
+      //----------------------------------------
+      _.dateToMilliseconds = function(date) {
+        c.assert(t.isDate(date));
+        c.assert(!d.isInvalidDate(date));
+        return date.getTime();
+      };
+
+      _.test_dateToMilliseconds = function() {
+        var str;
+        str = '2018/01/10 23:41:10.001';
+        c.check(1515595270000,
+          t.dateToMilliseconds(_.convertToDate(str)));
+      };
+
+      //----------------------------------------
+      //・文字列から日付型への標準的な変換 stringToDate
+      //----------------------------------------
+      //  ・変換できない文字列の場合は
+      //    Invalid Date 値が返る
+      //----------------------------------------
+      _.millisecondsToDate = function(milliseconds) {
+        c.assert(t.isInt(milliseconds));
+        return new Date(milliseconds);
+      };
+
+      _.test_millisecondsToDate = function() {
+        var str;
+        str = '2018/01/10 23:41:10.001';
+        c.check(true, d.equalDateMilliseconds(
+          _.convertToDate(str),
+          t.millisecondsToDate(1515595270000)));
       };
 
     }()); //type
@@ -6960,6 +7062,11 @@ if (typeof module === 'undefined') {
         t.test_convertToInt();
         t.test_convertToString();
         t.test_convertToDate();
+
+        t.test_dateToString();
+        t.test_stringToDate();
+        t.test_dateToMilliseconds();
+        t.test_millisecondsToDate();
 
         n.test_round();
         n.test_nearEqual();
