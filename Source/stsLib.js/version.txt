@@ -409,3 +409,6 @@
 ・  日付系の変換処理
     dateToString/stringToDate
     /dateToMilliseconds/millisecondsToDate 追加
+◇  ver 2018/01/12
+・  convertToDate のミリ秒1桁の不具合修正
+

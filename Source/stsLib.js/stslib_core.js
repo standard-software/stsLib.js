@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/11
+Version:        2018/01/12
 //----------------------------------------*/
 
 //----------------------------------------
@@ -1169,7 +1169,8 @@ if (typeof module === 'undefined') {
               date.setSeconds(sec);
             } else {
               date.setSeconds(Math.floor(sec));
-              date.setMilliseconds(n.round((sec - Math.floor(sec)) * 1000, -1));
+              date.setMilliseconds(
+                n.round((sec - Math.floor(sec)) * 1000, 1));
             }
           }
         };
@@ -1225,10 +1226,10 @@ if (typeof module === 'undefined') {
         c.check(null, _.convertToDate('2017/10/4 14::6'));
         c.check(null, _.convertToDate('2017/10/4 14:3:6 '));
 
-        str = '2017/10/4 14:3:6.02';
+        str = '2017/10/4 14:3:6.123';
         c.check('2017/10/04', d.formatYYYYMMDD(_.convertToDate(str), '/'));
         c.check('14:03:06', d.formatHHMMSS(_.convertToDate(str), ':'));
-        c.check(20, _.convertToDate(str).getMilliseconds());
+        c.check(123, _.convertToDate(str).getMilliseconds());
 
         c.check(null, _.convertToDate('2017/10/4 14:3:6.0201'));
         c.check(null, _.convertToDate('2017/10/4 14:3:.020'));
@@ -1311,7 +1312,7 @@ if (typeof module === 'undefined') {
       _.test_dateToMilliseconds = function() {
         var str;
         str = '2018/01/10 23:41:10.001';
-        c.check(1515595270000,
+        c.check(1515595270001,
           t.dateToMilliseconds(_.convertToDate(str)));
       };
 
@@ -1331,7 +1332,7 @@ if (typeof module === 'undefined') {
         str = '2018/01/10 23:41:10.001';
         c.check(true, d.equalDateMilliseconds(
           _.convertToDate(str),
-          t.millisecondsToDate(1515595270000)));
+          t.millisecondsToDate(1515595270001)));
       };
 
     }()); //type
