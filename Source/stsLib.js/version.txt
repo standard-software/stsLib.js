@@ -414,3 +414,4 @@
 ◇  ver 2018/01/15
 ・  require/moduleExport の仕組みを改良
 ・  stsLib.wsh.fs.forceCreateFolder 追加
+・  stslib_test_emmacro.jsee 追加
