@@ -7,11 +7,15 @@ FileName:       stslib_emeditor_macro.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
-	Name:         Standard Software
-	URL:          https://www.facebook.com/stndardsoftware/
+  Name:         Standard Software
+  URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/09/22
+Version:        2018/01/15
 //----------------------------------------*/
+
+//----------------------------------------
+//◆モジュール呼び出し
+//----------------------------------------
 
 //----------------------------------------
 //・require関数
@@ -21,7 +25,24 @@ Version:        2017/09/22
 if (typeof module === 'undefined') {
 
   var requireList = requireList || {};
-  var require = function (funcName) {
+  var require = function(funcName) {
+    if (typeof funcName !== 'string') {
+      throw new Error('Error:stslib_core.js require');
+    }
+    //パス区切り以降のみ動作に採用する
+    var index = funcName.lastIndexOf('/');
+    if (index !== -1) {
+      funcName = funcName.substring(index+1);
+    }
+    if (funcName === '') {
+      throw new Error('Error:stslib_core.js require');
+    }
+
+    //拡張子が省略されている場合は追加
+    if (funcName.indexOf('.') === -1) {
+      funcName += '.js';
+    }
+
     for ( var item in requireList) {
       if (funcName === item) {
         if (requireList.hasOwnProperty(item)) {
@@ -33,14 +54,19 @@ if (typeof module === 'undefined') {
   };
 }
 
+//----------------------------------------
+//■全体を囲う無名関数
+//----------------------------------------
 (function () {
 
-  if (typeof module === 'undefined') {
-    var stsLib = require('stsLib')
-  } else {
-    var stsLib = require('./stsLib_core.js')
-  }
+  //----------------------------------------
+  //・require実行
+  //----------------------------------------
+  var stsLib = require('./stslib_core.js')
 
+  //----------------------------------------
+  //■stsLib名前空間
+  //----------------------------------------
   var stsLib = stsLib || {};
   (function () {
     var _ = stsLib;
@@ -200,16 +226,16 @@ if (typeof module === 'undefined') {
             //コメントアウト記号を取り除く
             return s.trimCutStart(line, [' ', '\t']) +
               s.excludeEnd(
-                s.excludeStart(lienAfterTrim, commentBegin), 
+                s.excludeStart(lienAfterTrim, commentBegin),
                 commentEnd) +
               s.trimCutEnd(line, [' ', '\t', '\r', '\n']);
           } else {
             //コメントアウトされていない場合
             //コメントアウト記号を追加
             return s.trimCutStart(line, [' ', '\t']) +
-              commentBegin + 
-              lienAfterTrim + 
-              commentEnd + 
+              commentBegin +
+              lienAfterTrim +
+              commentEnd +
               s.trimCutEnd(line, [' ', '\t', '\r', '\n']);
           }
         } else {
@@ -298,10 +324,21 @@ if (typeof module === 'undefined') {
 
   }());   //stsLib
 
-  if (typeof module === 'undefined') {
-    requireList['stsLib'] = stsLib;
-  } else {
-    module.exports = stsLib;
-  }
+  //----------------------------------------
+  //◆モジュール登録
+  //----------------------------------------
+  var moduleExports = function(object, registFileName) {
+    if (typeof module === 'undefined') {
+      //拡張子が省略されている場合は追加
+      if (registFileName.indexOf('.') === -1) {
+        registFileName += '.js';
+      }
+      requireList[registFileName] = stsLib;
+    } else {
+      module.exports = object;
+    }
+  };
 
-}());
+  moduleExports(stsLib, 'stslib_emeditor_macro.js');
+
+}()); //(function() {

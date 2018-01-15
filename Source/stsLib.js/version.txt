@@ -411,4 +411,6 @@
     /dateToMilliseconds/millisecondsToDate 追加
 ◇  ver 2018/01/12
 ・  convertToDate のミリ秒1桁の不具合修正
-
+◇  ver 2018/01/15
+・  require/moduleExport の仕組みを改良
+・  stsLib.wsh.fs.forceCreateFolder 追加

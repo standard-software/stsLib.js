@@ -7,11 +7,15 @@ FileName:       stslib_gas_spreadsheet.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
-    Name:       Standard Software
-    URL:        https://www.facebook.com/stndardsoftware/
+  Name:         Standard Software
+  URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/10/10
+Version:        2018/01/15
 //----------------------------------------*/
+
+//----------------------------------------
+//◆モジュール呼び出し
+//----------------------------------------
 
 //----------------------------------------
 //・require関数
@@ -21,7 +25,24 @@ Version:        2017/10/10
 if (typeof module === 'undefined') {
 
   var requireList = requireList || {};
-  var require = function (funcName) {
+  var require = function(funcName) {
+    if (typeof funcName !== 'string') {
+      throw new Error('Error:stslib_core.js require');
+    }
+    //パス区切り以降のみ動作に採用する
+    var index = funcName.lastIndexOf('/');
+    if (index !== -1) {
+      funcName = funcName.substring(index+1);
+    }
+    if (funcName === '') {
+      throw new Error('Error:stslib_core.js require');
+    }
+
+    //拡張子が省略されている場合は追加
+    if (funcName.indexOf('.') === -1) {
+      funcName += '.js';
+    }
+
     for ( var item in requireList) {
       if (funcName === item) {
         if (requireList.hasOwnProperty(item)) {
@@ -41,7 +62,7 @@ if (typeof module === 'undefined') {
   //----------------------------------------
   //・require実行
   //----------------------------------------
-  var stsLib = require('stsLib')
+  var stsLib = require('./stslib_core.js')
 
   //----------------------------------------
   //■stsLib名前空間
@@ -170,10 +191,21 @@ if (typeof module === 'undefined') {
 
   }(stsLib, this));   //stsLib
 
-  if (typeof module === 'undefined') {
-    requireList['stsLib'] = stsLib;
-  } else {
-    module.exports = stsLib;
-  }
+  //----------------------------------------
+  //◆モジュール登録
+  //----------------------------------------
+  var moduleExports = function(object, registFileName) {
+    if (typeof module === 'undefined') {
+      //拡張子が省略されている場合は追加
+      if (registFileName.indexOf('.') === -1) {
+        registFileName += '.js';
+      }
+      requireList[registFileName] = stsLib;
+    } else {
+      module.exports = object;
+    }
+  };
 
-}());   //(function () {
+  moduleExports(stsLib, 'stslib_gas_spreadsheet.js');
+
+}()); //(function() {

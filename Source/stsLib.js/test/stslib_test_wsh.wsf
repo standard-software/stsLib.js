@@ -20,11 +20,21 @@ All Right Reserved:
 Version:        2017/09/21
 //----------------------------------------*/
 
-var stsLib = require('stsLib');
+
+var stsLib = require('../stslib_win_wsh.js');
+//requireが標準ではない場合(node.jsなど以外)には
+//requireは独自実装していて
+//ファイル名だけをキーにしてオブジェクトを読み出すので
+//[/]以降が正しければ動作する
+//また、[.js]は省略可能、
+//多段階のrequireの場合でも同じオブジェクを指すので
+//下記の記載でも同じく動作する
+//  var stsLib = require('../stslib_core.js');
+//  var stsLib = require('stslib_core.js');
+//  var stsLib = require('stslib_core');
 
 stsLib.test.test_stslib_core();
 stsLib.test.test_stslib_wsh();
-
 
     ]]>
     </script>

@@ -20,16 +20,28 @@ Version:        2017/08/13
 //----------------------------------------*/
 
 //----------------------------------------
-//browserify での ビルド方法は次の通り
-// > browserify -r ./stslib_web.js:stsLib -o ./build/build.js
-//
+//browserify でビルドする時は
 //stslib_web.js は内部で stslib_core.js を require しているので
-//browserify のビルドでは stslib_web.js のみを指定すればよい
-//ブラウザ側での require は、browserify コマンドで指定した
-//外部に出力する名前で require すること
+//browserify のビルドでは stslib_web.js のみを指定する。
+
+//コマンドは
+//  > browserify -r ./stslib_web.js:<出力名> -o ./build/build.js
+//このように定義される
+
+//例
+//  > browserify -r ./stslib_web.js:stslib_web.js -o ./build/build.js
+//  この場合は、下記のrequireを行うことができる
+//  var stsLib = require('stslib_web.js');
+
+//例
+//  > browserify -r ./stslib_web.js -o ./build/build.js
+//  require名を省略した場合は自動で名前がつくので
+//  この場合は、下記のrequireを行うことができる
+//  var stsLib = require('/stslib_web.js');
+
 //----------------------------------------
 
-var stsLib = require('stsLib');
+var stsLib = require('stslib_web.js');
 
 function main() {
   stsLib.test.test_stslib_core();
@@ -58,7 +70,7 @@ document.addEventListener("DOMContentLoaded",function(eve){
     </tr>
     <tr>
         <td>
-            <input type="button" value="Test Run" onclick="main()" 
+            <input type="button" value="Test Run" onclick="main()"
                 style="width:150px;">
 
         </td>

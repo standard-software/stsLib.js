@@ -17,3 +17,4 @@ stsLib.node.test_readSubDir();
 // stsLib.node.test_searchFolder();
 // stsLib.node.test_searchSubFolder();
 alert('finish stslib_test_nodejs.js テスト終了');
+

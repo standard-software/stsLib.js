@@ -7,11 +7,15 @@ FileName:       stslib_node.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
-    Name:       Standard Software
-    URL:        https://www.facebook.com/stndardsoftware/
+  Name:         Standard Software
+  URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/12/26
+Version:        2018/01/15
 //----------------------------------------*/
+
+//----------------------------------------
+//◆モジュール呼び出し
+//----------------------------------------
 
 //----------------------------------------
 //・require関数
@@ -23,7 +27,24 @@ Version:        2017/12/26
 if (typeof module === 'undefined') {
 
   var requireList = requireList || {};
-  var require = function (funcName) {
+  var require = function(funcName) {
+    if (typeof funcName !== 'string') {
+      throw new Error('Error:stslib_core.js require');
+    }
+    //パス区切り以降のみ動作に採用する
+    var index = funcName.lastIndexOf('/');
+    if (index !== -1) {
+      funcName = funcName.substring(index+1);
+    }
+    if (funcName === '') {
+      throw new Error('Error:stslib_core.js require');
+    }
+
+    //拡張子が省略されている場合は追加
+    if (funcName.indexOf('.') === -1) {
+      funcName += '.js';
+    }
+
     for ( var item in requireList) {
       if (funcName === item) {
         if (requireList.hasOwnProperty(item)) {
@@ -43,15 +64,7 @@ if (typeof module === 'undefined') {
   //----------------------------------------
   //・require実行
   //----------------------------------------
-  //  ・  node.js には require は必ずあるので
-  //      意味のないコードになる
-  //      他のモジュールと共通化するために残す
-  //----------------------------------------
-  if (typeof module === 'undefined') {
-    var stsLib = require('stsLib')
-  } else {
-    var stsLib = require('./stsLib_core.js')
-  }
+  var stsLib = require('./stslib_core.js')
 
   //外部から呼び出して使用する
   const fs = require('fs');
@@ -311,10 +324,21 @@ if (typeof module === 'undefined') {
 
   }(stsLib, this));   //stsLib
 
-  if (typeof module === 'undefined') {
-    requireList['stsLib'] = stsLib;
-  } else {
-    module.exports = stsLib;
-  }
+  //----------------------------------------
+  //◆モジュール登録
+  //----------------------------------------
+  var moduleExports = function(object, registFileName) {
+    if (typeof module === 'undefined') {
+      //拡張子が省略されている場合は追加
+      if (registFileName.indexOf('.') === -1) {
+        registFileName += '.js';
+      }
+      requireList[registFileName] = stsLib;
+    } else {
+      module.exports = object;
+    }
+  };
 
-}());   //(function () {
+  moduleExports(stsLib, 'stslib_node.js');
+
+}()); //(function() {

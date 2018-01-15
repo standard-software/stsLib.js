@@ -21,7 +21,7 @@ All Right Reserved:
 Version:        2017/09/21
 //----------------------------------------*/
 
-var stsLib = require('stsLib');
+var stsLib = require('../stslib_web.js');
 
 function main() {
   stsLib.test.test_stslib_core();
@@ -84,18 +84,18 @@ document.addEventListener("DOMContentLoaded",function(eve){
     </tr>
     <tr>
       <td>
-        <input type="button" value="Test Run" onclick="main()" 
+        <input type="button" value="Test Run" onclick="main()"
           style="width:150px;">
-  
+
       </td>
     </tr>
-  
+
     <tr>
       <td>
         <br />
       </td>
     </tr>
-  
+
     <tr>
       <td>
         <canvas id="canvas01" width="500" height="500"></canvas>
