@@ -1,0 +1,63 @@
+/*------------------------------------------------------------
+stsLib EmEditor Macro Test Module
+----------------------------------------
+ModuleName:   EmEditor Macro stsLib Test
+FileName:     stslib_test_emmacro.jsee
+Description:  プログラムの動作確認をする
+----------------------------------------
+All  Right Reserved:
+    Name:     Standard Software
+    URL:      https://www.facebook.com/stndardsoftware/
+--------------------------------------
+Version:      2018/01/15
+// ------------------------------------------------------------*/
+
+/*------------------------------------------------------------
+EmEditor Macro JavaScript では
+・  alert がある。
+・  WScript.ScriptFullName は
+  ScriptFullName として使える
+// ------------------------------------------------------------*/
+
+//alert(ScriptFullName);
+
+//--------------------------------------------------
+//include st.js
+//--------------------------------------------------
+var fso = new ActiveXObject('Scripting.FileSystemObject')
+//--------------------------------------------------
+var basePath = fso.GetParentFolderName(ScriptFullName);
+//--------------------------------------------------
+var loadTextfileSjis = function (path) {
+  return fso.OpenTextFile(path, 1).ReadAll();
+};
+
+var loadTextfileUTF8 = function (path) {
+  var stream = new ActiveXObject('ADODB.Stream');
+  stream.Type = 2;  //StreamTypeEnum.adTypeText = 2
+  stream.Charset = "UTF-8";
+  stream.Open();
+  stream.LoadFromFile(path);
+  var result = stream.ReadText();
+  // // stream.Close();
+  return result;
+};
+
+//--------------------------------------------------
+includeFileName = '..\\stslib_emeditor_macro.js';
+eval( loadTextfileSjis( fso.BuildPath(basePath, includeFileName) ) );
+//----------------------------------------
+
+//ライブラリを読み込むと
+//alertが上書きされてしまうので更に上書きして対応する
+var alert = function (message) {
+  OutputBar.writeln(message);
+};
+
+(function () {
+
+  var stsLib = require('stslib_emeditor_macro.js');
+
+  alert('finish Test. stsLib EmEditor Macro Test Module');
+
+}());
