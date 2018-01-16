@@ -2,19 +2,19 @@
 <html><head>
   <meta charset="UTF-8"><title>stsLib.js test page</title>
 
-  <script src="../build/build.js"></script>
+  <script src="../build/build-browserify.js"></script>
   <script>
 /*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 --------------------------------------
-ModuleName:     Test WEB Module
+ModuleName:     Test WEB browserify Module
 FileName:       stslib_test_web_browserify.html
 --------------------------------------
 License:        MIT License
 All Right Reserved:
-    Name:       Standard Software
-    URL:        https://www.facebook.com/stndardsoftware/
+  Name:         Standard Software
+  URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
 Version:        2017/08/13
 //----------------------------------------*/
@@ -25,16 +25,16 @@ Version:        2017/08/13
 //browserify のビルドでは stslib_web.js のみを指定する。
 
 //コマンドは
-//  > browserify -r ./stslib_web.js:<出力名> -o ./build/build.js
+//  > browserify -r ./stslib_web.js:<出力名> -o ./build/build-browserify.js
 //このように定義される
 
 //例
-//  > browserify -r ./stslib_web.js:stslib_web.js -o ./build/build.js
+//  > browserify -r ./stslib_web.js:stslib_web.js -o ./build/build-browserify.js
 //  この場合は、下記のrequireを行うことができる
 //  var stsLib = require('stslib_web.js');
 
 //例
-//  > browserify -r ./stslib_web.js -o ./build/build.js
+//  > browserify -r ./stslib_web.js -o ./build/build-browserify.js
 //  require名を省略した場合は自動で名前がつくので
 //  この場合は、下記のrequireを行うことができる
 //  var stsLib = require('/stslib_web.js');
