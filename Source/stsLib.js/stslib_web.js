@@ -7,10 +7,10 @@ FileName:       stslib_web.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
-    Name:       Standard Software
-    URL:        https://www.facebook.com/stndardsoftware/
+  Name:         Standard Software
+  URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/15
+Version:        2018/01/16
 //----------------------------------------*/
 
 //----------------------------------------
@@ -28,7 +28,7 @@ if (typeof module === 'undefined') {
   var requireList = requireList || {};
   var require = function(funcName) {
     if (typeof funcName !== 'string') {
-      throw new Error('Error:stslib_core.js require');
+      throw new Error('Error:stslib_web.js require');
     }
     //パス区切り以降のみ動作に採用する
     var index = funcName.lastIndexOf('/');
@@ -36,7 +36,7 @@ if (typeof module === 'undefined') {
       funcName = funcName.substring(index+1);
     }
     if (funcName === '') {
-      throw new Error('Error:stslib_core.js require');
+      throw new Error('Error:stslib_web.js require');
     }
 
     //拡張子が省略されている場合は追加
@@ -51,7 +51,7 @@ if (typeof module === 'undefined') {
         }
       }
     }
-    return undefined;
+    throw new Error('Error:stslib_web.js require');
   };
 }
 

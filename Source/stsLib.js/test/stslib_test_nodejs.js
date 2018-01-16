@@ -4,10 +4,11 @@
 //このファイルのディレクトリをカレントにして
 //実行してください。
 
-// var stsLib = require('../stsLib_core.js');
-// stsLib.test.test_stslib_core();
+var alert = function(message) {
+  console.log(message);
+};
 
-var stsLib = require('../stsLib_node.js');
+var stsLib = require('../stslib_node.js');
 stsLib.test.test_stslib_core();
 
 stsLib.node.test_readTopDirSync();

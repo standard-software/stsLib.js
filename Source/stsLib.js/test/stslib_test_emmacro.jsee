@@ -20,6 +20,13 @@ EmEditor Macro JavaScript では
 // ------------------------------------------------------------*/
 
 //alert(ScriptFullName);
+//ライブラリを読み込むと
+//alertが上書きされてしまうので更に上書きして対応する
+var alert = function (message) {
+  OutputBar.writeln(message);
+};
+
+var WScript = this;
 
 //--------------------------------------------------
 //include st.js
@@ -39,14 +46,19 @@ var loadTextfileUTF8 = function (path) {
   stream.Open();
   stream.LoadFromFile(path);
   var result = stream.ReadText();
-  // // stream.Close();
+  stream.Close();
   return result;
 };
-
 //--------------------------------------------------
-includeFileName = '..\\stslib_emeditor_macro.js';
+var includeFileName = "..\\stslib_core.js"
+eval( loadTextfileUTF8( fso.BuildPath(basePath, includeFileName) ) );
+//--------------------------------------------------
+var includeFileName = "..\\stslib_win_wsh.js"
 eval( loadTextfileSjis( fso.BuildPath(basePath, includeFileName) ) );
-//----------------------------------------
+//--------------------------------------------------
+var includeFileName = '..\\stslib_emeditor_macro.js';
+eval( loadTextfileSjis( fso.BuildPath(basePath, includeFileName) ) );
+//--------------------------------------------------
 
 //ライブラリを読み込むと
 //alertが上書きされてしまうので更に上書きして対応する
@@ -54,9 +66,15 @@ var alert = function (message) {
   OutputBar.writeln(message);
 };
 
+OutputBar.Clear();
+OutputBar.Visible = true;
+
 (function () {
 
   var stsLib = require('stslib_emeditor_macro.js');
+
+  stsLib.test.test_stslib_core();
+  stsLib.test.test_stslib_wsh();
 
   alert('finish Test. stsLib EmEditor Macro Test Module');
 

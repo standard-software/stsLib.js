@@ -1,0 +1,23 @@
+◆テスト手順
+
+パス
+...\stsLib.js\Source\stsLib.js\test\
+
+ここで、実行する
+
+・  run_test_cmd.bat
+node.js / WSH wsf形式 / WSH jse形式 の
+テストを実行して結果を出力する
+
+・  run_test_browser.bat
+ブラウザで、単純なscriptタグでリンクした形式と
+Browserifyでモジュールを合体した形式と
+CDNでscriptタグでリンクした形式のHTMLファイル
+ブラウザで開くので、それぞれの画面でボタンを押すと
+テストを実行して、
+alertメッセージやconsole.logで結果を出力する
+
+・  stslib_test_emmacro.jsee
+EmEditorでこのファイルをマクロとして選択実行すると
+テストを実行して、
+アウトプット部分に結果を出力する

@@ -7,10 +7,10 @@ FileName:       stslib_core.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
-    Name:       Standard Software
-    URL:        https://www.facebook.com/stndardsoftware/
+  Name:         Standard Software
+  URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/15
+Version:        2018/01/16
 //----------------------------------------*/
 
 //----------------------------------------
@@ -51,7 +51,7 @@ if (typeof module === 'undefined') {
         }
       }
     }
-    return undefined;
+    throw new Error('Error:stslib_core.js require');
   };
 }
 
@@ -6986,80 +6986,65 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆グローバル拡張
     //----------------------------------------
-    (function() {
-      var _ = global;
 
-      //----------------------------------------
-      //・alert
-      //----------------------------------------
-      //  ・ライブラリ内部で alert を使うので
-      //    alert がない環境(node.jsとか)での動作の時に
-      //    エラーにならないように定義する
-      //----------------------------------------
-      _.alert = _.alert || function(message) {
-        console.log(message);
-      };
+    //----------------------------------------
+    //◇Array
+    //----------------------------------------
 
-      //----------------------------------------
-      //◇Array
-      //----------------------------------------
+    //----------------------------------------
+    //・Array.isArray
+    //----------------------------------------
+    //  ・Array.isArray が存在しない環境(WSHなど)
+    //    のために実装
+    //  ・参考:書籍:JavaScriptパターン P51
+    //----------------------------------------
+    Array.isArray = Array.isArray || function(arg) {
+      return t.isArray(arg);
+    };
 
-      //----------------------------------------
-      //・Array.isArray
-      //----------------------------------------
-      //  ・Array.isArray が存在しない環境(WSHなど)
-      //    のために実装
-      //  ・参考:書籍:JavaScriptパターン P51
-      //----------------------------------------
-      _.Array.isArray = _.Array.isArray || function(arg) {
-        return t.isArray(arg);
-      };
-
-      //----------------------------------------
-      //・Array.every
-      //----------------------------------------
-      //  ・配列がすべてfuncで指定した条件を満たしているか
-      //    を調べるメソッド
-      //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
-      //----------------------------------------
-      _.Array.prototype.every = _.Array.prototype.every || function(func, thisObj) {
-        for (var i = 0, max = this.length; i < max; i += 1) {
-          if (!func.call(thisObj, this[i], i, this)) {
-            return false;
-          }
+    //----------------------------------------
+    //・Array.every
+    //----------------------------------------
+    //  ・配列がすべてfuncで指定した条件を満たしているか
+    //    を調べるメソッド
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //----------------------------------------
+    Array.prototype.every = Array.prototype.every || function(func, thisObj) {
+      for (var i = 0, max = this.length; i < max; i += 1) {
+        if (!func.call(thisObj, this[i], i, this)) {
+          return false;
         }
-        return true;
-      };
+      }
+      return true;
+    };
 
-      //----------------------------------------
-      //・Array.some
-      //----------------------------------------
-      //  ・配列のどれかがfuncで指定した条件を満たしているか
-      //    を調べるメソッド
-      //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
-      //----------------------------------------
-      _.Array.prototype.some = _.Array.prototype.some || function(func, thisObj) {
-        for (var i = 0, max = this.length; i < max; i += 1) {
-          if (func.call(thisObj, this[i], i, this)) {
-            return true;
-          }
+    //----------------------------------------
+    //・Array.some
+    //----------------------------------------
+    //  ・配列のどれかがfuncで指定した条件を満たしているか
+    //    を調べるメソッド
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //----------------------------------------
+    Array.prototype.some = Array.prototype.some || function(func, thisObj) {
+      for (var i = 0, max = this.length; i < max; i += 1) {
+        if (func.call(thisObj, this[i], i, this)) {
+          return true;
         }
-        return false;
-      };
+      }
+      return false;
+    };
 
-      //----------------------------------------
-      //・Array.forEach
-      //----------------------------------------
-      //  ・すべての要素に対してfuncを実行する
-      //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
-      //----------------------------------------
-      _.Array.prototype.forEach = _.Array.prototype.forEach || function(func, thisObj) {
-        for (var i = 0, max = this.length; i < max; i += 1) {
-          func.call(thisObj, this[i], i, this);
-        }
-      };
-
-    }()); //global
+    //----------------------------------------
+    //・Array.forEach
+    //----------------------------------------
+    //  ・すべての要素に対してfuncを実行する
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //----------------------------------------
+    Array.prototype.forEach = Array.prototype.forEach || function(func, thisObj) {
+      for (var i = 0, max = this.length; i < max; i += 1) {
+        func.call(thisObj, this[i], i, this);
+      }
+    };
 
     //----------------------------------------
     //◆動作確認
@@ -7437,3 +7422,19 @@ if (typeof module === 'undefined') {
   moduleExports(stsLib, 'stslib_core.js');
 
 }()); //(function() {
+
+//----------------------------------------
+//◆グローバル拡張
+//----------------------------------------
+
+//----------------------------------------
+//・alert
+//----------------------------------------
+//  ・ライブラリ内部で alert を使うので
+//    alert がない環境(node.jsとか)での動作の時に
+//    エラーにならないように定義する
+//----------------------------------------
+var alert = alert || function(message) {
+  console.log(message);
+};
+

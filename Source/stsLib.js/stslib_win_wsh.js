@@ -10,21 +10,8 @@ All Right Reserved:
   Name:         Standard Software
   URL:          https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/15
+Version:        2018/01/16
 //----------------------------------------*/
-
-//----------------------------------------
-//・メッセージ表示
-//----------------------------------------
-//  ・  WSH では alert が無いので関数を上書きする
-//  ・  stsLib内のグローバル拡張部分で記載しても
-//      *.jse形式ではうまくいくが、
-//      *.wsh形式では誤動作する
-//      原因不明だが、ここで記載すればうまく動く
-//----------------------------------------
-var alert = function (message) {
-  WScript.Echo(message);
-};
 
 //----------------------------------------
 //◆モジュール呼び出し
@@ -33,14 +20,15 @@ var alert = function (message) {
 //----------------------------------------
 //・require関数
 //----------------------------------------
-//  ・  require/moduleの無い環境に対応
+//  ・require/moduleの無い環境に対応するために
+//    require と requireList をグローバルに追加。
 //----------------------------------------
 if (typeof module === 'undefined') {
 
   var requireList = requireList || {};
   var require = function(funcName) {
     if (typeof funcName !== 'string') {
-      throw new Error('Error:stslib_core.js require');
+      throw new Error('Error:stslib_win_wsh.js require');
     }
     //パス区切り以降のみ動作に採用する
     var index = funcName.lastIndexOf('/');
@@ -48,7 +36,7 @@ if (typeof module === 'undefined') {
       funcName = funcName.substring(index+1);
     }
     if (funcName === '') {
-      throw new Error('Error:stslib_core.js require');
+      throw new Error('Error:stslib_win_wsh.js require');
     }
 
     //拡張子が省略されている場合は追加
@@ -63,14 +51,14 @@ if (typeof module === 'undefined') {
         }
       }
     }
-    return undefined;
+    throw new Error('Error:stslib_win_wsh.js require');
   };
 }
 
 //----------------------------------------
 //■全体を囲う無名関数
 //----------------------------------------
-(function () {
+(function() {
 
   //----------------------------------------
   //・require実行
@@ -81,16 +69,16 @@ if (typeof module === 'undefined') {
   //■stsLib名前空間
   //----------------------------------------
   var stsLib = stsLib || {};
-  (function (lib, global) {
+  (function (stsLib, global) {
     'use strict';
-    var _ = lib;
+    var _ = stsLib;
 
     //----------------------------------------
     //■stsLib.wsh名前空間
     //----------------------------------------
-    _.wsh = lib.wsh || {};
+    _.wsh = stsLib.wsh || {};
     (function () {
-      var _ = lib.wsh;
+      var _ = stsLib.wsh;
 
       //----------------------------------------
       //◆DefaultObject
@@ -101,9 +89,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◆wshEngine
       //----------------------------------------
-      _.wshEngine = lib.wsh.wshEngine || {};
+      _.wshEngine = stsLib.wsh.wshEngine || {};
       (function () {
-        var _ = lib.wsh.wshEngine;
+        var _ = stsLib.wsh.wshEngine;
 
         _.filePath = function () {
           return WScript.FullName;
@@ -149,15 +137,15 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◆Path
       //----------------------------------------
-      _.path = lib.wsh.path || {};
+      _.path = stsLib.wsh.path || {};
       (function () {
-        var _ = lib.wsh.path;
+        var _ = stsLib.wsh.path;
 
         //----------------------------------------
         //◇カレントディレクトリ
         //----------------------------------------
         _.currentDirectory = function () {
-          return lib.wsh.shell.object.CurrentDirectory;
+          return stsLib.wsh.shell.object.CurrentDirectory;
         };
 
         //----------------------------------------
@@ -168,7 +156,7 @@ if (typeof module === 'undefined') {
         };
 
         _.scriptFolderPath = function () {
-          return lib.wsh.fso.GetParentFolderName(_.scriptFilePath());
+          return stsLib.wsh.fso.GetParentFolderName(_.scriptFilePath());
         };
 
         _.scriptFileName = function () {
@@ -188,15 +176,15 @@ if (typeof module === 'undefined') {
       //◆FileSystem
       //----------------------------------------
 
-      _.fs = lib.wsh.fs || {};
+      _.fs = stsLib.wsh.fs || {};
       (function () {
-        var _ = lib.wsh.fs;
+        var _ = stsLib.wsh.fs;
 
         _.forceCreateFolder = function(folderPath) {
-          if (!lib.wsh.fso.FolderExists(folderPath)) {
-            var parentFolderPath = lib.wsh.fso.GetParentFolderName(folderPath);
-            if (lib.wsh.fso.FolderExists(parentFolderPath)) {
-              lib.wsh.fso.CreateFolder(folderPath);
+          if (!stsLib.wsh.fso.FolderExists(folderPath)) {
+            var parentFolderPath = stsLib.wsh.fso.GetParentFolderName(folderPath);
+            if (stsLib.wsh.fso.FolderExists(parentFolderPath)) {
+              stsLib.wsh.fso.CreateFolder(folderPath);
             } else {
               _.forceCreateFolder(parentFolderPath);
             }
@@ -204,9 +192,9 @@ if (typeof module === 'undefined') {
         };
 
         _.test_forceCreateFolder = function() {
-          var folderPathTestBase = lib.wsh.path.scriptFolderPath() +
+          var folderPathTestBase = stsLib.wsh.path.scriptFolderPath() +
             '\\TestData\\FileIoTest';
-          alert(folderPathTestBase);
+          //alert(folderPathTestBase);
           _.forceCreateFolder(folderPathTestBase);
         };
 
@@ -215,9 +203,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◆TextFile
       //----------------------------------------
-      _.textfile = lib.wsh.textfile || {};
+      _.textfile = stsLib.wsh.textfile || {};
       (function () {
-        var _ = lib.wsh.textfile;
+        var _ = stsLib.wsh.textfile;
 
         _.encoding = {
           ASCII               :0,
@@ -285,7 +273,7 @@ if (typeof module === 'undefined') {
         _.test_load = function () {
 
           var textTest = 'test\r\n123\r456\nあいうえお\r\ntest\r\n';
-          var folderPathTestBase = lib.wsh.path.scriptFolderPath() +
+          var folderPathTestBase = stsLib.wsh.path.scriptFolderPath() +
             '\\TestData\\FileIoTest';
 
           c.check(textTest, _.load(folderPathTestBase + '\\SJIS_File.txt',
@@ -368,7 +356,7 @@ if (typeof module === 'undefined') {
 
         _.test_save = function () {
           var textTest = 'test\r\n123\r456\nあいうえお\r\ntest\r\n';
-          var folderPathTestBase = lib.wsh.path.scriptFolderPath() +
+          var folderPathTestBase = stsLib.wsh.path.scriptFolderPath() +
             '\\TestData\\FileIoTest';
 
           _.save(textTest, folderPathTestBase + '\\SJIS_File.txt',
@@ -400,9 +388,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◆shell
       //----------------------------------------
-      _.shell = lib.wsh.shell || {};
+      _.shell = stsLib.wsh.shell || {};
       (function () {
-        var _ = lib.wsh.shell;
+        var _ = stsLib.wsh.shell;
 
         _.object = new ActiveXObject( "WScript.Shell" );
 
@@ -433,10 +421,10 @@ if (typeof module === 'undefined') {
         }
 
         _.test_fileOpen = function () {
-          var folderPathTestBase = lib.wsh.path.scriptFolderPath() +
+          var folderPathTestBase = stsLib.wsh.path.scriptFolderPath() +
             '\\TestData\\ShellOpenTest';
           var testFilePath = folderPathTestBase + '\\ShellOpenTest.txt';
-          lib.wsh.textfile.save('test', testFilePath, lib.wsh.textfile.encoding.Shift_JIS);
+          stsLib.wsh.textfile.save('test', testFilePath, stsLib.wsh.textfile.encoding.Shift_JIS);
           _.fileOpen(testFilePath, _.windowStyleEnum.vbNormalNoFocus);
 
           _.fileOpen('notepad.exe', _.windowStyleEnum.vbNormalNoFocus);
@@ -449,9 +437,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◆MessageBox
       //----------------------------------------
-      _.messageBox = lib.wsh.messageBox || {};
+      _.messageBox = stsLib.wsh.messageBox || {};
       (function () {
-        var _ = lib.wsh.messageBox;
+        var _ = stsLib.wsh.messageBox;
 
         //----------------------------------------
         //◇メッセージ表示
@@ -493,12 +481,12 @@ if (typeof module === 'undefined') {
         };
 
         _.popup = function (strText, nSecondsToWait, strTitle, nType) {
-          return lib.wsh.shell.object.Popup(
+          return stsLib.wsh.shell.object.Popup(
             strText, nSecondsToWait, strTitle, nType);
         }
 
         _.test_popup = function () {
-          var m = lib.wsh.messageBox;
+          var m = stsLib.wsh.messageBox;
           var msgResult = m.popup(
             '本文', 10,
             'タイトル', (m.nType.BTN_YES_NO_CANCEL + m.nType.ICON_QUESTION));
@@ -531,9 +519,9 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     //◆動作確認
     //----------------------------------------
-    _.test = lib.test || {};
+    _.test = stsLib.test || {};
     (function () {
-      var _ = lib.test;
+      var _ = stsLib.test;
 
       //----------------------------------------
       //◆テスト
@@ -587,5 +575,20 @@ if (typeof module === 'undefined') {
 
 }()); //(function() {
 
+//----------------------------------------
+//◆グローバル拡張
+//----------------------------------------
 
+//----------------------------------------
+//・alert
+//----------------------------------------
+//  ・WSH では alert が無いので関数を上書きする
+//  ・this.alertで指定すると
+//    *.jse形式ではうまくいくが、
+//    *.wsh形式ではエラーになるので
+//    thisは指定しないようにする
+//----------------------------------------
+var alert = function (message) {
+  WScript.Echo(message);
+};
 

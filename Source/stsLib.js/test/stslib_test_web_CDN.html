@@ -21,14 +21,47 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/09/21
+Version:        2018/01/16
 //----------------------------------------*/
 
-var stsLib = require('stsLib');
+var stsLib = require('stslib_web.js');
 
 function main() {
   stsLib.test.test_stslib_core();
   stsLib.web.test_stslib_web();
+
+  // var draw = function () {
+  //   var e = document.getElementById('canvas01');
+  //   if ( ! e || ! e.getContext ) { return false; }
+  //   var canvas = e.getContext('2d');
+  //   canvas.beginPath();
+  //   canvas.moveTo(50, 50);
+  //   canvas.lineTo(100, 50);
+  //   canvas.lineTo(100, 100);
+  //   canvas.lineTo(50, 100);
+  //   canvas.closePath();
+  //   canvas.stroke();
+  // };
+  // draw();
+
+  var draw = function () {
+    var e = document.getElementById('canvas01');
+    if ( ! e || ! e.getContext ) { return false; }
+    var canvas = e.getContext('2d');
+    canvas.beginPath();
+    var p = stsLib.point.Point(50, 50);
+
+    canvas.moveTo(p.x, p.y);
+    p.move(50, 0);
+    canvas.lineTo(p.x, p.y);
+    p.move(0, 50);
+    canvas.lineTo(p.x, p.y);
+    p.move(-50, 0);
+    canvas.lineTo(p.x, p.y);
+    canvas.closePath();
+    canvas.stroke();
+  };
+  draw();
 };
 
 document.addEventListener("DOMContentLoaded",function(eve){
@@ -40,26 +73,39 @@ document.addEventListener("DOMContentLoaded",function(eve){
 </head><body>
 
 <form name="form01">
-<table class="table02">
-    <tr>
-        <td nowrap>
-            stsLib.js test page
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <br />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <input type="button" value="Test Run" onclick="main()" 
-                style="width:150px;">
 
-        </td>
+  <table class="table02">
+    <tr>
+      <td nowrap>
+        stsLib.js test page
+      </td>
     </tr>
-</table>
+    <tr>
+      <td>
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="button" value="Test Run" onclick="main()"
+          style="width:150px;">
+
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <br />
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <canvas id="canvas01" width="500" height="500"></canvas>
+      </td>
+    </tr>
+  </table>
+
 </form>
-
 
 </body></html>
