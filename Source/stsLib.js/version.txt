@@ -417,3 +417,6 @@
 ・  stslib_test_emmacro.jsee 追加
 ◇  ver 2018/01/16
 ・  require/moduleExport の仕組みをより改良
+◇  ver 2018/01/17
+・  webpack 対応
+    browserify や scriptタグ指定なども継続して利用可能
