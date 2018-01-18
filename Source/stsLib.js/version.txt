@@ -198,8 +198,8 @@
     動作する環境としない環境があり
     UTF-8のファイルをJScriptで読み込めないため
 ・  Documentコンストラクタを修正
-◇	ver 2017/07/05
-・	excludeEndLineBreak を追加
+◇  ver 2017/07/05
+・  excludeEndLineBreak を追加
 ◇  ver 2017/07/13
 ・  formatDigitComma追加
 ・  formatInsertFirst/formatInsertLast追加
@@ -316,7 +316,7 @@
     /.intersectionPoint/.lineDistance/.segmentDistance 追加
 ◇  ver 2017/09/28
 ・  getUrlParameterを日本語対応に変更
-・	Vector/Point/Rectの内部を若干修正
+・  Vector/Point/Rectの内部を若干修正
 ◇  ver 2017/09/30
 ・  stsLib.system.consoleLogComment 追加。
 ・  stsLib.datetimeをstsLib.dateに変更
@@ -420,3 +420,6 @@
 ◇  ver 2018/01/17
 ・  webpack 対応
     browserify や scriptタグ指定なども継続して利用可能
+◇ ver 2018/01/18
+・  web/wsh/node.js/browserify/webpack/EmEditorMacro
+    全ての環境に対応した stsLib.alert を実装した。

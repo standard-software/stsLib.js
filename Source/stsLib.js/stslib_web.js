@@ -14,48 +14,6 @@ Version:        2018/01/16
 //----------------------------------------*/
 
 //----------------------------------------
-//◆モジュール呼び出し
-//----------------------------------------
-
-//----------------------------------------
-//・require関数
-//----------------------------------------
-//  ・require/moduleの無い環境に対応するために
-//    require と requireList をグローバルに追加。
-//----------------------------------------
-// if (typeof module === 'undefined') {
-
-//   var requireList = requireList || {};
-//   var require = function(funcName) {
-//     if (typeof funcName !== 'string') {
-//       throw new Error('Error:stslib_web.js require');
-//     }
-//     //パス区切り以降のみ動作に採用する
-//     var index = funcName.lastIndexOf('/');
-//     if (index !== -1) {
-//       funcName = funcName.substring(index+1);
-//     }
-//     if (funcName === '') {
-//       throw new Error('Error:stslib_web.js require');
-//     }
-
-//     //拡張子が省略されている場合は追加
-//     if (funcName.indexOf('.') === -1) {
-//       funcName += '.js';
-//     }
-
-//     for ( var item in requireList) {
-//       if (funcName === item) {
-//         if (requireList.hasOwnProperty(item)) {
-//           return requireList[item];
-//         }
-//       }
-//     }
-//     throw new Error('Error:stslib_web.js require');
-//   };
-// }
-
-//----------------------------------------
 //■全体を囲う無名関数
 //----------------------------------------
 (function() {

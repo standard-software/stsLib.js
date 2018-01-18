@@ -14,49 +14,6 @@ Version:        2018/01/16
 //----------------------------------------*/
 
 //----------------------------------------
-//◆モジュール呼び出し
-//----------------------------------------
-
-//----------------------------------------
-//・require関数
-//----------------------------------------
-//  ・  node.js には require は必ずあるので
-//      意味のないコードになる
-//      他のモジュールと共通化するために残す
-//----------------------------------------
-if (typeof module === 'undefined') {
-
-  var requireList = requireList || {};
-  var require = function(funcName) {
-    if (typeof funcName !== 'string') {
-      throw new Error('Error:stslib_node.js require');
-    }
-    //パス区切り以降のみ動作に採用する
-    var index = funcName.lastIndexOf('/');
-    if (index !== -1) {
-      funcName = funcName.substring(index+1);
-    }
-    if (funcName === '') {
-      throw new Error('Error:stslib_node.js require');
-    }
-
-    //拡張子が省略されている場合は追加
-    if (funcName.indexOf('.') === -1) {
-      funcName += '.js';
-    }
-
-    for ( var item in requireList) {
-      if (funcName === item) {
-        if (requireList.hasOwnProperty(item)) {
-          return requireList[item];
-        }
-      }
-    }
-    throw new Error('Error:stslib_node.js require');
-  };
-}
-
-//----------------------------------------
 //■全体を囲う無名関数
 //----------------------------------------
 (function() {
@@ -77,6 +34,13 @@ if (typeof module === 'undefined') {
   (function (stsLib, global) {
     'use strict';
     var _ = stsLib;
+
+    //----------------------------------------
+    //◆アラート
+    //----------------------------------------
+    _.alert = function(message) {
+      console.log(message);
+    };
 
     //----------------------------------------
     //■stsLib.node名前空間
@@ -343,17 +307,3 @@ if (typeof module === 'undefined') {
 
 }()); //(function() {
 
-//----------------------------------------
-//◆グローバル拡張
-//----------------------------------------
-
-//----------------------------------------
-//・alert
-//----------------------------------------
-//  ・ライブラリ内部で alert を使うので
-//    alert がない環境(node.jsとか)での動作の時に
-//    エラーにならないように定義する
-//----------------------------------------
-var alert = function(message) {
-  console.log(message);
-};

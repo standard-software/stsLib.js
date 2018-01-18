@@ -60,14 +60,7 @@ var includeFileName = '..\\stslib_emeditor_macro.js';
 eval( loadTextfileSjis( fso.BuildPath(basePath, includeFileName) ) );
 //--------------------------------------------------
 
-//ƒ‰ƒCƒuƒ‰ƒŠ‚ğ“Ç‚İ‚Ş‚Æ
-//alert‚ªã‘‚«‚³‚ê‚Ä‚µ‚Ü‚¤‚Ì‚ÅX‚Éã‘‚«‚µ‚Ä‘Î‰‚·‚é
-var alert = function (message) {
-  OutputBar.writeln(message);
-};
-
 OutputBar.Clear();
-OutputBar.Visible = true;
 
 (function () {
 
@@ -76,6 +69,6 @@ OutputBar.Visible = true;
   stsLib.test.test_stslib_core();
   stsLib.test.test_stslib_wsh();
 
-  alert('finish Test. stsLib EmEditor Macro Test Module');
+  stsLib.alert('finish Test. stsLib EmEditor Macro Test Module');
 
 }());

@@ -5,19 +5,44 @@
 
 ここで、実行する
 
-・  run_test_cmd.bat
-node.js / WSH wsf形式 / WSH jse形式 の
-テストを実行して結果を出力する
+◇コマンドライン
+・  node.js でのテスト
+    run_test_cmd.bat を実行することで結果が表示される
 
-・  run_test_browser.bat
-ブラウザで、単純なscriptタグでリンクした形式と
-Browserifyでモジュールを合体した形式と
-CDNでscriptタグでリンクした形式のHTMLファイル
-ブラウザで開くので、それぞれの画面でボタンを押すと
-テストを実行して、
-alertメッセージやconsole.logで結果を出力する
+・  WSH wsf形式 でのテスト
+    run_test_cmd.bat を実行することで結果が表示される
 
-・  stslib_test_emmacro.jsee
-EmEditorでこのファイルをマクロとして選択実行すると
-テストを実行して、
-アウトプット部分に結果を出力する
+・  WSH jse形式 でのテスト
+    run_test_cmd.bat を実行することで結果が表示される
+
+◇Web
+・  scriptタグでの通常リンク でのテスト
+    run_test_browser.bat を実行すると
+    stslib_test_web.html が開かれるので、
+    ボタンを押すと実行され、結果が表示される
+
+・  scriptタグでのCDNリンク でのテスト
+    run_test_browser.bat を実行すると
+    stslib_test_web_CDN.html が開かれるので、
+    ボタンを押すと実行され、結果が表示される
+
+・  Browserifyリンク でのテスト
+    run_test_browser.bat を実行すると
+    stslib_test_web_browserify.html が開かれるので、
+    ボタンを押すと実行され、結果が表示される
+
+    事前に、...\tool\run_browserify.bat を実行しておくこと
+
+・  Webpackリンク でのテスト
+    run_test_browser.bat を実行すると
+    stslib_test_web_webpack.html が開かれるので、
+    ボタンを押すと実行され、結果が表示される
+
+    事前に、...\tool\run_webpack.bat を実行しておくこと
+
+◇その他
+
+・  EmEditorマクロ でのテスト
+    stslib_test_emmacro.jsee
+    EmEditorでこのファイルをマクロとして選択実行すると
+    テストを実行され、アウトプット部分に結果が出力される

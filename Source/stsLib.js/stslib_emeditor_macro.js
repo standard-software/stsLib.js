@@ -72,8 +72,16 @@ if (typeof module === 'undefined') {
   (function () {
     var _ = stsLib;
 
+    //----------------------------------------
+    //◆メッセージ出力(alert/console.log)
+    //----------------------------------------
+    _.alert = function(message) {
+      OutputBar.Visible = true;
+      OutputBar.writeln(message);
+    };
+
     //名前空間(オブジェクト)のJavaScriptの命名規則
-    //通常小文字から開始、コンストラクタだけ大文字開始
+    //(通常小文字から開始、コンストラクタだけ大文字開始)
     //には沿っていないが
     //エディタ名なので先頭大文字から開始する
     _.EmEditorMacro = stsLib.EmEditorMacro || {};

@@ -80,6 +80,13 @@ if (typeof module === 'undefined') {
     var _ = stsLib;
 
     //----------------------------------------
+    //◆メッセージ出力(alert/console.log)
+    //----------------------------------------
+    _.alert = function(message) {
+      global.alert(message);
+    };
+
+    //----------------------------------------
     //◆継承
     //----------------------------------------
 
@@ -2126,7 +2133,7 @@ if (typeof module === 'undefined') {
       _.test_isIncludeFunc = function() {
 
         c.check(false,  _.isIncludeFunc('abc def ghi abc'.split(''),
-          function(element, index, array) {
+          function() {
             return false;
           }));
 
@@ -7292,7 +7299,7 @@ if (typeof module === 'undefined') {
         }, testObj);
         c.check('1A2A3A', result);
 
-        alert('finish stslib_core_test テスト終了');
+        stsLib.alert('finish stslib_core_test テスト終了');
         //日本語メッセージが表示されることで
         //エンコード確認も兼ねる
 
@@ -7401,7 +7408,6 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     _.caseType = stsLib.enumType.EnumNameValue('sensitive', 'ignore');
 
-
   }(stsLib, this));   //stsLib
 
   //----------------------------------------
@@ -7423,18 +7429,4 @@ if (typeof module === 'undefined') {
 
 }()); //(function() {
 
-//----------------------------------------
-//◆グローバル拡張
-//----------------------------------------
-
-//----------------------------------------
-//・alert
-//----------------------------------------
-//  ・ライブラリ内部で alert を使うので
-//    alert がない環境(node.jsとか)での動作の時に
-//    エラーにならないように定義する
-//----------------------------------------
-var alert = alert || function(message) {
-  console.log(message);
-};
 

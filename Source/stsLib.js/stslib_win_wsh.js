@@ -14,48 +14,6 @@ Version:        2018/01/16
 //----------------------------------------*/
 
 //----------------------------------------
-//◆モジュール呼び出し
-//----------------------------------------
-
-//----------------------------------------
-//・require関数
-//----------------------------------------
-//  ・require/moduleの無い環境に対応するために
-//    require と requireList をグローバルに追加。
-//----------------------------------------
-if (typeof module === 'undefined') {
-
-  var requireList = requireList || {};
-  var require = function(funcName) {
-    if (typeof funcName !== 'string') {
-      throw new Error('Error:stslib_win_wsh.js require');
-    }
-    //パス区切り以降のみ動作に採用する
-    var index = funcName.lastIndexOf('/');
-    if (index !== -1) {
-      funcName = funcName.substring(index+1);
-    }
-    if (funcName === '') {
-      throw new Error('Error:stslib_win_wsh.js require');
-    }
-
-    //拡張子が省略されている場合は追加
-    if (funcName.indexOf('.') === -1) {
-      funcName += '.js';
-    }
-
-    for ( var item in requireList) {
-      if (funcName === item) {
-        if (requireList.hasOwnProperty(item)) {
-          return requireList[item];
-        }
-      }
-    }
-    throw new Error('Error:stslib_win_wsh.js require');
-  };
-}
-
-//----------------------------------------
 //■全体を囲う無名関数
 //----------------------------------------
 (function() {
@@ -72,6 +30,13 @@ if (typeof module === 'undefined') {
   (function (stsLib, global) {
     'use strict';
     var _ = stsLib;
+
+    //----------------------------------------
+    //◆メッセージ出力(alert/console.log)
+    //----------------------------------------
+    _.alert = function(message) {
+      WScript.Echo(message);
+    };
 
     //----------------------------------------
     //■stsLib.wsh名前空間
@@ -535,7 +500,7 @@ if (typeof module === 'undefined') {
         stsLib.wsh.fs.test_forceCreateFolder();
         stsLib.wsh.textfile.test_save();
         stsLib.wsh.textfile.test_load();
-        alert('finish stslib_win_wsh_test テスト終了');
+        stsLib.alert('finish stslib_win_wsh_test テスト終了');
       }
 
     }());   //stsLib.test
@@ -574,21 +539,4 @@ if (typeof module === 'undefined') {
   moduleExports(stsLib, 'stslib_win_wsh.js');
 
 }()); //(function() {
-
-//----------------------------------------
-//◆グローバル拡張
-//----------------------------------------
-
-//----------------------------------------
-//・alert
-//----------------------------------------
-//  ・WSH では alert が無いので関数を上書きする
-//  ・this.alertで指定すると
-//    *.jse形式ではうまくいくが、
-//    *.wsh形式ではエラーになるので
-//    thisは指定しないようにする
-//----------------------------------------
-var alert = function (message) {
-  WScript.Echo(message);
-};
 
