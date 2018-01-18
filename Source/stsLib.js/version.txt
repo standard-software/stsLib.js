@@ -423,3 +423,5 @@
 ◇ ver 2018/01/18
 ・  web/wsh/node.js/browserify/webpack/EmEditorMacro
     全ての環境に対応した stsLib.alert を実装した。
+・  stsLib.array.equal で内部値を判定するようにした
+・  stsLib.type.typeof 追加

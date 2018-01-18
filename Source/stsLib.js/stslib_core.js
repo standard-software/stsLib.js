@@ -416,6 +416,26 @@ if (typeof module === 'undefined') {
       var _ = stsLib.type;
 
       //----------------------------------------
+      //◇typeof
+      //----------------------------------------
+      //  ・通常の typeof が object を返す判定できない
+      //    null/array/date を判定して返す関数
+      //----------------------------------------
+      _.typeof = function(value) {
+        var result = typeof value;
+        if (result === 'object') {
+          if (t.isNull(value)) {
+            result = 'null';
+          } else if (t.isArray(value)){
+            result = 'array';
+          } else if (t.isDate(value)) {
+            result = 'date';
+          }
+        }
+        return result;
+      };
+
+      //----------------------------------------
       //◇引数すべてに型をチェックする
       //----------------------------------------
 
@@ -447,30 +467,98 @@ if (typeof module === 'undefined') {
         return (typeof value === 'undefined');
       };
 
+      _.isNotUndefined = function(value) {
+        return !_.isUndefined(value);
+      };
+
       _.isUndefineds = function(value) {
         return _.isTypeCheck(_.isUndefined,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotUndefineds = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isUndefined(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotUndefined,
+          a.fromArgs(arguments));
+      };
+
+      _.isUndefinedArray = function(value) {
+        return _.isTypeCheck(_.isUndefined, value);
+      };
+
+      _.isNotUndefinedArray = function(value) {
+        return _.isTypeCheck(_.isNotUndefined, value);
+      };
+
+      _.test_isUndefined = function () {
+        var u1;
+        var n1 = null;
+        var v1 = 1;
+
+        c.check(true,   _.isUndefined(u1));
+        c.check(false,  _.isUndefined(n1));
+        c.check(false,  _.isUndefined(v1));
+        c.check(true,   _.isUndefineds(u1));
+        c.check(false,  _.isUndefineds(n1));
+        c.check(false,  _.isUndefineds(v1));
+        c.check(true,   _.isUndefinedArray([u1]));
+        c.check(false,  _.isUndefinedArray([n1]));
+        c.check(false,  _.isUndefinedArray([v1]));
+
+        c.check(false,  _.isNotUndefineds(u1));
+        c.check(true,   _.isNotUndefineds(n1));
+        c.check(true,   _.isNotUndefineds(v1));
+        c.check(false,  _.isNotUndefinedArray([u1]));
+        c.check(true,   _.isNotUndefinedArray([n1]));
+        c.check(true,   _.isNotUndefinedArray([v1]));
       };
 
       _.isNull = function(value) {
         return (value === null);
       };
 
+      _.isNotNull = function(value) {
+        return !_.isNull(value);
+      };
+
       _.isNulls = function(value) {
         return _.isTypeCheck(_.isNull,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotNulls = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isNull(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotNull,
+          a.fromArgs(arguments));
+      };
+
+      _.isNullArray = function(value) {
+        return _.isTypeCheck(_.isNull, value);
+      };
+
+      _.isNotNullArray = function(value) {
+        return _.isTypeCheck(_.isNotNull, value);
+      };
+
+      _.test_isNull = function () {
+        var u1;
+        var n1 = null;
+        var v1 = 1;
+
+        c.check(false,  _.isNull(u1));
+        c.check(true ,  _.isNull(n1));
+        c.check(false,  _.isNull(v1));
+        c.check(false,  _.isNulls(u1));
+        c.check(true ,  _.isNulls(n1));
+        c.check(false,  _.isNulls(v1));
+        c.check(false,  _.isNullArray([u1]));
+        c.check(true ,  _.isNullArray([n1]));
+        c.check(false,  _.isNullArray([v1]));
+
+        c.check(true,   _.isNotNulls(u1));
+        c.check(false,  _.isNotNulls(n1));
+        c.check(true,   _.isNotNulls(v1));
+        c.check(true,   _.isNotNullArray([u1]));
+        c.check(false,  _.isNotNullArray([n1]));
+        c.check(true,   _.isNotNullArray([v1]));
       };
 
       _.isNullOrUndefined = function(value) {
@@ -490,47 +578,74 @@ if (typeof module === 'undefined') {
 
       _.test_isNullOrUndefined = function() {
 
-        var u1;
-        var n1 = null;
-        var v1 = 1;
+        // var u1;
+        // var n1 = null;
+        // var v1 = 1;
 
-        c.check(true,   _.isUndefineds(u1));
-        c.check(false,  _.isNulls(u1));
-        c.check(true,   _.isNullOrUndefineds(u1));
+        // c.check(true,   _.isUndefined(u1));
+        // c.check(false,  _.isNull(u1));
+        // c.check(true,   _.isNullOrUndefined(u1));
 
-        c.check(false,  _.isUndefineds(n1));
-        c.check(true,   _.isNulls(n1));
-        c.check(true,   _.isNullOrUndefineds(n1));
+        // c.check(false,  _.isUndefined(n1));
+        // c.check(true,   _.isNull(n1));
+        // c.check(true,   _.isNullOrUndefined(n1));
 
-        c.check(false,  _.isUndefineds(v1));
-        c.check(false,  _.isNulls(v1));
-        c.check(false,  _.isNullOrUndefineds(v1));
+        // c.check(false,  _.isUndefined(v1));
+        // c.check(false,  _.isNull(v1));
+        // c.check(false,  _.isNullOrUndefined(v1));
 
-        var u2;
-        var n2 = null;
-        var v2 = 1;
-        c.check(true,   _.isUndefineds(u1, u2));
-        c.check(false,  _.isUndefineds(u1, n2));
-        c.check(false,  _.isUndefineds(u1, v2));
+        // c.check(true,   _.isUndefineds(u1));
+        // c.check(false,  _.isNulls(u1));
+        // c.check(true,   _.isNullOrUndefineds(u1));
 
-        c.check(false,  _.isNulls(n1, u2), '01');
-        c.check(true,   _.isNulls(n1, n2));
-        c.check(false,  _.isNulls(n1, v2));
+        // c.check(false,  _.isUndefineds(n1));
+        // c.check(true,   _.isNulls(n1));
+        // c.check(true,   _.isNullOrUndefineds(n1));
 
-        c.check(true,   _.isNullOrUndefineds(u1, u2));
-        c.check(true,   _.isNullOrUndefineds(u1, n2));
-        c.check(false,  _.isNullOrUndefineds(u1, v2));
-        c.check(true,   _.isNullOrUndefineds(n1, u2));
-        c.check(true,   _.isNullOrUndefineds(n1, n2));
-        c.check(false,  _.isNullOrUndefineds(n1, v2));
+        // c.check(false,  _.isUndefineds(v1));
+        // c.check(false,  _.isNulls(v1));
+        // c.check(false,  _.isNullOrUndefineds(v1));
 
-        c.check(false,  _.isNotNullOrUndefineds(u1, u2));
-        c.check(false,  _.isNotNullOrUndefineds(u1, n2));
-        c.check(false,  _.isNotNullOrUndefineds(u1, v2));
-        c.check(false,  _.isNotNullOrUndefineds(n1, u2));
-        c.check(false,  _.isNotNullOrUndefineds(n1, n2));
-        c.check(false,  _.isNotNullOrUndefineds(n1, v2));
-        c.check(true,   _.isNotNullOrUndefineds(v1, v2));
+        // c.check(true,   _.isUndefinedArray([u1]));
+        // c.check(false,  _.isNullArray([u1]));
+        // c.check(true,   _.isNullOrUndefinedArray([u1]));
+
+        // c.check(false,  _.isUndefinedArray([n1]));
+        // c.check(true,   _.isNullArray([n1]));
+        // c.check(true,   _.isNullOrUndefinedArray([n1]));
+
+        // c.check(false,  _.isUndefinedArray([v1]));
+        // c.check(false,  _.isNullArray([v1]));
+        // c.check(false,  _.isNullOrUndefinedArray([v1]));
+
+        // var u2;
+        // var n2 = null;
+        // var v2 = 1;
+        // c.check(true,   _.isUndefineds(u1, u2));
+        // c.check(false,  _.isUndefineds(u1, n2));
+        // c.check(false,  _.isUndefineds(u1, v2));
+
+        // //配列内部判定
+        // c.check(false,  _.isUndefineds([u1, u2]));
+
+        // c.check(false,  _.isNulls(n1, u2), '01');
+        // c.check(true,   _.isNulls(n1, n2));
+        // c.check(false,  _.isNulls(n1, v2));
+
+        // c.check(true,   _.isNullOrUndefineds(u1, u2));
+        // c.check(true,   _.isNullOrUndefineds(u1, n2));
+        // c.check(false,  _.isNullOrUndefineds(u1, v2));
+        // c.check(true,   _.isNullOrUndefineds(n1, u2));
+        // c.check(true,   _.isNullOrUndefineds(n1, n2));
+        // c.check(false,  _.isNullOrUndefineds(n1, v2));
+
+        // c.check(false,  _.isNotNullOrUndefineds(u1, u2));
+        // c.check(false,  _.isNotNullOrUndefineds(u1, n2));
+        // c.check(false,  _.isNotNullOrUndefineds(u1, v2));
+        // c.check(false,  _.isNotNullOrUndefineds(n1, u2));
+        // c.check(false,  _.isNotNullOrUndefineds(n1, n2));
+        // c.check(false,  _.isNotNullOrUndefineds(n1, v2));
+        // c.check(true,   _.isNotNullOrUndefineds(v1, v2));
 
       };
 
@@ -792,6 +907,11 @@ if (typeof module === 'undefined') {
         }, a.expand2Dimension(a.fromArgs(arguments)));
       };
 
+      _.test_isFunction = function() {
+        c.check(true,   _.isFunction( function(){} ) );
+        c.check(false,  _.isFunction( {} ) );
+      };
+
       //----------------------------------------
       //◇isObject
       //----------------------------------------
@@ -839,6 +959,7 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isObjects([]));
         c.check(false,  _.isObjects(null));
         c.check(false,  _.isObjects(undefined));
+        c.check(false,  _.isObjects(function(){})); //関数はオブジェクトにならない
       };
 
       //----------------------------------------
@@ -1685,22 +1806,57 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.equal = function(value1, value2) {
 
-        c.assert(Array.isArray(value1));
-        c.assert(Array.isArray(value2));
+        c.assert(t.isArray(value1));
+        c.assert(t.isArray(value2));
 
-        return value1.toString() === value2.toString();
+        if (value1.length !== value2.length) {
+          return false;
+        }
+
+        for (var i = 0, il = value1.length; i < il; i += 1) {
+          if (t.typeof(value1[i]) !== t.typeof(value2[i])) {
+            return false;
+          } else if ( t.isArray(value1[i]) ) {
+            if (!_.equal(value1[i], value2[i])) {
+              return false;
+            }
+          } else if ( t.isFunction( value1[i] ) ) {
+            if (value1[i].toString() !== value2[i].toString()) {
+              return false;
+            }
+          } else if ( t.isDate( value1[i] ) ) {
+            if (value1[i].toString() !== value2[i].toString()) {
+              return false;
+            }
+          } else if ( t.isObject( value1[i] ) ) {
+            if (value1[i] !== value2[i]) {
+              return false;
+            }
+            //中身がオブジェクトの場合は
+            //別オブジェクトなら不一致判定する
+          } else {
+            if (value1[i] !== value2[i]) {
+              return false;
+            }
+          }
+        }
+
+        return true;
       };
 
       _.test_equal = function()
       {
-
         var a1 = [1, 2, 3];
         var a2 = [1, 2, 3];
-
         c.check(false, a1 == a2);
         c.check(false, a1 === a2);
 
-        c.check(true, _.equal(a1, a2));
+        var a1 = [[1, 2], 3];
+        var a2 = [1, [2, 3]];
+        c.check(true, a1.toString() === a2.toString() );
+        //Array.toString() の場合は誤判定する
+
+        c.check(false, _.equal(a1, a2));
       };
 
       //----------------------------------------
@@ -2588,7 +2744,7 @@ if (typeof module === 'undefined') {
         c.check(true, _.equal([1],      _.outputStartArray([1,2,3,4,5], 1)));
         c.check(true, _.equal([1,2,3],  _.outputStartArray([1,2,3,4,5], 3)));
         c.check(true, _.equal([1,2,3,4,5],  _.outputStartArray([1,2,3,4,5], 5)));
-        c.check(true, _.equal([1,2,3,4,5,null],  _.outputStartArray([1,2,3,4,5], 6)));
+        c.check(true, _.equal([1,2,3,4,5,undefined],  _.outputStartArray([1,2,3,4,5], 6)));
       };
 
       _.outputEndArray = function(array, count) {
@@ -2605,14 +2761,15 @@ if (typeof module === 'undefined') {
         c.check(true, _.equal([5],      _.outputEndArray([1,2,3,4,5], 1)));
         c.check(true, _.equal([3,4,5],  _.outputEndArray([1,2,3,4,5], 3)));
         c.check(true, _.equal([1,2,3,4,5],  _.outputEndArray([1,2,3,4,5], 5)));
-        c.check(true, _.equal([null,1,2,3,4,5],  _.outputEndArray([1,2,3,4,5], 6)));
+        c.check(true, _.equal([undefined,1,2,3,4,5],  _.outputEndArray([1,2,3,4,5], 6)));
       };
 
       //----------------------------------------
-      //◇remainStart/End remainStart/End
+      //◇remainStart/End
       //----------------------------------------
       //  ・Que,Stack,FIFO,LIFO として使用する場合に
       //    いくつのバッファを残すか指定できる関数
+      //  ・戻り値も渡された引数自体も値が変更される
       //----------------------------------------
 
       _.remainStart = function(array, count) {
@@ -7070,6 +7227,8 @@ if (typeof module === 'undefined') {
 
         c.test_orValue();
 
+        t.test_isUndefined();
+        t.test_isNull();
         t.test_isNullOrUndefined();
         t.test_ifNullOrUndefinedValue();
         t.test_isBoolean();
@@ -7077,6 +7236,7 @@ if (typeof module === 'undefined') {
         t.test_isInt();
         // t.test_isIntArray();
         t.test_isString();
+        t.test_isFunction();
         t.test_isObject();
         // t.test_isArray()
 
