@@ -504,12 +504,41 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isUndefinedArray([n1]));
         c.check(false,  _.isUndefinedArray([v1]));
 
+        c.check(true,   _.isUndefineds(u1, u1));
+        c.check(false,  _.isUndefineds(u1, n1));
+        c.check(false,  _.isUndefineds(u1, v1));
+        c.check(true,   _.isUndefinedArray([u1, u1]));
+        c.check(false,  _.isUndefinedArray([u1, n1]));
+        c.check(false,  _.isUndefinedArray([u1, v1]));
+
         c.check(false,  _.isNotUndefineds(u1));
         c.check(true,   _.isNotUndefineds(n1));
         c.check(true,   _.isNotUndefineds(v1));
         c.check(false,  _.isNotUndefinedArray([u1]));
         c.check(true,   _.isNotUndefinedArray([n1]));
         c.check(true,   _.isNotUndefinedArray([v1]));
+
+        c.check(false,  _.isNotUndefineds(u1, u1));
+        c.check(false,  _.isNotUndefineds(u1, n1));
+        c.check(true,   _.isNotUndefineds(n1, n1));
+        c.check(false,  _.isNotUndefineds(n1, u1));
+        c.check(true,   _.isNotUndefineds(v1, v1));
+        c.check(true,   _.isNotUndefineds(v1, n1));
+        c.check(false,  _.isNotUndefineds(v1, u1));
+        c.check(false,  _.isNotUndefinedArray([u1, u1]));
+        c.check(false,  _.isNotUndefinedArray([u1, n1]));
+        c.check(true,   _.isNotUndefinedArray([n1, n1]));
+        c.check(false,  _.isNotUndefinedArray([n1, u1]));
+        c.check(true,   _.isNotUndefinedArray([v1, v1]));
+        c.check(true,   _.isNotUndefinedArray([v1, n1]));
+        c.check(false,  _.isNotUndefinedArray([v1, u1]));
+
+        //配列の中身ではなく配列自体を判定する
+        //配列はundefinedではない
+        c.check(false,  _.isUndefineds([v1, v1]));
+        c.check(false,  _.isUndefineds([u1, u1]));
+        c.check(true,   _.isNotUndefineds([v1, v1]));
+        c.check(true,   _.isNotUndefineds([u1, u1]));
       };
 
       _.isNull = function(value) {
@@ -553,99 +582,106 @@ if (typeof module === 'undefined') {
         c.check(true ,  _.isNullArray([n1]));
         c.check(false,  _.isNullArray([v1]));
 
+        c.check(true,   _.isNulls(n1, n1));
+        c.check(false,  _.isNulls(n1, u1));
+        c.check(false,  _.isNulls(n1, v1));
+        c.check(true,   _.isNullArray([n1, n1]));
+        c.check(false,  _.isNullArray([n1, u1]));
+        c.check(false,  _.isNullArray([n1, v1]));
+
         c.check(true,   _.isNotNulls(u1));
         c.check(false,  _.isNotNulls(n1));
         c.check(true,   _.isNotNulls(v1));
         c.check(true,   _.isNotNullArray([u1]));
         c.check(false,  _.isNotNullArray([n1]));
         c.check(true,   _.isNotNullArray([v1]));
+
+        c.check(true,   _.isNotNulls(u1, u1));
+        c.check(false,  _.isNotNulls(u1, n1));
+        c.check(false,  _.isNotNulls(n1, n1));
+        c.check(false,  _.isNotNulls(n1, u1));
+        c.check(true,   _.isNotNulls(v1, v1));
+        c.check(false,  _.isNotNulls(v1, n1));
+        c.check(true,   _.isNotNulls(v1, u1));
+        c.check(true,   _.isNotNullArray([u1, u1]));
+        c.check(false,  _.isNotNullArray([u1, n1]));
+        c.check(false,  _.isNotNullArray([n1, n1]));
+        c.check(false,  _.isNotNullArray([n1, u1]));
+        c.check(true,   _.isNotNullArray([v1, v1]));
+        c.check(false,  _.isNotNullArray([v1, n1]));
+        c.check(true,   _.isNotNullArray([v1, u1]));
       };
 
       _.isNullOrUndefined = function(value) {
         return (_.isNull(value) || _.isUndefined(value));
       };
 
+      _.isNotNullOrUndefined = function(value) {
+        return !_.isNullOrUndefined(value);
+      };
+
       _.isNullOrUndefineds = function(value) {
         return _.isTypeCheck(_.isNullOrUndefined,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotNullOrUndefineds = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isNull(v) || _.isUndefined(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotNullOrUndefined,
+          a.fromArgs(arguments));
+      };
+
+      _.isNullOrUndefinedArray = function(value) {
+        return _.isTypeCheck(_.isNullOrUndefined, value);
+      };
+
+      _.isNotNullOrUndefinedArray = function(value) {
+        return _.isTypeCheck(_.isNotNullOrUndefined, value);
       };
 
       _.test_isNullOrUndefined = function() {
 
-        // var u1;
-        // var n1 = null;
-        // var v1 = 1;
+        var u1;
+        var n1 = null;
+        var v1 = 1;
 
-        // c.check(true,   _.isUndefined(u1));
-        // c.check(false,  _.isNull(u1));
-        // c.check(true,   _.isNullOrUndefined(u1));
+        c.check(true,   _.isNullOrUndefined(u1));
+        c.check(true,   _.isNullOrUndefined(n1));
+        c.check(false,  _.isNullOrUndefined(v1));
+        c.check(true,   _.isNullOrUndefineds(u1));
+        c.check(true,   _.isNullOrUndefineds(n1));
+        c.check(false,  _.isNullOrUndefineds(v1));
+        c.check(true,   _.isNullOrUndefinedArray([u1]));
+        c.check(true,   _.isNullOrUndefinedArray([n1]));
+        c.check(false,  _.isNullOrUndefinedArray([v1]));
 
-        // c.check(false,  _.isUndefined(n1));
-        // c.check(true,   _.isNull(n1));
-        // c.check(true,   _.isNullOrUndefined(n1));
+        c.check(true,   _.isNullOrUndefineds(u1, u1));
+        c.check(true,   _.isNullOrUndefineds(u1, n1));
+        c.check(false,  _.isNullOrUndefineds(u1, v1));
+        c.check(true,   _.isNullOrUndefinedArray([u1, u1]));
+        c.check(true,   _.isNullOrUndefinedArray([u1, n1]));
+        c.check(false,  _.isNullOrUndefinedArray([u1, v1]));
 
-        // c.check(false,  _.isUndefined(v1));
-        // c.check(false,  _.isNull(v1));
-        // c.check(false,  _.isNullOrUndefined(v1));
+        c.check(false,  _.isNotNullOrUndefineds(u1));
+        c.check(false,  _.isNotNullOrUndefineds(n1));
+        c.check(true,   _.isNotNullOrUndefineds(v1));
+        c.check(false,  _.isNotNullOrUndefinedArray([u1]));
+        c.check(false,  _.isNotNullOrUndefinedArray([n1]));
+        c.check(true,   _.isNotNullOrUndefinedArray([v1]));
 
-        // c.check(true,   _.isUndefineds(u1));
-        // c.check(false,  _.isNulls(u1));
-        // c.check(true,   _.isNullOrUndefineds(u1));
-
-        // c.check(false,  _.isUndefineds(n1));
-        // c.check(true,   _.isNulls(n1));
-        // c.check(true,   _.isNullOrUndefineds(n1));
-
-        // c.check(false,  _.isUndefineds(v1));
-        // c.check(false,  _.isNulls(v1));
-        // c.check(false,  _.isNullOrUndefineds(v1));
-
-        // c.check(true,   _.isUndefinedArray([u1]));
-        // c.check(false,  _.isNullArray([u1]));
-        // c.check(true,   _.isNullOrUndefinedArray([u1]));
-
-        // c.check(false,  _.isUndefinedArray([n1]));
-        // c.check(true,   _.isNullArray([n1]));
-        // c.check(true,   _.isNullOrUndefinedArray([n1]));
-
-        // c.check(false,  _.isUndefinedArray([v1]));
-        // c.check(false,  _.isNullArray([v1]));
-        // c.check(false,  _.isNullOrUndefinedArray([v1]));
-
-        // var u2;
-        // var n2 = null;
-        // var v2 = 1;
-        // c.check(true,   _.isUndefineds(u1, u2));
-        // c.check(false,  _.isUndefineds(u1, n2));
-        // c.check(false,  _.isUndefineds(u1, v2));
-
-        // //配列内部判定
-        // c.check(false,  _.isUndefineds([u1, u2]));
-
-        // c.check(false,  _.isNulls(n1, u2), '01');
-        // c.check(true,   _.isNulls(n1, n2));
-        // c.check(false,  _.isNulls(n1, v2));
-
-        // c.check(true,   _.isNullOrUndefineds(u1, u2));
-        // c.check(true,   _.isNullOrUndefineds(u1, n2));
-        // c.check(false,  _.isNullOrUndefineds(u1, v2));
-        // c.check(true,   _.isNullOrUndefineds(n1, u2));
-        // c.check(true,   _.isNullOrUndefineds(n1, n2));
-        // c.check(false,  _.isNullOrUndefineds(n1, v2));
-
-        // c.check(false,  _.isNotNullOrUndefineds(u1, u2));
-        // c.check(false,  _.isNotNullOrUndefineds(u1, n2));
-        // c.check(false,  _.isNotNullOrUndefineds(u1, v2));
-        // c.check(false,  _.isNotNullOrUndefineds(n1, u2));
-        // c.check(false,  _.isNotNullOrUndefineds(n1, n2));
-        // c.check(false,  _.isNotNullOrUndefineds(n1, v2));
-        // c.check(true,   _.isNotNullOrUndefineds(v1, v2));
+        c.check(false,  _.isNotNullOrUndefineds(u1, u1));
+        c.check(false,  _.isNotNullOrUndefineds(u1, n1));
+        c.check(false,  _.isNotNullOrUndefineds(n1, n1));
+        c.check(false,  _.isNotNullOrUndefineds(n1, u1));
+        c.check(true,   _.isNotNullOrUndefineds(v1, v1));
+        c.check(false,  _.isNotNullOrUndefineds(v1, n1));
+        c.check(false,  _.isNotNullOrUndefineds(v1, u1));
+        c.check(false,  _.isNotNullOrUndefinedArray([u1, u1]));
+        c.check(false,  _.isNotNullOrUndefinedArray([u1, n1]));
+        c.check(false,  _.isNotNullOrUndefinedArray([n1, n1]));
+        c.check(false,  _.isNotNullOrUndefinedArray([n1, u1]));
+        c.check(true,   _.isNotNullOrUndefinedArray([v1, v1]));
+        c.check(false,  _.isNotNullOrUndefinedArray([v1, n1]));
+        c.check(false,  _.isNotNullOrUndefinedArray([v1, u1]));
 
       };
 
