@@ -719,34 +719,52 @@ if (typeof module === 'undefined') {
         return (typeof value === 'boolean');
       };
 
+      _.isNotBoolean = function(value) {
+        return !_.isBoolean(value);
+      };
+
       _.isBooleans = function(value) {
         return _.isTypeCheck(_.isBoolean,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotBooleans = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isBoolean(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotBoolean,
+          a.fromArgs(arguments));
+      };
+
+      _.isBooleanArray = function(value) {
+        return _.isTypeCheck(_.isBoolean, value);
+      };
+
+      _.isNotBooleanArray = function(value) {
+        return _.isTypeCheck(_.isNotBoolean, value);
       };
 
       _.test_isBoolean = function() {
 
-        c.check(true, _.isBooleans(true));
-        c.check(true, _.isBooleans(false));
-        c.check(false,_.isBooleans(undefined));
-        c.check(false,_.isBooleans(null));
-        c.check(false,_.isBooleans(''));
-        c.check(false,_.isBooleans('true'));
-        c.check(false,_.isBooleans('false'));
-        c.check(false,_.isBooleans(123));
-        c.check(false,_.isBooleans(0));
-        c.check(false,_.isBooleans(-1));
+        c.check(true,   _.isBooleans(true));
+        c.check(true,   _.isBooleans(false));
+        c.check(false,  _.isBooleans(undefined));
+        c.check(false,  _.isBooleans(null));
+        c.check(false,  _.isBooleans(''));
+        c.check(false,  _.isBooleans('true'));
+        c.check(false,  _.isBooleans('false'));
+        c.check(false,  _.isBooleans(123));
+        c.check(false,  _.isBooleans(0));
+        c.check(false,  _.isBooleans(-1));
 
-        c.check(true, _.isBooleans(true, true));
-        c.check(true, _.isBooleans(true, true, true));
-        c.check(true, _.isBooleans(true, false, true));
-        c.check(false, _.isBooleans(true, 1, true));
+        c.check(true,   _.isBooleans(true, true));
+        c.check(true,   _.isBooleans(true, true, true));
+        c.check(true,   _.isBooleans(true, false, true));
+        c.check(false,  _.isBooleans(true, 1, true));
+
+        c.check(false,  _.isBooleans([true, true]));
+
+        c.check(true,   _.isBooleanArray([true, true]));
+        c.check(true,   _.isBooleanArray([true, true, true]));
+        c.check(true,   _.isBooleanArray([true, false, true]));
+        c.check(false,  _.isBooleanArray([true, 1, true]));
       };
 
       //----------------------------------------
@@ -761,15 +779,26 @@ if (typeof module === 'undefined') {
         return ((typeof value === 'number') && (isFinite(value)));
       };
 
+      _.isNotNumber = function(value) {
+        return !_.isNumber(value);
+      };
+
       _.isNumbers = function(value) {
         return _.isTypeCheck(_.isNumber,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotNumbers = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isNumber(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotNumber,
+          a.fromArgs(arguments));
+      };
+
+      _.isNumberArray = function(value) {
+        return _.isTypeCheck(_.isNumber, value);
+      };
+
+      _.isNotNumberArray = function(value) {
+        return _.isTypeCheck(_.isNotNumber, value);
       };
 
       _.test_isNumber = function() {
@@ -818,6 +847,20 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isNotNumbers(1, 2, true));
         c.check(true,   _.isNotNumbers(false, true));
         c.check(true,   _.isNotNumbers('a', 'b'));
+
+        c.check(false,  _.isNumbers([1, 2]));
+
+        c.check(true,   _.isNumberArray([1, 2]));
+        c.check(true,   _.isNumberArray([3, 4, 5]));
+        c.check(true,   _.isNumberArray([10.5, 20.5, 30.5]));
+        c.check(false,  _.isNumberArray([1, 2, true]));
+
+        c.check(false,  _.isNotNumberArray([1, 2]));
+        c.check(false,  _.isNotNumberArray([3, 4, 5]));
+        c.check(false,  _.isNotNumberArray([10.5, 20.5, 30.5]));
+        c.check(false,  _.isNotNumberArray([1, 2, true]));
+        c.check(true,   _.isNotNumberArray([false, true]));
+        c.check(true,   _.isNotNumberArray(['a', 'b']));
       };
 
       //----------------------------------------
@@ -834,15 +877,26 @@ if (typeof module === 'undefined') {
         return Math.round(value) === value;
       };
 
+      _.isNotInt = function(value) {
+        return !_.isInt(value);
+      };
+
       _.isInts = function(value) {
         return _.isTypeCheck(_.isInt,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotInts = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isInt(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotInt,
+          a.fromArgs(arguments));
+      };
+
+      _.isIntArray = function(value) {
+        return _.isTypeCheck(_.isInt, value);
+      };
+
+      _.isNotIntArray = function(value) {
+        return _.isTypeCheck(_.isNotInt, value);
       };
 
       _.test_isInt = function() {
@@ -880,13 +934,13 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isNotInts(1, 2.1, 3.5));
         c.check(true,   _.isNotInts(1.1, 2.2, 3.5));
 
-        c.check(false,  _.isInts([]));
-        c.check(true,   _.isInts([1]));
-        c.check(true,   _.isInts([1, 2, 3]));
-        c.check(true,   _.isInts([1, 2, 0]));
-        c.check(false,  _.isInts([1, 2, NaN]));
-        c.check(false,  _.isInts([1, 2, null]));
-        c.check(false,  _.isInts(['a', 'b', 1]));
+        c.check(false,  _.isIntArray([]));
+        c.check(true,   _.isIntArray([1]));
+        c.check(true,   _.isIntArray([1, 2, 3]));
+        c.check(true,   _.isIntArray([1, 2, 0]));
+        c.check(false,  _.isIntArray([1, 2, NaN]));
+        c.check(false,  _.isIntArray([1, 2, null]));
+        c.check(false,  _.isIntArray(['a', 'b', 1]));
       };
 
       //----------------------------------------
@@ -899,27 +953,47 @@ if (typeof module === 'undefined') {
         return (typeof value === 'string');
       };
 
+      _.isNotString = function(value) {
+        return !_.isString(value);
+      };
+
       _.isStrings = function(value) {
         return _.isTypeCheck(_.isString,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotStrings = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isString(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotString,
+          a.fromArgs(arguments));
+      };
+
+      _.isStringArray = function(value) {
+        return _.isTypeCheck(_.isString, value);
+      };
+
+      _.isNotStringArray = function(value) {
+        return _.isTypeCheck(_.isNotString, value);
       };
 
       _.test_isString = function() {
-        c.check(false,  _.isStrings([]));
-        c.check(true,   _.isStrings(['']));
-        c.check(true,   _.isStrings(['a']));
-        c.check(true,   _.isStrings(['a', 'b', 'c']));
-        c.check(true,   _.isStrings(['a', 'b', '']));
-        c.check(false,  _.isStrings(['a', 'b', 0]));
-        c.check(false,  _.isStrings(['a', 'b', 1]));
-        c.check(false,  _.isStrings(['a', 'b', null]));
-        c.check(false,  _.isStrings(['a', 'b', undefined]));
+        c.check(true,   _.isStrings(''));
+        c.check(true,   _.isStrings('a'));
+        c.check(true,   _.isStrings('a', 'b', 'c'));
+        c.check(true,   _.isStrings('a', 'b', ''));
+        c.check(false,  _.isStrings('a', 'b', 0));
+        c.check(false,  _.isStrings('a', 'b', 1));
+        c.check(false,  _.isStrings('a', 'b', null));
+        c.check(false,  _.isStrings('a', 'b', undefined));
+
+        c.check(false,  _.isStringArray([]));
+        c.check(true,   _.isStringArray(['']));
+        c.check(true,   _.isStringArray(['a']));
+        c.check(true,   _.isStringArray(['a', 'b', 'c']));
+        c.check(true,   _.isStringArray(['a', 'b', '']));
+        c.check(false,  _.isStringArray(['a', 'b', 0]));
+        c.check(false,  _.isStringArray(['a', 'b', 1]));
+        c.check(false,  _.isStringArray(['a', 'b', null]));
+        c.check(false,  _.isStringArray(['a', 'b', undefined]));
       };
 
       //----------------------------------------
@@ -932,20 +1006,39 @@ if (typeof module === 'undefined') {
         return (typeof value === 'function');
       };
 
+      _.isNotFunction = function(value) {
+        return (typeof value === 'function');
+      };
+
       _.isFunctions = function(value) {
         return _.isTypeCheck(_.isFunction,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotFunctions = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isFunction(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotFunction,
+          a.fromArgs(arguments));
+      };
+
+      _.isFunctionArray = function(value) {
+        return _.isTypeCheck(_.isFunction, value);
+      };
+
+      _.isNotFunctionArray = function(value) {
+        return _.isTypeCheck(_.isNotFunction, value);
       };
 
       _.test_isFunction = function() {
         c.check(true,   _.isFunction( function(){} ) );
         c.check(false,  _.isFunction( {} ) );
+
+        c.check(true,   _.isFunctions( function(){}, _.test_isFunction ) );
+        c.check(false,  _.isFunctions( {}, _.test_isFunction ) );
+
+        c.check(true,   _.isFunctionArray(
+          [function(){}, _.test_isFunction] ) );
+        c.check(false,  _.isFunctionArray(
+          [{}, _.test_isFunction] ) );
       };
 
       //----------------------------------------
@@ -971,31 +1064,42 @@ if (typeof module === 'undefined') {
         return false;
       };
 
+      _.isNotObject = function(value) {
+        return !_.isObject(value);
+      };
+
       _.isObjects = function(value) {
         return _.isTypeCheck(_.isObject,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotObjects = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isObject(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotObject,
+          a.fromArgs(arguments));
+      };
+
+      _.isObjectArray = function(value) {
+        return _.isTypeCheck(_.isObject, value);
+      };
+
+      _.isNotObjectArray = function(value) {
+        return _.isTypeCheck(_.isNotObject, value);
       };
 
       _.test_isObject = function() {
         c.check(true,   _.isObjects({}));
         c.check(true,   _.isObjects({a:0}));
         c.check(true,   _.isObjects({a:0, b:1}));
-        c.check(true,   _.isObjects([{}, {a:0, b:1}]));
-        c.check(false,  _.isObjects([[], {a:0, b:1}]));
-        c.check(false,  _.isObjects([[{}], {a:0, b:1}]));
+        c.check(true,   _.isObjectArray([{}, {a:0, b:1}]));
+        c.check(false,  _.isObjectArray([[], {a:0, b:1}]));
+        c.check(false,  _.isObjectArray([[{}], {a:0, b:1}]));
 
         c.check(true,   _.isObjects({a:0, b:1}, {c:0, d:1}));
 
         c.check(false,  _.isObjects([]));
         c.check(false,  _.isObjects(null));
         c.check(false,  _.isObjects(undefined));
-        c.check(false,  _.isObjects(function(){})); //関数はオブジェクトにならない
+        c.check(false,  _.isObjects(function(){}));
       };
 
       //----------------------------------------
@@ -1009,15 +1113,26 @@ if (typeof module === 'undefined') {
         return Object.prototype.toString.call(value) === '[object Array]';
       };
 
+      _.isNotArray = function(value) {
+        return !_.isArray(value);
+      };
+
       _.isArrays = function(value) {
         return _.isTypeCheck(_.isArray,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotArrays = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isArray(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotArray,
+          a.fromArgs(arguments));
+      };
+
+      _.isArrayArray = function(value) {
+        return _.isTypeCheck(_.isArray, value);
+      };
+
+      _.isNotArrayArray = function(value) {
+        return _.isTypeCheck(_.isNotArray, value);
       };
 
       _.test_isArray = function() {
@@ -1037,6 +1152,17 @@ if (typeof module === 'undefined') {
         c.check(false,  _.isNotArrays([3], [4], 5));
         c.check(true,   _.isNotArrays(10, 20, 30));
         c.check(false,  _.isNotArrays(10, 20, [30]));
+
+
+        c.check(true,   _.isArrayArray([[1], [2]]));
+        c.check(true,   _.isArrayArray([[3], [4], [5]]));
+        c.check(true,   _.isArrayArray([[10, 20], [30]]));
+        c.check(false,  _.isArrayArray([[1, 2], 3]));
+
+        c.check(true,   _.isNotArrayArray([1, 2]));
+        c.check(false,  _.isNotArrayArray([[3], [4], 5]));
+        c.check(true,   _.isNotArrayArray([10, 20, 30]));
+        c.check(false,  _.isNotArrayArray([10, 20, [30]]));
       };
 
       //----------------------------------------
@@ -1046,15 +1172,26 @@ if (typeof module === 'undefined') {
         return Object.prototype.toString.call(value) === '[object Date]';
       };
 
+      _.isNotDate = function(value) {
+        return !_.isDate(value);
+      };
+
       _.isDates = function(value) {
         return _.isTypeCheck(_.isDate,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotDates = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isDate(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotDate,
+          a.fromArgs(arguments));
+      };
+
+      _.isDateArray = function(value) {
+        return _.isTypeCheck(_.isDate, value);
+      };
+
+      _.isNotDateArray = function(value) {
+        return _.isTypeCheck(_.isNotDate, value);
       };
 
       _.test_isDate = function() {
@@ -3388,7 +3525,7 @@ if (typeof module === 'undefined') {
       _.indexOfAnyFirst = function(str, searchArray, startIndex) {
         c.assert(t.isString(str));
         c.assert(t.isArray(searchArray));
-        c.assert(t.isStrings(searchArray));
+        c.assert(t.isStringArray(searchArray));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
@@ -3433,7 +3570,7 @@ if (typeof module === 'undefined') {
       _.indexOfAnyLast = function(str, searchArray, startIndex) {
         c.assert(t.isString(str));
         c.assert(t.isArray(searchArray));
-        c.assert(t.isStrings(searchArray));
+        c.assert(t.isStringArray(searchArray));
         startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
         c.assert(t.isInt(startIndex));
 
