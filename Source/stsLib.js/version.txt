@@ -427,4 +427,4 @@
 ・  stsLib.type.typeof 追加
 ◇  ver 2018/01/19
 ・  isUndefined/isNull/isNumberなどの
-    複数形とArrayを受け取る処理などを記述(途中)
+    複数形とArrayを受け取る処理などを記述

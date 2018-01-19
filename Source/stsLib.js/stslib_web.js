@@ -32,6 +32,13 @@ Version:        2018/01/16
     var _ = stsLib;
 
     //----------------------------------------
+    //◆メッセージ出力(alert/console.log)
+    //----------------------------------------
+    _.alert = function(message) {
+      console.log(message);
+    };
+
+    //----------------------------------------
     //■stsLib.web名前空間
     //----------------------------------------
     _.web = stsLib.web || {};
@@ -407,12 +414,12 @@ Version:        2018/01/16
       }
 
       //----------------------------------------
-      //◆テスト
+      //◆動作確認
       //----------------------------------------
       _.test_stslib_web = function () {
         _.test_intervalForToAll();
         _.test_intervalForDownToAll();
-        alert('finish stslib_web_test テスト終了');
+        stsLib.alert('finish stslib_web_test テスト終了');
       }
 
     }());   //stsLib.web

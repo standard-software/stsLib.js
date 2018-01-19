@@ -237,7 +237,7 @@ if (typeof module === 'undefined') {
             'A != B' + '\n' +
             'A = ' + a + '\n' +
             'B = ' + b;
-        alert(message);
+        stsLib.alert(message);
         return false;
       };
 
@@ -1212,22 +1212,51 @@ if (typeof module === 'undefined') {
         return (point instanceof p.Point);
       };
 
+      _.isNotPoint = function(point) {
+        return !_.isPoint(point);
+      };
+
       _.isPoints = function(value) {
         return _.isTypeCheck(_.isPoint,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotPoints = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isPoint(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotPoint,
+          a.fromArgs(arguments));
+      };
+
+      _.isPointArray = function(value) {
+        return _.isTypeCheck(_.isPoint, value);
+      };
+
+      _.isNotPointArray = function(value) {
+        return _.isTypeCheck(_.isNotPoint, value);
       };
 
       _.test_isPoint = function() {
         c.check(true,   _.isPoint(p.Point(1,2)));
         c.check(false,  _.isPoint({x:1, y:2}));
-        c.check(true,   _.isPoints(p.Point(1,2),p.Point(3,4)));
-        c.check(false,  _.isPoints(p.Point(1,2), {x:3, y:4}, {}));
+
+        c.check(false,  _.isNotPoint(p.Point(1,2)));
+        c.check(true,   _.isNotPoint({x:1, y:2}));
+
+        c.check(true,   _.isPoints(p.Point(1,2), p.Point(3,4)));
+        c.check(false,  _.isPoints(p.Point(1,2), {x:3, y:4}));
+        c.check(false,  _.isPoints({x:3, y:4}, {x: 3}));
+
+        c.check(false,  _.isNotPoints(p.Point(1,2), p.Point(3,4)));
+        c.check(false,  _.isNotPoints(p.Point(1,2), {x:3, y:4}));
+        c.check(true,   _.isNotPoints({x:3, y:4}, {x: 3}));
+
+        c.check(true,   _.isPointArray([p.Point(1,2), p.Point(3,4)]));
+        c.check(false,  _.isPointArray([p.Point(1,2), {x:3, y:4}]));
+        c.check(false,  _.isPointArray([{x:3, y:4}, {x: 3}]));
+
+        c.check(false,  _.isNotPointArray([p.Point(1,2), p.Point(3,4)]));
+        c.check(false,  _.isNotPointArray([p.Point(1,2), {x:3, y:4}]));
+        c.check(true,   _.isNotPointArray([{x:3, y:4}, {x: 3}]));
+
       };
 
       //----------------------------------------
@@ -1242,20 +1271,89 @@ if (typeof module === 'undefined') {
         return (vector instanceof v.Vector);
       };
 
+      _.isNotVector = function(vector) {
+        return !_.isVector(vector);
+      };
+
       _.isVectors = function(value) {
         return _.isTypeCheck(_.isVector,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotVectors = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isVector(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotVector,
+          a.fromArgs(arguments));
+      };
+
+      _.isVectorArray = function(value) {
+        return _.isTypeCheck(_.isVector, value);
+      };
+
+      _.isNotVectorArray = function(value) {
+        return _.isTypeCheck(_.isNotVector, value);
       };
 
       _.test_isVector = function() {
-        c.check(true, _.isVector(
+        c.check(true,   _.isVector(
           v.Vector(p.Point(0,0), p.Point(1,1))));
+        c.check(false,  _.isVector({}));
+
+        c.check(false,  _.isNotVector(
+          v.Vector(p.Point(0,0), p.Point(1,1))));
+        c.check(true,   _.isNotVector({}));
+
+        c.check(true,   _.isVectors(
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          v.Vector(p.Point(0,0), p.Point(1,1))
+        ));
+        c.check(false,  _.isVectors(
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          {}
+        ));
+        c.check(false,  _.isVectors(
+          {},
+          {}
+        ));
+
+        c.check(false,  _.isNotVectors(
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          v.Vector(p.Point(0,0), p.Point(1,1))
+        ));
+        c.check(false,  _.isNotVectors(
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          {}
+        ));
+        c.check(true,   _.isNotVectors(
+          {},
+          {}
+        ));
+
+        c.check(true,   _.isVectorArray([
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          v.Vector(p.Point(0,0), p.Point(1,1))
+        ]));
+        c.check(false,  _.isVectorArray([
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          {}
+        ]));
+        c.check(false,  _.isVectorArray([
+          {},
+          {}
+        ]));
+
+        c.check(false,  _.isNotVectorArray([
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          v.Vector(p.Point(0,0), p.Point(1,1))
+        ]));
+        c.check(false,  _.isNotVectorArray([
+          v.Vector(p.Point(0,0), p.Point(1,1)),
+          {}
+        ]));
+        c.check(true,   _.isNotVectorArray([
+          {},
+          {}
+        ]));
+
       };
 
       //----------------------------------------
@@ -1269,15 +1367,26 @@ if (typeof module === 'undefined') {
         return (rect instanceof r.Rect);
       };
 
+      _.isNotRect = function(rect) {
+        return !_.isRect(rect);
+      };
+
       _.isRects = function(value) {
         return _.isTypeCheck(_.isRect,
-          a.expand2Dimension(a.fromArgs(arguments)));
+          a.fromArgs(arguments));
       };
 
       _.isNotRects = function(value) {
-        return _.isTypeCheck(function(v) {
-          return !(_.isRects(v));
-        }, a.expand2Dimension(a.fromArgs(arguments)));
+        return _.isTypeCheck(_.isNotRect,
+          a.fromArgs(arguments));
+      };
+
+      _.isRectArray = function(value) {
+        return _.isTypeCheck(_.isRect, value);
+      };
+
+      _.isNotRectArray = function(value) {
+        return _.isTypeCheck(_.isNotRect, value);
       };
 
       _.test_isRect = function() {
@@ -1285,9 +1394,25 @@ if (typeof module === 'undefined') {
         var r2 = r.Rect(p.Point(1,1), p.Point(4,6));
         c.check(true,   _.isRect(r1));
         c.check(false,  _.isRect({top:1, left:2, bottom:3, right:4}));
+
+        c.check(false,  _.isNotRect(r1));
+        c.check(true,   _.isNotRect({top:1, left:2, bottom:3, right:4}));
+
         c.check(true,   _.isRects(r1,r2));
         c.check(false,  _.isRects(r1, {top:1, left:2, bottom:3, right:4}));
-        c.check(false,  _.isRects(r1, r2, {}));
+        c.check(false,  _.isRects({top:1, left:2, bottom:3, right:4}, {}));
+
+        c.check(false,  _.isNotRects(r1,r2));
+        c.check(false,  _.isNotRects(r1, {top:1, left:2, bottom:3, right:4}));
+        c.check(true,   _.isNotRects({top:1, left:2, bottom:3, right:4}, {}));
+
+        c.check(true,   _.isRectArray([r1,r2]));
+        c.check(false,  _.isRectArray([r1, {top:1, left:2, bottom:3, right:4}]));
+        c.check(false,  _.isRectArray([{top:1, left:2, bottom:3, right:4}, {}]));
+
+        c.check(false,  _.isNotRectArray([r1,r2]));
+        c.check(false,  _.isNotRectArray([r1, {top:1, left:2, bottom:3, right:4}]));
+        c.check(true,   _.isNotRectArray([{top:1, left:2, bottom:3, right:4}, {}]));
       };
 
       //----------------------------------------

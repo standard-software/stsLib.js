@@ -36,7 +36,7 @@ Version:        2018/01/16
     var _ = stsLib;
 
     //----------------------------------------
-    //◆アラート
+    //◆メッセージ出力(alert/console.log)
     //----------------------------------------
     _.alert = function(message) {
       console.log(message);
