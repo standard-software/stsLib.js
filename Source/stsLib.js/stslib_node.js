@@ -7,8 +7,8 @@ FileName:       stslib_node.js
 ----------------------------------------
 License:        MIT License
 All Right Reserved:
-  Name:         Standard Software
-  URL:          https://www.facebook.com/stndardsoftware/
+    Name:       Standard Software
+    URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
 Version:        2018/01/16
 //----------------------------------------*/
@@ -23,7 +23,6 @@ Version:        2018/01/16
   //----------------------------------------
   var stsLib = require('./stslib_core.js')
 
-  //外部から呼び出して使用する
   const fs = require('fs');
   const path = require('path');
 

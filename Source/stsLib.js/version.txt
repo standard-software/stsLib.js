@@ -428,3 +428,5 @@
 ◇  ver 2018/01/19
 ・  isUndefined/isNull/isNumberなどの
     複数形とArrayを受け取る処理などを記述
+・  stslib_test_web.html に vector を利用して
+    四角と星型を描画するテストコードを記述
