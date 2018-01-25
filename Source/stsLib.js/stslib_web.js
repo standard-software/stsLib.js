@@ -35,7 +35,8 @@ Version:        2018/01/16
     //◆メッセージ出力(alert/console.log)
     //----------------------------------------
     _.alert = function(message) {
-      console.log(message);
+      //console.log(message);
+      alert(message);
     };
 
     //----------------------------------------
