@@ -4,6 +4,7 @@
 
 var stsLib = require('../stslib_node.js');
 stsLib.test.test_stslib_core();
+stsLib.system.test_stslib_console();
 
 stsLib.node.test_readTopDirSync();
 stsLib.node.test_readSubDirSync();

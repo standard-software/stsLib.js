@@ -3,6 +3,7 @@
   <meta charset="UTF-8"><title>stsLib.js test page</title>
 
   <script src="../stslib_core.js"></script>
+  <script src="../stslib_console.js"></script>
   <script src="../stslib_web.js"></script>
   <script>
 
@@ -27,6 +28,7 @@ function main() {
 
   stsLib.test.test_stslib_core();
   stsLib.web.test_stslib_web();
+  stsLib.system.test_stslib_console();
 
   var drawRect01 = function () {
     var e = document.getElementById('canvas01');

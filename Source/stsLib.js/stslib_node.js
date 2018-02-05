@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/16
+version:        2018/02/05
 //----------------------------------------*/
 
 //----------------------------------------
@@ -21,7 +21,7 @@ Version:        2018/01/16
   //----------------------------------------
   //・require実行
   //----------------------------------------
-  var stsLib = require('./stslib_core.js')
+  var stsLib = require('./stslib_console.js')
 
   const fs = require('fs');
   const path = require('path');

@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/16
+version:        2018/02/05
 //----------------------------------------*/
 
 //----------------------------------------
@@ -420,8 +420,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //  ・通常の typeof が object を返す判定できない
       //    null/array/date を判定して返す関数
+      //  ・WSH では typeof という名称を使うとコンパイルエラーになる
       //----------------------------------------
-      _.typeof = function(value) {
+      _.typeName = function(value) {
         var result = typeof value;
         if (result === 'object') {
           if (t.isNull(value)) {
@@ -2112,7 +2113,7 @@ if (typeof module === 'undefined') {
         }
 
         for (var i = 0, il = value1.length; i < il; i += 1) {
-          if (t.typeof(value1[i]) !== t.typeof(value2[i])) {
+          if (t.typeName(value1[i]) !== t.typeName(value2[i])) {
             return false;
           } else if ( t.isArray(value1[i]) ) {
             if (!_.equal(value1[i], value2[i])) {
@@ -2149,8 +2150,8 @@ if (typeof module === 'undefined') {
         c.check(false, a1 == a2);
         c.check(false, a1 === a2);
 
-        var a1 = [[1, 2], 3];
-        var a2 = [1, [2, 3]];
+        a1 = [[1, 2], 3];
+        a2 = [1, [2, 3]];
         c.check(true, a1.toString() === a2.toString() );
         //Array.toString() の場合は誤判定する
 
@@ -7417,33 +7418,6 @@ if (typeof module === 'undefined') {
       }()); //vector.prototype
     }()); //rect
 
-    //----------------------------------------
-    //◆システム
-    //----------------------------------------
-    _.system = stsLib.system || {};
-    (function() {
-      var _ = stsLib.system;
-
-      _.test_consoleLogComment = function() {
-        var testFunc = function(value) {
-          return value + value;
-        };
-
-        var formula = 'testFunc(1)';
-        var result = eval(formula);
-        c.check('console.log(testFunc(1));  //2',
-          _.consoleLogComment(formula, result));
-      };
-
-      _.consoleLogComment = function(formula, comment) {
-        return 'console.log(' + formula + ');  //' + comment;
-      };
-
-      _.consoleLogCommentOutput = function(formula, comment) {
-        console.log(_.consoleLogComment(formula, comment));
-      };
-
-    }());
 
     //----------------------------------------
     //◆グローバル拡張
@@ -7697,8 +7671,6 @@ if (typeof module === 'undefined') {
         r.test_rect_center();
         r.test_rect_move();
         r.test_rect_setTopLeft();
-
-        stsLib.system.test_consoleLogComment();
 
         c.check(true,   Array.isArray([]));
         c.check(false,  Array.isArray(123));

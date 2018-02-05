@@ -430,3 +430,9 @@
     複数形とArrayを受け取る処理などを記述
 ・  stslib_test_web.html に vector を利用して
     四角と星型を描画するテストコードを記述
+◇  ver 2018/02/05
+・  typeofが WSH でエラーになるようなので、typeNameに名前変更
+・  stsLib.system.console系の処理を
+    stslib_console.js に分離して
+    web と nodejs 環境で動作するようにした。
+・  browserify/webpack版でも描画テストを行うようにした
