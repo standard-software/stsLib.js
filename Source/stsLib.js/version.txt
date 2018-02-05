@@ -436,3 +436,6 @@
     stslib_console.js に分離して
     web と nodejs 環境で動作するようにした。
 ・  browserify/webpack版でも描画テストを行うようにした
+・  string.isEmptyを type.isEmpty にして、
+    オブジェクトと配列も空かどうかを判定できるようにした。
+・  isNotEmpty/isEmpties/isEmptyArray など作成

@@ -443,7 +443,7 @@ if (typeof module === 'undefined') {
       _.isTypeCheck = function(checkFunc, argsArray) {
         c.assert(1 <= arguments.length);
         c.assert(typeof checkFunc == 'function');
-        c.assert(Array.isArray(argsArray));
+        c.assert(t.isArray(argsArray));
 
         var l = argsArray.length;
         if (l === 0) {
@@ -708,6 +708,123 @@ if (typeof module === 'undefined') {
         c.check(5,  _.ifNullOrUndefinedValue(null, 5));
         c.check(5,  _.ifNullOrUndefinedValue(undefined, 5));
         c.check('', _.ifNullOrUndefinedValue('', 5));
+      };
+
+      //----------------------------------------
+      //◇isEmpty
+      //----------------------------------------
+      //  ・null か undefined か
+      //    空文字'' か {} か [] なら True を返す
+      //----------------------------------------
+
+      _.isEmpty = function(value) {
+        if (t.isNullOrUndefined(value)) {
+          return true;
+        } else if (t.isString(value)) {
+          return value === '';
+        } else if (t.isObject(value)) {
+          return stsLib.object.property.count(value) === 0;
+        } else if (t.isArray(value)) {
+          return value.length === 0;
+        } else {
+          return false;
+        }
+      };
+
+      _.isNotEmpty = function(value) {
+        return !_.isEmpty(value);
+      };
+
+      _.isEmpties = function(value) {
+        return _.isTypeCheck(_.isEmpty,
+          a.fromArgs(arguments));
+      };
+
+      _.isNotEmpties = function(value) {
+        return _.isTypeCheck(_.isNotEmpty,
+          a.fromArgs(arguments));
+      };
+
+      _.isEmptyArray = function(value) {
+        return _.isTypeCheck(_.isEmpty, value);
+      };
+
+      _.isNotEmptyArray = function(value) {
+        return _.isTypeCheck(_.isNotEmpty, value);
+      };
+
+      _.test_isEmpty = function () {
+        var u1;
+        var n1 = null;
+        var v1 = 1;
+        var o1 = {};
+        var a1 = [];
+        var s1 = '';
+
+        c.check(true,   _.isEmpty(u1));
+        c.check(true ,  _.isEmpty(n1));
+        c.check(false,  _.isEmpty(v1));
+        c.check(true,   _.isEmpty(o1));
+        c.check(true,   _.isEmpty(a1));
+        c.check(true,   _.isEmpty(s1));
+        c.check(true,   _.isEmpties(u1));
+        c.check(true ,  _.isEmpties(n1));
+        c.check(false,  _.isEmpties(v1));
+        c.check(true,   _.isEmpties(o1));
+        c.check(true,   _.isEmpties(a1));
+        c.check(true,   _.isEmpties(s1));
+        c.check(true,   _.isEmptyArray([u1]));
+        c.check(true ,  _.isEmptyArray([n1]));
+        c.check(false,  _.isEmptyArray([v1]));
+        c.check(true ,  _.isEmptyArray([o1]));
+        c.check(true ,  _.isEmptyArray([a1]));
+        c.check(true ,  _.isEmptyArray([s1]));
+
+        c.check(true,   _.isEmpties(o1, a1, s1));
+        c.check(false,  _.isEmpties(o1, a1, s1, v1));
+        c.check(false,  _.isEmpties(v1, s1));
+        c.check(true,   _.isEmptyArray([o1, a1, s1]));
+        c.check(false,  _.isEmptyArray([o1, a1, s1, v1]));
+        c.check(false,  _.isEmptyArray([v1, s1]));
+
+        c.check(false,  _.isNotEmpty(u1));
+        c.check(false , _.isNotEmpty(n1));
+        c.check(true,   _.isNotEmpty(v1));
+        c.check(false,  _.isNotEmpty(o1));
+        c.check(false,  _.isNotEmpty(a1));
+        c.check(false,  _.isNotEmpty(s1));
+        c.check(false,  _.isNotEmpties(u1));
+        c.check(false , _.isNotEmpties(n1));
+        c.check(true,   _.isNotEmpties(v1));
+        c.check(false,  _.isNotEmpties(o1));
+        c.check(false,  _.isNotEmpties(a1));
+        c.check(false,  _.isNotEmpties(s1));
+        c.check(false,  _.isNotEmptyArray([u1]));
+        c.check(false , _.isNotEmptyArray([n1]));
+        c.check(true,   _.isNotEmptyArray([v1]));
+        c.check(false , _.isNotEmptyArray([o1]));
+        c.check(false , _.isNotEmptyArray([a1]));
+        c.check(false , _.isNotEmptyArray([s1]));
+
+        c.check(false,  _.isNotEmpties(o1, a1, s1));
+        c.check(false,  _.isNotEmpties(o1, a1, s1, v1));
+        c.check(false,  _.isNotEmpties(v1, s1));
+        c.check(true,   _.isNotEmpties(v1, 'a', 'b'));
+        c.check(false,  _.isNotEmptyArray([o1, a1, s1]));
+        c.check(false,  _.isNotEmptyArray([o1, a1, s1, v1]));
+        c.check(false,  _.isNotEmptyArray([v1, s1]));
+        c.check(true,   _.isNotEmptyArray([v1, 'a', 'b']));
+      };
+
+      //----------------------------------------
+      //・値が空文字/null/Undefinedの場合だけ別の値を返す関数
+      //----------------------------------------
+      _.ifEmptyValue = function(value, emptyValue) {
+        if (t.isEmpty(value)) {
+          return emptyValue;
+        } else {
+          return value;
+        }
       };
 
       //----------------------------------------
@@ -1045,10 +1162,10 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◇isObject
       //----------------------------------------
-      //  ・WSH JScript の場合のみ
-      //    Object.prototype.toString.call(v) === '[object Object]'
-      //    だけで判断できないので
-      //    isArray / isNull / isUndefined を確認する
+      //  ・Object.prototype.toString.call(v) は
+      //    null や undefined の場合でも [object Object]
+      //    を返すので注意。
+      //    配列は、[object Array] を返す
       //  ・isObjectsは
       //    可変引数の全てがオブジェクトかどうかを確認する
       //----------------------------------------
@@ -1056,7 +1173,6 @@ if (typeof module === 'undefined') {
       _.isObject = function(value) {
         if (
           (Object.prototype.toString.call(value) === '[object Object]')
-          && (!Array.isArray(value))
           && (value !== null)
           && (typeof value !== 'undefined')
         ) {
@@ -1088,6 +1204,11 @@ if (typeof module === 'undefined') {
       };
 
       _.test_isObject = function() {
+        c.check(true,   _.isObject({}));
+        c.check(false,  _.isObject([]));
+        c.check(false,  _.isObject(null));
+        c.check(false,  _.isObject(undefined));
+
         c.check(true,   _.isObjects({}));
         c.check(true,   _.isObjects({a:0}));
         c.check(true,   _.isObjects({a:0, b:1}));
@@ -2304,7 +2425,7 @@ if (typeof module === 'undefined') {
       //  ・unshiftやpushはspliceを使えば使わなくてよい
       //----------------------------------------
       _.insert = function(array, value, index) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         index = t.ifNullOrUndefinedValue(index, 0);
         c.assert(t.isInt(index));
         c.assert(n.inRange(index, 0, array.length));
@@ -2387,7 +2508,7 @@ if (typeof module === 'undefined') {
       //  ・endIndexを省略するとstartIndexのところの1項目だけ削除になる
       //----------------------------------------
       _.deleteIndex = function(array, startIndex, endIndex) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         endIndex = t.ifNullOrUndefinedValue(endIndex, startIndex);
         c.assert(t.isInt(startIndex, endIndex));
         c.assert((0 <= startIndex) && (startIndex <= array.length - 1));
@@ -2413,7 +2534,7 @@ if (typeof module === 'undefined') {
       //  ・lengthを省略すると最後まで削除する
       //----------------------------------------
       _.deleteLength = function(array, startIndex, length) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         length = t.ifNullOrUndefinedValue(length, array.length - startIndex);
         c.assert(t.isInt(startIndex, length));
         c.assert((0 <= startIndex) && (startIndex <= array.length - 1));
@@ -2441,7 +2562,7 @@ if (typeof module === 'undefined') {
       //  ・deleteはWSHでは予約語なのでdeleteFindにした
       //----------------------------------------
       _.deleteFind = function(array, search) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
 
         var index = _.indexOfFirst(array, search);
         if (index !== -1) {
@@ -2496,7 +2617,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.deleteStart = function(array, len) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isInt(len) && (0 <= len));
 
         if (len === 0) {
@@ -2521,7 +2642,7 @@ if (typeof module === 'undefined') {
       //  ・lenは0以上にすること
       //----------------------------------------
       _.deleteEnd = function(array, len) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isInt(len) && (0 <= len));
 
         if (len === 0) {
@@ -2668,7 +2789,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfFirst = function(array, search, startIndex) {
 
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
@@ -2720,7 +2841,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfLast = function(array, search, startIndex) {
 
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
 
@@ -2780,8 +2901,8 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.indexOfArrayFirst = function(array, search, startIndex) {
 
-        c.assert(Array.isArray(array));
-        c.assert(Array.isArray(search));
+        c.assert(t.isArray(array));
+        c.assert(t.isArray(search));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
@@ -2825,8 +2946,8 @@ if (typeof module === 'undefined') {
 
       _.indexOfArrayLast = function(array, search, startIndex) {
 
-        c.assert(Array.isArray(array));
-        c.assert(Array.isArray(search));
+        c.assert(t.isArray(array));
+        c.assert(t.isArray(search));
         startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
 
@@ -2888,8 +3009,8 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.indexOfAnyFirst = function(array, searchArray, startIndex) {
-        c.assert(Array.isArray(array));
-        c.assert(Array.isArray(searchArray));
+        c.assert(t.isArray(array));
+        c.assert(t.isArray(searchArray));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
@@ -2912,8 +3033,8 @@ if (typeof module === 'undefined') {
       };
 
       _.indexOfAnyLast = function(array, searchArray, startIndex) {
-        c.assert(Array.isArray(array));
-        c.assert(Array.isArray(searchArray));
+        c.assert(t.isArray(array));
+        c.assert(t.isArray(searchArray));
         startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
 
@@ -2943,7 +3064,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.indexOfFuncFirst = function(array, func, startIndex) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isFunction(func));
         startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
@@ -2959,7 +3080,7 @@ if (typeof module === 'undefined') {
       };
 
       _.indexOfFuncLast = function(array, func, startIndex) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isFunction(func));
         startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
@@ -2983,24 +3104,24 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.inputStart = function(array, value) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         array.unshift(value);
         return array;
       };
 
       _.inputEnd = function(array, value) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         array.push(value);
         return array;
       };
 
       _.outputStart = function(array) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         return array.shift();
       };
 
       _.outputEnd = function(array) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         return array.pop();
       };
 
@@ -3012,8 +3133,8 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.inputStartArray = function(array, values) {
-        c.assert(Array.isArray(array));
-        c.assert(Array.isArray(values));
+        c.assert(t.isArray(array));
+        c.assert(t.isArray(values));
         for (var i = 0, l = values.length; i < l; i += 1) {
           array.unshift(values[i]);
         }
@@ -3021,8 +3142,8 @@ if (typeof module === 'undefined') {
       };
 
       _.inputEndArray = function(array, values) {
-        c.assert(Array.isArray(array));
-        c.assert(Array.isArray(values));
+        c.assert(t.isArray(array));
+        c.assert(t.isArray(values));
         for (var i = 0, l = values.length; i < l; i += 1) {
           array.push(values[i]);
         }
@@ -3030,7 +3151,7 @@ if (typeof module === 'undefined') {
       };
 
       _.outputStartArray = function(array, count) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isInt(count));
         var result = [];
         for (var i = 0; i < count; i += 1) {
@@ -3047,7 +3168,7 @@ if (typeof module === 'undefined') {
       };
 
       _.outputEndArray = function(array, count) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isInt(count));
         var result = [];
         for (var i = 0; i < count; i += 1) {
@@ -3072,7 +3193,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.remainStart = function(array, count) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isInt(count));
         c.assert(0 <= count);
 
@@ -3090,7 +3211,7 @@ if (typeof module === 'undefined') {
       };
 
       _.remainEnd = function(array, count) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         c.assert(t.isInt(count));
         c.assert(0 <= count);
 
@@ -3164,11 +3285,11 @@ if (typeof module === 'undefined') {
       //・2次元配列を1次元配列に展開する
       //----------------------------------------
       _.expand2Dimension = function(array) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         var result = [];
         for (var i1 = 0, l1 = array.length; i1 < l1; i1 += 1) {
           var arrayItem = array[i1];
-          if (Array.isArray(arrayItem)) {
+          if (t.isArray(arrayItem)) {
             if (arrayItem.length === 0) {
               result.push(undefined);
             } else {
@@ -3247,7 +3368,7 @@ if (typeof module === 'undefined') {
       //    ['1','','2','','3']になる
       //----------------------------------------
       _.expandMultiDimension = function(array) {
-        c.assert(Array.isArray(array));
+        c.assert(t.isArray(array));
         var result = [];
         var f = function(value) {
           if (value.length === 0) {
@@ -3255,7 +3376,7 @@ if (typeof module === 'undefined') {
           } else {
             for (var i = 0, l = value.length; i < l; i += 1) {
               var arrayItem = value[i];
-              if (Array.isArray(arrayItem)) {
+              if (t.isArray(arrayItem)) {
                 f(arrayItem);
               } else {
                 result.push(arrayItem);
@@ -3384,28 +3505,6 @@ if (typeof module === 'undefined') {
       //◇空文字・空行
       //----------------------------------------
 
-      //----------------------------------------
-      //・NullかUndefinedか空文字('')ならTrueを返す
-      //----------------------------------------
-      _.isEmpty = function(str) {
-
-        if (t.isNullOrUndefined(str) || str ===  '') {
-          return true;
-        } else {
-          return false;
-        }
-      };
-
-      //----------------------------------------
-      //・値が空文字/null/Undefinedの場合だけ別の値を返す関数
-      //----------------------------------------
-      _.ifEmptyValue = function(str, emptyValue) {
-        if (_.isEmpty(str)) {
-          return emptyValue;
-        } else {
-          return str;
-        }
-      };
 
       //----------------------------------------
       //・空行かどうか判断する
@@ -3540,11 +3639,11 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.isIncludeAll = function(str, searchArray) {
 
-        c.assert(Array.isArray(searchArray));
+        c.assert(t.isArray(searchArray));
         for (var i = 0; i < searchArray.length; i += 1) {
           str = s.replaceAll(str, searchArray[i], '');
         }
-        return s.isEmpty(str);
+        return t.isEmpty(str);
       };
 
       _.test_isIncludeAll = function() {
@@ -4522,8 +4621,8 @@ if (typeof module === 'undefined') {
       _.deleteFirstTagInner = function(str, startTag, endTag) {
 
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag));
-        c.assert(!_.isEmpty(endTag));
+        c.assert(!t.isEmpty(startTag));
+        c.assert(!t.isEmpty(endTag));
         if (str === '') { return ''; }
 
         var indexStartTag = _.indexOfFirst(str, startTag);
@@ -4561,8 +4660,8 @@ if (typeof module === 'undefined') {
       _.deleteFirstTagOuter = function(str, startTag, endTag) {
 
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag));
-        c.assert(!_.isEmpty(endTag));
+        c.assert(!t.isEmpty(startTag));
+        c.assert(!t.isEmpty(endTag));
         if (str === '') { return ''; }
 
         var indexStartTag = str.indexOf(startTag);
@@ -4603,8 +4702,8 @@ if (typeof module === 'undefined') {
       _.deleteLastTagInner = function(str, startTag, endTag) {
 
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag));
-        c.assert(!_.isEmpty(endTag));
+        c.assert(!t.isEmpty(startTag));
+        c.assert(!t.isEmpty(endTag));
         if (str === '') { return ''; }
 
         var indexEndTag = _.indexOfLast(str, endTag);
@@ -4642,8 +4741,8 @@ if (typeof module === 'undefined') {
       _.deleteLastTagOuter = function(str, startTag, endTag) {
 
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag));
-        c.assert(!_.isEmpty(endTag));
+        c.assert(!t.isEmpty(startTag));
+        c.assert(!t.isEmpty(endTag));
         if (str === '') { return ''; }
 
         var indexEndTag = _.indexOfLast(str, endTag);
@@ -4705,7 +4804,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.tagInnerFirst = function(str, startTag, endTag) {
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag, endTag));
+        c.assert(!t.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
         var indexStartTag = _.indexOfFirst(str, startTag);
@@ -4759,7 +4858,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.tagOuterFirst = function(str, startTag, endTag) {
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag, endTag));
+        c.assert(!t.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
         var indexStartTag = _.indexOfFirst(str, startTag);
@@ -4820,7 +4919,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.tagInnerLast = function(str, startTag, endTag) {
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag, endTag));
+        c.assert(!t.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
         var indexEndTag = _.indexOfLast(str, endTag);
@@ -4873,7 +4972,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.tagOuterLast = function(str, startTag, endTag) {
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag, endTag));
+        c.assert(!t.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
         var indexEndTag = _.indexOfLast(str, endTag);
@@ -4947,7 +5046,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.tagOuterAllArray = function(str, startTag, endTag) {
         c.assert((!t.isNullOrUndefined(str)) );
-        c.assert(!_.isEmpty(startTag, endTag));
+        c.assert(!t.isEmpty(startTag, endTag));
         if (str === '') { return ''; }
 
         var indexStartTag, indexEndTag;
@@ -5114,7 +5213,7 @@ if (typeof module === 'undefined') {
         c.assert(t.isString(delimiter));
         c.assert(t.isInt(count));
 
-        if (s.isEmpty(str)) {
+        if (t.isEmpty(str)) {
           return '';
         }
 
@@ -5153,7 +5252,7 @@ if (typeof module === 'undefined') {
         c.assert(t.isString(delimiter));
         c.assert(t.isInt(count));
 
-        if (s.isEmpty(str)) {
+        if (t.isEmpty(str)) {
           return '';
         }
 
@@ -7503,6 +7602,7 @@ if (typeof module === 'undefined') {
         t.test_isNull();
         t.test_isNullOrUndefined();
         t.test_ifNullOrUndefinedValue();
+        t.test_isEmpty();
         t.test_isBoolean();
         t.test_isNumber();
         t.test_isInt();
