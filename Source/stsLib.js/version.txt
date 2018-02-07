@@ -439,5 +439,3 @@
 ・  string.isEmptyを type.isEmpty にして、
     オブジェクトと配列も空かどうかを判定できるようにした。
 ・  isNotEmpty/isEmpties/isEmptyArray など作成
-
-
