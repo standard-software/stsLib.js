@@ -133,10 +133,10 @@ if (typeof module === 'undefined') {
 
         c.assert(t.isInts(start, end));
         var funcEmpty = function() { return; };
-        funcAll = t.ifNullOrUndefinedValue(funcAll, funcEmpty);
-        funcFirst = t.ifNullOrUndefinedValue(funcFirst, funcEmpty);
-        funcMiddle = t.ifNullOrUndefinedValue(funcMiddle, funcEmpty);
-        funcLast = t.ifNullOrUndefinedValue(funcLast, funcEmpty);
+        funcAll = t.ifUndefinedValue(funcAll, funcEmpty);
+        funcFirst = t.ifUndefinedValue(funcFirst, funcEmpty);
+        funcMiddle = t.ifUndefinedValue(funcMiddle, funcEmpty);
+        funcLast = t.ifUndefinedValue(funcLast, funcEmpty);
         for (var i = start; i <= end; i += 1) {
           funcAll(i);
           if (i === start) {
@@ -689,6 +689,19 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◇Null Undefined 処理
       //----------------------------------------
+
+      //----------------------------------------
+      //・値が Undefined なら特定の値を返す
+      //----------------------------------------
+      //  ・引数のデフォルト値として使える
+      //----------------------------------------
+      _.ifUndefinedValue = function(value, defaultValue) {
+        if (_.isUndefined(value)) {
+          return defaultValue;
+        } else {
+          return value;
+        }
+      };
 
       //----------------------------------------
       //・値が NullOrUndefined なら特定の値を返す
@@ -1602,7 +1615,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.convertToInt = function(str, radix) {
         c.assert(t.isString(str));
-        radix = t.ifNullOrUndefinedValue(radix, 10);
+        radix = t.ifUndefinedValue(radix, 10);
         c.assert(c.orValue(radix, 10, 2, 8, 16));
 
         var result;
@@ -1679,7 +1692,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.convertToString = function(number, radix) {
         c.assert(t.isNumber(number));
-        radix = t.ifNullOrUndefinedValue(radix, 10);
+        radix = t.ifUndefinedValue(radix, 10);
         c.assert(c.orValue(radix, 10, 2, 8, 16));
         return number.toString(radix);
       };
@@ -1934,11 +1947,13 @@ if (typeof module === 'undefined') {
         return ((number % radix) === 0);
       };
 
+      //偶数
       _.isEven = function(number) {
         c.assert(t.isInt(number));
         return _.isMultiples(number, 2);
       };
 
+      //奇数
       _.isOdd = function(number) {
         c.assert(t.isInt(number));
         return !_.isMultiples(number, 2);
@@ -2426,7 +2441,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.insert = function(array, value, index) {
         c.assert(t.isArray(array));
-        index = t.ifNullOrUndefinedValue(index, 0);
+        index = t.ifUndefinedValue(index, 0);
         c.assert(t.isInt(index));
         c.assert(n.inRange(index, 0, array.length));
 
@@ -2509,7 +2524,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.deleteIndex = function(array, startIndex, endIndex) {
         c.assert(t.isArray(array));
-        endIndex = t.ifNullOrUndefinedValue(endIndex, startIndex);
+        endIndex = t.ifUndefinedValue(endIndex, startIndex);
         c.assert(t.isInt(startIndex, endIndex));
         c.assert((0 <= startIndex) && (startIndex <= array.length - 1));
         c.assert((0 <= endIndex));
@@ -2535,7 +2550,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       _.deleteLength = function(array, startIndex, length) {
         c.assert(t.isArray(array));
-        length = t.ifNullOrUndefinedValue(length, array.length - startIndex);
+        length = t.ifUndefinedValue(length, array.length - startIndex);
         c.assert(t.isInt(startIndex, length));
         c.assert((0 <= startIndex) && (startIndex <= array.length - 1));
         c.assert((1 <= length));
@@ -2790,7 +2805,7 @@ if (typeof module === 'undefined') {
       _.indexOfFirst = function(array, search, startIndex) {
 
         c.assert(t.isArray(array));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        startIndex = t.ifUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
         {
@@ -2842,7 +2857,7 @@ if (typeof module === 'undefined') {
       _.indexOfLast = function(array, search, startIndex) {
 
         c.assert(t.isArray(array));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        startIndex = t.ifUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
 
         {
@@ -2903,7 +2918,7 @@ if (typeof module === 'undefined') {
 
         c.assert(t.isArray(array));
         c.assert(t.isArray(search));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        startIndex = t.ifUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
         {
@@ -2948,7 +2963,7 @@ if (typeof module === 'undefined') {
 
         c.assert(t.isArray(array));
         c.assert(t.isArray(search));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        startIndex = t.ifUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
 
         {
@@ -3011,7 +3026,7 @@ if (typeof module === 'undefined') {
       _.indexOfAnyFirst = function(array, searchArray, startIndex) {
         c.assert(t.isArray(array));
         c.assert(t.isArray(searchArray));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        startIndex = t.ifUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
         var result = Infinity;
@@ -3035,7 +3050,7 @@ if (typeof module === 'undefined') {
       _.indexOfAnyLast = function(array, searchArray, startIndex) {
         c.assert(t.isArray(array));
         c.assert(t.isArray(searchArray));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        startIndex = t.ifUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
 
         var result = -1;
@@ -3066,7 +3081,7 @@ if (typeof module === 'undefined') {
       _.indexOfFuncFirst = function(array, func, startIndex) {
         c.assert(t.isArray(array));
         c.assert(t.isFunction(func));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        startIndex = t.ifUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
         for (var i = startIndex, l = array.length; i < l; i += 1) {
@@ -3082,7 +3097,7 @@ if (typeof module === 'undefined') {
       _.indexOfFuncLast = function(array, func, startIndex) {
         c.assert(t.isArray(array));
         c.assert(t.isFunction(func));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, array.length - 1);
+        startIndex = t.ifUndefinedValue(startIndex, array.length - 1);
         c.assert(t.isInt(startIndex));
 
         for (var i = startIndex; 0 <= i; i -= 1) {
@@ -3792,7 +3807,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfFirst = function(str, search, startIndex) {
         c.assert(t.isStrings(str, search));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        startIndex = t.ifUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
         if (search === '') { return -1; }
@@ -3820,7 +3835,7 @@ if (typeof module === 'undefined') {
 
       _.indexOfLast = function(str, search, startIndex) {
         c.assert(t.isStrings(str, search));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
+        startIndex = t.ifUndefinedValue(startIndex, str.length - 1);
         c.assert(t.isInt(startIndex));
 
         if (search === '') { return -1; }
@@ -3855,7 +3870,7 @@ if (typeof module === 'undefined') {
         c.assert(t.isString(str));
         c.assert(t.isArray(searchArray));
         c.assert(t.isStringArray(searchArray));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, 0);
+        startIndex = t.ifUndefinedValue(startIndex, 0);
         c.assert(t.isInt(startIndex));
 
         var result = Infinity;
@@ -3900,7 +3915,7 @@ if (typeof module === 'undefined') {
         c.assert(t.isString(str));
         c.assert(t.isArray(searchArray));
         c.assert(t.isStringArray(searchArray));
-        startIndex = t.ifNullOrUndefinedValue(startIndex, str.length - 1);
+        startIndex = t.ifUndefinedValue(startIndex, str.length - 1);
         c.assert(t.isInt(startIndex));
 
         var result = -1;
@@ -4275,7 +4290,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.fillStart = function(str, digit, fillChar) {
-        fillChar = t.ifNullOrUndefinedValue(fillChar, ' ');
+        fillChar = t.ifUndefinedValue(fillChar, ' ');
         c.assert(t.isStrings(str, fillChar));
         c.assert(1 <= fillChar.length);
         c.assert(t.isInt(digit) && (0 <= digit));
@@ -4446,7 +4461,7 @@ if (typeof module === 'undefined') {
       //----------------------------------------
 
       _.fillEnd = function(str, digit, fillChar) {
-        fillChar = t.ifNullOrUndefinedValue(fillChar, ' ');
+        fillChar = t.ifUndefinedValue(fillChar, ' ');
         c.assert(t.isStrings(str, fillChar));
         c.assert(1 <= fillChar.length);
         c.assert(t.isInt(digit) && (0 <= digit));
@@ -5951,7 +5966,7 @@ if (typeof module === 'undefined') {
 
       _.formatYYYYMMDD = function(date, delimiter){
         c.assert(t.isDate(date));
-        delimiter = t.ifNullOrUndefinedValue(delimiter, '');
+        delimiter = t.ifUndefinedValue(delimiter, '');
         c.assert(t.isString(delimiter));
         return date.getFullYear() +
           delimiter +
@@ -5966,7 +5981,7 @@ if (typeof module === 'undefined') {
 
       _.formatHHMMSS = function(date, delimiter){
         c.assert(t.isDate(date));
-        delimiter = t.ifNullOrUndefinedValue(delimiter, '');
+        delimiter = t.ifUndefinedValue(delimiter, '');
         c.assert(t.isString(delimiter));
         return s.fillStart(date.getHours().toString(), 2, '0') +
           delimiter +
@@ -5982,7 +5997,7 @@ if (typeof module === 'undefined') {
       _.formatToString = function(date, format, rule) {
         c.assert(t.isDate(date));
         c.assert(t.isString(format));
-        rule = t.ifNullOrUndefinedValue(rule, _.formatRuleDefault());
+        rule = t.ifUndefinedValue(rule, _.formatRuleDefault());
         c.assert(t.isObject(rule));
         var singleQuoteIndex = s.indexOfFirst(format, "'");
         var doubleQuoteIndex = s.indexOfFirst(format, '"');
@@ -7125,7 +7140,7 @@ if (typeof module === 'undefined') {
         //・Vector 正規化 (長さを設定する)
         //----------------------------------------
         _.Vector.prototype.normalize = function(len) {
-          len = t.ifNullOrUndefinedValue(len, 1);
+          len = t.ifUndefinedValue(len, 1);
           var originalLength = this.length();
           if (originalLength === 0) {
             return this;
@@ -7642,14 +7657,28 @@ if (typeof module === 'undefined') {
     };
 
     //----------------------------------------
+    //・Array.forEach
+    //----------------------------------------
+    //  ・すべての要素に対してfuncを実行する
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(element, index, array)
+    //----------------------------------------
+    Array.prototype.forEach = Array.prototype.forEach || function(func, thisObj) {
+      for (var i = 0, il = this.length; i < il; i += 1) {
+        func.call(thisObj, this[i], i, this);
+      }
+    };
+
+    //----------------------------------------
     //・Array.every
     //----------------------------------------
     //  ・配列がすべてfuncで指定した条件を満たしているか
     //    を調べるメソッド
     //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(element, index, array)
     //----------------------------------------
     Array.prototype.every = Array.prototype.every || function(func, thisObj) {
-      for (var i = 0, max = this.length; i < max; i += 1) {
+      for (var i = 0, il = this.length; i < il; i += 1) {
         if (!func.call(thisObj, this[i], i, this)) {
           return false;
         }
@@ -7663,9 +7692,10 @@ if (typeof module === 'undefined') {
     //  ・配列のどれかがfuncで指定した条件を満たしているか
     //    を調べるメソッド
     //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(element, index, array)
     //----------------------------------------
     Array.prototype.some = Array.prototype.some || function(func, thisObj) {
-      for (var i = 0, max = this.length; i < max; i += 1) {
+      for (var i = 0, il = this.length; i < il; i += 1) {
         if (func.call(thisObj, this[i], i, this)) {
           return true;
         }
@@ -7674,16 +7704,217 @@ if (typeof module === 'undefined') {
     };
 
     //----------------------------------------
-    //・Array.forEach
+    //・Array.filter
     //----------------------------------------
-    //  ・すべての要素に対してfuncを実行する
+    //  ・条件が一致するものを抽出して返す
     //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(element, index, array)
     //----------------------------------------
-    Array.prototype.forEach = Array.prototype.forEach || function(func, thisObj) {
-      for (var i = 0, max = this.length; i < max; i += 1) {
-        func.call(thisObj, this[i], i, this);
+    Array.prototype.filter = Array.prototype.filter || function(func, thisObj) {
+      var result = [];
+      for (var i = 0, il = this.length; i < il; i += 1) {
+        if (func.call(thisObj, this[i], i, this)) {
+          result.push(this[i]);
+        }
       }
+      return result;
     };
+
+    //----------------------------------------
+    //・Array.map
+    //----------------------------------------
+    //  ・すべての要素に対してfuncを実行して
+    //    戻り値を新しい配列として取得する
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(element, index, array)
+    //----------------------------------------
+    Array.prototype.map = Array.prototype.map || function(func, thisObj) {
+      var result = [];
+      for (var i = 0, il = this.length; i < il; i += 1) {
+        result.push(func.call(thisObj, this[i], i, this));
+      }
+      return result;
+    };
+
+    //----------------------------------------
+    //・Array.reduce
+    //----------------------------------------
+    //  ・すべての要素に対してfuncを実行して
+    //    前の要素で得た結果を次の要素に引き継いで計算し
+    //    最終的な結果を得る
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(previousValue, currentValue, index, array)
+    //----------------------------------------
+    Array.prototype.reduce = Array.prototype.reduce || function(func, value, thisObj) {
+      c.assert(t.isFunction(func));
+
+      c.assert(t.isArray(this));
+      if (this.length === 0) {
+        c.assert(false, 'Error:Array.prototype.reduce')
+        //空配列をreduceしようとするとエラーになるのが標準仕様らしい
+      }
+
+      var i;
+      if (t.isUndefined(value)) {
+        i = 1;
+        result = this[0];
+      } else {
+        i = 0;
+        result = value;
+      }
+      for (il = this.length; i < il; i += 1) {
+        result = func.call(thisObj, result, this[i], i, this);
+      }
+      return result;
+    };
+
+    //----------------------------------------
+    //・Array.reduceRight
+    //----------------------------------------
+    //  ・すべての要素に対してfuncを実行して
+    //    前の要素で得た結果を次の要素に引き継いで計算し
+    //    最終的な結果を得る
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(previousValue, currentValue, index, array)
+    //----------------------------------------
+    Array.prototype.reduceRight = Array.prototype.reduceRight || function(func, value, thisObj) {
+      c.assert(t.isFunction(func));
+
+      c.assert(t.isArray(this));
+      if (this.length === 0) {
+        c.assert(false, 'Error:Array.prototype.reduce')
+        //空配列をreduceしようとするとエラーになるのが標準仕様らしい
+      }
+
+      var i;
+      if (t.isUndefined(value)) {
+        i = this.length - 2;
+        result = this[this.length - 1];
+      } else {
+        i = this.length - 1;
+        result = value;
+      }
+      for (;0 <= i; i -= 1) {
+        result = func.call(thisObj, result, this[i], i, this);
+      }
+      return result;
+    };
+
+    _.test_GlobalArray = function() {
+
+      c.check(true,   Array.isArray([]));
+      c.check(false,  Array.isArray(123));
+      c.check(false,  Array.isArray('abc'));
+      c.check(false,  Array.isArray({}));
+
+      //Array.prototype.forEach
+      var result = '';
+      [1, 2, 3].forEach(function(element, index, array) {
+        result += element;
+      });
+      c.check('123', result);
+      testObj = {value: 'A'};
+      result = '';
+      [1, 2, 3].forEach(function(element, index, array) {
+        result += element.toString() + this.value;
+      }, testObj);
+      c.check('1A2A3A', result);
+
+      //Array.prototype.everyの動作確認
+      c.check(true, [1,1,1].every(
+        function(element, index, array) {
+          return (element === 1);
+        }));
+      c.check(false, [1,1,2].every(
+        function(element, index, array) {
+          return (element === 1);
+        }));
+      var testObj;
+      testObj = {value: 1};
+      c.check(true, [1,1,1].every(
+        function(element, index, array) {
+          return (element + this.value === 2);
+        }, testObj)); //everyのthis指定
+      c.check(false, [1,1,2].every(
+        function(element, index, array) {
+          return (element + this.value === 2);
+        }, testObj)); //everyのthis指定
+
+      //Array.prototype.someの動作確認
+      c.check(true, [1,2,3].some(
+        function(element, index, array) {
+          return (element === 1);
+        }));
+      c.check(false, [2,2,3].some(
+        function(element, index, array) {
+          return (element === 1);
+        }));
+      testObj = {value: 1};
+      c.check(true, [1,2,3].some(
+        function(element, index, array) {
+          return (element + this.value === 2);
+        }, testObj)); //someのthis指定
+      c.check(false, [2,2,3].some(
+        function(element, index, array) {
+          return (element + this.value === 2);
+        }, testObj)); //someのthis指定
+
+      //Array.prototype.filter
+      var result = [1, 2, 3, 4, 5, 6].filter(
+        function(element, index, array) {
+          return n.isOdd(element);
+        });
+      c.check('1,3,5', result.join());
+
+      //Array.prototype.map
+      var numbers = [1, 4, 9];
+      var roots = numbers.map(Math.sqrt);
+      c.check('1,4,9', numbers.join());
+      c.check('1,2,3', roots.join());
+
+      //Array.prototype.reduce
+      var reducer = function(preValue, currentValue) {
+        return preValue + currentValue;
+      };
+      var array1 = [1, 2, 3, 4];
+      var result = array1.reduce(reducer);
+      c.check(10, result);
+      var result = array1.reduce(reducer, 5);
+      c.check(15, result);
+      c.check(1, [1].reduce(reducer));
+      //c.check(1, [].reduce(reducer));
+
+      var preArray = [];
+      var currentArray = [];
+      var indexArray = [];
+      var result = [0,1,2,3,4].reduceRight(
+        function(previousValue, currentValue, index, array){
+          preArray.push(previousValue);
+          currentArray.push(currentValue);
+          indexArray.push(index);
+          return previousValue + currentValue;
+        });
+      c.check(10, result);
+      c.check('4,7,9,10', preArray.join());
+      c.check('3,2,1,0', currentArray.join());
+      c.check('3,2,1,0', indexArray.join());
+
+      var preArray = [];
+      var currentArray = [];
+      var indexArray = [];
+      var result = [0,1,2,3,4].reduceRight(
+        function(previousValue, currentValue, index, array){
+          preArray.push(previousValue);
+          currentArray.push(currentValue);
+          indexArray.push(index);
+          return previousValue + currentValue;
+        }, 10);
+      c.check(20, result);
+      c.check('10,14,17,19,20', preArray.join());
+      c.check('4,3,2,1,0', currentArray.join());
+      c.check('4,3,2,1,0', indexArray.join());
+    };
+
 
     //----------------------------------------
     //◆動作確認
@@ -7877,62 +8108,7 @@ if (typeof module === 'undefined') {
         r.test_rect_move();
         r.test_rect_setTopLeft();
 
-        c.check(true,   Array.isArray([]));
-        c.check(false,  Array.isArray(123));
-        c.check(false,  Array.isArray('abc'));
-        c.check(false,  Array.isArray({}));
-
-        //Array.prototype.everyの動作確認
-        c.check(true, [1,1,1].every(
-          function(element, index, array) {
-            return (element === 1);
-          }));
-        c.check(false, [1,1,2].every(
-          function(element, index, array) {
-            return (element === 1);
-          }));
-        var testObj;
-        testObj = {value: 1};
-        c.check(true, [1,1,1].every(
-          function(element, index, array) {
-            return (element + this.value === 2);
-          }, testObj)); //everyのthis指定
-        c.check(false, [1,1,2].every(
-          function(element, index, array) {
-            return (element + this.value === 2);
-          }, testObj)); //everyのthis指定
-
-        //Array.prototype.someの動作確認
-        c.check(true, [1,2,3].some(
-          function(element, index, array) {
-            return (element === 1);
-          }));
-        c.check(false, [2,2,3].some(
-          function(element, index, array) {
-            return (element === 1);
-          }));
-        testObj = {value: 1};
-        c.check(true, [1,2,3].some(
-          function(element, index, array) {
-            return (element + this.value === 2);
-          }, testObj)); //someのthis指定
-        c.check(false, [2,2,3].some(
-          function(element, index, array) {
-            return (element + this.value === 2);
-          }, testObj)); //someのthis指定
-
-        //Array.prototype.forEach
-        var result = '';
-        [1, 2, 3].forEach(function(element, index, array) {
-          result += element;
-        });
-        c.check('123', result);
-        testObj = {value: 'A'};
-        result = '';
-        [1, 2, 3].forEach(function(element, index, array) {
-          result += element.toString() + this.value;
-        }, testObj);
-        c.check('1A2A3A', result);
+        stsLib.test_GlobalArray();
 
         stsLib.alert('finish stslib_core_test テスト終了');
         //日本語メッセージが表示されることで

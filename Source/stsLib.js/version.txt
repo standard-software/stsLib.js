@@ -444,3 +444,7 @@
 ・  array.dimension.flatten を追加
 ・  array.dimension.toString を追加
 ・  stslib_test_web_CDN.html を修正
+・  ifUndefinedValue 追加
+    全体的に、ifNullOrUndefinedValue を ifUndefinedValue に置き換え
+・  Array.prototype.filter/map/reduce/reduceRight 追加
+
