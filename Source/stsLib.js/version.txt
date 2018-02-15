@@ -439,3 +439,8 @@
 ・  string.isEmptyを type.isEmpty にして、
     オブジェクトと配列も空かどうかを判定できるようにした。
 ・  isNotEmpty/isEmpties/isEmptyArray など作成
+◇  ver 2018/02/15
+・  多次元配列処理をarray.dimension名前空間に分離した
+・  array.dimension.flatten を追加
+・  array.dimension.toString を追加
+・  stslib_test_web_CDN.html を修正

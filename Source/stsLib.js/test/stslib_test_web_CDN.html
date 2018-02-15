@@ -6,6 +6,7 @@ RawGit
 http://rawgit.com/
 -->
   <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_core.js"></script>
+  <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_console.js"></script>
   <script src="https://cdn.rawgit.com/standard-software/stsLib.js/master/Source/stsLib.js/stslib_web.js"></script>
   <script>
 
@@ -21,7 +22,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/16
+Version:        2018/02/15
 //----------------------------------------*/
 
 var stsLib = require('stslib_web.js');
@@ -29,39 +30,76 @@ var stsLib = require('stslib_web.js');
 function main() {
   stsLib.test.test_stslib_core();
   stsLib.web.test_stslib_web();
+  stsLib.system.test_stslib_console();
 
-  // var draw = function () {
-  //   var e = document.getElementById('canvas01');
-  //   if ( ! e || ! e.getContext ) { return false; }
-  //   var canvas = e.getContext('2d');
-  //   canvas.beginPath();
-  //   canvas.moveTo(50, 50);
-  //   canvas.lineTo(100, 50);
-  //   canvas.lineTo(100, 100);
-  //   canvas.lineTo(50, 100);
-  //   canvas.closePath();
-  //   canvas.stroke();
-  // };
-  // draw();
-
-  var draw = function () {
+  var drawRect01 = function () {
     var e = document.getElementById('canvas01');
     if ( ! e || ! e.getContext ) { return false; }
     var canvas = e.getContext('2d');
     canvas.beginPath();
-    var p = stsLib.point.Point(50, 50);
 
+    var p = stsLib.point.Point(30, 30);
     canvas.moveTo(p.x, p.y);
-    p.move(50, 0);
+    p.move(30, 0);
     canvas.lineTo(p.x, p.y);
-    p.move(0, 50);
+    p.move(0, 30);
     canvas.lineTo(p.x, p.y);
-    p.move(-50, 0);
+    p.move(-30, 0);
     canvas.lineTo(p.x, p.y);
     canvas.closePath();
     canvas.stroke();
   };
-  draw();
+  drawRect01();
+
+  var drawRect02 = function () {
+    var e = document.getElementById('canvas01');
+    if ( ! e || ! e.getContext ) { return false; }
+    var canvas = e.getContext('2d');
+    canvas.beginPath();
+
+    var v = stsLib.vector.Vector(
+      stsLib.point.Point(130, 30),
+      stsLib.point.Point(160, 30));
+    canvas.moveTo(v.from.x, v.from.y);
+    canvas.lineTo(v.to.x, v.to.y);
+    v.setFrom(v.to);
+    v = v.rotate(-90);
+    canvas.lineTo(v.to.x, v.to.y);
+    v.setFrom(v.to);
+    v = v.rotate(-90);
+    canvas.lineTo(v.to.x, v.to.y);
+    canvas.closePath();
+    canvas.stroke();
+  };
+  drawRect02();
+
+ var drawStar = function () {
+    var e = document.getElementById('canvas01');
+    if ( ! e || ! e.getContext ) { return false; }
+    var canvas = e.getContext('2d');
+    canvas.beginPath();
+
+    var v = stsLib.vector.Vector(
+      stsLib.point.Point(30, 160),
+      stsLib.point.Point(30, 130));
+    v.rotate(-18);
+    canvas.moveTo(v.from.x, v.from.y);
+    canvas.lineTo(v.to.x, v.to.y);
+    v.setFrom(v.to);
+    v.rotate(-1 * (180-36));
+    canvas.lineTo(v.to.x, v.to.y);
+    v.setFrom(v.to);
+    v.rotate(-1 * (180-36));
+    canvas.lineTo(v.to.x, v.to.y);
+    v.setFrom(v.to);
+    v.rotate(-1 * (180-36));
+    canvas.lineTo(v.to.x, v.to.y);
+
+    canvas.closePath();
+    canvas.stroke();
+  };
+  drawStar();
+
 };
 
 document.addEventListener("DOMContentLoaded",function(eve){
