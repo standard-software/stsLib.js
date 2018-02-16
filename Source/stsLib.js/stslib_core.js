@@ -7665,10 +7665,11 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.forEach = Array.prototype.forEach || function(func, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
 
-      for (var i = 0, il = this.length; i < il; i += 1) {
-        func.call(thisObj, this[i], i, this);
+      var list = 'split' in this ? this.split('') : this;
+      for (var i = 0, il = list.length; i < il; i += 1) {
+        func.call(thisObj, list[i], i, list);
       }
     };
 
@@ -7682,10 +7683,11 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.every = Array.prototype.every || function(func, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
 
-      for (var i = 0, il = this.length; i < il; i += 1) {
-        if (!func.call(thisObj, this[i], i, this)) {
+      var list = 'split' in this ? this.split('') : this;
+      for (var i = 0, il = list.length; i < il; i += 1) {
+        if (!func.call(thisObj, list[i], i, list)) {
           return false;
         }
       }
@@ -7702,10 +7704,11 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.some = Array.prototype.some || function(func, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
 
-      for (var i = 0, il = this.length; i < il; i += 1) {
-        if (func.call(thisObj, this[i], i, this)) {
+      var list = 'split' in this ? this.split('') : this;
+      for (var i = 0, il = list.length; i < il; i += 1) {
+        if (func.call(thisObj, list[i], i, list)) {
           return true;
         }
       }
@@ -7721,12 +7724,13 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.filter = Array.prototype.filter || function(func, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
 
+      var list = 'split' in this ? this.split('') : this;
       var result = [];
-      for (var i = 0, il = this.length; i < il; i += 1) {
-        if (func.call(thisObj, this[i], i, this)) {
-          result.push(this[i]);
+      for (var i = 0, il = list.length; i < il; i += 1) {
+        if (func.call(thisObj, list[i], i, list)) {
+          result.push(list[i]);
         }
       }
       return result;
@@ -7742,11 +7746,12 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.map = Array.prototype.map || function(func, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
 
+      var list = 'split' in this ? this.split('') : this;
       var result = [];
-      for (var i = 0, il = this.length; i < il; i += 1) {
-        result.push(func.call(thisObj, this[i], i, this));
+      for (var i = 0, il = list.length; i < il; i += 1) {
+        result.push(func.call(thisObj, list[i], i, list));
       }
       return result;
     };
@@ -7762,22 +7767,23 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.reduce = Array.prototype.reduce || function(func, value, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
       if (this.length === 0) {
         c.assert(false, 'Error:Array.prototype.reduce')
         //空配列をreduceしようとするとエラーになるのが標準仕様らしい
       }
 
+      var list = 'split' in this ? this.split('') : this;
       var i;
       if (t.isUndefined(value)) {
         i = 1;
-        result = this[0];
+        result = list[0];
       } else {
         i = 0;
         result = value;
       }
-      for (il = this.length; i < il; i += 1) {
-        result = func.call(thisObj, result, this[i], i, this);
+      for (il = list.length; i < il; i += 1) {
+        result = func.call(thisObj, result, list[i], i, list);
       }
       return result;
     };
@@ -7793,22 +7799,23 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.reduceRight = Array.prototype.reduceRight || function(func, value, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
       if (this.length === 0) {
         c.assert(false, 'Error:Array.prototype.reduce')
         //空配列をreduceしようとするとエラーになるのが標準仕様らしい
       }
 
+      var list = 'split' in this ? this.split('') : this;
       var i;
       if (t.isUndefined(value)) {
-        i = this.length - 2;
-        result = this[this.length - 1];
+        i = list.length - 2;
+        result = list[list.length - 1];
       } else {
-        i = this.length - 1;
+        i = list.length - 1;
         result = value;
       }
       for (;0 <= i; i -= 1) {
-        result = func.call(thisObj, result, this[i], i, this);
+        result = func.call(thisObj, result, list[i], i, list);
       }
       return result;
     };
@@ -7820,14 +7827,20 @@ if (typeof module === 'undefined') {
     //    条件にあう要素を返す
     //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
     //  ・渡す関数は function(element, index, array)
+    //  ・WSH では stringを[i]で呼び出せない。
+    //    そのために split したいのだが
+    //    call で string を渡されると Stringオブジェクトになるらしく
+    //    判定方法がないので、split メソッドを持つかどうかで判断している
+    //  ・length が負の値なら undefined を返すので厳密なPolyfillではない
     //----------------------------------------
     Array.prototype.find = Array.prototype.find || function(func, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
 
-      for (var i = 0, il = this.length; i < il; i += 1) {
-        if (func.call(thisObj, this[i], i, this)) {
-          return this[i];
+      var list = 'split' in this ? this.split('') : this;
+      for (var i = 0, il = list.length; i < il; i += 1) {
+        if (func.call(thisObj, list[i], i, list)) {
+          return list[i];
         }
       }
       return undefined;
@@ -7840,13 +7853,19 @@ if (typeof module === 'undefined') {
     //    条件にあう要素のIndexを返す
     //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
     //  ・渡す関数は function(element, index, array)
+    //  ・WSH では stringを[i]で呼び出せない。
+    //    そのために split したいのだが
+    //    call で string を渡されると Stringオブジェクトになるらしく
+    //    判定方法がないので、split メソッドを持つかどうかで判断している
+    //  ・length が負の値なら undefined を返すので厳密なPolyfillではない
     //----------------------------------------
     Array.prototype.findIndex = Array.prototype.findIndex || function(func, thisObj) {
       c.assert(t.isFunction(func));
-      c.assert(t.isArray(this));
+      c.assert(!t.isNullOrUndefined(this));
 
-      for (var i = 0, il = this.length; i < il; i += 1) {
-        if (func.call(thisObj, this[i], i, this)) {
+      var list = 'split' in this ? this.split('') : this;
+      for (var i = 0, il = list.length; i < il; i += 1) {
+        if (func.call(thisObj, list[i], i, list)) {
           return i;
         }
       }
@@ -7969,7 +7988,7 @@ if (typeof module === 'undefined') {
       c.check('4,3,2,1,0', currentArray.join());
       c.check('4,3,2,1,0', indexArray.join());
 
-      //Array.prototype.find
+      Array.prototype.find
       c.check(6, [0,2,4,6,8,10].find(
         function(element, i, array) {
           return 5 <= element;
@@ -7980,6 +7999,15 @@ if (typeof module === 'undefined') {
           return element <= 5;
         }
       ));
+
+      c.check("A", Array.prototype.find.call("123ABC".split(''),
+        function(element, i, array) {
+          return element === "A";
+        }));
+      c.check("B", Array.prototype.find.call("123ABC",
+        function(element, i, array) {
+          return element === "B";
+        }));
 
       //Array.prototype.findIndex
       c.check(3, [0,2,4,6,8,10].findIndex(
