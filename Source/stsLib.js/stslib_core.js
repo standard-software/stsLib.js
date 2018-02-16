@@ -7664,6 +7664,9 @@ if (typeof module === 'undefined') {
     //  ・渡す関数は function(element, index, array)
     //----------------------------------------
     Array.prototype.forEach = Array.prototype.forEach || function(func, thisObj) {
+      c.assert(t.isFunction(func));
+      c.assert(t.isArray(this));
+
       for (var i = 0, il = this.length; i < il; i += 1) {
         func.call(thisObj, this[i], i, this);
       }
@@ -7678,6 +7681,9 @@ if (typeof module === 'undefined') {
     //  ・渡す関数は function(element, index, array)
     //----------------------------------------
     Array.prototype.every = Array.prototype.every || function(func, thisObj) {
+      c.assert(t.isFunction(func));
+      c.assert(t.isArray(this));
+
       for (var i = 0, il = this.length; i < il; i += 1) {
         if (!func.call(thisObj, this[i], i, this)) {
           return false;
@@ -7695,6 +7701,9 @@ if (typeof module === 'undefined') {
     //  ・渡す関数は function(element, index, array)
     //----------------------------------------
     Array.prototype.some = Array.prototype.some || function(func, thisObj) {
+      c.assert(t.isFunction(func));
+      c.assert(t.isArray(this));
+
       for (var i = 0, il = this.length; i < il; i += 1) {
         if (func.call(thisObj, this[i], i, this)) {
           return true;
@@ -7711,6 +7720,9 @@ if (typeof module === 'undefined') {
     //  ・渡す関数は function(element, index, array)
     //----------------------------------------
     Array.prototype.filter = Array.prototype.filter || function(func, thisObj) {
+      c.assert(t.isFunction(func));
+      c.assert(t.isArray(this));
+
       var result = [];
       for (var i = 0, il = this.length; i < il; i += 1) {
         if (func.call(thisObj, this[i], i, this)) {
@@ -7729,6 +7741,9 @@ if (typeof module === 'undefined') {
     //  ・渡す関数は function(element, index, array)
     //----------------------------------------
     Array.prototype.map = Array.prototype.map || function(func, thisObj) {
+      c.assert(t.isFunction(func));
+      c.assert(t.isArray(this));
+
       var result = [];
       for (var i = 0, il = this.length; i < il; i += 1) {
         result.push(func.call(thisObj, this[i], i, this));
@@ -7747,7 +7762,6 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.reduce = Array.prototype.reduce || function(func, value, thisObj) {
       c.assert(t.isFunction(func));
-
       c.assert(t.isArray(this));
       if (this.length === 0) {
         c.assert(false, 'Error:Array.prototype.reduce')
@@ -7779,7 +7793,6 @@ if (typeof module === 'undefined') {
     //----------------------------------------
     Array.prototype.reduceRight = Array.prototype.reduceRight || function(func, value, thisObj) {
       c.assert(t.isFunction(func));
-
       c.assert(t.isArray(this));
       if (this.length === 0) {
         c.assert(false, 'Error:Array.prototype.reduce')
@@ -7799,6 +7812,47 @@ if (typeof module === 'undefined') {
       }
       return result;
     };
+
+    //----------------------------------------
+    //・Array.find
+    //----------------------------------------
+    //  ・すべての要素に対してfuncを実行して
+    //    条件にあう要素を返す
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(element, index, array)
+    //----------------------------------------
+    Array.prototype.find = Array.prototype.find || function(func, thisObj) {
+      c.assert(t.isFunction(func));
+      c.assert(t.isArray(this));
+
+      for (var i = 0, il = this.length; i < il; i += 1) {
+        if (func.call(thisObj, this[i], i, this)) {
+          return this[i];
+        }
+      }
+      return undefined;
+    };
+
+    //----------------------------------------
+    //・Array.findIndex
+    //----------------------------------------
+    //  ・すべての要素に対してfuncを実行して
+    //    条件にあう要素のIndexを返す
+    //  ・thisObjを指定すると、funcで呼び出される時にthisを指定できる
+    //  ・渡す関数は function(element, index, array)
+    //----------------------------------------
+    Array.prototype.findIndex = Array.prototype.findIndex || function(func, thisObj) {
+      c.assert(t.isFunction(func));
+      c.assert(t.isArray(this));
+
+      for (var i = 0, il = this.length; i < il; i += 1) {
+        if (func.call(thisObj, this[i], i, this)) {
+          return i;
+        }
+      }
+      return -1;
+    };
+
 
     _.test_GlobalArray = function() {
 
@@ -7884,6 +7938,7 @@ if (typeof module === 'undefined') {
       c.check(1, [1].reduce(reducer));
       //c.check(1, [].reduce(reducer));
 
+      //Array.prototype.reduceRight
       var preArray = [];
       var currentArray = [];
       var indexArray = [];
@@ -7913,6 +7968,30 @@ if (typeof module === 'undefined') {
       c.check('10,14,17,19,20', preArray.join());
       c.check('4,3,2,1,0', currentArray.join());
       c.check('4,3,2,1,0', indexArray.join());
+
+      //Array.prototype.find
+      c.check(6, [0,2,4,6,8,10].find(
+        function(element, i, array) {
+          return 5 <= element;
+        }
+      ));
+      c.check(0, [0,2,4,6,8,10].find(
+        function(element, i, array) {
+          return element <= 5;
+        }
+      ));
+
+      //Array.prototype.findIndex
+      c.check(3, [0,2,4,6,8,10].findIndex(
+        function(element, i, array) {
+          return 5 <= element;
+        }
+      ));
+      c.check(0, [0,2,4,6,8,10].findIndex(
+        function(element, i, array) {
+          return element <= 5;
+        }
+      ));
     };
 
 

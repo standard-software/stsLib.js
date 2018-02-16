@@ -447,4 +447,5 @@
 ・  ifUndefinedValue 追加
     全体的に、ifNullOrUndefinedValue を ifUndefinedValue に置き換え
 ・  Array.prototype.filter/map/reduce/reduceRight 追加
-
+◇  ver 2018/02/16
+・	Array.find/findIndex 追加
