@@ -452,4 +452,7 @@
 ・  Array.prototype系処理を Array.prototype.find.call(文字列 の
     呼び出し形式に対応した。
     通常はすでに実装があるので WSH だけで呼び出される想定
+◇  ver 2018/02/28
+・  Google Apps Script のライブラリとして登録して
+    動作確認できる stslib_test_gas.js を配置した。
 

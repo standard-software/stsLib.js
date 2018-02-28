@@ -1,4 +1,19 @@
-﻿var alert = function(message) {
+﻿/*----------------------------------------
+stsLib.js
+Standard Software Library JavaScript
+--------------------------------------
+ModuleName:     Test Node.js Module
+FileName:       stslib_test_nodejs.js
+--------------------------------------
+License:        MIT License
+All Right Reserved:
+    Name:       Standard Software
+    URL:        https://www.facebook.com/stndardsoftware/
+--------------------------------------
+Version:        2018/02/28
+//----------------------------------------*/
+
+var alert = function(message) {
   console.log(message);
 };
 

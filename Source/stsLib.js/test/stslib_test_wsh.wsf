@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="shift-jis" ?>
-<job>
-    <script language="JavaScript" src="..\stsLib_core.js"></script>
-    <script language="JavaScript" src="..\stslib_win_wsh.js"></script>
-    <script language="JavaScript">
-    <![CDATA[
-
-/*----------------------------------------
+<!-- ----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 --------------------------------------
-ModuleName:    WSH Test WSF Module
-FileName:      stslib_test_wsh.wsf
+ModuleName:     WSH Test WSF Module
+FileName:       stslib_test_wsh.wsf
 --------------------------------------
 License:        MIT License
 All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2017/09/21
-//----------------------------------------*/
-
+Version:        2018/02/28
+---------------------------------------- -->
+<job>
+    <script language="JavaScript" src="..\stsLib_core.js"></script>
+    <script language="JavaScript" src="..\stslib_win_wsh.js"></script>
+    <script language="JavaScript">
+    <![CDATA[
 
 var stsLib = require('../stslib_win_wsh.js');
+
 //requireが標準ではない場合(node.jsなど以外)には
 //requireは独自実装していて
 //ファイル名だけをキーにしてオブジェクトを読み出すので
-//[/]以降が正しければ動作する
-//また、[.js]は省略可能、
+//[/]以降が正しければ動作する。また、[.js]は省略可能。
 //多段階のrequireの場合でも同じオブジェクを指すので
 //下記の記載でも同じく動作する
 //  var stsLib = require('../stslib_core.js');
