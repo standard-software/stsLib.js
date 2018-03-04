@@ -1,4 +1,4 @@
-/*----------------------------------------
+ï»¿/*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 --------------------------------------
@@ -13,14 +13,14 @@ All Right Reserved:
 Version:        2018/02/28
 //----------------------------------------*/
 
-//EGASã‚Éƒ‰ƒCƒuƒ‰ƒŠ‚Æ‚µ‚Ä
-//  stslib_core.js ‚Æ stslib_gas_spreadsheet.js ‚ğŒ‹‡‚µ‚Ä
-//  stslib_gas.js ‚Æ‚¢‚¤–¼‘O‚ÌƒvƒƒWƒFƒNƒg‚Å”z’uA•Û‘¶B
-//Estslib_test_gas.js ‚Æ‚¢‚¤–¼‘O‚ÌƒvƒƒWƒFƒNƒg‚Æ‚µ‚Ä
-//  ‚±‚Ìƒtƒ@ƒCƒ‹‚ğ”z’uA•Û‘¶B
-//Estslib_gas.js ‚ğ[ƒŠƒ\[ƒX]-[ƒ‰ƒCƒuƒ‰ƒŠ]‚Æ‚µ‚ÄƒCƒ“ƒ|[ƒg‚·‚éB
-//  ‚»‚Ì‚Æ‚«‚É¯•Êq‚ğ[stsLib_gas]‚Æ‚µ‚Ä‚¢‚é‚Ì‚Å
-//  stsLib_gas.require‚ªg—p‚Å‚«‚é
+//ãƒ»GASä¸Šã«ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã¨ã—ã¦
+//  stslib_core.js ã¨ stslib_gas_spreadsheet.js ã‚’çµåˆã—ã¦
+//  stslib_gas.js ã¨ã„ã†åå‰ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã§é…ç½®ã€ä¿å­˜ã€‚
+//ãƒ»stslib_test_gas.js ã¨ã„ã†åå‰ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã¨ã—ã¦
+//  ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é…ç½®ã€ä¿å­˜ã€‚
+//ãƒ»stslib_gas.js ã‚’[ãƒªã‚½ãƒ¼ã‚¹]-[ãƒ©ã‚¤ãƒ–ãƒ©ãƒª]ã¨ã—ã¦ã‚¤ãƒ³ãƒãƒ¼ãƒˆã™ã‚‹ã€‚
+//  ãã®ã¨ãã«è­˜åˆ¥å­ã‚’[stsLib_gas]ã¨ã—ã¦ã„ã‚‹ã®ã§
+//  stsLib_gas.requireãŒä½¿ç”¨ã§ãã‚‹
 
 function myFunction() {
   var stsLib = stsLib_gas.require('stslib_gas_spreadsheet.js');
