@@ -121,7 +121,11 @@ version:        2018/02/05
         var params=location.search.substring(1).split('&');
         for(var i = 0, l = params.length; i < l; i += 1) {
           var keyValue = params[i].split('=');
-          result[keyValue[0]] = decodeURIComponent(keyValue[1]);
+          try {
+            result[keyValue[0]] = decodeURIComponent(keyValue[1]);
+          } catch(error) {};
+          //decodeURIComponentが例外を出す場合があるので
+          //例外を握りつぶす
         }
         return result;
       };
