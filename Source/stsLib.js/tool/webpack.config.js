@@ -1,4 +1,4 @@
-var path = require('path');
+﻿var path = require('path');
 
 module.exports = {
     entry : './entry_webpack.js',

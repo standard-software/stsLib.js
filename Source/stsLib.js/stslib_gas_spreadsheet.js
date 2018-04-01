@@ -1,4 +1,4 @@
-/*----------------------------------------
+ï»¿/*----------------------------------------
 stsLib.js
 Standard Software Library JavaScript
 ----------------------------------------
@@ -14,14 +14,14 @@ Version:        2018/01/15
 //----------------------------------------*/
 
 //----------------------------------------
-//Ÿƒ‚ƒWƒ…[ƒ‹ŒÄ‚Ño‚µ
+//â—†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«å‘¼ã³å‡ºã—
 //----------------------------------------
 
 //----------------------------------------
-//ErequireŠÖ”
+//ãƒ»requireé–¢æ•°
 //----------------------------------------
-//  Erequire/module‚Ì–³‚¢ŠÂ‹«‚É‘Î‰‚·‚é‚½‚ß‚É
-//    require ‚Æ requireList ‚ğƒOƒ[ƒoƒ‹‚É’Ç‰ÁB
+//  ãƒ»require/moduleã®ç„¡ã„ç’°å¢ƒã«å¯¾å¿œã™ã‚‹ãŸã‚ã«
+//    require ã¨ requireList ã‚’ã‚°ãƒ­ãƒ¼ãƒãƒ«ã«è¿½åŠ ã€‚
 //----------------------------------------
 if (typeof module === 'undefined') {
 
@@ -30,7 +30,7 @@ if (typeof module === 'undefined') {
     if (typeof funcName !== 'string') {
       throw new Error('Error:stslib_gas_spreadsheet.js require');
     }
-    //ƒpƒX‹æØ‚èˆÈ~‚Ì‚İ“®ì‚ÉÌ—p‚·‚é
+    //ãƒ‘ã‚¹åŒºåˆ‡ã‚Šä»¥é™ã®ã¿å‹•ä½œã«æ¡ç”¨ã™ã‚‹
     var index = funcName.lastIndexOf('/');
     if (index !== -1) {
       funcName = funcName.substring(index+1);
@@ -39,7 +39,7 @@ if (typeof module === 'undefined') {
       throw new Error('Error:stslib_gas_spreadsheet.js require');
     }
 
-    //Šg’£q‚ªÈ—ª‚³‚ê‚Ä‚¢‚éê‡‚Í’Ç‰Á
+    //æ‹¡å¼µå­ãŒçœç•¥ã•ã‚Œã¦ã„ã‚‹å ´åˆã¯è¿½åŠ 
     if (funcName.indexOf('.') === -1) {
       funcName += '.js';
     }
@@ -56,17 +56,17 @@ if (typeof module === 'undefined') {
 }
 
 //----------------------------------------
-//¡‘S‘Ì‚ğˆÍ‚¤–³–¼ŠÖ”
+//â– å…¨ä½“ã‚’å›²ã†ç„¡åé–¢æ•°
 //----------------------------------------
 (function() {
 
   //----------------------------------------
-  //ErequireÀs
+  //ãƒ»requireå®Ÿè¡Œ
   //----------------------------------------
   var stsLib = require('./stslib_core.js')
 
   //----------------------------------------
-  //¡stsLib–¼‘O‹óŠÔ
+  //â– stsLibåå‰ç©ºé–“
   //----------------------------------------
   var stsLib = stsLib || {};
   (function (stsLib, global) {
@@ -74,14 +74,14 @@ if (typeof module === 'undefined') {
     var _ = stsLib;
 
     //----------------------------------------
-    //¡stsLib.spreadsheet–¼‘O‹óŠÔ
+    //â– stsLib.spreadsheetåå‰ç©ºé–“
     //----------------------------------------
     _.spreadsheet = stsLib.spreadsheet || {};
     (function () {
       var _ = stsLib.spreadsheet;
 
       //----------------------------------------
-      //EƒV[ƒg–¼ˆê——
+      //ãƒ»ã‚·ãƒ¼ãƒˆåä¸€è¦§
       //----------------------------------------
       _.sheetNames = function() {
         var sheets = SpreadsheetApp.getActiveSpreadsheet().getSheets();
@@ -93,9 +93,9 @@ if (typeof module === 'undefined') {
       }
 
       //----------------------------------------
-      //EƒZƒ‹‚ª‹ó”’‚©‚Ç‚¤‚©’²‚×‚é
+      //ãƒ»ã‚»ãƒ«ãŒç©ºç™½ã‹ã©ã†ã‹èª¿ã¹ã‚‹
       //----------------------------------------
-      //  EgetValue‚ÆgetFormula‚Åƒ`ƒFƒbƒN‚·‚é
+      //  ãƒ»getValueã¨getFormulaã§ãƒã‚§ãƒƒã‚¯ã™ã‚‹
       //----------------------------------------
       _.cellIsEmpty = function(sheet, row, col) {
         var range = sheet.getRange(row, col);
@@ -104,10 +104,10 @@ if (typeof module === 'undefined') {
       }
 
       //----------------------------------------
-      //ƒf[ƒ^ÅIs/—ñ‚ğ‹‚ß‚é
+      //â—‡ãƒ‡ãƒ¼ã‚¿æœ€çµ‚è¡Œ/åˆ—ã‚’æ±‚ã‚ã‚‹
       //----------------------------------------
-      //  Ecol/row‚Í®”’l‚Åw’è•K{
-      //  Eƒf[ƒ^‚ª‚Ü‚Á‚½‚­‚È‚¢ê‡‚Å‚àAÅIs/—ñ‚Æ‚µ‚Ä 1 ‚ğ•Ô‚·
+      //  ãƒ»col/rowã¯æ•´æ•°å€¤ã§æŒ‡å®šå¿…é ˆ
+      //  ãƒ»ãƒ‡ãƒ¼ã‚¿ãŒã¾ã£ãŸããªã„å ´åˆã§ã‚‚ã€æœ€çµ‚è¡Œ/åˆ—ã¨ã—ã¦ 1 ã‚’è¿”ã™
       //----------------------------------------
 
       _.dataLastRow = function(sheet, col) {
@@ -133,12 +133,12 @@ if (typeof module === 'undefined') {
       }
 
       //----------------------------------------
-      //Es‚ğ–¼‘O‚©‚çŒ©‚Â‚¯‚é
+      //ãƒ»è¡Œã‚’åå‰ã‹ã‚‰è¦‹ã¤ã‘ã‚‹
       //----------------------------------------
-      //  EcolTitle: –¼‘O‚Ì—ñ
-      //    title:    –¼‘O
-      //    rowStart: ŒŸõŠJn‚·‚és
-      //  EŒ©‚Â‚©‚ç‚È‚¯‚ê‚Î -1 ‚ğ•Ô‚·
+      //  ãƒ»colTitle: åå‰ã®åˆ—
+      //    title:    åå‰
+      //    rowStart: æ¤œç´¢é–‹å§‹ã™ã‚‹è¡Œ
+      //  ãƒ»è¦‹ã¤ã‹ã‚‰ãªã‘ã‚Œã° -1 ã‚’è¿”ã™
       //----------------------------------------
       _.rowByTitle = function(sheet, colTitle, title, rowStart) {
         stsLib.compare.assert(stsLib.type.isInts(colTitle, rowStart));
@@ -154,12 +154,12 @@ if (typeof module === 'undefined') {
       }
 
       //----------------------------------------
-      //E—ñ‚ğ–¼‘O‚©‚çŒ©‚Â‚¯‚é
+      //ãƒ»åˆ—ã‚’åå‰ã‹ã‚‰è¦‹ã¤ã‘ã‚‹
       //----------------------------------------
-      //  ErowTitle: –¼‘O‚Ìs
-      //    title:    –¼‘O
-      //    colStart: ŒŸõŠJn‚·‚é—ñ
-      //  EŒ©‚Â‚©‚ç‚È‚¯‚ê‚Î -1 ‚ğ•Ô‚·
+      //  ãƒ»rowTitle: åå‰ã®è¡Œ
+      //    title:    åå‰
+      //    colStart: æ¤œç´¢é–‹å§‹ã™ã‚‹åˆ—
+      //  ãƒ»è¦‹ã¤ã‹ã‚‰ãªã‘ã‚Œã° -1 ã‚’è¿”ã™
       //----------------------------------------
       _.columnByTitle = function(sheet, rowTitle, title, colStart) {
         stsLib.compare.assert(stsLib.type.isInts(rowTitle, colStart));
@@ -177,7 +177,7 @@ if (typeof module === 'undefined') {
     }());   //stsLib.gas
 
     //----------------------------------------
-    //ŸÈ—ªŒÄ‚Ño‚µ
+    //â—†çœç•¥å‘¼ã³å‡ºã—
     //----------------------------------------
     var x = stsLib.syntax;
     var t = stsLib.type;
@@ -193,11 +193,11 @@ if (typeof module === 'undefined') {
   }(stsLib, this));   //stsLib
 
   //----------------------------------------
-  //Ÿƒ‚ƒWƒ…[ƒ‹“o˜^
+  //â—†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ç™»éŒ²
   //----------------------------------------
   var moduleExports = function(object, registFileName) {
     if (typeof module === 'undefined') {
-      //Šg’£q‚ªÈ—ª‚³‚ê‚Ä‚¢‚éê‡‚Í’Ç‰Á
+      //æ‹¡å¼µå­ãŒçœç•¥ã•ã‚Œã¦ã„ã‚‹å ´åˆã¯è¿½åŠ 
       if (registFileName.indexOf('.') === -1) {
         registFileName += '.js';
       }
