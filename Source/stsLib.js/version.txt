@@ -455,4 +455,5 @@
 ◇  ver 2018/02/28
 ・  Google Apps Script のライブラリとして登録して
     動作確認できる stslib_test_gas.js を配置した。
-
+◇  ver 2018/05/15
+・  stsLib.wsh.fs.forceCreateFolder の不具合修正

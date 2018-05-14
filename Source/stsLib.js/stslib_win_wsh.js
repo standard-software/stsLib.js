@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/01/16
+Version:        2018/05/15
 //----------------------------------------*/
 
 //----------------------------------------
@@ -146,14 +146,13 @@ Version:        2018/01/16
         var _ = stsLib.wsh.fs;
 
         _.forceCreateFolder = function(folderPath) {
-          if (!stsLib.wsh.fso.FolderExists(folderPath)) {
             var parentFolderPath = stsLib.wsh.fso.GetParentFolderName(folderPath);
-            if (stsLib.wsh.fso.FolderExists(parentFolderPath)) {
-              stsLib.wsh.fso.CreateFolder(folderPath);
-            } else {
+            if (!stsLib.wsh.fso.FolderExists(parentFolderPath)) {
               _.forceCreateFolder(parentFolderPath);
             }
-          }
+            if (!stsLib.wsh.fso.FolderExists(folderPath)) {
+              stsLib.wsh.fso.CreateFolder(folderPath);
+            }
         };
 
         _.test_forceCreateFolder = function() {
