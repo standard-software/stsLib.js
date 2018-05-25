@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/05/15
+Version:        2018/05/25
 //----------------------------------------*/
 
 //----------------------------------------
@@ -348,6 +348,64 @@ Version:        2018/05/15
         }
 
       }());   //stsLib.wsh.textfile
+
+      //----------------------------------------
+      //ÅüShortcutFile
+      //----------------------------------------
+      _.shortcutFile = stsLib.wsh.shortcutFile || {};
+      (function () {
+        var _ = stsLib.wsh.shortcutFile;
+
+        _.create = function(shortcutFilePath, targetFilePath,
+          iconFilePath, iconIndex, description) {
+
+          if (t.isUndefined(iconFilePath)) {
+            iconFilePath = '';
+          }
+          if (t.isUndefined(iconIndex)) {
+            iconIndex = -1;
+          }
+          if (t.isUndefined(description)) {
+            description = '';
+          }
+          c.assert(t.isString(shortcutFilePath));
+          c.assert(t.isString(targetFilePath));
+          c.assert(t.isString(iconFilePath));
+          c.assert(t.isInt(iconIndex));
+          c.assert(t.isString(description));
+
+          c.assert(stsLib.wsh.fso.FolderExists(
+              stsLib.wsh.fso.GetParentFolderName(shortcutFilePath)),
+              "No Exists ShortcutFileFolder");
+
+          c.assert(stsLib.wsh.fso.FileExists(
+              targetFilePath),
+              "No Exists ShortcutTargetFile");
+
+          var iconLocation = "";
+          if (!stsLib.wsh.fso.FileExists(iconFilePath)) {
+            iconLocation = -1;
+          } else {
+            if (0 <= iconIndex) {
+              iconLocation = iconFilePath + ',' + iconIndex.toString();
+            } else {
+              iconLocation = iconFilePath + ',0';
+            }
+          }
+
+          var shortcutFile = stsLib.wsh.shell.object.CreateShortcut(shortcutFilePath);
+
+          shortcutFile.TargetPath = targetFilePath;
+          shortcutFile.Description = description;
+          shortcutFile.IconLocation = iconLocation;
+          shortcutFile.RelativePath = '';
+          shortcutFile.WorkingDirectory = '';
+          shortcutFile.Hotkey = '';
+          shortcutFile.Save();
+
+        }
+
+      }());   //stsLib.wsh.shortcutFile
 
       //----------------------------------------
       //Åüshell

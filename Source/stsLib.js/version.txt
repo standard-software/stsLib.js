@@ -457,3 +457,5 @@
     動作確認できる stslib_test_gas.js を配置した。
 ◇  ver 2018/05/15
 ・  stsLib.wsh.fs.forceCreateFolder の不具合修正
+◇  ver 2018/05/25
+・  stsLib.wsh.shortcutFile.create を作成
