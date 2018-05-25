@@ -378,9 +378,11 @@ Version:        2018/05/25
               stsLib.wsh.fso.GetParentFolderName(shortcutFilePath)),
               "No Exists ShortcutFileFolder");
 
-          c.assert(stsLib.wsh.fso.FileExists(
-              targetFilePath),
-              "No Exists ShortcutTargetFile");
+          c.assert(
+            (stsLib.wsh.fso.FileExists(targetFilePath))
+            || (stsLib.wsh.fso.FolderExists(targetFilePath)),
+            "No Exists ShortcutTargetFile"
+          );
 
           var iconLocation = "";
           if (!stsLib.wsh.fso.FileExists(iconFilePath)) {
