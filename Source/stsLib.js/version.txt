@@ -459,3 +459,7 @@
 ・  stsLib.wsh.fs.forceCreateFolder の不具合修正
 ◇  ver 2018/05/25
 ・  stsLib.wsh.shortcutFile.create を作成
+◇  ver 2018/05/27
+・  stsLib.wsh.shell.run を作成
+・  stsLib.wsh.shell.runCommand を作成
+・	windowStyleEnum を stsLib.type に移動

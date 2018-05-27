@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/05/25
+Version:        2018/05/27
 //----------------------------------------*/
 
 //----------------------------------------
@@ -27,7 +27,7 @@ Version:        2018/05/25
   //■stsLib名前空間
   //----------------------------------------
   var stsLib = stsLib || {};
-  (function (stsLib, global) {
+  (function(stsLib, global) {
     'use strict';
     var _ = stsLib;
 
@@ -42,7 +42,7 @@ Version:        2018/05/25
     //■stsLib.wsh名前空間
     //----------------------------------------
     _.wsh = stsLib.wsh || {};
-    (function () {
+    (function() {
       var _ = stsLib.wsh;
 
       //----------------------------------------
@@ -55,10 +55,10 @@ Version:        2018/05/25
       //◆wshEngine
       //----------------------------------------
       _.wshEngine = stsLib.wsh.wshEngine || {};
-      (function () {
+      (function() {
         var _ = stsLib.wsh.wshEngine;
 
-        _.filePath = function () {
+        _.filePath = function() {
           return WScript.FullName;
         };
         // 64bit環境の場合
@@ -70,26 +70,26 @@ Version:        2018/05/25
         //  GUI:  C:\Windows\System32\WScript.exe
         //  CUI:  C:\Windows\System32\cscript.exe
 
-        _.folderPath = function () {
+        _.folderPath = function() {
           return WScript.Path;
         };
 
-        _.fileName = function () {
+        _.fileName = function() {
           return 'wscript.exe';
         };
 
-        _.engineName = function () {
+        _.engineName = function() {
           return WScript.Name;
         };
         // [Windows Script Host]
         // という名称が取得できる
 
-        _.engineVersion = function () {
+        _.engineVersion = function() {
           return WScript.Version;
         };
         // [5.8]になるはず
 
-        _.test_wshEngine = function () {
+        _.test_wshEngine = function() {
           alert(_.filePath());
           alert(_.folderPath());
           alert(_.fileName());
@@ -103,32 +103,32 @@ Version:        2018/05/25
       //◆Path
       //----------------------------------------
       _.path = stsLib.wsh.path || {};
-      (function () {
+      (function() {
         var _ = stsLib.wsh.path;
 
         //----------------------------------------
         //◇カレントディレクトリ
         //----------------------------------------
-        _.currentDirectory = function () {
+        _.currentDirectory = function() {
           return stsLib.wsh.shell.object.CurrentDirectory;
         };
 
         //----------------------------------------
         //◇スクリプトファイル(*.js/*.jse/*.wsf)
         //----------------------------------------
-        _.scriptFilePath = function () {
+        _.scriptFilePath = function() {
           return WScript.ScriptFullName;
         };
 
-        _.scriptFolderPath = function () {
+        _.scriptFolderPath = function() {
           return stsLib.wsh.fso.GetParentFolderName(_.scriptFilePath());
         };
 
-        _.scriptFileName = function () {
+        _.scriptFileName = function() {
           return WScript.ScriptName;
         };
 
-        _.test_path = function () {
+        _.test_path = function() {
           alert(_.currentDirectory());
           alert(_.scriptFilePath());
           alert(_.scriptFolderPath());
@@ -142,7 +142,7 @@ Version:        2018/05/25
       //----------------------------------------
 
       _.fs = stsLib.wsh.fs || {};
-      (function () {
+      (function() {
         var _ = stsLib.wsh.fs;
 
         _.forceCreateFolder = function(folderPath) {
@@ -168,7 +168,7 @@ Version:        2018/05/25
       //◆TextFile
       //----------------------------------------
       _.textfile = stsLib.wsh.textfile || {};
-      (function () {
+      (function() {
         var _ = stsLib.wsh.textfile;
 
         _.encoding = {
@@ -214,7 +214,7 @@ Version:        2018/05/25
           adSaveCreateOverWrite: 2
         };
 
-        _.load = function (filePath, encodingType) {
+        _.load = function(filePath, encodingType) {
           var result = '';
           var stream = new ActiveXObject('ADODB.Stream');
           stream.Type = streamTypeEnum.adTypeText;
@@ -234,7 +234,7 @@ Version:        2018/05/25
           return result;
         }
 
-        _.test_load = function () {
+        _.test_load = function() {
 
           var textTest = 'test\r\n123\r456\nあいうえお\r\ntest\r\n';
           var folderPathTestBase = stsLib.wsh.path.scriptFolderPath() +
@@ -265,7 +265,7 @@ Version:        2018/05/25
             _.encoding.ASCII));
         }
 
-        _.save = function (str, filePath, encodingType) {
+        _.save = function(str, filePath, encodingType) {
           var stream = new ActiveXObject('ADODB.Stream');
           stream.Type = streamTypeEnum.adTypeText;
           switch (encodingType) {
@@ -318,7 +318,7 @@ Version:        2018/05/25
 
         }
 
-        _.test_save = function () {
+        _.test_save = function() {
           var textTest = 'test\r\n123\r456\nあいうえお\r\ntest\r\n';
           var folderPathTestBase = stsLib.wsh.path.scriptFolderPath() +
             '\\TestData\\FileIoTest';
@@ -353,7 +353,7 @@ Version:        2018/05/25
       //◆ShortcutFile
       //----------------------------------------
       _.shortcutFile = stsLib.wsh.shortcutFile || {};
-      (function () {
+      (function() {
         var _ = stsLib.wsh.shortcutFile;
 
         _.create = function(shortcutFilePath, targetFilePath,
@@ -413,7 +413,7 @@ Version:        2018/05/25
       //◆shell
       //----------------------------------------
       _.shell = stsLib.wsh.shell || {};
-      (function () {
+      (function() {
         var _ = stsLib.wsh.shell;
 
         _.object = new ActiveXObject( "WScript.Shell" );
@@ -421,7 +421,7 @@ Version:        2018/05/25
         //----------------------------------------
         //◇ファイル指定したシェル起動
         //----------------------------------------
-        _.windowStyleEnum = {
+        stsLib.type.windowStyleEnum = {
           vbHide            : 0,  //ウィンドウ非表示
           vbNormalFocus     : 1,  //通常表示起動
           vbMinimizedFocus  : 2,  //最小化起動
@@ -429,13 +429,24 @@ Version:        2018/05/25
           vbNormalNoFocus   : 4,  //通常表示起動、フォーカスなし
           vbMinimizedNoFocus: 6   //最小化起動、フォーカスなし
         };
+        stsLib.type.isWindowStyleEnum = function(value) {
+          if (!t.isInt(value)) {
+            return false;
+          }
+          if (!n.inRange(value,
+            t.windowStyleEnum.vbHide,
+            t.windowStyleEnum.vbMinimizedNoFocus)) {
+            return false;
+          }
+          return true;
+        }
 
         //----------------------------------------
         //・ファイルを指定して既定のプログラムで開く
         //----------------------------------------
         //  ・calc.exe / notepad.exe など指定しても動く
         //----------------------------------------
-        _.fileOpen = function (path, windowStyle) {
+        _.fileOpen = function(path, windowStyle) {
 
           _.object.Run(
             "rundll32.exe url.dll" +
@@ -444,17 +455,31 @@ Version:        2018/05/25
           //第三引数のWaitはtrueにしても無視されるようだ
         }
 
-        _.test_fileOpen = function () {
+        _.test_fileOpen = function() {
           var folderPathTestBase = stsLib.wsh.path.scriptFolderPath() +
             '\\TestData\\ShellOpenTest';
           var testFilePath = folderPathTestBase + '\\ShellOpenTest.txt';
           stsLib.wsh.textfile.save('test', testFilePath, stsLib.wsh.textfile.encoding.Shift_JIS);
-          _.fileOpen(testFilePath, _.windowStyleEnum.vbNormalNoFocus);
+          _.fileOpen(testFilePath, t.windowStyleEnum.vbNormalNoFocus);
 
-          _.fileOpen('notepad.exe', _.windowStyleEnum.vbNormalNoFocus);
-
+          _.fileOpen('notepad.exe', t.windowStyleEnum.vbNormalNoFocus);
         };
 
+        //notepad.exe などの実行ファイルを指定する場合はこれを使う
+        _.run = function(commandline, windowStyle) {
+          if (t.isUndefined(windowStyle)) {
+            windowStyle = t.windowStyleEnum.vbNormalFocus;
+          }
+          c.assert(t.isString(commandline));
+          c.assert(t.isWindowStyleEnum(windowStyle));
+          _.object.Run(commandline, windowStyle)
+        }
+
+        //dir などのコマンドライン命令を指定する場合はこれを使う
+        //出力結果も取得できる
+        _.runCommand = function(commandline) {
+          return _.object.Exec('cmd /c ' + commandline).StdOut.ReadAll();
+        }
 
       }());   //stsLib.wsh.shell
 
@@ -462,7 +487,7 @@ Version:        2018/05/25
       //◆MessageBox
       //----------------------------------------
       _.messageBox = stsLib.wsh.messageBox || {};
-      (function () {
+      (function() {
         var _ = stsLib.wsh.messageBox;
 
         //----------------------------------------
@@ -504,12 +529,13 @@ Version:        2018/05/25
           BTN_RESULT_NOT          :-1    // どのボタンも押さなかったとき
         };
 
-        _.popup = function (strText, nSecondsToWait, strTitle, nType) {
+        _.popup = function(strText, nSecondsToWait, strTitle, nType) {
           return stsLib.wsh.shell.object.Popup(
             strText, nSecondsToWait, strTitle, nType);
+          //ラッピングする意味はあまりないのだが。
         }
 
-        _.test_popup = function () {
+        _.test_popup = function() {
           var m = stsLib.wsh.messageBox;
           var msgResult = m.popup(
             '本文', 10,
@@ -529,12 +555,12 @@ Version:        2018/05/25
     //----------------------------------------
     //◆グローバル拡張
     //----------------------------------------
-    (function () {
+    (function() {
       var _ = global;
 
       //alertの上書きはここではなく
       //実際のグローバルで行う
-      // _.alert = function (message) {
+      // _.alert = function(message) {
       //   WScript.Echo(message);
       // };
 
@@ -544,13 +570,13 @@ Version:        2018/05/25
     //◆動作確認
     //----------------------------------------
     _.test = stsLib.test || {};
-    (function () {
+    (function() {
       var _ = stsLib.test;
 
       //----------------------------------------
       //◆テスト
       //----------------------------------------
-      _.test_stslib_wsh = function () {
+      _.test_stslib_wsh = function() {
         // stsLib.wsh.path.test_path();
         // stsLib.wsh.wshEngine.test_wshEngine();
         // stsLib.wsh.shell.test_fileOpen();
