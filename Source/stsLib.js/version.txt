@@ -463,3 +463,5 @@
 ・  stsLib.wsh.shell.run を作成
 ・  stsLib.wsh.shell.runCommand を作成
 ・	windowStyleEnum を stsLib.type に移動
+◇  ver 2018/06/01
+・  stsLib.string.encloseDoubleQuoteIfInSpace を追加

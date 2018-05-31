@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-version:        2018/02/05
+version:        2018/06/01
 //----------------------------------------*/
 
 //----------------------------------------
@@ -5400,6 +5400,20 @@ if (typeof module === 'undefined') {
         c.check('0',                _.formatInsertLast('0', ',', 3));
         c.check('',                 _.formatInsertLast('', ',', 3));
       };
+
+      //----------------------------------------
+      //◇特殊処理
+      //----------------------------------------
+
+      //----------------------------------------
+      //・スペースの含まれた値をダブルクウォートで囲う
+      //----------------------------------------
+      _.encloseDoubleQuoteIfInSpace = function(path) {
+          if (s.isInclude(path, ' ')) {
+              return s.includeBothEnds(path, '"');
+          }
+          return path;
+      }
 
       //----------------------------------------
       //◇文字列の形式チェック
