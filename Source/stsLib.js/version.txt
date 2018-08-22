@@ -465,3 +465,7 @@
 ・	windowStyleEnum を stsLib.type に移動
 ◇  ver 2018/06/01
 ・  stsLib.string.encloseDoubleQuoteIfInSpace を追加
+◇  ver 2018/08/23
+・  orValue の第二引数を配列指定可能にした
+・  matchValue を作成
+

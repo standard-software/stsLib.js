@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-version:        2018/06/01
+version:        2018/08/23
 //----------------------------------------*/
 
 //----------------------------------------
@@ -376,24 +376,31 @@ if (typeof module === 'undefined') {
         return endTime - startTime;
       };
 
-
       //----------------------------------------
       //・orValue関数
       //----------------------------------------
       //  ・値が引数と一致しているかどうかを確認する関数
       //  ・orValue(a, 0, 1); として
-      //      aが0か1かならtrueを返す
+      //    aが0か1かならtrueを返す
       //----------------------------------------
       _.orValue = function(value, compares) {
-
         c.assert(2 <= arguments.length);
         var count = arguments.length;
-        for (var i = 1; i < count; i += 1) {
-          if (value === arguments[i]) {
-            return true;
+        if ((count === 2) && (t.isArray(compares))) {
+          for (var i = 0; i < compares.length; i += 1) {
+            if (value === compares[i]) {
+              return true;
+            }
           }
+          return false;
+        } else {
+          for (var i = 1; i < count; i += 1) {
+            if (value === arguments[i]) {
+              return true;
+            }
+          }
+          return false;
         }
-        return false;
       };
 
       _.test_orValue = function() {
@@ -404,6 +411,42 @@ if (typeof module === 'undefined') {
         c.check(true, _.orValue(a, 1, 2, 3));
         c.check(false,_.orValue(a, 2, 3, 4));
         c.checkResult('ER', 0, _.orValue, a);
+
+        var a = 1;
+        c.check(true, _.orValue(a, 1));
+        c.check(false,_.orValue(a, [1], 2));
+        c.check(true, _.orValue(a, [1]));
+        c.check(true, _.orValue(a, [1, 2]));
+        c.check(true, _.orValue(a, [1, 2, 3]));
+
+      };
+
+      //----------------------------------------
+      //・matchValue関数
+      //----------------------------------------
+      //  ・値が引数と一致しているときに値を変更して返す関数
+      //  ・matchValue(a, [0, 1], -1); として
+      //    aが0か1かなら-1を返す、それ以外は a の値を返す
+      //----------------------------------------
+      _.matchValue = function(value, compareArray, changeValue) {
+        if (_.orValue(value, compareArray)) {
+          return changeValue;
+        } else {
+          return value;
+        }
+      };
+
+      _.test_matchValue = function() {
+
+        var a = 1;
+        c.check(0, _.matchValue(a, [1], 0));
+        c.check(1, _.matchValue(a, [0], 0));
+        c.check(1, _.matchValue(a, [2], 0));
+
+        var a = '';
+        c.check(0,  _.matchValue(a, [undefined, null, ''], 0));
+        c.check('', _.matchValue(a, [undefined, null], 0));
+
       };
 
     }()); //compare
@@ -1241,7 +1284,7 @@ if (typeof module === 'undefined') {
       //◇isArray
       //----------------------------------------
       //  ・isArraysは
-      //    可変引数の全てがオブジェクトかどうかを確認する
+      //    可変引数の全てが配列かどうかを確認する
       //----------------------------------------
 
       _.isArray = function(value) {
@@ -8053,6 +8096,7 @@ if (typeof module === 'undefined') {
         c.test_checkResult();
 
         c.test_orValue();
+        c.test_matchValue();
 
         t.test_isUndefined();
         t.test_isNull();
