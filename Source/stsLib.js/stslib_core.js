@@ -461,8 +461,8 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //◇typeof
       //----------------------------------------
-      //  ・通常の typeof が object を返す判定できない
-      //    null/array/date を判定して返す関数
+      //  ・通常の typeof は null/array/date に対して
+      //    object を返すので区別できないので、それを補う関数
       //  ・WSH では typeof という名称を使うとコンパイルエラーになる
       //----------------------------------------
       _.typeName = function(value) {
@@ -1220,7 +1220,9 @@ if (typeof module === 'undefined') {
       //----------------------------------------
       //  ・Object.prototype.toString.call(v) は
       //    null や undefined の場合でも [object Object]
-      //    を返すので注意。
+      //    を返すのでオブジェクトかどうか判定できないが
+      //    この isObject は判定できるようにしている
+      //  ・Object.prototype.toString.call(v) は
       //    配列は、[object Array] を返す
       //  ・isObjectsは
       //    可変引数の全てがオブジェクトかどうかを確認する
@@ -1976,7 +1978,6 @@ if (typeof module === 'undefined') {
     _.number = stsLib.number || {};
     (function() {
       var _ = stsLib.number;
-
 
       //----------------------------------------
       //・倍数チェック
