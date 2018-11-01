@@ -2140,7 +2140,7 @@ if (typeof module === 'undefined') {
         delimiterInt, digitInt, delimiterFloat, digitFloat) {
 
         c.assert(t.isNumber(value));
-        c.assert(t.isInt(digitInt, digitFloat));
+        c.assert(t.isInts(digitInt, digitFloat));
         c.assert(t.isString(delimiterInt, delimiterFloat));
 
         var valueStr = value.toString();
@@ -2170,6 +2170,16 @@ if (typeof module === 'undefined') {
           _.formatDigitComma(.123456789012, ',', 3, ' ', 3));
         c.check('0.012 345 678 901 2',
           _.formatDigitComma(.0123456789012, ',', 3, ' ', 3));
+      };
+
+      //----------------------------------------
+      //・整数の乱数を発生する
+      //----------------------------------------
+      //  ・min max を指定すると min max を含む整数を返す
+      //----------------------------------------
+      _.randomInt = function(min, max) {
+        c.assert(t.isInts(min, max));
+        return Math.floor( Math.random() * (max + 1 - min) ) + min;
       };
 
     }()); //number

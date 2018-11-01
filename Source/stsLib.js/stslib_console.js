@@ -57,53 +57,133 @@ version:        2018/02/05
           _.consoleLogComment(formula, result));
       };
 
-      _.consoleExt = stsLib.system.consoleExt || {};
+      _.consoleHook = stsLib.system.consoleHook || {};
       (function() {
-
-        var _ = stsLib.system.consoleExt;
+        var _ = stsLib.system.consoleHook;
 
         _.originalConsoleLog = console.log;
-        _.result = '';
-        _.delimiter = ';';
-        _.logOutput = true;
 
-        _.log = function(message) {
-          if (_.logOutput) {
-            _.originalConsoleLog(message);
-          }
-          _.result += message + _.delimiter;
+        _.logHook = function(func = function() {}) {
+          console.log = func;
         };
 
-        _.hook = function() {
-          if (_.originalConsoleLog === console.log) {
-            console.log = _.log;
+        _.logUnhook = function() {
+          console.log = _.originalConsoleLog;
+        };
+
+        _.logTitleIncludes = function(titles, func) {
+          if (t.isUndefined(func)) { func = console.log }
+          c.assert(t.isFunction(func));
+          
+          if (Array.isArray(titles)) {
+            _.logHook(function(args0) {
+              if (titles.includes(args0)) {
+                var args = Array.prototype.slice.call(arguments);
+                func(args);
+              }
+            });
+          } else if (t.isString(titles)) {
+            // titles は文字列
+            _.logHook(function(args0) {
+              if (String(args0).match(new RegExp(titles)) !== null) {
+                var args = Array.prototype.slice.call(arguments);
+                func(args);
+              }
+            });
+          } else {
+            c.assert(false);
           }
         };
 
-        _.unhook = function() {
-          if (_.originalConsoleLog !== console.log) {
-            console.log = _.originalConsoleLog;
+        _.logTitleExcludes = function(titles, func) {
+          if (t.isUndefined(func)) { func = console.log }
+          c.assert(t.isFunction(func));
+          
+          if (Array.isArray(titles)) {
+            _.logHook(function(args0) {
+              if (!titles.includes(args0)) {
+                var args = Array.prototype.slice.call(arguments);
+                func(args);
+              }
+            });
+          } else if (t.isString(titles)) {
+            // titles は文字列
+            _.logHook(function(args0) {
+              if (String(args0).match(new RegExp(titles)) === null) {
+                var args = Array.prototype.slice.call(arguments);
+                func(args);
+              }
+            });
+          } else {
+            c.assert(false);
           }
         };
 
-      }()); //stsLib.system.consoleExt
+      }()); //stsLib.system.consoleHook
 
-
-      _.test_consoleExt = function() {
-        stsLib.system.consoleExt.hook();
-        stsLib.system.consoleExt.result = '';
-        stsLib.system.consoleExt.delimiter = ';';
-        stsLib.system.consoleExt.logOutput = false;
+      _.test_consoleHook = function() {
+        var result = '';
+        stsLib.system.consoleHook.logHook(function(message) {
+          result += message + ';';
+        });
         console.log('ABC');
         console.log('DEF');
         console.log('123');
-        c.check('ABC;DEF;123;', stsLib.system.consoleExt.result);
-        stsLib.system.consoleExt.unhook();
+        stsLib.system.consoleHook.logUnhook();
+        c.check('ABC;DEF;123;', result);
+
+        var result = '';
+        stsLib.system.consoleHook.logHook(function(message) {
+          result += message + ';';
+        });
+        stsLib.system.consoleHook.logTitleIncludes(['101', '203']);
+        console.log('101');
+        console.log('102');
+        console.log('203');
+        stsLib.system.consoleHook.logUnhook();
+        c.check('101;203;', result);
+
+        var result = '';
+        stsLib.system.consoleHook.logTitleIncludes(
+          '^1\\d\\d$',            //先頭1の3桁数値
+          function(message) {
+            result += message + ';';
+          }
+        );  
+        console.log('101');
+        console.log('102');
+        console.log('203');
+        stsLib.system.consoleHook.logUnhook();
+        c.check('101;102;', result);
+
+        var result = '';
+        stsLib.system.consoleHook.logTitleExcludes(
+          ['101', '203'],
+          function(message) {
+            result += message + ';';
+          }
+        );
+        console.log('101');
+        console.log('102');
+        console.log('203');
+        stsLib.system.consoleHook.logUnhook();
+        c.check('102;', result);
+
+        var result = '';
+        stsLib.system.consoleHook.logHook(function(message) {
+          result += message + ';';
+        });
+        stsLib.system.consoleHook.logTitleExcludes('^1\\d\\d$');  //先頭1の3桁数値
+        console.log('101');
+        console.log('102');
+        console.log('203');
+        stsLib.system.consoleHook.logUnhook();
+        c.check('203;', result);
       };
 
       _.test_stslib_console = function() {
         _.test_consoleLogComment();
-        _. test_consoleExt();
+        _.test_consoleHook();
 
         stsLib.alert('finish stslib_console_test テスト終了');
       };
