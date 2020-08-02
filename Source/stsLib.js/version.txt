@@ -472,3 +472,5 @@
 ・  consoleExtをconsoleHookに名前変更
 ・  consoleHook.logTitleIncludes/logTitleExcludes 機能追加
 ・  number.randomInt を追加
+◇  ver 2020/08/02
+・  wsh.shell.run に待機フラグ追加

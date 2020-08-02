@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-version:        2018/02/05
+version:        2018/11/05
 //----------------------------------------*/
 
 //----------------------------------------
@@ -68,10 +68,10 @@ version:        2018/02/05
         };
 
         _.logUnhook = function() {
-          console.log = _.originalConsoleLog;
+          delete console.log;
         };
 
-        _.logTitleIncludes = function(titles, func) {
+        _.logFilterIncludes = function(titles, func) {
           if (t.isUndefined(func)) { func = console.log }
           c.assert(t.isFunction(func));
           
@@ -95,7 +95,7 @@ version:        2018/02/05
           }
         };
 
-        _.logTitleExcludes = function(titles, func) {
+        _.logFilterExcludes = function(titles, func) {
           if (t.isUndefined(func)) { func = console.log }
           c.assert(t.isFunction(func));
           
@@ -136,7 +136,7 @@ version:        2018/02/05
         stsLib.system.consoleHook.logHook(function(message) {
           result += message + ';';
         });
-        stsLib.system.consoleHook.logTitleIncludes(['101', '203']);
+        stsLib.system.consoleHook.logFilterIncludes(['101', '203']);
         console.log('101');
         console.log('102');
         console.log('203');
@@ -144,7 +144,7 @@ version:        2018/02/05
         c.check('101;203;', result);
 
         var result = '';
-        stsLib.system.consoleHook.logTitleIncludes(
+        stsLib.system.consoleHook.logFilterIncludes(
           '^1\\d\\d$',            //先頭1の3桁数値
           function(message) {
             result += message + ';';
@@ -157,7 +157,7 @@ version:        2018/02/05
         c.check('101;102;', result);
 
         var result = '';
-        stsLib.system.consoleHook.logTitleExcludes(
+        stsLib.system.consoleHook.logFilterExcludes(
           ['101', '203'],
           function(message) {
             result += message + ';';
@@ -173,7 +173,7 @@ version:        2018/02/05
         stsLib.system.consoleHook.logHook(function(message) {
           result += message + ';';
         });
-        stsLib.system.consoleHook.logTitleExcludes('^1\\d\\d$');  //先頭1の3桁数値
+        stsLib.system.consoleHook.logFilterExcludes('^1\\d\\d$');  //先頭1の3桁数値
         console.log('101');
         console.log('102');
         console.log('203');

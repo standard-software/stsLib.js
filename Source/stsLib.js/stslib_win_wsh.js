@@ -10,7 +10,7 @@ All Right Reserved:
     Name:       Standard Software
     URL:        https://www.facebook.com/stndardsoftware/
 --------------------------------------
-Version:        2018/05/27
+Version:        2020/08/02
 //----------------------------------------*/
 
 //----------------------------------------
@@ -466,13 +466,13 @@ Version:        2018/05/27
         };
 
         //notepad.exe などの実行ファイルを指定する場合はこれを使う
-        _.run = function(commandline, windowStyle) {
+        _.run = function(commandline, windowStyle, waitFlag) {
           if (t.isUndefined(windowStyle)) {
             windowStyle = t.windowStyleEnum.vbNormalFocus;
           }
           c.assert(t.isString(commandline));
           c.assert(t.isWindowStyleEnum(windowStyle));
-          _.object.Run(commandline, windowStyle)
+          _.object.Run(commandline, windowStyle, waitFlag)
         }
 
         //dir などのコマンドライン命令を指定する場合はこれを使う
